@@ -1,0 +1,47 @@
+theme: hugo-book
+
+disableKinds:
+  - taxonomy
+  - term
+  - RSS
+
+buildFuture: true
+defaultContentLanguageInSubdir: true
+enableGitInfo: true
+
+languages:
+  pl:
+    languageName: Polski (Informatyka)
+    title: Programowanie 3
+    weight: 1
+
+  en:
+    languageName: English (Computer Science)
+    title: Programming 3
+    weight: 2
+
+params:
+  BookTheme: "auto"
+  BookSection: "*"
+  BookRepo: https://github.com/P3-MINI/csharp-site
+  BookEditPath: edit/master
+  BookCommitPath: commit
+  BookDateFormat: '2 January 2006'
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+    extensions:
+      linkify: false
+  highlight:
+    noclasses: false
+
+menu:
+  after:
+    - name: "Github"
+      url: https://github.com/P3-MINI/csharp-site
+      weight: 10
+
+minify:
+  minifyOutput: true
