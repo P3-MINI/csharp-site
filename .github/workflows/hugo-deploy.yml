@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Set up Hugo
         uses: peaceiris/actions-hugo@v3
@@ -21,7 +23,7 @@ jobs:
           extended: true
 
       - name: Build Hugo Site
-        run: hugo
+        run: hugo --cleanDestinationDir
 
       - name: Setup SSH
         run: |
