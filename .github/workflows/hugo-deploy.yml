@@ -9,6 +9,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: self-hosted
+    environment: production
 
     steps:
       - name: Checkout Code
