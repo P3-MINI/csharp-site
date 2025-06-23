@@ -9,6 +9,8 @@ buildFuture: true
 defaultContentLanguageInSubdir: true
 enableGitInfo: true
 
+baseURL: "https://csharp.mini.pw.edu.pl/"
+
 languages:
   pl:
     languageName: Polski (Informatyka)
