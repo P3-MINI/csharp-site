@@ -283,10 +283,13 @@ Location; Code; Date; Temperatures
 Poland  Warsaw  ; pl-PL; 2025-06-21; [  25.9, 18.0  , 9.5 , 24.3  ]
 ```
 
+Skorzystaj z następującego pliku CSV: [measurements.csv](./src/measurements.csv).
+
 {{% hint warning %}}
 **Uwagi implementacyjne**
 
 - **Parsowanie pliku CSV:**
+  - Do odczytania zawartości pliku skorzystaj z metody [`File.ReadAllText`](https://learn.microsoft.com/pl-pl/dotnet/api/system.io.file.readalltext?view=net-9.0).
   - Tablica pomiarów zawiera wartości zapisane przy użyciu `CultureInfo.InvariantCulture`, które są rozdzielone za pomocą znaku przecinka `,`.
   - Poszczególne pola rekordów mogą zawierać nadmiarowe białe znaki, których należy się pozbyć.
   - Dla ułatwienia można założyć, że wszystkie rekordy i pola zawierają poprawne dane (np. `Date` zawiera poprawnie zapisaną datę, a `Temperatures` poprawnie zapisane liczby zmiennoprzecinkowe).
