@@ -1,4 +1,3 @@
-
 # Programming 3 – Advanced Course Website
 
 This repository contains the source code for the website of the “Programming 3 – Advanced” course offered by the Faculty of Mathematics and Information Science, Warsaw University of Technology (MiNI PW).
@@ -41,3 +40,7 @@ To run the website locally:
    ```
 
 Changes will be reflected automatically in the browser as you modify the content.
+
+## Contributing
+
+If you're interested in contributing, please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines and instructions.
