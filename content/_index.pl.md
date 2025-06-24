@@ -13,7 +13,7 @@ menu:
 ### Wykład
 
 - Tomasz Herman
-  - konsultacje: pok 310, po uprzednim umówieniu
+  - konsultacje: pok. 310, po uprzednim umówieniu
   - email: tomasz.herman@pw.edu.pl
 
 ### Laboratorium
