@@ -56,41 +56,40 @@ public static (ParsedUrl url, ParsingStatus status) ParseUrl(string url);
 // Schemat protokołu
 public enum UrlScheme
 {
-    Http,
-    Https,
-    Ftp,
-    Wss
+	Http,
+	Https,
+	Ftp,
+	Wss
 }
 
 // Segment ścieżki (nazwa zasobu + identyfikator)
 public sealed class ResourceSegment
 {
-    public string Name { get; set; }
-    public id Id { get; set; }
+	public string Name { get; set; } = string.Empty;
+	public int Id { get; set; }
 }
 
 // Status parsowania (informuje o powodzeniu lub błędzie)
-public enum ParseResult
+public enum ParsingStatus
 {
-    UnexpectedFormat,
-    Success,
-    InvalidScheme,
-    InvalidHost,
-    InvalidVersion,
-    InvalidPath,
-    InvalidId,
-    InvalidQuery,
+	UnexpectedFormat,
+	Success,
+	InvalidScheme,
+	InvalidHost,
+	InvalidVersion,
+	InvalidPath,
+	InvalidId,
+	InvalidQuery,
 }
 
 // Typ zwracany przez metodę
 public sealed class ParsedUrl
 {
-    public ParsingStatus Status { get; set; }
-    public UrlScheme Scheme { get; set; }
-    public string Host { get; set; } = string.Empty;
-    public int Version { get; set; }
-    public List<ResourceSegment> PathSegments { get; set; } = [];
-    public Dictionary<string, List<string>> QueryParams { get; set; } = [];
+	public UrlScheme Scheme { get; set; }
+	public string Host { get; set; } = string.Empty;
+	public int Version { get; set; }
+	public List<ResourceSegment> PathSegments { get; set; } = [];
+	public Dictionary<string, List<string>> QueryParams { get; set; } = [];
 }
 ```
 
@@ -145,7 +144,7 @@ gdzie:
 {{% details "Poprawny URL z jednym segmentem i jednym parametrem" false %}}
 
 ```csharp
-string input1 = "http://example.com/v1/users/42?lang=pl";
+var input1 = "http://example.com/v1/users/42?lang=pl";
 var (parsed1, status1) = ParseUrl(input1);
 /*
 status1              == ParsingStatus.Success
@@ -161,7 +160,7 @@ parsed1.QueryParams  == { "lang": ["pl"] }
 {{% details "URL z wieloma segmentami i wielokrotnymi parametrami" false %}}
 
 ```csharp
-string input2 = "https://api.test/v2/orders/100/items/200" +
+var input2 = "https://api.test/v2/orders/100/items/200" +
                 "?tag=new&tag=discount&active=true";
 var (parsed2, status2) = ParseUrl(input2);
 /*
@@ -184,7 +183,7 @@ parsed2.QueryParams  == {
 {{% details "Nieobsługiwany scheme" false %}}
 
 ```csharp
-string input3 = "smtp://host/v1/res/1";
+var input3 = "smtp://host/v1/res/1";
 var (_, status3) = ParseUrl(input3);
 // status3 == ParsingStatus.InvalidScheme
 ```
@@ -193,7 +192,7 @@ var (_, status3) = ParseUrl(input3);
 {{% details "Nieparzysta liczba segmentów w ścieżce" false %}}
 
 ```csharp
-string input4 = "https://host/v1/resOnly";
+var input4 = "https://host/v1/resOnly";
 var (_, status4) = ParseUrl(input4);
 // status4 == ParsingStatus.InvalidPath
 ```
@@ -202,7 +201,7 @@ var (_, status4) = ParseUrl(input4);
 {{% details "Błędny parametr zapytania (brak '=')" false %}}
 
 ```csharp
-string input5 = "http://host/v1/r/10?badparam";
+var input5 = "http://host/v1/r/10?badparam";
 var (_, status5) = ParseUrl(input5);
 // status5 == ParsingStatus.InvalidQuery
 ```
