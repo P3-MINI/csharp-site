@@ -131,6 +131,15 @@ gdzie:
 - **Debuggowanie:** - Zadanie jest dobrą okazją do zaznajomienia się z działaniem debuggera (preferowane IDE to [Visual Studio](https://visualstudio.microsoft.com/pl/)).
   {{% /hint %}}
 
+{{% hint info %}}
+**Materiały pomocnicze:**
+
+- [Microsoft Learn: Strings and string literals](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/)
+- [Microsoft Learn: Extract substrings from a string](https://learn.microsoft.com/en-us/dotnet/standard/base-types/divide-up-strings)
+- [Microsoft Learn: How to separate strings using String.Split in C#](https://learn.microsoft.com/en-us/dotnet/csharp/how-to/parse-strings-using-split)
+- [Microsoft Learn: Dictionary<TKey,TValue> Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=net-8.0)
+  {{% /hint %}}
+
 **Przykłady**
 
 {{% details "Poprawny URL z jednym segmentem i jednym parametrem" false %}}
@@ -220,8 +229,8 @@ CSV (ang. _comma-separated values_) to format przechowywania danych w plikach te
 
 - Pracy z datą i czasem w języku `C#`, odczytując dane z pliku CSV, zawierającego dzienne pomiary temperatury w wybranych europejskich stolicach.
 - Operacji na datach i interwałach czasowych (klasy `DateTime` i `Timespan`).
-- Formatowaniem wyjścia zgodnie z ustawieniami kulturowymi (`CultureInfo`).
-- Użyciem metody `ForEach` standardowej kolekcji `List<T>` oraz konstruowania prostych wyrażeń lambda do filtrowania i wyświetlania danych.
+- Formatowania wyjścia zgodnie z ustawieniami kulturowymi (`CultureInfo`).
+- Użycia metody `ForEach` standardowej kolekcji `List<T>` oraz konstruowania prostych wyrażeń lambda do filtrowania i wyświetlania danych.
   {{% /hint %}}
 
 ### Opis zadania
@@ -294,8 +303,79 @@ Skorzystaj z następującego pliku CSV: [measurements.csv](./src/measurements.cs
   - Poszczególne pola rekordów mogą zawierać nadmiarowe białe znaki, których należy się pozbyć.
   - Dla ułatwienia można założyć, że wszystkie rekordy i pola zawierają poprawne dane (np. `Date` zawiera poprawnie zapisaną datę, a `Temperatures` poprawnie zapisane liczby zmiennoprzecinkowe).
 - **Wypisywanie obiektów**:
-  - Należy zachować formatowanie z przykładu (format daty, szerokość wypisywania wyrównanie, liczba miejsc po przecinku itp.).
+  - Należy zachować formatowanie z przykładu (format daty, szerokość wypisywania wyrównanie, liczba miejsc po przecinku, liczba pomiarów w jednej linii itp.).
   - Do filtrowania obiektów wykorzystaj metodę `ForEach` oraz wyrażenia lambda. Nie należy korzystać z jawnej pętli.
     {{% /hint %}}
+
+{{% hint info %}}
+**Materiały pomocnicze:**
+
+- [Microsoft Learn: Parse strings in .NET](https://learn.microsoft.com/en-us/dotnet/standard/base-types/parsing-strings)
+- [Microsoft Learn: Using the StringBuilder Class in .NET](https://learn.microsoft.com/en-us/dotnet/standard/base-types/stringbuilder)
+- [Microsoft Learn: DateTime Struct](https://learn.microsoft.com/en-us/dotnet/api/system.datetime?view=net-9.0)
+- [Microsoft Learn: Standard date and time format strings](http://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
+- [Microsoft Learn: Standard numeric format strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings)
+- [Microsoft Learn: CultureInfo Class](https://learn.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo?view=net-9.0)
+- [Microsoft Learn: List<T>.ForEach(Action<T>) Method](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.foreach?view=net-9.0)
+  {{% /hint %}}
+
+### Przykładowe rozwiązanie
+
+## Liczby losowe, wyrażenia lambda
+
+{{% hint info %}}
+**Wyrażenia Lambda**
+
+Wyrażenia lambda (ang _lambda expressions_) to krótkie, anonimowe funkcje, które można zapisać z użyciem operatora `=>`. Pozwalają one przekazywać logikę jako parametr do innych metod, zwracać funkcje czy przechowywać je w kolekcjach.
+
+Lambdy mogą przechwytywać (ang. _closures_) zmienne z otaczającego je kontekstu — np. licznik, obiekt klasy `Random` lub aktualny stan algorytmu — dzięki czemu zachowują dostęp do tych wartości nawet po wyjściu z zakresu, w którym zostały zdefiniowane.
+
+Lambdy są intensywnie wykorzystywane przez metody LINQ m.in. do filtrowania, agregowania, czy tzw. projekcji na określony typ.
+
+**Czego się nauczysz?**
+
+- Tworzenia wyrażeń lambda i przekazywnia ich w postaci standardowego delegatu `Func<T>` (funkcje wyższego rzędu).
+- Mechanizmu przechwytywania zmiennych i jego wpływu na działanie kodu.
+- Generowania liczb losowych i podejmowania decyzji z określonym prawdopodobieństwem.
+
+{{% /hint %}}
+
+### Opis zadania
+
+Zaimplementuj metodę:
+
+```csharp
+public static void Fill(List<int> collection, int length, Func<int> generator);
+```
+
+- Metoda dodaje `length` elementów do listy `collection`.
+- Każdy kolejny element jest wynikiem wywołania funkcji `generator`.
+
+Następnie, przy pomocy metody `Fill` wypełnij i wypisz listy w następujący sposób:
+
+- 10 kolejnych wyrazów ciągu arytmetycznego o pierwszym wyrazie 3 i różnicy 8.
+- 10 kolejnych elementów ciągu Fibonacciego,
+- 10 losowych liczb z przedziału `[5, 50]`,
+- 10 elementów o wartości `0/1` z zadanym prawdopodobieństwem (np. `P(1) = 0.3`),
+- 10 losowych elementów ze zbioru 10 początkowych liczb pierwszych `[2, 3, 5, 7, 11, 13, 17, 19, 23, 29]`,
+- Łańcuch Markowa długości 20, ze stanem początkowym `1`, określony przez tablicę przejść:
+
+|     | `1` | `2` | `3` |
+| --- | --- | --- | --- |
+| `1` | 0.1 | 0.6 | 0.3 |
+| `2` | 0.4 | 0.2 | 0.4 |
+| `3` | 0.5 | 0.3 | 0.2 |
+
+> Przykładowo dla wiersza 2 i kolumny 1 przejście ze stanu `2` do stanu `1` odbywa się z prawdopodobieństwem `0.5`.
+>
+> Tablicę przejść można przykładowo zaimplementować jako słownik list o elementach będących krotkami postaci (stan, prawdopodobieństwo).
+
+{{% hint info %}}
+**Materiały pomocnicze:**
+
+- [Microsoft Learn: Lambda expressions and anonymous functions](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)
+- [Microsoft Learn: Func<T,TResult> Delegate](https://learn.microsoft.com/en-us/dotnet/api/system.func-2?view=net-9.0)
+- [Microsoft Learn: Random Class](https://learn.microsoft.com/en-us/dotnet/api/system.random?view=net-9.0)
+  {{% /hint %}}
 
 ### Przykładowe rozwiązanie
