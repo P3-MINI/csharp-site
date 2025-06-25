@@ -208,7 +208,13 @@ var (_, status5) = ParseUrl(input5);
 
 {{% /details %}}
 
+**Zadanie dla chętnych**
+
+- W implemnetacji metody `ParseUrl` spróbuj wykorzystać możliwości jakie daje przestrzeń nazw `System.Text.RegularExpressions`. Informacje o wyrażeniach regularnych możesz znaleźć m.in. w artykule [Microsoft Learn: .NET regular expressions](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions). Do pobrania w formacie `.pdf` jest również [Regular expressions quick reference](https://download.microsoft.com/download/D/2/4/D240EBF6-A9BA-4E4F-A63F-AEB6DA0B921C/Regular%20expressions%20quick%20reference.pdf). Interaktywne tworzenie wyrażeń regularnych zgodnych ze składnią .NET umożliwia m.in. popularna strona [regex101.com](https://regex101.com/).
+
 ### Przykładowe rozwiązanie
+
+Przykładowe rozwiązanie wraz z testami jednostkowymi można znaleźć w pliku [Task01.cs](solution/tasks/Task01.cs).
 
 ## Formatowanie, data i czas
 
@@ -318,7 +324,13 @@ Skorzystaj z następującego pliku CSV: [measurements.csv](./src/measurements.cs
 - [Microsoft Learn: List<T>.ForEach(Action<T>) Method](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.foreach?view=net-9.0)
   {{% /hint %}}
 
+**Zadanie dla chętnych**
+
+- Zaimplementuj wczytywanie danych z pliku CSV przy pomocy popularnej paczki nuget [CsvHelper](https://joshclose.github.io/CsvHelper/). Informacje o tym jak ją zainstalować znajdziesz m.in. w artykule [Microsoft Learn: Install and manage packages in Visual Studio using the NuGet Package Manager](https://learn.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio).
+
 ### Przykładowe rozwiązanie
+
+Przykładowe rozwiązanie wraz z testami jednostkowymi można znaleźć w pliku [Task02.cs](solution/tasks/Task02.cs).
 
 ## Liczby losowe, wyrażenia lambda
 
@@ -378,3 +390,5 @@ Następnie, przy pomocy metody `Fill` wypełnij i wypisz listy w następujący s
   {{% /hint %}}
 
 ### Przykładowe rozwiązanie
+
+Przykładowe rozwiązanie wraz z testami jednostkowymi można znaleźć w pliku [Task03.cs](solution/tasks/Task03.cs).
