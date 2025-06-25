@@ -280,11 +280,11 @@ Po sparsowaniu zawartości pliku wypisz obiekty spełniające następujące waru
 ```csharp
 public sealed class Measurement
 {
-    public string Country { get; set; } = string.Empty;
-    public string City { get; set; } = string.Empty;
-    public string Code { get; set; } = string.Empty;
-    public DateTime Date { get; set; }
-    public double[] Temperatures { get; set; } = [];
+	public string Country { get; set; } = string.Empty;
+	public string City { get; set; } = string.Empty;
+	public string Code { get; set; } = string.Empty;
+	public DateTime Date { get; set; }
+	public double[] Temperatures { get; set; } = [];
 }
 ```
 
