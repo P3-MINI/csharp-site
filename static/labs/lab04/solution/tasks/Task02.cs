@@ -9,7 +9,7 @@ public class Task02 : IExecutable
 	{
 		Console.WriteLine($"Executing {nameof(Task02)}...");
 
-		// przekaż ścieżkę do pliku CSV jako argument wywołania programu
+		// pass the path to the CSV file as a first command-line argument
 		var content = File.ReadAllText(args[0]);
 
 		var measurements = ParseMeasurements(content);
@@ -21,21 +21,21 @@ public class Task02 : IExecutable
 		var today = DateTime.Today;
 		var weekBefore = today.AddDays(-7);
 
-		// tablica zawierająca wyrażenia lambda
+		// an array of lambda expressions (uses standard Action<T> delegate)
 		var filters = new List<Action<Measurement>>()
 		{
-			(m) => 
-			{ 
-				if (from <= m.Date && m.Date <= to) Console.WriteLine(m); 
+			(m) =>
+			{
+				if (from <= m.Date && m.Date <= to) Console.WriteLine(m);
 			},
-			(m) => 
-			{ 
-				if (m.Date.Year == 2025) Console.WriteLine(m); 
+			(m) =>
+			{
+				if (m.Date.Year == 2025) Console.WriteLine(m);
 			},
-			(m) => 
-			{ 
-				if (m.Date.DayOfWeek == DayOfWeek.Saturday || 
-					m.Date.DayOfWeek == DayOfWeek.Sunday) Console.WriteLine(m); 
+			(m) =>
+			{
+				if (m.Date.DayOfWeek == DayOfWeek.Saturday ||
+					m.Date.DayOfWeek == DayOfWeek.Sunday) Console.WriteLine(m);
 			},
 			(m) =>
 			{

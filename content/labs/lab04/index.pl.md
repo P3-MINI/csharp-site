@@ -1,6 +1,5 @@
 ---
 title: "Lab04"
-date: 2022-02-05T17:26:02+01:00
 weight: 10
 ---
 
@@ -214,7 +213,7 @@ var (_, status5) = ParseUrl(input5);
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie wraz z testami jednostkowymi można znaleźć w pliku [Task01.cs](solution/tasks/Task01.cs).
+Przykładowe rozwiązanie wraz z testami jednostkowymi można znaleźć w pliku [Task01.cs](/labs/lab04/solution/tasks/Task01.cs).
 
 ## Formatowanie, data i czas
 
@@ -297,7 +296,7 @@ Location; Code; Date; Temperatures
 Poland  Warsaw  ; pl-PL; 2025-06-21; [  25.9, 18.0  , 9.5 , 24.3  ]
 ```
 
-Skorzystaj z następującego pliku CSV: [measurements.csv](./src/measurements.csv).
+Skorzystaj z następującego pliku CSV: [measurements.csv](/labs/lab04/measurements.csv).
 
 {{% hint warning %}}
 **Uwagi implementacyjne**
@@ -330,7 +329,7 @@ Skorzystaj z następującego pliku CSV: [measurements.csv](./src/measurements.cs
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie wraz z testami jednostkowymi można znaleźć w pliku [Task02.cs](solution/tasks/Task02.cs).
+Przykładowe rozwiązanie wraz z testami jednostkowymi można znaleźć w pliku [Task02.cs](/labs/lab04/solution/tasks/Task02.cs).
 
 ## Liczby losowe, wyrażenia lambda
 
@@ -391,4 +390,4 @@ Następnie, przy pomocy metody `Fill` wypełnij i wypisz listy w następujący s
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie wraz z testami jednostkowymi można znaleźć w pliku [Task03.cs](solution/tasks/Task03.cs).
+Przykładowe rozwiązanie wraz z testami jednostkowymi można znaleźć w pliku [Task03.cs](/labs/lab04/solution/tasks/Task03.cs).
