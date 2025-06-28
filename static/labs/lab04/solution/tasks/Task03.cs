@@ -6,7 +6,7 @@ public class Task03 : IExecutable
 	{
 		Console.WriteLine($"Executing {nameof(Task03)}...");
 
-		// 10 kolejnych wyrazów ciągu arytmetycznego o pierwszym wyrazie 3 i różnicy 8
+		// 10 elements of an arithmetic sequence starting at 3 with a difference of 8
 		{
 			var a = 3;
 			var r = 8;
@@ -24,7 +24,7 @@ public class Task03 : IExecutable
 			Console.WriteLine(string.Join(", ", list1));
 		}
 
-		// 10 kolejnych elementów ciągu Fibonacciego
+		// 10 elements of the Fibonacci sequence
 		{
 			var f0 = 0;
 			var f1 = 1;
@@ -56,7 +56,7 @@ public class Task03 : IExecutable
 			Console.WriteLine(string.Join(", ", list2));
 		}
 
-		// 10 losowych liczb z przedziału [5, 50]
+		// 10 random integers in the range [5, 50]
 		var random = new Random();
 		
 		{
@@ -68,7 +68,7 @@ public class Task03 : IExecutable
 			Console.WriteLine(string.Join(", ", list3));
 		}
 
-		// 10 elementów o wartości 0/1 z zadanym prawdopodobieństwem (np. P(1) = 0.3)
+		// 10 elements of 0 or 1 with a given probability (e.g., P(1) = 0.3).
 		{
 			var list4 = new List<int>(capacity: 10);
 
@@ -77,7 +77,7 @@ public class Task03 : IExecutable
 			Console.WriteLine(string.Join(", ", list4));
 		}
 
-		// 10 losowych elementów ze zbioru 10 początkowych liczb pierwszych [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+		// 10 random elements from the first 10 prime numbers [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 		{
 			var numbers = new int[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
 
@@ -88,12 +88,12 @@ public class Task03 : IExecutable
 			Console.WriteLine(string.Join(", ", list5));
 		}
 
-		// Łańcuch Markowa długości 20, ze stanem początkowym 1, określony przez tablicę przejść
-		// |     | `1` | `2` | `3` |
+		// A Markov chain of length 20 starting in state `1`, defined by the transition matrix:
+		// |     |  1  |  2  |  3  |
 		// | --- | --- | --- | --- |
-		// | `1` | 0.1 | 0.6 | 0.3 |
-		// | `2` | 0.4 | 0.2 | 0.4 |
-		// | `3` | 0.5 | 0.3 | 0.2 |
+		// |  1  | 0.1 | 0.6 | 0.3 |
+		// |  2  | 0.4 | 0.2 | 0.4 |
+		// |  3  | 0.5 | 0.3 | 0.2 |
 		{
 			var transitions = new Dictionary<int, List<(int, double)>>
 			{
