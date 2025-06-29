@@ -332,7 +332,7 @@ Use the following CSV file: `measurements.csv`.
 
 ### Example Solution
 
-An example implementation along with unit tests can be found in the file [`Task02.cs`](/labs/lab04/solution/tasks/Task02.cs).
+An example implementation can be found in the file [`Task02.cs`](/labs/lab04/solution/tasks/Task02.cs).
 
 ## Random Numbers and Lambda Expressions
 
@@ -391,4 +391,76 @@ Then, using `Fill`, generate and print:
 
 ### Example Solution
 
-An example implementation along with unit tests can be found in the file [`Task03.cs`](/labs/lab04/solution/tasks/Task03.cs).
+An example implementation can be found in the file [`Task03.cs`](/labs/lab04/solution/tasks/Task03.cs).
+
+## Regular Expressions
+
+{{% hint info %}}
+**What are regular expressions?**
+
+Regular expressions (aka _regex_) are a powerful tool for searching and manipulating text based on character patterns.
+
+- They allow precise matching of character sequences in text.
+- They enable grouping and capturing parts of the matched text for further processing.
+- They are supported in many programming languages, including C#, where they are provided by the `Regex` class.
+
+Although regex-based processing can be less efficient than dedicated algorithms (e.g., character-by-character parsing), their biggest advantage is the conciseness and clarity of code — the entire matching and extraction logic can be written in a single pattern and executed by the regex engine. This results in cleaner, shorter, and more maintainable code.
+
+**Learning goals:**
+
+- How to create and use regular expressions in C# to parse complex text formats such as server logs.
+- How to define named capture groups in your regex to conveniently extract relevant data.
+  {{% /hint %}}
+
+### Task Description
+
+Write a program that, given the text file [logs.txt](/labs/lab04/logs.txt) containing logs in the following format:
+
+```
+[YYYY-MM-DD HH:mm:ss] LEVEL: IP - METHOD /api/RESOURCE/ID - HTTP_CODE HTTP_STATUS[: opcjonalny komunikat]
+```
+
+Use a regular expression with named capture groups to extract the following fields from each log entry:
+
+- `LEVEL`: the log level,
+- `RESOURCE`: the resource name,
+- `ID`: the resource identifier,
+- `HTTP_CODE`: the HTTP response code,
+- `HTTP_STATUS`: the HTTP status text.
+
+Map the extracted information into a collection of `LogEntry` records, then print them to the console in the format:
+
+```
+LEVEL: RESOURCE/ID => HTTP_CODE HTTP_STATUS
+```
+
+**Helper type definitions:**
+
+```csharp
+public record LogEntry(
+	string Level,
+	string Resource,
+	string Id,
+	int HttpCode,
+	string HttpStatus
+);
+```
+
+{{% hint warning %}}
+**Notes**
+
+- This task is considered optional (due to its higher difficulty and complexity).
+  {{% /hint %}}
+
+{{% hint info %}}
+**Resources:**
+
+- [Microsoft Learn: Regex Class](https://learn.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.regex?view=net-9.0)
+- [Microsoft Learn: .NET regular expressions](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions)
+- [Microsoft Learn: Regular Expression Language - Quick Reference](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference)
+- [regex101.com](https://regex101.com/)
+  {{% /hint %}}
+
+### Example Solution
+
+An example implementation can be found in the file [`Task04.cs`](/labs/lab04/solution/tasks/Task04.cs).

@@ -391,3 +391,75 @@ Następnie, przy pomocy metody `Fill` wypełnij i wypisz listy w następujący s
 ### Przykładowe rozwiązanie
 
 Przykładowe rozwiązanie wraz z testami jednostkowymi można znaleźć w pliku [Task03.cs](/labs/lab04/solution/tasks/Task03.cs).
+
+## Wyrażenia regularne
+
+{{% hint info %}}
+**Czym są wyrażenia regularne?**
+
+Wyrażenia regularne (ang. _regular expressions, regex_) to potężne narzędzie do wyszukiwania i manipulowania tekstem na podstawie wzorców znaków.
+
+- Pozwalają na dokładne dopasowanie ciągów znaków w tekście.
+- Umożliwiają grupowanie i przechwytywanie fragmentów dopasowanego tekstu do dalszego przetwarzania.
+- Stosowane są w wielu językach programowania, w tym w C#, gdzie obsługuje je klasa `Regex`.
+
+Pomimo że ich działanie bywa mniej wydajne niż dedykowane algorytmy (np. oparte na analizie znak po znaku), ich największą zaletą jest zwięzłość i przejrzystość kodu – cała logika dopasowania i ekstrakcji danych może zostać zapisana w jednym wzorcu, a całą pracę wykonuje za nas silnik wyrażeń regularnych. Dzięki temu kod jest czystszy, krótszy i łatwiejszy w utrzymaniu.
+
+**Czego się nauczysz?**
+
+- Jak tworzyć i stosować wyrażenia regularne w C# do parsowania złożonych formatów tekstowych, takich jak logi serwera.
+- Jak definiować nazwy grup w wyrażeniach regularnych, aby wygodnie wyodrębniać interesujące dane.
+  {{% /hint %}}
+
+### Opis zadania
+
+Napisz program, który dla podanego pliku tekstowego [logs.txt](/labs/lab04/logs.txt), zawierającego logi w formacie:
+
+```
+[YYYY-MM-DD HH:mm:ss] LEVEL: IP - METHOD /api/RESOURCE/ID - HTTP_CODE HTTP_STATUS[: opcjonalny komunikat]
+```
+
+Użyje wyrażenia regularnego z nazwanymi grupami, aby wyodrębnić następujące pola z każdego wpisu logu:
+
+- `LEVEL`: poziom wpisu,
+- `RESOURCE`: nazwę zasobu,
+- `ID`: identyfikator zasobu,
+- `HTTP_STATUS`: kod odpowiedzi,
+- `HTTP_STATUS`: status odpowiedzi.
+
+Uzyskane informacje powinny zostać zmapowane do kolekcji rekordów `LogEntry`, a następnie wypisane w konsoli w przykładowym formacie:
+
+```
+LEVEL: RESOURCE/ID => HTTP_CODE HTTP_STATUS
+```
+
+**Definicje typów pomocniczych:**
+
+```csharp
+public record LogEntry(
+	string Level,
+	string Resource,
+	string Id,
+	int HttpCode,
+	string HttpStatus
+);
+```
+
+{{% hint warning %}}
+**Uwagi**
+
+- Zadanie to należy traktować jako dodatkowe (z uwagi na podwyższony poziom trudności i złożoność zagadnienia).
+  {{% /hint %}}
+
+{{% hint info %}}
+**Materiały pomocnicze:**
+
+- [Microsoft Learn: Regex Class](https://learn.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.regex?view=net-9.0)
+- [Microsoft Learn: .NET regular expressions](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions)
+- [Microsoft Learn: Regular Expression Language - Quick Reference](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference)
+- [regex101.com](https://regex101.com/)
+  {{% /hint %}}
+
+### Przykładowe rozwiązanie
+
+Przykładowe rozwiązanie można znaleźć w pliku [Task04.cs](/labs/lab04/solution/tasks/Task04.cs).
