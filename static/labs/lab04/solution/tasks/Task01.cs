@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace tasks;
 
-public class Task01 : IExecutable
+public sealed class Task01 : IExecutable
 {
 	public void Execute(string[] args)
 	{

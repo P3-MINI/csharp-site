@@ -3,14 +3,14 @@ using System.Text;
 
 namespace tasks;
 
-public class Task02 : IExecutable
+public sealed class Task02 : IExecutable
 {
 	public void Execute(string[] args)
 	{
 		Console.WriteLine($"Executing {nameof(Task02)}...");
 
-		// pass the path to the CSV file as a first command-line argument
-		var content = File.ReadAllText(args[0]);
+		// pass the path to the CSV file as a command-line argument with index 2
+		var content = File.ReadAllText(args[2]);
 
 		var measurements = ParseMeasurements(content);
 

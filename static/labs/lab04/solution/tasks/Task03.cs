@@ -1,6 +1,6 @@
 ﻿namespace tasks;
 
-public class Task03 : IExecutable
+public sealed class Task03 : IExecutable
 {
 	public void Execute(string[] args)
 	{

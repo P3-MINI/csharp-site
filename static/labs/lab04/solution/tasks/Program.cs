@@ -8,7 +8,8 @@ public sealed class Program
 		{
 			new Task01(),
 			new Task02(),
-			new Task03()
+			new Task03(),
+			new Task04()
 		};
 
 		Array.ForEach(
