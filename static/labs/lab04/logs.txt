@@ -1,0 +1,8 @@
+[2025-06-15 14:33:02] ERROR: 127.0.0.1 - GET /api/users/9876 - 404 NotFound: User not found
+[2025-06-15 14:34:55] DEBUG: 10.0.0.1 - GET /api/products/999 - 200 OK
+[2025-06-15 14:35:01] INFO: 192.168.1.5 - POST /api/orders/54321 - 201 Created
+[2025-06-15 14:35:45] ERROR: 10.0.0.1 - GET /api/products/4567 - 500 InternalServerError: Database timeout
+[2025-06-15 14:36:12] WARN: 10.0.0.99 - PUT /api/users/101 - 403 Forbidden: Unauthorized update attempt
+[2025-06-15 14:37:09] INFO: 127.0.0.1 - GET /api/categories/88 - 200 OK
+[2025-06-15 14:38:42] INFO: 172.16.0.10 - DELETE /api/orders/11111 - 204 NoContent
+[2025-06-15 14:40:20] ERROR: 127.0.0.1 - GET /api/orders/00000 - 404 NotFound: Order does not exist
