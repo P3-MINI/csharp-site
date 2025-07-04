@@ -23,7 +23,7 @@ W praktyce niemal każda nowoczesna aplikacja webowa czy mobilna udostępnia RES
 Ścieżki w URL określają, do jakich zasobów i w jakiej hierarchii chcemy się odwołać na serwerze. Każdy segment po hoście to albo nazwa zasobu, albo jego identyfikator.
 
 - `/v1/users/42`: wersja `1`, zasób `users`, identyfikator `42`.
-- `/v2/countries/100/cities/3`: wersja `2`, zasób `countries` (id `100`), a następnie zagnieżdżony zasób `items` (id `200`).
+- `/v2/countries/100/cities/3`: wersja `2`, zasób `countries` (id `100`), a następnie zagnieżdżony zasób `cities` (id `3`).
 
 **Parametry zapytania (ang. _query parameters_)**
 
@@ -45,7 +45,7 @@ public static (ParsedUrl url, ParsingStatus status) ParseUrl(string url);
 
 - Przyjmować jako parametr ciąg znaków `url`.
 - Zwracać krotkę o dwóch nazwanych elementach:
-  - `url` - obiekt klasy `ParsedUrl` zawierająy szczegóły parsowanego adresu.
+  - `url` - obiekt klasy `ParsedUrl` zawierający szczegóły parsowanego adresu.
   - `status` - wartość typu wyliczeniowego `ParsingStatus` informującą o powodzeniu lub przyczynie błędu parsowania.
 - W przypadku nieudanego parsowania, zawartość obiektu `ParsedUrl` jest nieistotna (kluczowy jest wówczas `status`).
 
@@ -209,7 +209,7 @@ var (_, status5) = ParseUrl(input5);
 
 **Zadanie dla chętnych**
 
-- W implemnetacji metody `ParseUrl` spróbuj wykorzystać możliwości jakie daje przestrzeń nazw `System.Text.RegularExpressions`. Informacje o wyrażeniach regularnych możesz znaleźć m.in. w artykule [Microsoft Learn: .NET regular expressions](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions). Do pobrania w formacie `.pdf` jest również [Regular expressions quick reference](https://download.microsoft.com/download/D/2/4/D240EBF6-A9BA-4E4F-A63F-AEB6DA0B921C/Regular%20expressions%20quick%20reference.pdf). Interaktywne tworzenie wyrażeń regularnych zgodnych ze składnią .NET umożliwia m.in. popularna strona [regex101.com](https://regex101.com/).
+- W implementacji metody `ParseUrl` spróbuj wykorzystać możliwości, jakie daje przestrzeń nazw `System.Text.RegularExpressions`. Informacje o wyrażeniach regularnych możesz znaleźć m.in. w artykule [Microsoft Learn: .NET regular expressions](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions). Do pobrania w formacie `.pdf` jest również [Regular expressions quick reference](https://download.microsoft.com/download/D/2/4/D240EBF6-A9BA-4E4F-A63F-AEB6DA0B921C/Regular%20expressions%20quick%20reference.pdf). Interaktywne tworzenie wyrażeń regularnych zgodnych ze składnią .NET umożliwia m.in. popularna strona [regex101.com](https://regex101.com/).
 
 ### Przykładowe rozwiązanie
 
@@ -226,7 +226,7 @@ CSV (ang. _comma-separated values_) to format przechowywania danych w plikach te
 - Wartości pól standardowo oddzielone są przecinkami `,`.
 - Jako separator bywa stosowany znak średnika `;` (tak będzie właśnie w naszym zadaniu).
 - W jednym pliku może być użyty tylko jeden rodzaj separatora.
-- Wartości pól mogą być ujęte w cudzysłowy (w przypadku wartości zawierających znak separatora jest to wymagane).
+- Wartości pól mogą być ujęte w cudzysłów (w przypadku wartości zawierających znak separatora jest to wymagane).
 - Pierwsza linia może stanowić nagłówek zawierający nazwy pól rekordów.
 
 **Czego się nauczysz?**
@@ -325,7 +325,7 @@ Skorzystaj z następującego pliku CSV: [measurements.csv](/labs/lab04/measureme
 
 **Zadanie dla chętnych**
 
-- Zaimplementuj wczytywanie danych z pliku CSV przy pomocy popularnej paczki nuget [CsvHelper](https://joshclose.github.io/CsvHelper/). Informacje o tym jak ją zainstalować znajdziesz m.in. w artykule [Microsoft Learn: Install and manage packages in Visual Studio using the NuGet Package Manager](https://learn.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio).
+- Zaimplementuj wczytywanie danych z pliku CSV przy pomocy popularnej paczki nuget [CsvHelper](https://joshclose.github.io/CsvHelper/). Informacje o tym, jak ją zainstalować znajdziesz m.in. w artykule [Microsoft Learn: Install and manage packages in Visual Studio using the NuGet Package Manager](https://learn.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio).
 
 ### Przykładowe rozwiązanie
 
@@ -336,7 +336,7 @@ Przykładowe rozwiązanie wraz z testami jednostkowymi można znaleźć w pliku 
 {{% hint info %}}
 **Wyrażenia Lambda**
 
-Wyrażenia lambda (ang _lambda expressions_) to krótkie, anonimowe funkcje, które można zapisać z użyciem operatora `=>`. Pozwalają one przekazywać logikę jako parametr do innych metod, zwracać funkcje czy przechowywać je w kolekcjach.
+Wyrażenia lambda (ang. _lambda expressions_) to krótkie, anonimowe funkcje, które można zapisać z użyciem operatora `=>`. Pozwalają one przekazywać logikę jako parametr do innych metod, zwracać funkcje czy przechowywać je w kolekcjach.
 
 Lambdy mogą przechwytywać (ang. _closures_) zmienne z otaczającego je kontekstu — np. licznik, obiekt klasy `Random` lub aktualny stan algorytmu — dzięki czemu zachowują dostęp do tych wartości nawet po wyjściu z zakresu, w którym zostały zdefiniowane.
 
@@ -344,7 +344,7 @@ Lambdy są intensywnie wykorzystywane przez metody LINQ m.in. do filtrowania, ag
 
 **Czego się nauczysz?**
 
-- Tworzenia wyrażeń lambda i przekazywnia ich w postaci standardowego delegatu `Func<T>` (funkcje wyższego rzędu).
+- Tworzenia wyrażeń lambda i przekazywania ich w postaci standardowego delegatu `Func<T>` (funkcje wyższego rzędu).
 - Mechanizmu przechwytywania zmiennych i jego wpływu na działanie kodu.
 - Generowania liczb losowych i podejmowania decyzji z określonym prawdopodobieństwem.
 
