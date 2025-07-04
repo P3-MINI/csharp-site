@@ -126,7 +126,7 @@ where:
   - `InvalidId`: resource ID is invalid.
   - `InvalidQuery`: query string format is invalid (e.g., missing `=`).
   - `UnexpectedFormat`: any other error.
-- **Debugging:** A good opportunity to get familiar with the debugger (preferred IDE: [Visual Studio](https://visualstudio.microsoft.com)).
+- **Debugging:** A good opportunity to get familiar with the debugger.
   {{% /hint %}}
 
 {{% hint info %}}
@@ -219,7 +219,7 @@ var (_, status5) = ParseUrl(input5);
 
 An example implementation along with unit tests can be found in the file [`Task01.cs`](/labs/lab04/solution/tasks/Task01.cs).
 
-## Formatting, Date and Time
+## Formatting, Date, and Time
 
 {{% hint info %}}
 **What characterizes the CSV format?**
@@ -311,7 +311,7 @@ Use the following CSV file: `measurements.csv`.
   - Assume all data is valid.
 - **Printing:**
   - Preserve formatting as in the example (date format, spacing, decimals, line width).
-  - Use `List<T>.ForEach` and lambda expressions — no explicit loops.
+  - Use `List<T>.ForEach` and lambda expressions - no explicit loops.
     {{% /hint %}}
 
 {{% hint info %}}
@@ -328,7 +328,8 @@ Use the following CSV file: `measurements.csv`.
 
 **Bonus Task**
 
-- Implement CSV data reading using the popular NuGet package [CsvHelper](https://joshclose.github.io/CsvHelper/). You can find instructions for installing it in Visual Studio in the Microsoft Learn article [Install and manage packages in Visual Studio using the NuGet Package Manager](https://learn.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio).
+- Implement CSV data reading using the popular NuGet package [CsvHelper](https://joshclose.github.io/CsvHelper/).
+  Installation instructions are available in the Microsoft Learn guide (Visual Studio) [Install and manage packages in Visual Studio using the NuGet Package Manager](https://learn.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio) and in the JetBrains documentation (Rider) [Consume NuGet packages﻿](https://www.jetbrains.com/help/rider/Using_NuGet.html).
 
 ### Example Solution
 
@@ -404,7 +405,7 @@ Regular expressions (aka _regex_) are a powerful tool for searching and manipula
 - They enable grouping and capturing parts of the matched text for further processing.
 - They are supported in many programming languages, including C#, where they are provided by the `Regex` class.
 
-Although regex-based processing can be less efficient than dedicated algorithms (e.g., character-by-character parsing), their biggest advantage is the conciseness and clarity of code — the entire matching and extraction logic can be written in a single pattern and executed by the regex engine. This results in cleaner, shorter, and more maintainable code.
+Although regex-based processing can be less efficient than dedicated algorithms (e.g., character-by-character parsing), their biggest advantage is the conciseness and clarity of code - the entire matching and extraction logic can be written in a single pattern and executed by the regex engine. This results in cleaner, shorter, and more maintainable code.
 
 **Learning goals:**
 

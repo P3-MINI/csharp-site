@@ -126,7 +126,7 @@ gdzie:
   - `InvalidId`: identyfikator jest niepoprawny (zasady te same jak dla wersji),
   - `InvalidQuery`: błędny format _query_ (np. brak `=`),
   - `UnexpectedFormat`: dowolny inny błąd.
-- **Debuggowanie:** - Zadanie jest dobrą okazją do zaznajomienia się z działaniem debuggera (preferowane IDE to [Visual Studio](https://visualstudio.microsoft.com/pl/)).
+- **Debuggowanie:** - Zadanie jest dobrą okazją do zaznajomienia się z działaniem debuggera.
   {{% /hint %}}
 
 {{% hint info %}}
@@ -325,7 +325,8 @@ Skorzystaj z następującego pliku CSV: [measurements.csv](/labs/lab04/measureme
 
 **Zadanie dla chętnych**
 
-- Zaimplementuj wczytywanie danych z pliku CSV przy pomocy popularnej paczki nuget [CsvHelper](https://joshclose.github.io/CsvHelper/). Informacje o tym, jak ją zainstalować znajdziesz m.in. w artykule [Microsoft Learn: Install and manage packages in Visual Studio using the NuGet Package Manager](https://learn.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio).
+- Zaimplementuj wczytywanie danych z pliku CSV przy pomocy popularnej paczki nuget [CsvHelper](https://joshclose.github.io/CsvHelper/).  
+  Instrukcje instalacji znajdziesz m.in. w dokumentacji Microsoft Learn (Visual Studio) [Install and manage packages in Visual Studio using the NuGet Package Manager](https://learn.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio) oraz na stronie pomocy JetBrains (Rider) [Consume NuGet packages﻿](https://www.jetbrains.com/help/rider/Using_NuGet.html).
 
 ### Przykładowe rozwiązanie
 
