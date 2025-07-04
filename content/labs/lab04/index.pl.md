@@ -126,8 +126,8 @@ gdzie:
   - `InvalidId`: identyfikator jest niepoprawny (zasady te same jak dla wersji),
   - `InvalidQuery`: błędny format _query_ (np. brak `=`),
   - `UnexpectedFormat`: dowolny inny błąd.
-- **Debuggowanie:** - Zadanie jest dobrą okazją do zaznajomienia się z działaniem debuggera.
-  {{% /hint %}}
+- **Debuggowanie:** Zadanie jest dobrą okazją do zaznajomienia się z działaniem debuggera.
+{{% /hint %}}
 
 {{% hint info %}}
 **Materiały pomocnicze:**
