@@ -1,4 +1,5 @@
 ﻿namespace tasks;
+
 public sealed class Task03 : IExecutable
 {
     public void Execute(string[] args)

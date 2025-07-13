@@ -118,6 +118,38 @@ public sealed class Task04 : IExecutable
         );
     }
 
+    public static (int min, int max, double average, double standardDeviation) ComputeStatistics(this IEnumerable<int> source)
+    {
+        if (source == null || !source.Any())
+            throw new ArgumentException("Source sequence must contain at least one element.", nameof(source));
+
+        var result = source.Fold(
+            seed: (
+                Min: int.MaxValue,
+                Max: int.MinValue,
+                Sum: 0L,
+                SumOfSquares: 0L,
+                Count: 0
+            ),
+            func: (acc, x) => (
+                Min: Math.Min(acc.Min, x),
+                Max: Math.Max(acc.Max, x),
+                Sum: acc.Sum + x,
+                SumOfSquares: acc.SumOfSquares + (long)x * x,
+                Count: acc.Count + 1
+            ),
+            resultSelector: acc =>
+            {
+                var avg = (double)acc.Sum / acc.Count;
+                var variance = (double)acc.SumOfSquares / acc.Count - avg * avg;
+                var stdDev = Math.Sqrt(Math.Max(0, variance));
+                return (acc.Min, acc.Max, avg, stdDev);
+            }
+        );
+
+        return result;
+    }
+
     public static void AnalyzeSensorData()
     {
         // dane z czujnika są wysyłane co sekundę i są określone funkcją sin(t / 10.0), gdzie t oznacza czas.
@@ -146,9 +178,11 @@ public static class EnumerableExtensions
     {
         var acc = seed;
 
-        foreach (var item in source)
+        using var enumerator = source.GetEnumerator();
+
+        while (enumerator.MoveNext())
         {
-            acc = func(acc, item);
+            acc = func(acc, enumerator.Current);
         }
 
         return resultSelector(acc);
@@ -162,17 +196,17 @@ public static class EnumerableExtensions
 
         while (enumerator.MoveNext())
         {
-            var chunk = new List<T>(capacity: size)
+            var batch = new List<T>(capacity: size)
             {
                 enumerator.Current
             };
 
             for (var i = 1; i < size && enumerator.MoveNext(); i++)
             {
-                chunk.Add(enumerator.Current);
+                batch.Add(enumerator.Current);
             }
 
-            yield return chunk;
+            yield return batch;
         }
     }
 

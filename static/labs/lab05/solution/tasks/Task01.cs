@@ -19,7 +19,7 @@ public sealed class Task01 : IExecutable
             ("JsonResponseData", "json_response_data"),
         };
 
-        Console.WriteLine($"Testing {nameof(SringExtensions.PascalToSnakeCase)}:");
+        Console.WriteLine($"Testing {nameof(StringExtensions.PascalToSnakeCase)}:");
         pascalSnakeNAmes.ForEach(name =>
         {
             var snake = name.pascal.PascalToSnakeCase();
@@ -28,7 +28,7 @@ public sealed class Task01 : IExecutable
 
         Console.WriteLine();
 
-        Console.WriteLine($"Testing {nameof(SringExtensions.SnakeToPascalCase)}:");
+        Console.WriteLine($"Testing {nameof(StringExtensions.SnakeToPascalCase)}:");
         pascalSnakeNAmes.ForEach(name =>
         {
             var pascal = name.snake.SnakeToPascalCase();
@@ -37,7 +37,7 @@ public sealed class Task01 : IExecutable
     }
 }
 
-public static class SringExtensions
+public static class StringExtensions
 {
     public static string PascalToSnakeCase(this string name)
     {
