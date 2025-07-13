@@ -22,9 +22,9 @@ public sealed class Task04 : IExecutable
 
     public static IEnumerable<IEnumerable<int>> FindSlidingWindowsWithDuplicates(IEnumerable<int> sequence)
     {
-        // znajdź okna rozmiaru 6, w których istnieje powtórzona liczba
+        // znajdź okna rozmiaru 4, w których istnieje powtórzona liczba
         return sequence
-            .SlidingWindow(6)
+            .SlidingWindow(4)
             .Where(window => window.Distinct().Count() < window.Length);
     }
 
@@ -216,9 +216,11 @@ public static class EnumerableExtensions
     {
         var window = new Queue<T>();
 
-        foreach (var item in collection)
+        using var enumerator = collection.GetEnumerator();
+
+        while (enumerator.MoveNext())
         {
-            window.Enqueue(item);
+            window.Enqueue(enumerator.Current);
             if (window.Count > size)
                 window.Dequeue();
 

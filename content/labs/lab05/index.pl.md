@@ -144,7 +144,7 @@ Zadanie podzielone jest na trzy części. Każda część rozpoczyna się od imp
 
 **Fold**
 
-Zaimplementuj generyczną metodę rozszerzającą dla dowolnej sekwencji (`IEnumerable<T>`), która:
+Zaimplementuj generyczną metodę rozszerzającą `Fold`, dla dowolnej sekwencji (`IEnumerable<T>`), która:
 
 - Przyjmuje początkową wartość akumulatora `seed` (o typie potencjalnie innym niż elementy sekwencji).
 - Przy każdej iteracji po elemencie sekwencji wywołuje przekazaną funkcję akumulującą, aktualizując stan akumulatora.
@@ -209,12 +209,246 @@ Console.WriteLine($"Value = {value}"); // 2
 
 **Batch**
 
+Zaimplementuj generyczną metodę rozszerzającą `Batch`, dla dowolnej sekwencji (`IEnumerable<T>`), która:
+
+- Dzieli sekwencję wejściową na kolejne porcje o maksymalnym rozmiarze `size`, zwracając je leniwie jako `IEnumerable<IEnumerable<T>>`.
+- Ostatnia porcja może być krótsza, jeśli liczba elementów nie dzieli się dokładnie przez `size`.
+
+W implementacji należy wykorzystać jawnie stworzony obiekt enumeratora kolekcji.
+
 **Wyzwania**
+{{% details "Analiza danych z czujnika w minutowych porcjach" false %}}
+Zaimplementuj metodę `AnalyzeSensorData`, która:
+
+- Symuluje odczyt pomiarów z czujnika, które są wysyłane co sekundę i są określone funkcją `f(t) = sin(t / 10.0)`, gdzie `t` oznacza czas od uruchomienia urządzenia.
+- Oblicz średnią wartość danych wysyłanych przez czujnik w każdej minucie w ciągu pierwszej godziny i wyświetla je w konsoli.
+- Wyświetla wyniki w formacie: `Minute XX: average = Y.YYYY`, gdzie `XX` to numer minuty (`01–60`), a `Y.YYYY` to średnia z czterema miejscami po przecinku.
+
+Przykład użycia:
+
+```csharp
+AnalyzeSensorData();
+
+/* Wypisuje w konsoli (liczby oznaczające średnią są przypadkowe):
+Minute 01: average = 0.0499
+Minute 02: average = 0.2975
+…
+Minute 60: average = -0.0033
+*/
+```
+
+{{% /details %}}
 
 **SlidingWindow**
 
+Zaimplementuj generyczną metodę rozszerzającą `SlidingWindow`, dla dowolnej sekwencji (`IEnumerable<T>`), która:
+
+- Dla dowolnej sekwencji zwraca kolejne, nakładające się okna o stałym rozmiarze `size`.
+- Jeśli size jest mniejsze niż 1, wyrzuca `ArgumentException` z komunikatem `Window size must be at least 1.`.
+- Okna przesuwają się o jeden element w przód, czyli dla sekwencji `[a,b,c,d]` i rozmiaru 3 zwróci: `[a, b, c]`, a następnie `[b, c, d]`.
+
+Przykład użycia:
+
+```csharp
+var source = Enumerable.Range(1, 5); // {1,2,3,4,5}
+foreach (var window in source.SlidingWindow(3))
+{
+    Console.WriteLine($"[{string.Join(", ", window)}]");
+}
+
+/* Oczekiwany rezultat
+[1, 2, 3]
+[2, 3, 4]
+[3, 4, 5]
+*/
+```
+
 **Wyzwania**
+
+{{% details "Okna o rosnącej sumie" false %}}
+Zaimplementuj metodę `FindSlidingWindowsWithRisingSum`, która znajdzie i zwróci (w postaci `IEnumerable<IEnumerable<int>>`) wszystkie okna długości 5, których suma jest większa niż suma bezpośrednio poprzedzającego okna:
+
+Przykład:
+
+Dla sekwencji:
+
+```csharp
+var sequence = new [] { 5, 3, 1, 2, 4, 2, 10, -1, 2, 4, 7, -3 }
+```
+
+> Poniższa tabela analizuje kolejne okna wraz z sumami elementów:
+
+| Okno | Elementy            | Suma | Czy zwrócona? |
+| ---- | ------------------- | ---- | ------------- |
+| 1    | `[5, 3, 1, 2, 4]`   | 15   | ❌            |
+| 2    | `[3, 1, 2, 4, 2]`   | 12   | ❌            |
+| 3    | `[1, 2, 4, 2, 10]`  | 19   | ✅            |
+| 4    | `[2, 4, 2, 10, -1]` | 17   | ❌            |
+| 5    | `[4, 2, 10, -1, 2]` | 17   | ❌            |
+| 6    | `[2, 10, -1, 2, 4]` | 17   | ❌            |
+| 7    | `[10, -1, 2, 4, 7]` | 22   | ✅            |
+| 8    | `[-1, 2, 4, 7, -3]` | 9    | ❌            |
+
+zwrócona zostaje kolekcja:
+
+```csharp
+[
+  [ 1, 2, 4, 2, 10 ],
+  [ 10, -1, 2, 4, 7 ]
+]
+```
+
+{{% /details %}}
+
+{{% details "Okna z powtórzeniami" false %}}
+Zaimplementuj metodę `FindSlidingWindowsWithDuplicates`, która znajdzie i zwróci (w postaci `IEnumerable<IEnumerable<int>>`) wszystkie okna długości 4, w których co najmniej jedna liczba występuje więcej niż raz.
+
+Przykład:
+
+Dla sekwencji:
+
+```csharp
+var sequence = new[] { 1, 2, 3, 4, 2, 5, 6, 2, 7, 8 }
+```
+
+> Poniższa tabela analizuje kolejne okna wraz z informacją o duplikatach:
+
+| Okno | Elementy       | Powtórzenia? | Czy zwrócona? |
+| ---- | -------------- | ------------ | ------------- |
+| 1    | `[1, 2, 3, 4]` | brak         | ❌            |
+| 2    | `[2, 3, 4, 2]` | 2            | ✅            |
+| 3    | `[3, 4, 2, 5]` | brak         | ❌            |
+| 4    | `[4, 2, 5, 6]` | brak         | ❌            |
+| 5    | `[2, 5, 6, 2]` | 2            | ✅            |
+| 6    | `[5, 6, 2, 7]` | brak         | ❌            |
+| 7    | `[6, 2, 7, 8]` | brak         | ❌            |
+
+zwrócona zostaje kolekcja:
+
+```csharp
+[
+  [ 2, 3, 4, 2 ],
+  [ 2, 5, 6, 2 ]
+]
+```
+
+{{% /details %}}
+
+{{% details "Najczęstsze trigramy w tekście" false %}}
+Zaimplementuj metodę `FindMostCommonTrigrams`, która wyszukuje w podanym tekście wszystkie najczęściej występujące 3‑literowe sekwencje (tzw. trigramy).
+
+Założenia:
+
+- Trigram to dowolne trzy kolejne **litery** w tekście (znaki nieliterowe są pomijane).
+- Wielkość liter jest ignorowana (`ABC` i `abc` to ten sam trigram).
+- Zwracana jest kolekcja `IEnumerable<string>` zawierająca wszystkie trigramy, które występują w tekście **najczęściej** (może być ich więcej niż jeden, jeśli mają taką samą liczbę wystąpień).
+- Jeśli tekst nie zawiera przynajmniej 3 liter, metoda zwraca pustą sekwencję.
+
+Przykład:
+
+Dla tekstu **_Anna and Antek are analyzing an annual analysis._** rozważamy następujący ciąg znaków: **_annaandantekareanalyzinganannualanalysis_**.
+
+> Poniższa tabela zawiera trigramy występujące częściej niż jednokrotnie:
+
+| Trigram | Liczba wystąpień |
+| ------- | ---------------- |
+|         |                  |
+
+zwrócona zostaje zatem kolekcja:
+
+```csharp
+[
+  "",
+  ""
+]
+```
+
+{{% /details %}}
 
 ### Przykładowe rozwiązanie
 
 Przykładowe rozwiązanie można znaleźć w pliku [Task04.cs](/labs/lab05/solution/tasks/Task04.cs).
+
+## LINQ i analiza danych dotyczących filmów
+
+### Opis zadania
+
+Masz do dyspozycji 4 kolekcje zawierające informacje o filmach (`Movie`), aktorach (`Actor`), obsadach aktorów w poszczególnych filmach (`Cast`) oraz ocenach tych filmów (`Rating`):
+
+```csharp
+public record Movie(
+  int Id,
+  string Title,
+  int Year,
+  Genre Genre,
+  int DurationMinutes
+);
+
+public record Actor(
+  int Id,
+  string Name
+);
+
+public record Rating(
+  int MovieId,
+  int Score,
+  DateTime CreatedAt
+);
+
+public record Cast(
+  int MovieId,
+  int ActorId,
+  string Role
+);
+
+public enum Genre
+{
+    Comedy,
+    Drama,
+    Horror,
+    Romance,
+    Thriller,
+    Fantasy,
+}
+```
+
+Zakładając, że dostępne są kolekcje: `movies`, `actors`, `casts` oraz `ratings`, zaimplementuj zapytania LINQ, które umożliwią analizę danych o zbiorze filmów.
+
+Do wypisywania wyników zapytań możesz użyć prostej metody:
+
+```csharp
+public static void DisplayQueryResults<T>(IEnumerable<T> query)
+{
+    foreach (var record in query)
+    {
+        Console.WriteLine(JsonSerializer.Serialize(record));
+    }
+}
+```
+
+**Zapytania**
+
+{{% details "Lista aktorów z filmów gatunku Fantasy" false %}}
+{{% /details %}}
+{{% details "Najdłuższy film w każdym gatunku" false %}}
+{{% /details %}}
+{{% details "Filmy z oceną powyżej 8 wraz z obsadą" false %}}
+{{% /details %}}
+{{% details "Liczba różnych ról zagranych przez aktorów" false %}}
+{{% /details %}}
+{{% details "Filmy wydane w ostatnich 5 latach z ich średnią oceną" false %}}
+{{% /details %}}
+{{% details "Średnia ocena dla każdego gatunku" false %}}
+{{% /details %}}
+{{% details "Aktorzy, którzy nigdy nie zagrali w thrillerze" false %}}
+{{% /details %}}
+{{% details "Top 3 filmy z największą liczbą ocen" false %}}
+{{% /details %}}
+{{% details "Filmy bez żadnej oceny" false %}}
+{{% /details %}}
+{{% details "Najbardziej wszechstronni aktorzy" false %}}
+{{% /details %}}
+
+### Przykładowe rozwiązanie
+
+Przykładowe rozwiązanie można znaleźć w pliku [Task05.cs](/labs/lab05/solution/tasks/Task05.cs).
