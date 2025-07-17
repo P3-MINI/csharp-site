@@ -465,10 +465,14 @@ Do wypisywania wyników zapytań możesz użyć prostej metody:
 ```csharp
 public static void DisplayQueryResults<T>(IEnumerable<T> query)
 {
-    foreach (var record in query)
+    var options = new JsonSerializerOptions
     {
-        Console.WriteLine(JsonSerializer.Serialize(record));
-    }
+        WriteIndented = true
+    };
+
+    var json = JsonSerializer.Serialize(query, options);
+
+    Console.WriteLine(json);
 }
 ```
 
@@ -522,7 +526,7 @@ Znajdź aktorów, którzy zagrali w największej liczbie różnych gatunków fil
 - W przypadku zapytania 2 może się zdarzyć tak, że w bazie nie ma żadnego filmu z pewnego gatunku.
 - W zapytaniu 3 niektórzy aktorzy mogli nie grać w żadnym filmie znajdującym się w bazie.
 - W zapytaniu 6 niektórym gatunkom może nie odpowiadać żadna wystawiona ocena.
-- Przyjmujemy, że w każdym z tych zapytań oba możliwe rozwiązania są poprawne, pod warunkiem, że rozumiesz skąd się bierze różnica 😉
+- Przyjmujemy, że w każdym z tych zapytań oba możliwe rozwiązania są poprawne, pod warunkiem, że rozumiesz skąd się bierze różnica 😉.
 
 {{% /hint %}}
 
