@@ -28,6 +28,12 @@ Jednym z podstawowych elementów pisania czytelnego i spójnego kodu jest trzyma
   - Spotykany głównie w: URL, atrybuty HTML, nazwy plików (np. w projektach opartych o **JavaScript**/**Node.js**).
 
 W projektach, które łączą różne warstwy technologiczne (np. backend w C#, frontend w JavaScript, komunikacja poprzez JSON), często zachodzi potrzeba konwersji nazw między stylami. Przykładowo, właściwość klasy C# może nazywać się `EmailAddress`, ale gdy serializujemy ją do JSON-a, powinna zostać zapisana jako `email_address`.
+
+**Czego się nauczysz?**
+
+- Tworzenia i stosowania metod rozszerzających (_extension methods_) dla typu `string` w języku `C#`.
+- Implementacji konwersji między stylami nazewnictwa `PascalCase` i `snake_case`.
+
 {{% /hint %}}
 
 ### Opis zadania
@@ -53,30 +59,17 @@ Console.WriteLine(snake); // "html_element_id"
 - [Microsoft Learn: Common C# code conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
 - [Microsoft Learn: How to implement and call a custom extension method](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/how-to-implement-and-call-a-custom-extension-method)
 - [Microsoft Learn: Using the StringBuilder Class in .NET](https://learn.microsoft.com/en-us/dotnet/standard/base-types/stringbuilder)
-  {{% /hint %}}
+
+{{% /hint %}}
 
 ### Przykładowe rozwiązanie
 
 Rozwiązanie wraz z przykładami do testowania można znaleźć w pliku [Task01.cs](/labs/lab05/solution/tasks/Task01.cs).
 
-<!-- ## Zadanie 2
-
-### Opis zadania
-
-{{% hint info %}}
-**Materiały pomocnicze:**
-
-- [Microsoft Learn: ](link)
-  {{% /hint %}}
-
-### Przykładowe rozwiązanie
-
-Przykładowe rozwiązanie można znaleźć w pliku [Task02.cs](/labs/lab05/solution/tasks/Task02.cs). -->
-
 ## Iteratory, `yield` i generowanie liczb pierwszych
 
 {{% hint info %}}
-**Iteratory w praktyce:**
+**Iteratory w praktyce**
 
 W wielu przypadkach potrzebujemy generować sekwencje danych, których długość nie jest znana z góry albo których stworzenie "na raz" byłoby zbyt kosztowne. Zamiast budować całą kolekcję w pamięci i zwracać ją jako całość, możemy wykorzystać iteratory — mechanizm pozwalający zwracać elementy na żądanie.
 
@@ -91,6 +84,13 @@ Zaletą tego podejścia jest to, że nie musimy pisać własnych klas implementu
 **Generowanie liczb pierwszych**
 
 Sito Eratostenesa to klasyczny algorytm pozwalający na wyznaczenie wszystkich liczb pierwszych mniejszych od danej liczby `n`, czyli z zadanego przedziału `[2, n]`. Algorytm ten opiera się na eliminacji liczb złożonych.
+
+**Czego się nauczysz?**
+
+- Tworzenia iteratorów w C# z użyciem `yield return` i `yield break`.
+- Zachowania stanu metody między kolejnymi wywołaniami iteratora.
+- Optymalizacji pamięciowej i wydajnościowej przy przetwarzaniu dużych zbiorów danych.
+
 {{% /hint %}}
 
 ### Opis zadania
@@ -118,11 +118,12 @@ foreach (var prime in SieveOfEratosthenes(1000))
 
 - [Sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
 - [Microsoft Learn: yield statement - provide the next element](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/yield)
-  {{% /hint %}}
+
+{{% /hint %}}
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie można znaleźć w pliku [Task03.cs](/labs/lab05/solution/tasks/Task03.cs).
+Przykładowe rozwiązanie można znaleźć w pliku [Task02.cs](/labs/lab05/solution/tasks/Task02.cs).
 
 ## `IEnumerable`, typy generyczne i LINQ
 
@@ -136,6 +137,13 @@ W C# mechanizm LINQ (_Language Integrated Query_) pozwala nam wygodnie zapisywa�
 - `SlidingWindow(size)` – tworzy nakładające się okna przesuwne o zadanym rozmiarze `size`, wykorzystywane np. przy wykrywaniu trendów.
 
 Dzięki leniwej ewaluacji LINQ i metodom rozszerzającym, przetwarzanie może być zarówno czytelne, jak i wydajne – elementy są generowane i filtrowane dopiero wtedy, gdy są potrzebne.
+
+**Czego się nauczysz?**
+
+- Tworzenia własnych generycznych metod rozszerzających w stylu LINQ.
+- Pracy z jawnym obiektem enumeratora sekwencji (`MoveNext`, `Current`).
+- Rozwiązywania praktycznych problemów przetwarzania danych za pomocą zaimplementowanych operacji.
+
 {{% /hint %}}
 
 ### Opis zadania
@@ -155,6 +163,7 @@ Metoda powinna zwracać wynik tej ostatniej funkcji, a wszystkie kroki – inicj
 **Wyzwania**
 
 {{% details "Wyznaczanie statystyk dla kolekcji liczb całkowitych" false %}}
+<br>
 Zaimplementuj metodę rozszerzającą dla sekwencji liczb całkowitych, o następujących założeniach:
 
 - Metoda nazywa się `ComputeStatistics`.
@@ -181,6 +190,7 @@ Console.WriteLine($"StdDev = {std:F2}");      // 2.42
 {{% /details %}}
 
 {{% details "Znajdowanie najdłuższej sekwencji jednakowych elementów" false %}}
+<br>
 Zaimplementuj metodę rozszerzającą dla sekwencji liczb całkowitych, o następujących założeniach:
 
 - Metoda nazywa się `LongestSequence`.
@@ -218,6 +228,7 @@ W implementacji należy wykorzystać jawnie stworzony obiekt enumeratora kolekcj
 
 **Wyzwania**
 {{% details "Analiza danych z czujnika w minutowych porcjach" false %}}
+<br>
 Zaimplementuj metodę `AnalyzeSensorData`, która:
 
 - Symuluje odczyt pomiarów z czujnika, które są wysyłane co sekundę i są określone funkcją `f(t) = sin(t / 10.0)`, gdzie `t` oznacza czas od uruchomienia urządzenia.
@@ -266,6 +277,8 @@ foreach (var window in source.SlidingWindow(3))
 **Wyzwania**
 
 {{% details "Okna o rosnącej sumie" false %}}
+<br>
+
 Zaimplementuj metodę `FindSlidingWindowsWithRisingSum`, która znajdzie i zwróci (w postaci `IEnumerable<IEnumerable<int>>`) wszystkie okna długości 5, których suma jest większa niż suma bezpośrednio poprzedzającego okna:
 
 Przykład:
@@ -289,7 +302,7 @@ var sequence = new [] { 5, 3, 1, 2, 4, 2, 10, -1, 2, 4, 7, -3 }
 | 7    | `[10, -1, 2, 4, 7]` | 22   | ✅            |
 | 8    | `[-1, 2, 4, 7, -3]` | 9    | ❌            |
 
-zwrócona zostaje kolekcja:
+zwrócona zostaje zatem kolekcja:
 
 ```csharp
 [
@@ -301,6 +314,8 @@ zwrócona zostaje kolekcja:
 {{% /details %}}
 
 {{% details "Okna z powtórzeniami" false %}}
+<br>
+
 Zaimplementuj metodę `FindSlidingWindowsWithDuplicates`, która znajdzie i zwróci (w postaci `IEnumerable<IEnumerable<int>>`) wszystkie okna długości 4, w których co najmniej jedna liczba występuje więcej niż raz.
 
 Przykład:
@@ -323,7 +338,7 @@ var sequence = new[] { 1, 2, 3, 4, 2, 5, 6, 2, 7, 8 }
 | 6    | `[5, 6, 2, 7]` | brak         | ❌            |
 | 7    | `[6, 2, 7, 8]` | brak         | ❌            |
 
-zwrócona zostaje kolekcja:
+zwrócona zostaje zatem kolekcja:
 
 ```csharp
 [
@@ -335,6 +350,8 @@ zwrócona zostaje kolekcja:
 {{% /details %}}
 
 {{% details "Najczęstsze trigramy w tekście" false %}}
+<br>
+
 Zaimplementuj metodę `FindMostCommonTrigrams`, która wyszukuje w podanym tekście wszystkie najczęściej występujące 3‑literowe sekwencje (tzw. trigramy).
 
 Założenia:
@@ -350,16 +367,18 @@ Dla tekstu **_Anna and Antek are analyzing an annual analysis._** rozważamy nas
 
 > Poniższa tabela zawiera trigramy występujące częściej niż jednokrotnie:
 
-| Trigram | Liczba wystąpień |
-| ------- | ---------------- |
-|         |                  |
+| Trigram | Liczba wystąpień | Czy zwrócona? |
+| ------- | ---------------- | ------------- |
+| `"ana"` | 3                | ✅            |
+| `"aly"` | 2                | ❌            |
+| `"ann"` | 2                | ❌            |
+| `"nal"` | 2                | ❌            |
 
 zwrócona zostaje zatem kolekcja:
 
 ```csharp
 [
-  "",
-  ""
+  "ana",
 ]
 ```
 
@@ -367,17 +386,43 @@ zwrócona zostaje zatem kolekcja:
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie można znaleźć w pliku [Task04.cs](/labs/lab05/solution/tasks/Task04.cs).
+Przykładowe rozwiązanie można znaleźć w pliku [Task03.cs](/labs/lab05/solution/tasks/Task03.cs).
 
 ## LINQ i analiza danych dotyczących filmów
 
+{{% hint info %}}
+**Czym jest relacyjna baza danych?**
+
+Relacyjna baza danych to sposób przechowywania informacji w postaci **tabel**, które są ze sobą powiązane **relacjami**. Charakterystycznym elementem tabeli jest **klucz główny** (_primary key_), czyli unikalny identyfikator każdego rekordu (wiersza) w tabeli.
+
+Tabela może zawierać również **klucz obcy** (_foreign key_), czyli odwołania do identyfikatorów innej tabeli.
+
+**Złączenia (`JOIN`)**
+
+Aby uzyskać pełniejszy obraz - np. _"Kto zagrał w jakim filmie?"_ albo _"Jakie są średnie oceny filmów fantasy?"_ - musimy połączyć dane z kilku tabel. Służą do tego operacje łączenia (`JOIN`).
+
+Dwa interesujące nas rodzaje złączeń to:
+
+- `INNER JOIN`, który łączy dwa zbiory danych, ale tylko wtedy, gdy istnieje pasujące dopasowanie w obu tabelach.
+- `LEFT JOIN`, który zwraca wszystkie rekordy z lewej tabeli, nawet jeśli brakuje dopasowania w prawej tabeli.
+
+**Czego się nauczysz?**
+
+- Korzystania z zapytań LINQ do łączenia, filtrowania i grupowania danych.
+- Agregowania i sortowania kolekcji oraz wyciągania statystyk (np. średnia ocen, liczba ocen).
+- Pracy z wieloma powiązanymi kolekcjami (`movies`, `actors`, `casts`, `ratings`) za pomocą `Join`, `GroupJoin` i `SelectMany`.
+- Tworzenia zagnieżdżonych struktur wyników (np. filmów z ich obsadą).
+- Optymalizacji zapytań przez filtrowanie i projekcję tylko potrzebnych danych.
+
+{{% /hint %}}
+
 ### Opis zadania
 
-Masz do dyspozycji 4 kolekcje zawierające informacje o filmach (`Movie`), aktorach (`Actor`), obsadach aktorów w poszczególnych filmach (`Cast`) oraz ocenach tych filmów (`Rating`):
+W zadaniu, dla uproszczenia, dane o filmach są reprezentowane jako kolekcje obiektów (`List<Movie>`, `List<Actor>` itp.). Modele danych reprezentują następujące rekordy:
 
 ```csharp
 public record Movie(
-  int Id,
+  int Id,              // klucz główny
   string Title,
   int Year,
   Genre Genre,
@@ -385,19 +430,20 @@ public record Movie(
 );
 
 public record Actor(
-  int Id,
+  int Id,              // klucz główny
   string Name
 );
 
 public record Rating(
-  int MovieId,
+  int Id,              // klucz główny
+  int MovieId,         // klucz obcy
   int Score,
   DateTime CreatedAt
 );
 
-public record Cast(
-  int MovieId,
-  int ActorId,
+public record Cast(    // tabela asocjacyjna
+  int MovieId,         // klucz główny
+  int ActorId,         // klucz obcy
   string Role
 );
 
@@ -428,27 +474,58 @@ public static void DisplayQueryResults<T>(IEnumerable<T> query)
 
 **Zapytania**
 
-{{% details "Lista aktorów z filmów gatunku Fantasy" false %}}
+{{% details "Zapytanie 1: Lista aktorów z filmów gatunku Fantasy" false %}}
+<br>
+Znajdź unikalnych aktorów, którzy zagrali w filmach fantasy.
 {{% /details %}}
-{{% details "Najdłuższy film w każdym gatunku" false %}}
+{{% details "Zapytanie 2: Najdłuższy film w każdym gatunku" false %}}
+<br>
+Dla każdego gatunku znajdź film o największej długości.
 {{% /details %}}
-{{% details "Filmy z oceną powyżej 8 wraz z obsadą" false %}}
+{{% details "Zapytanie 3: Filmy z oceną powyżej 8 wraz z obsadą" false %}}
+<br>
+Wyświetl filmy, których średnia ocena przekracza 8, wraz z listą aktorów grających w tych filmach.
 {{% /details %}}
-{{% details "Liczba różnych ról zagranych przez aktorów" false %}}
+{{% details "Zapytanie 4: Liczba różnych ról zagranych przez aktorów" false %}}
+<br>
+Oblicz dla każdego aktora ile unikalnych ról zagrał, posortuj malejąco według tej liczby.
 {{% /details %}}
-{{% details "Filmy wydane w ostatnich 5 latach z ich średnią oceną" false %}}
+{{% details "Zapytanie 5: Filmy wydane w ostatnich 5 latach z ich średnią oceną" false %}}
+<br>
+Wyświetl najnowsze filmy wraz z ich średnimi ocenami, posortowane malejąco po średniej.
 {{% /details %}}
-{{% details "Średnia ocena dla każdego gatunku" false %}}
+{{% details "Zapytanie 6: Średnia ocena dla każdego gatunku" false %}}
+<br>
+Oblicz i wyświetl średnią ocenę filmów dla każdego gatunku.
 {{% /details %}}
-{{% details "Aktorzy, którzy nigdy nie zagrali w thrillerze" false %}}
+{{% details "Zapytanie 7: Aktorzy, którzy nigdy nie zagrali w thrillerze" false %}}
+<br>
+Znajdź aktorów, którzy nie wystąpili w żadnym filmie o gatunku `Thriller`.
 {{% /details %}}
-{{% details "Top 3 filmy z największą liczbą ocen" false %}}
+{{% details "Zapytanie 8: Top 3 filmy z największą liczbą ocen" false %}}
+<br>
+Wyświetl trzy filmy, które otrzymały najwięcej ocen.
 {{% /details %}}
-{{% details "Filmy bez żadnej oceny" false %}}
+{{% details "Zapytanie 9: Filmy bez żadnej oceny" false %}}
+<br>
+Wyświetl filmy, które nie mają żadnej przypisanej oceny.
 {{% /details %}}
-{{% details "Najbardziej wszechstronni aktorzy" false %}}
+{{% details "Zapytanie 10: Najbardziej wszechstronni aktorzy" false %}}
+<br>
+Znajdź aktorów, którzy zagrali w największej liczbie różnych gatunków filmów.
 {{% /details %}}
+
+{{% hint warning %}}
+**Uwagi implementacyjne**
+
+- W zapytaniach 2, 4, oraz 6 wynik różni się w zależności od rodzaju złączenia. W ramach ćwiczenia spróbuj zastosować dwa rodzaje złączeń (`INNER JOIN` oraz `LEFT JOIN`) i porównaj wyniki.
+- W przypadku zapytania 2 może się zdarzyć tak, że w bazie nie ma żadnego filmu z pewnego gatunku.
+- W zapytaniu 3 niektórzy aktorzy mogli nie grać w żadnym filmie znajdującym się w bazie.
+- W zapytaniu 6 niektórym gatunkom może nie odpowiadać żadna wystawiona ocena.
+- Przyjmujemy, że w każdym z tych zapytań oba możliwe rozwiązania są poprawne, pod warunkiem, że rozumiesz skąd się bierze różnica 😉
+
+{{% /hint %}}
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie można znaleźć w pliku [Task05.cs](/labs/lab05/solution/tasks/Task05.cs).
+Przykładowe rozwiązanie można znaleźć w pliku [Task04.cs](/labs/lab05/solution/tasks/Task04.cs).

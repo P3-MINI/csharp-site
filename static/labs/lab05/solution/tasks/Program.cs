@@ -6,11 +6,10 @@ public sealed class Program
     {
         var tasks = new IExecutable[]
         {
-            //new Task01(),
-            //new Task02(),
-            //new Task03(),
-            //new Task04(),
-            new Task05(),
+            new Task01(),
+            new Task02(),
+            new Task03(),
+            new Task04(),
         };
 
         Array.ForEach(

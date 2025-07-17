@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text.Json;
 
 namespace tasks;
 
@@ -6,226 +6,243 @@ public sealed class Task04 : IExecutable
 {
     public void Execute(string[] args)
     {
-        // testy jednostkowe oj taak :O
-    }
+        var movies = new List<Movie>();
+        var actors = new List<Actor>();
+        var ratings = new List<Rating>();
+        var casts = new List<Cast>();
 
-    public static IEnumerable<IEnumerable<int>> FindSlidingWindowsWithRisingSum(IEnumerable<int> sequence)
-    {
-        // znajdź okna rozmiaru 5, których suma rośnie w stosunku do poprzedniego okna
-        return sequence
-            .SlidingWindow(5)
-            .Select(w => (Window: w, Sum: w.Sum()))
-            .SlidingWindow(2)
-            .Where(w => w[0].Sum < w[1].Sum)
-            .Select(w => w[1].Window);
-    }
+        // Query 1:
+        var fantasyActors = casts
+            .Join(movies.Where(m => m.Genre == Genre.Fantasy),
+                cast => cast.MovieId,
+                movie => movie.Id,
+                (cast, movie) => cast.ActorId)
+            .Distinct()
+            .Join(actors,
+                actorId => actorId,
+                actor => actor.Id,
+                (actorId, actor) => actor)
+            .ToList();
 
-    public static IEnumerable<IEnumerable<int>> FindSlidingWindowsWithDuplicates(IEnumerable<int> sequence)
-    {
-        // znajdź okna rozmiaru 4, w których istnieje powtórzona liczba
-        return sequence
-            .SlidingWindow(4)
-            .Where(window => window.Distinct().Count() < window.Length);
-    }
+        DisplayQueryResults(fantasyActors);
 
-    public static IEnumerable<string> FindMostCommonTrigrams(string text)
-    {
-        // znajdź w tekście 3 literowe ciągi kolejnych liter, które pojawiają się najczęściej
-        if (string.IsNullOrWhiteSpace(text) || text.Length < 3)
-            return [];
-
-        var trigrams = text
-            .Where(char.IsLetter)
-            .Select(char.ToLowerInvariant)
-            .SlidingWindow(3)
-            .Select(chars => new string([.. chars]))
-            .GroupBy(trigram => trigram)
-            .Select(group => new { Trigram = group.Key, Count = group.Count() });
-
-        var maxCount = trigrams.Max(group => group.Count);
-
-        return trigrams
-            .Where(group => group.Count == maxCount)
-            .Select(group => group.Trigram);
-    }
-
-    public static string FindWordWithMostUniqueLetters(string text)
-    {
-        // dla danego tekstu znajdź słowo o największej liczbie różnych liter,
-        // nie uwzględniaj wielkości liter ('a' i 'A' to ta sama litera)
-        // w przypadku remisu zwróć słowo najdłuższe
-
-        if (string.IsNullOrWhiteSpace(text))
-            return string.Empty;
-
-        return Regex
-            .Matches(text, @"[a-zA-Z]+")
-            .Select(m => m.Value)
-            .Select(word => new
+        // Query 2:
+        var longestMoviesByGenre = movies
+            .GroupBy(movie => movie.Genre)
+            .Select(group => new
             {
-                Word = word,
-                UniqueLetters = word
-                    .ToLowerInvariant()
+                Genre = group.Key,
+                Movie = group.MaxBy(movie => movie.DurationMinutes)
+            })
+            .ToList();
+
+        DisplayQueryResults(longestMoviesByGenre);
+
+        // Query 3:
+        var topRatedMoviesWithCast = ratings
+            .GroupBy(r => r.MovieId)
+            .Select(g => new
+            {
+                MovieId = g.Key,
+                Average = g.Average(r => r.Score)
+            })
+            .Where(x => x.Average > 8)
+            .Join(movies,
+                rating => rating.MovieId,
+                movie => movie.Id,
+                (rating, movie) => new
+                {
+                    Movie = movie,
+                    rating.Average
+                })
+            .GroupJoin(casts,
+                movie => movie.Movie.Id,
+                cast => cast.MovieId,
+                (movie, movieCasts) => new
+                {
+                    movie.Movie,
+                    movie.Average,
+                    CastIds = movieCasts.Select(c => c.ActorId)
+                })
+            .Select(x => new
+            {
+                x.Movie,
+                x.Average,
+                Cast = x.CastIds
+                    .Join(actors,
+                          actorId => actorId,
+                          actor => actor.Id,
+                          (actorId, actor) => actor)
+                    .ToList()
+            })
+            .ToList();
+
+        DisplayQueryResults(topRatedMoviesWithCast);
+
+        // Query 4:
+        var actorsWithRoleCount = actors
+            .GroupJoin(
+                casts,
+                actor => actor.Id,
+                cast => cast.ActorId,
+                (actor, actorCasts) => new
+                {
+                    Actor = actor,
+                    Roles = actorCasts
+                        .Select(c => c.Role)
+                        .Distinct()
+                        .Count()
+                }
+            )
+            .OrderByDescending(x => x.Roles)
+            .ToList();
+
+
+        DisplayQueryResults(actorsWithRoleCount);
+
+        // Query 5:
+        var recentTopRatedMovies = movies
+            .Where(m => m.Year > DateTime.Now.Year - 5)
+            .GroupJoin(
+                ratings,
+                movie => movie.Id,
+                rating => rating.MovieId,
+                (movie, movieRatings) => new
+                {
+                    Movie = movie,
+                    AverageScore = movieRatings.Any()
+                        ? movieRatings.Average(r => r.Score)
+                        : 0.0
+                }
+            )
+            .OrderByDescending(x => x.AverageScore)
+            .ToList();
+
+        DisplayQueryResults(recentTopRatedMovies);
+
+        // Query 6:
+        var averageRatingByGenre = ratings
+            .Join(movies, rating => rating.MovieId, movie => movie.Id,
+                (rating, movie) => new
+                {
+                    movie.Genre,
+                    rating.Score
+                })
+            .GroupBy(genreScore => genreScore.Genre)
+            .Select(group => new
+            {
+                Genre = group.Key,
+                AverageScore = group
+                    .Select(genreScore => genreScore.Score)
+                    .Average()
+            })
+            .ToList();
+
+        DisplayQueryResults(averageRatingByGenre);
+
+        // Query 7:
+        var thrillerMovieIds = movies
+            .Where(movie => movie.Genre == Genre.Thriller)
+            .Select(movie => movie.Id)
+            .ToHashSet();
+
+        var thrillerActorIds = casts
+            .Where(cast => thrillerMovieIds.Contains(cast.MovieId))
+            .Select(cast => cast.ActorId)
+            .ToHashSet();
+
+        var actorsNotInThriller = actors
+            .Where(actor => !thrillerActorIds.Contains(actor.Id))
+            .ToList();
+
+        DisplayQueryResults(actorsNotInThriller);
+
+        // Query 8:
+        var top3RatedMovies = ratings
+            .GroupBy(rating => rating.MovieId)
+            .OrderByDescending(group => group.Count())
+            .Take(3)
+            .Select(group => movies.First(movie => movie.Id == group.Key))
+            .ToList();
+
+        DisplayQueryResults(top3RatedMovies);
+
+        // Query 9:
+        var moviesWithoutRatings = movies
+            .GroupJoin(ratings, movie => movie.Id, rating => rating.MovieId,
+                (movie, movieRatings) => new
+                {
+                    Movie = movie,
+                    HasRatings = movieRatings.Any()
+                })
+            .Where(movie => !movie.HasRatings)
+            .Select(movie => movie.Movie)
+            .ToList();
+
+        DisplayQueryResults(moviesWithoutRatings);
+
+        // Query 10:
+        var versatileActors = casts
+            .Join(
+                movies,
+                cast => cast.MovieId,
+                movie => movie.Id,
+                (cast, movie) => new
+                {
+                    cast.ActorId,
+                    movie.Genre
+                }
+            )
+            .GroupBy(movie => movie.ActorId)
+            .Select(group => new
+            {
+                ActorId = group.Key,
+                GenreCount = group
+                    .Select(x => x.Genre)
                     .Distinct()
                     .Count()
             })
-            .OrderByDescending(w => w.UniqueLetters)
-            .ThenByDescending(w => w.Word.Length)
-            .FirstOrDefault()?.Word
-                ?? string.Empty;
-    }
-
-    public static (int start, int end, int value) LongestSequence(IEnumerable<int> sequence)
-    {
-        return sequence.Fold(
-            seed: (
-                Start: 0,
-                End: 0,
-                Value: sequence.First(),
-                CurrentStart: 0,
-                CurrentEnd: 0,
-                CurrentValue: sequence.First()
-            ),
-            func: (acc, elem) =>
-            {
-                if (elem == acc.CurrentValue)
+            .Join(
+                actors,
+                x => x.ActorId,
+                actor => actor.Id,
+                (x, actor) => new
                 {
-                    var length = acc.End - acc.Start + 1;
-                    var currentLength = acc.CurrentEnd - acc.CurrentStart + 1;
-
-                    if (currentLength > length)
-                    {
-                        acc.Start = acc.CurrentStart;
-                        acc.End = acc.CurrentEnd;
-                        acc.Value = acc.CurrentValue;
-                    }
+                    Actor = actor,
+                    x.GenreCount
                 }
-                else
-                {
-                    acc.CurrentStart = acc.CurrentEnd;
-                    acc.CurrentValue = elem;
-                }
-
-                acc.CurrentEnd++;
-
-                return acc;
-            },
-            resultSelector: acc => (
-                start: acc.Start,
-                end: acc.End,
-                value: acc.Value
             )
-        );
-    }
-
-    public static (int min, int max, double average, double standardDeviation) ComputeStatistics(this IEnumerable<int> source)
-    {
-        if (source == null || !source.Any())
-            throw new ArgumentException("Source sequence must contain at least one element.", nameof(source));
-
-        var result = source.Fold(
-            seed: (
-                Min: int.MaxValue,
-                Max: int.MinValue,
-                Sum: 0L,
-                SumOfSquares: 0L,
-                Count: 0
-            ),
-            func: (acc, x) => (
-                Min: Math.Min(acc.Min, x),
-                Max: Math.Max(acc.Max, x),
-                Sum: acc.Sum + x,
-                SumOfSquares: acc.SumOfSquares + (long)x * x,
-                Count: acc.Count + 1
-            ),
-            resultSelector: acc =>
-            {
-                var avg = (double)acc.Sum / acc.Count;
-                var variance = (double)acc.SumOfSquares / acc.Count - avg * avg;
-                var stdDev = Math.Sqrt(Math.Max(0, variance));
-                return (acc.Min, acc.Max, avg, stdDev);
-            }
-        );
-
-        return result;
-    }
-
-    public static void AnalyzeSensorData()
-    {
-        // dane z czujnika są wysyłane co sekundę i są określone funkcją sin(t / 10.0), gdzie t oznacza czas.
-        // Oblicz średnią wartość danych wysyłanych przez czujnik w każdej minucie w ciągu pierwszej godziny od uruchomienia urządzenia.
-        var sensorData = Enumerable
-            .Range(0, 3600)
-            .Select(t => Math.Sin(t / 10.0))
-            .Batch(60)
-            .Select(minute => minute.Average())
+            .OrderByDescending(x => x.GenreCount)
             .ToList();
+    }
 
-        for (var i = 0; i < sensorData.Count; i++)
+    public static void DisplayQueryResults<T>(IEnumerable<T> query)
+    {
+        var options = new JsonSerializerOptions
         {
-            Console.WriteLine($"Minute {i + 1:00}: average = {sensorData[i]:F4}");
-        }
+            WriteIndented = true
+        };
+
+        var json = JsonSerializer.Serialize(query, options);
+
+        Console.WriteLine(json);
     }
 }
 
-public static class EnumerableExtensions
+public record Movie(int Id, string Title, int Year, Genre Genre, int DurationMinutes);
+
+public record Actor(int Id, string Name);
+
+public record Rating(int Id, int MovieId, int Score, DateTime CreatedAt);
+
+public record Cast(int MovieId, int ActorId, string Role);
+
+public enum Genre
 {
-    public static TResult Fold<TSource, TAccumulate, TResult>(
-        this IEnumerable<TSource> source,
-        TAccumulate seed,
-        Func<TAccumulate, TSource, TAccumulate> func,
-        Func<TAccumulate, TResult> resultSelector)
-    {
-        var acc = seed;
-
-        using var enumerator = source.GetEnumerator();
-
-        while (enumerator.MoveNext())
-        {
-            acc = func(acc, enumerator.Current);
-        }
-
-        return resultSelector(acc);
-    }
-
-    public static IEnumerable<IEnumerable<T>> Batch<T>(
-        this IEnumerable<T> collection,
-        int size)
-    {
-        using var enumerator = collection.GetEnumerator();
-
-        while (enumerator.MoveNext())
-        {
-            var batch = new List<T>(capacity: size)
-            {
-                enumerator.Current
-            };
-
-            for (var i = 1; i < size && enumerator.MoveNext(); i++)
-            {
-                batch.Add(enumerator.Current);
-            }
-
-            yield return batch;
-        }
-    }
-
-    public static IEnumerable<T[]> SlidingWindow<T>(
-        this IEnumerable<T> collection,
-        int size)
-    {
-        var window = new Queue<T>();
-
-        using var enumerator = collection.GetEnumerator();
-
-        while (enumerator.MoveNext())
-        {
-            window.Enqueue(enumerator.Current);
-            if (window.Count > size)
-                window.Dequeue();
-
-            if (window.Count == size)
-                yield return window.ToArray();
-        }
-    }
+    Comedy,
+    Drama,
+    Horror,
+    Romance,
+    Thriller,
+    Fantasy,
 }
