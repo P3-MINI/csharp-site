@@ -90,7 +90,7 @@ Skala ocen:
 
 Zadania laboratoryjne i warsztaty oceniane są na bieżąco podczas zajęć. Punkty z tychże są umieszczane w USOSie najpóźniej 7 dni po zajęciach.
 
-Warsztaty i projekty są oceniane przez prowadzącego w terminie 7 dni od otrzymania rozwiązania. W tych przypadkach punkty są umieszczane w USOSie najpóźniej 7 dni po ocenie.
+Projekty są oceniane przez prowadzącego w terminie 7 dni od otrzymania rozwiązania. W tych przypadkach punkty są umieszczane w USOSie najpóźniej 7 dni po ocenie.
 
 Ocena końcowa wystawiana będzie w USOSie w ciągu 7 dni od opublikowania wyników ostatniego laboratorium.
 

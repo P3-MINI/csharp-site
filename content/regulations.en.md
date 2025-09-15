@@ -90,7 +90,7 @@ Grading scale:
 
 Laboratory tasks and workshops are graded during the classes. Points are posted in the USOS system within 7 days after the classes.
 
-Workshops and projects are graded by the course tutor within 7 days of receiving the solution. In this case, points are posted in the USOS system no later than 7 days after grading.
+Projects are graded by the course tutor within 7 days of receiving the solution. In this case, points are posted in the USOS system no later than 7 days after grading.
 
 The final grade will be posted in the USOS system within 7 days of the last laboratory result publication.
 
