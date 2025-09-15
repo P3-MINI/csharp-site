@@ -69,7 +69,7 @@ Zadania laboratoryjne:
 
 ## 6. Pomoce dopuszczone do użycia podczas weryfikacji osiągnięcia efektów uczenia się
 
-W czasie rozwiązywania zadań projektowych i laboratoryjnych można korzystać z własnych materiałów, dokumentacji systemowej oraz Internetu jednak tak, by oceniana praca była dziełem samodzielnym - w szczególności niedozwolone jest używanie rozwiązań opartych o AI, jak ChatGPT, Github Copilot, Google Gemini i podobnych.
+W czasie rozwiązywania zadań projektowych i laboratoryjnych można korzystać z własnych materiałów, dokumentacji systemowej oraz Internetu jednak tak, by oceniana praca była dziełem samodzielnym - w szczególności niedozwolone jest używanie rozwiązań opartych o AI, jak ChatGPT, GitHub Copilot, Google Gemini i podobnych.
 
 W rozwiązaniach używać można dowolnych fragmentów publicznie dostępnych kodów źródłowych, pod warunkiem że nie stanową one rozwiązania znacznej części zadania i zostaną w jasny sposób oznaczone wraz z podaniem odniesienia do źródła, z którego pochodzą. Materiały pochodzące z Internetu muszą być zrozumiałe dla studenta, a student powinien być w stanie wyjaśnić działanie skopiowanego kodu.
 

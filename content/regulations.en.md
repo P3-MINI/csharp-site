@@ -69,7 +69,7 @@ Laboratory Tasks:
 
 ## 6. Permissible Aids During Verification of Learning Outcomes
 
-During the completion of project and laboratory tasks, students may use their own materials, system documentation, and the Internet, provided that the work evaluated is self-constructed. Particularly, using AI-generated solutions, such as ChatGPT, Github Copilot, Google Gemini, and similar tools, is prohibited.
+During the completion of project and laboratory tasks, students may use their own materials, system documentation, and the Internet, provided that the work evaluated is self-constructed. Particularly, using AI-generated solutions, such as ChatGPT, GitHub Copilot, Google Gemini, and similar tools, is prohibited.
 
 Any publicly available code fragments used must not constitute a significant portion of the solution and must be clearly marked with references to their source. Materials sourced from the Internet must be understandable to the student, and the student should be able to explain the operation of the copied code.
 
