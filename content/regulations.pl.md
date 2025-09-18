@@ -38,9 +38,9 @@ Ocenie podlega również jakość kodu. Za rozwiązania niewydajne, niekompiluj�
 
 Warunkiem uzyskania punktów jest przesłanie rozwiązania na serwer przy użyciu systemu kontroli wersji git.
 
-Rozwiązania zostaną porównane za pomocą systemu anty-plagiatowego.
+Rozwiązania zostaną porównane za pomocą systemu anty-plagiatowego. W trakcie laboratorium, na żądanie prowadzącego, studenci są zobowiązani uruchomić dostarczone z zadaniem oprogramowanie monitorujące ich pracę.
 
-Warsztaty:
+### Warsztaty
 
 - Za warsztat student może otrzymać 1 punkt.
 - Na wykonanie warsztatu jest 90 minut w trakcie zajęć.
@@ -48,14 +48,14 @@ Warsztaty:
 - Usprawiedliwiona nieobecność upoważnia do rozwiązania warsztatu w domu w terminie 1 tygodnia na pełną ilość punktów.
 - Warsztaty rozwiązywane są z użyciem systemu Arch Linux lub Windows na komputerach w laboratorium.
 
-Projekty:
+### Projekty
 
 - Za projekt student może otrzymać od 0 do 8 punktów.
 - Na wykonanie projektu jest 2 tygodnie od otrzymania zadania.
 - Na życzenie prowadzącego student może być poproszony o zaprezentowanie przesłanego zadania na zajęciach.
 - Całość rozwiązania musi zostać stworzona samodzielnie.
 
-Zadania laboratoryjne:
+### Zadania laboratoryjne
 
 - Za zadanie laboratoryjne student może otrzymać od 0 do 12 punktów.
 - Na wykonanie zadania laboratoryjnego jest 90 minut w trakcie zajęć.

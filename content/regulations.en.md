@@ -38,9 +38,9 @@ The code quality is also evaluated. Inefficient solutions, non-compiling code, v
 
 To earn points, solutions must be submitted to the server using the git version control system.
 
-Solutions will be compared using an anti-plagiarism system.
+Solutions will be compared using an anti-plagiarism system. During the laboratory, at the teacher request, students are obliged to turn on dedicated software monitoring their work.
 
-Workshops:
+### Workshops
 
 - Students can earn 1 point per workshop.
 - Each workshop duration is 90 minutes during classes.
@@ -48,14 +48,14 @@ Workshops:
 - An excused absence allows the student to complete the workshop at home within a week for full points.
 - Workshops are done using the Arch Linux or Windows system on laboratory computers.
 
-Projects:
+### Projects
 
 - Students can earn 0 to 8 points per project.
 - Project has a 2-week completion period from the time of assignment.
 - Upon the instructor's request, students may be asked to present their submitted solutions during classes.
 - The entire solution must be created independently.
 
-Laboratory Tasks:
+### Laboratory Tasks
 
 - Students can earn 0 to 12 points per laboratory task.
 - Each laboratory task duration is 90 minutes during classes.
