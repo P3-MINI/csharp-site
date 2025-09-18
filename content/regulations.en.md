@@ -79,12 +79,14 @@ To pass, a student must earn a total of more than 50 points.
 
 Grading scale:
 
-\[0, 50\] points - 2.0 (fail)  
-\(50, 60\] points - 3.0 (satisfactory)  
-\(60, 70\] points - 3.5 (fairly good)  
-\(70, 80\] points - 4.0 (good)  
-\(80, 90\] points - 4.5 (above good)  
-\(90, 100\] points - 5.0 (very good)
+| Points      | Grade              |
+|-------------|--------------------|
+| \[0, 50\]   | 2.0 (fail)         |
+| \(50, 60\]  | 3.0 (satisfactory) |
+| \(60, 70\]  | 3.5 (fairly good)  |
+| \(70, 80\]  | 4.0 (good)         |
+| \(80, 90\]  | 4.5 (above good)   |
+| \(90, 100\] | 5.0 (very good)    |
 
 ## 8. Grade Announcement Timeline and Method
 

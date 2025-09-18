@@ -79,12 +79,14 @@ W celu uzyskania zaliczenia wymagane jest uzyskanie ponad 50 punktów łącznie.
 
 Skala ocen:
 
-\[0, 50\] punktów - 2,0 (niedostateczny)  
-\(50, 60\] punktów - 3,0 (dostateczny)  
-\(60, 70\] punktów - 3,5 (dość dobry)  
-\(70, 80\] punktów - 4,0 (dobry)  
-\(80, 90\] punktów - 4,5 (ponad dobry)  
-\(90, 100\] punktów - 5,0 (bardzo dobry)
+| Punkty      | Ocena                |
+|-------------|----------------------|
+| \[0, 50\]   | 2.0 (niedostateczny) |
+| \(50, 60\]  | 3.0 (dostateczny)    |
+| \(60, 70\]  | 3.5 (dość dobry)     |
+| \(70, 80\]  | 4.0 (dobry)          |
+| \(80, 90\]  | 4.5 (ponad dobry)    |
+| \(90, 100\] | 5.0 (bardzo dobry)   |
 
 ## 8. Termin i tryb ogłaszania ocen
 
