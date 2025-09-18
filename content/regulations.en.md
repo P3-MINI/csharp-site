@@ -63,8 +63,8 @@ Solutions will be compared using an anti-plagiarism system. During the laborator
 - Laboratory tasks are divided into stages. Points for each stage are specified in the task description. Stages must be completed in the designated order.
 - Each stage is checked and graded during classes.
 - If a student has an excused absence, they may solve the laboratory task at home within a week. In this case, conversion points are awarded at the end of the semester.
-- Conversion points are calculated using the following method: S1 is the average score of other students for that task, S2 is the student's average score for other tasks, and S3 is the result of the laboratory task solved at home.
-- The formula for points is: (S1 + S2) / 2 * S3 / 12.
+  - Conversion points are calculated using the following method: S1 is the average score of other students for that task, S2 is the student's average score for other tasks, and S3 is the result of the laboratory task solved at home.
+  - The formula for points is: (S1 + S2) / 2 * S3 / 12.
 - Laboratory tasks are done using the Arch Linux or Windows system on laboratory computers.
 
 ## 6. Permissible Aids During Verification of Learning Outcomes
