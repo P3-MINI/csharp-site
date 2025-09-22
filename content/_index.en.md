@@ -20,5 +20,4 @@ menu:
 
 - Adam Grącikowski
 - Anna Kozłowska
-- Maciej Spychała
-- Tomasz Herman
+- Piotr Krasowski
