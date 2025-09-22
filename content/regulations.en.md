@@ -60,7 +60,7 @@ Any publicly available code fragments used must not constitute a significant por
 
 ## 4. Schedule of partial and/or final verification of learning outcomes achievement, in particular the dates of written and oral tests and deadlines for submission of reports on completed laboratory work and projects, including make-up dates, if the specifics of the course allow for it
 
-Classes are held according to the schedule available on the website: https://csharp.mini.pw.edu.pl/pl/schedule/.
+Classes are held according to the schedule available on the website: https://csharp.mini.pw.edu.pl/en/schedule/.
 
 ## 5. Possibility and rules for students’ participation in tests and examinations held on additional dates
 
