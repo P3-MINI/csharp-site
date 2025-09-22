@@ -58,7 +58,7 @@ Any publicly available code fragments used must not constitute a significant por
     - {{< katex >}}S_1{{< /katex >}} is the average score of other students for that task.
     - {{< katex >}}S_2{{< /katex >}} is the student's average score for other tasks.
     - {{< katex >}}S_3{{< /katex >}} is the result of the laboratory task solved at home.
-    - The formula for points is: {{< katex >}} \frac{(S_1 + S_2)}{2} \cdot \frac{S_3}{12} {{< /katex >}}.
+  - The formula for points is: {{< katex >}} \frac{(S_1 + S_2)}{2} \cdot \frac{S_3}{12} {{< /katex >}}.
 - Laboratory tasks are done using the Arch Linux or Windows system on laboratory computers.
 
 ## 4. Schedule of partial and/or final verification of learning outcomes achievement, in particular the dates of written and oral tests and deadlines for submission of reports on completed laboratory work and projects, including make-up dates, if the specifics of the course allow for it
