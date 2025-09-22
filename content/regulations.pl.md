@@ -2,24 +2,11 @@
 title: "Regulamin"
 ---
 
-## 1. Przeznaczenie przedmiotu
+## 1. Rekomendacje lub ograniczenia udziału studentów w zajęciach wynikających z wymaganej kolejności realizacji przedmiotów w planie studiów oraz wymagania wstępne
 
-Programowanie 3 – zaawansowane jest obowiązkowym przedmiotem dla studentów kierunku Informatyka i Systemy Informacyjne na semestrze 3. Celem przedmiotu jest zapoznanie studentów z zaawansowanymi zagadnieniami programowania oraz praktycznymi narzędziami do automatyzacji budowania rozwiązań czy kontroli wersji, a także rozwijanie umiejętności w zakresie programowania obiektowego.
+Wymagana jest wiedza z przedmiotów Programowanie 1 - strukturalne, Programowanie 2 - obiektowe, Architektura Komputerów i Podstawy systemu UNIX.
 
-## 2. Prowadzenie zajęć
-
-Przedmiot składa się z wykładu i laboratorium.
-
-W ramach kursu przewidziane jest 15 zajęć wykładowych oraz 15 zajęć laboratoryjnych. Zajęcia odbywają się zgodnie z harmonogramem podanym na stronie przedmiotu.
-
-## 3. Materiały do przedmiotu
-
-- Materiały dostarczane w trakcie wykładu (np. slajdy, fragmenty kodu)
-- Literatura i dokumentacja podana na wykładzie
-
-## 4. Obecność na zajęciach
-
-Obecność na wykładach nie jest obowiązkowa, ale zalecana ze względu na ścisłe powiązanie omawianego materiału z laboratorium.
+## 2. Zasady wymaganej obecności studenta na zajęciach, na których obecność jest obowiązkowa, w tym dopuszczalnego limitu nieobecności oraz usprawiedliwiania nieobecności
 
 Obecność na zajęciach laboratoryjnych jest obowiązkowa. W przypadku nieobecności na zajęciach student otrzymuje 0 punktów za aktywności realizowane na zajęciach, na których był nieobecny.
 
@@ -27,7 +14,7 @@ Nieobecność uznawana jest za usprawiedliwioną po okazaniu prowadzącemu zaję
 
 Dopuszczalne są maksymalnie 3 nieobecności na zajęciach laboratoryjnych, większa liczba nieobecności skutkuje niezaliczeniem przedmiotu.
 
-## 5. Weryfikacja osiągnięcia efektów uczenia się
+## 3. Szczegółowe sposoby etapowej/końcowej weryfikacji osiągnięcia efektów uczenia się (np. liczba kolokwiów) oraz rodzaje materiałów i urządzeń dopuszczonych do używania przez studentów podczas weryfikacji osiągnięcia efektów uczenia się
 
 Laboratorium składa się z:
 - 8 warsztatów
@@ -39,6 +26,10 @@ Ocenie podlega również jakość kodu. Za rozwiązania niewydajne, niekompiluj�
 Warunkiem uzyskania punktów jest przesłanie rozwiązania na serwer przy użyciu systemu kontroli wersji git.
 
 Rozwiązania zostaną porównane za pomocą systemu anty-plagiatowego. W trakcie laboratorium, na żądanie prowadzącego, studenci są zobowiązani uruchomić dostarczone z zadaniem oprogramowanie monitorujące ich pracę.
+
+W czasie rozwiązywania zadań projektowych i laboratoryjnych można korzystać z własnych materiałów, dokumentacji systemowej oraz Internetu jednak tak, by oceniana praca była dziełem samodzielnym - w szczególności niedozwolone jest używanie rozwiązań opartych o AI, jak ChatGPT, GitHub Copilot, Google Gemini i podobnych.
+
+W rozwiązaniach używać można dowolnych fragmentów publicznie dostępnych kodów źródłowych, pod warunkiem że nie stanową one rozwiązania znacznej części zadania i zostaną w jasny sposób oznaczone wraz z podaniem odniesienia do źródła, z którego pochodzą. Materiały pochodzące z Internetu muszą być zrozumiałe dla studenta, a student powinien być w stanie wyjaśnić działanie skopiowanego kodu.
 
 ### Warsztaty
 
@@ -67,13 +58,15 @@ Rozwiązania zostaną porównane za pomocą systemu anty-plagiatowego. W trakcie
   - Liczba punktów określona jest wzorem: {{< katex >}} \frac{(S_1 + S_2)}{2} \cdot \frac{S_3}{12} {{< /katex >}}.
 - Zadania laboratoryjne rozwiązywane są z użyciem systemu Arch Linux lub Windows na komputerach w laboratorium.
 
-## 6. Pomoce dopuszczone do użycia podczas weryfikacji osiągnięcia efektów uczenia się
+## 4. Harmonogram etapowej/końcowej weryfikacji osiągnięcia efektów uczenia się, w szczególności terminy sprawdzianów pisemnych i ustnych oraz terminy złożenia sprawozdań z wykonania ćwiczeń laboratoryjnych i projektów z uwzględnieniem terminów poprawkowych, jeśli specyfika przedmiotu to umożliwia
 
-W czasie rozwiązywania zadań projektowych i laboratoryjnych można korzystać z własnych materiałów, dokumentacji systemowej oraz Internetu jednak tak, by oceniana praca była dziełem samodzielnym - w szczególności niedozwolone jest używanie rozwiązań opartych o AI, jak ChatGPT, GitHub Copilot, Google Gemini i podobnych.
+Zajęcia odbywają się zgodnie z harmonogramem dostępnym na stronie https://csharp.mini.pw.edu.pl/pl/schedule/.
 
-W rozwiązaniach używać można dowolnych fragmentów publicznie dostępnych kodów źródłowych, pod warunkiem że nie stanową one rozwiązania znacznej części zadania i zostaną w jasny sposób oznaczone wraz z podaniem odniesienia do źródła, z którego pochodzą. Materiały pochodzące z Internetu muszą być zrozumiałe dla studenta, a student powinien być w stanie wyjaśnić działanie skopiowanego kodu.
+## 5. Możliwości i zasady udziału studentów w dodatkowych terminach sprawdzianów i egzaminów
 
-## 7. Zasady zaliczenia przedmiotu i wystawiania oceny końcowej
+Dodatkowe terminy laboratoriów nie będą organizowane.
+
+## 6. Zasady zaliczania przedmiotu i wystawiania oceny końcowej z przedmiotu
 
 W celu uzyskania zaliczenia wymagane jest uzyskanie ponad 50 punktów łącznie.
 
@@ -88,7 +81,7 @@ Skala ocen:
 | \(80, 90\]  | 4.5 (ponad dobry)    |
 | \(90, 100\] | 5.0 (bardzo dobry)   |
 
-## 8. Termin i tryb ogłaszania ocen
+## 7. Terminy i tryby ogłaszania wyników etapowej/końcowej weryfikacji osiągnięcia efektów uczenia się i ocen uzyskiwanych przez studentów
 
 Zadania laboratoryjne i warsztaty oceniane są na bieżąco podczas zajęć. Punkty z tychże są umieszczane w USOSie najpóźniej 7 dni po zajęciach.
 
@@ -96,10 +89,14 @@ Projekty są oceniane przez prowadzącego w terminie 7 dni od otrzymania rozwią
 
 Ocena końcowa wystawiana będzie w USOSie w ciągu 7 dni od opublikowania wyników ostatniego laboratorium.
 
-## 9. Zasady powtarzania zajęć z powodu niezaliczenia przedmiotu
+## 8. Zasady poprawiania wyników etapowej/końcowej weryfikacji osiągnięcia efektów uczenia się i ocen uzyskiwanych przez studentów
+
+Nie jest możliwe poprawianie wyników laboratorium.
+
+## 9. Zasady powtarzania z powodu niezadowalających wyników w nauce poszczególnych typów zajęć realizowanych w ramach przedmiotu
 
 Osoba, która nie zaliczyła przedmiotu, musi powtórzyć całość przedmiotu i przystąpić do wszystkich zaliczeń. Nie ma możliwości przepisywania punktów cząstkowych z poprzednich semestrów.
 
-## 10. Inne
+## 10. Inne informacje w zależności od specyfiki realizowanych zajęć
 
-W nieuwzględnionych przypadkach obowiązuje regulamin studiów.
+Materiały do przedmiotu dostępne na stronie https://csharp.mini.pw.edu.pl/pl/.
