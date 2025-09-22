@@ -27,9 +27,9 @@ Warunkiem uzyskania punktów jest przesłanie rozwiązania na serwer przy użyci
 
 Rozwiązania zostaną porównane za pomocą systemu anty-plagiatowego. W trakcie laboratorium, na żądanie prowadzącego, studenci są zobowiązani uruchomić dostarczone z zadaniem oprogramowanie monitorujące ich pracę.
 
-W czasie rozwiązywania zadań projektowych i laboratoryjnych można korzystać z własnych materiałów, dokumentacji systemowej oraz Internetu jednak tak, by oceniana praca była dziełem samodzielnym - w szczególności niedozwolone jest używanie rozwiązań opartych o AI, jak ChatGPT, GitHub Copilot, Google Gemini i podobnych.
+W czasie rozwiązywania zadań projektowych i laboratoryjnych można korzystać z własnych materiałów, dokumentacji systemowej oraz Internetu jednak tak, by oceniana praca była dziełem samodzielnym - w szczególności niedozwolone jest używanie rozwiązań opartych o AI, jak ChatGPT, GitHub Copilot, Google Gemini i podobnych narzędzi.
 
-W rozwiązaniach używać można dowolnych fragmentów publicznie dostępnych kodów źródłowych, pod warunkiem że nie stanową one rozwiązania znacznej części zadania i zostaną w jasny sposób oznaczone wraz z podaniem odniesienia do źródła, z którego pochodzą. Materiały pochodzące z Internetu muszą być zrozumiałe dla studenta, a student powinien być w stanie wyjaśnić działanie skopiowanego kodu.
+W rozwiązaniach używać można dowolnych fragmentów publicznie dostępnych kodów źródłowych, pod warunkiem że nie stanowią one rozwiązania znacznej części zadania i zostaną w jasny sposób oznaczone wraz z podaniem odniesienia do źródła, z którego pochodzą. Materiały pochodzące z Internetu muszą być zrozumiałe dla studenta, a student powinien być w stanie wyjaśnić działanie skopiowanego kodu.
 
 ### Warsztaty
 

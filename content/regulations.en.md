@@ -8,8 +8,6 @@ Knowledge of the following subjects is required: Programming 1 - Fundamentals, P
 
 ## 2. Regulations on student mandatory attendance at courses for which attendance is obligatory, including the allowable limit of non-attendance and justification of non-attendance
 
-Attendance at lectures is not mandatory but recommended due to the close connection between the lecture material and the laboratory.
-
 Attendance at laboratory classes is mandatory. In case of absence, a student receives 0 points for activities conducted during the missed session.
 
 An absence is considered excused upon presenting a medical leave to the course tutor. In special cases, the course coordinator may recognize absences caused by other reasons as excused.
@@ -27,7 +25,11 @@ The code quality is also evaluated. Inefficient solutions, non-compiling code, v
 
 To earn points, solutions must be submitted to the server using the git version control system.
 
-Solutions will be compared using an anti-plagiarism system. During the laboratory, at the teacher request, students are obliged to turn on dedicated software monitoring their work.
+Solutions will be compared using an anti-plagiarism system. During the laboratory, at the instructor's request, students are obliged to turn on dedicated software monitoring their work.
+
+During the completion of project and laboratory tasks, students may use their own materials, system documentation, and the Internet, provided that the work evaluated is self-constructed. Particularly, using AI-generated solutions, such as ChatGPT, GitHub Copilot, Google Gemini, and similar tools, is prohibited.
+
+Any publicly available code fragments used must not constitute a significant portion of the solution and must be clearly marked with references to their source. Materials sourced from the Internet must be understandable to the student, and the student should be able to explain the operation of the copied code.
 
 ### Workshops
 
@@ -62,47 +64,7 @@ Classes are held according to the schedule available on the website: https://csh
 
 ## 5. Possibility and rules for students’ participation in tests and examinations held on additional dates
 
-The laboratory consists of:
-- 8 workshops
-- 1 project
-- 7 laboratory tasks
-
-The code quality is also evaluated. Inefficient solutions, non-compiling code, violations of object-oriented programming principles, and poor programming style may result in fewer points.
-
-To earn points, solutions must be submitted to the server using the git version control system.
-
-Solutions will be compared using an anti-plagiarism system. During the laboratory, at the teacher request, students are obliged to turn on dedicated software monitoring their work.
-
-During the completion of project and laboratory tasks, students may use their own materials, system documentation, and the Internet, provided that the work evaluated is self-constructed. Particularly, using AI-generated solutions, such as ChatGPT, GitHub Copilot, Google Gemini, and similar tools, is prohibited.
-
-Any publicly available code fragments used must not constitute a significant portion of the solution and must be clearly marked with references to their source. Materials sourced from the Internet must be understandable to the student, and the student should be able to explain the operation of the copied code.
-
-### Workshops
-
-- Students can earn 1 point per workshop.
-- Each workshop duration is 90 minutes during classes.
-- Parts of the solutions may be created with the instructor during the class—these parts are not subject to anti-plagiarism checks; the rest must be created independently.
-- An excused absence allows the student to complete the workshop at home within a week for full points.
-- Workshops are done using the Arch Linux or Windows system on laboratory computers.
-
-### Projects
-
-- Students can earn 0 to 8 points per project.
-- Project has a 2-week completion period from the time of assignment.
-- Upon the instructor's request, students may be asked to present their submitted solutions during classes.
-- The entire solution must be created independently.
-
-### Laboratory Tasks
-
-- Students can earn 0 to 12 points per laboratory task.
-- Each laboratory task duration is 90 minutes during classes.
-- The entire solution must be created independently.
-- Laboratory tasks are divided into stages. Points for each stage are specified in the task description. Stages must be completed in the designated order.
-- Each stage is checked and graded during classes.
-- If a student has an excused absence, they may solve the laboratory task at home within a week. In this case, conversion points are awarded at the end of the semester.
-  - Conversion points are calculated using the following method: {{< katex >}}S_1{{< /katex >}} is the average score of other students for that task, {{< katex >}}S_2{{< /katex >}} is the student's average score for other tasks, and {{< katex >}}S_3{{< /katex >}} is the result of the laboratory task solved at home.
-  - The formula for points is: {{< katex >}} \frac{(S_1 + S_2)}{2} \cdot \frac{S_3}{12} {{< /katex >}}.
-- Laboratory tasks are done using the Arch Linux or Windows system on laboratory computers.
+Additional laboratory sessions will not be organized.
 
 ## 6. Rules for awarding course credit and the final course grade
 
