@@ -42,7 +42,7 @@ Any publicly available code fragments used must not constitute a significant por
 ### Projects
 
 - Students can earn 0 to 8 points per project.
-- Project has a 2-week completion period from the time of assignment.
+- The project has a 2-week completion period from the time of assignment.
 - Upon the instructor's request, students may be asked to present their submitted solutions during classes.
 - The entire solution must be created independently.
 
@@ -54,8 +54,11 @@ Any publicly available code fragments used must not constitute a significant por
 - Laboratory tasks are divided into stages. Points for each stage are specified in the task description. Stages must be completed in the designated order.
 - Each stage is checked and graded during classes.
 - If a student has an excused absence, they may solve the laboratory task at home within a week. In this case, conversion points are awarded at the end of the semester.
-  - Conversion points are calculated using the following method: {{< katex >}}S_1{{< /katex >}} is the average score of other students for that task, {{< katex >}}S_2{{< /katex >}} is the student's average score for other tasks, and {{< katex >}}S_3{{< /katex >}} is the result of the laboratory task solved at home.
-  - The formula for points is: {{< katex >}} \frac{(S_1 + S_2)}{2} \cdot \frac{S_3}{12} {{< /katex >}}.
+  - Conversion points are calculated as follows:
+    - {{< katex >}}S_1{{< /katex >}} is the average score of other students for that task.
+    - {{< katex >}}S_2{{< /katex >}} is the student's average score for other tasks.
+    - {{< katex >}}S_3{{< /katex >}} is the result of the laboratory task solved at home.
+    - The formula for points is: {{< katex >}} \frac{(S_1 + S_2)}{2} \cdot \frac{S_3}{12} {{< /katex >}}.
 - Laboratory tasks are done using the Arch Linux or Windows system on laboratory computers.
 
 ## 4. Schedule of partial and/or final verification of learning outcomes achievement, in particular the dates of written and oral tests and deadlines for submission of reports on completed laboratory work and projects, including make-up dates, if the specifics of the course allow for it

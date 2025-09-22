@@ -54,7 +54,10 @@ W rozwiązaniach używać można dowolnych fragmentów publicznie dostępnych ko
 - Zadanie laboratoryjne jest podzielone na etapy. Punkty za każdy etap podane są w treści zadania. Etapy muszą być wykonywane w wyznaczonej kolejności.
 - Każdy etap jest sprawdzany i oceniany na zajęciach.
 - Usprawiedliwiona nieobecność upoważnia do rozwiązania zadania laboratoryjnego w domu w terminie 1 tygodnia. Za takie zadanie można otrzymać punkty przeliczeniowe na koniec semestru.
-  - Punkty przeliczeniowe są obliczane na podstawie średniego wyniku pozostałych studentów za to zadanie {{< katex >}}S_1{{< /katex >}}, średniego wyniku studenta z pozostałych zadań {{< katex >}}S_2{{< /katex >}} oraz wyniku z zadania laboratoryjnego rozwiązanego w domu {{< katex >}}S_3{{< /katex >}}.
+  - Punkty przeliczeniowe są obliczane na podstawie trzech wartości:
+    - {{< katex >}}S_1{{< /katex >}} – średni wynik pozostałych studentów za to zadanie,
+    - {{< katex >}}S_2{{< /katex >}} – średni wynik studenta z pozostałych zadań,
+    - {{< katex >}}S_3{{< /katex >}} – wynik z zadania laboratoryjnego rozwiązanego w domu.
   - Liczba punktów określona jest wzorem: {{< katex >}} \frac{(S_1 + S_2)}{2} \cdot \frac{S_3}{12} {{< /katex >}}.
 - Zadania laboratoryjne rozwiązywane są z użyciem systemu Arch Linux lub Windows na komputerach w laboratorium.
 
