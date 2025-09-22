@@ -63,7 +63,7 @@ W rozwiązaniach używać można dowolnych fragmentów publicznie dostępnych ko
 
 ## 4. Harmonogram etapowej/końcowej weryfikacji osiągnięcia efektów uczenia się, w szczególności terminy sprawdzianów pisemnych i ustnych oraz terminy złożenia sprawozdań z wykonania ćwiczeń laboratoryjnych i projektów z uwzględnieniem terminów poprawkowych, jeśli specyfika przedmiotu to umożliwia
 
-Zajęcia odbywają się zgodnie z harmonogramem dostępnym na stronie https://csharp.mini.pw.edu.pl/pl/schedule/.
+Zajęcia odbywają się zgodnie z harmonogramem dostępnym na stronie [https://csharp.mini.pw.edu.pl/pl/schedule/](https://csharp.mini.pw.edu.pl/pl/schedule/).
 
 ## 5. Możliwości i zasady udziału studentów w dodatkowych terminach sprawdzianów i egzaminów
 
@@ -102,4 +102,4 @@ Osoba, która nie zaliczyła przedmiotu, musi powtórzyć całość przedmiotu i
 
 ## 10. Inne informacje w zależności od specyfiki realizowanych zajęć
 
-Materiały do przedmiotu dostępne na stronie https://csharp.mini.pw.edu.pl/pl/.
+Materiały do przedmiotu dostępne na stronie [https://csharp.mini.pw.edu.pl/pl/](https://csharp.mini.pw.edu.pl/pl/).
