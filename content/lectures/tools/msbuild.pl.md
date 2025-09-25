@@ -14,9 +14,9 @@ MSBuild używa plików projektów opartych na XML. W tych plikach programista mo
 
 ### Przykład pliku projektu
 
-Rozważmy prostą aplikację konsolową w C++, `Program.cs`:
+Rozważmy prostą aplikację konsolową w C++, `main.cpp`:
 
-```csharp
+```cpp
 #include <print>
 
 int main() 
@@ -58,7 +58,7 @@ Poniżej znajduje się plik projektu MSBuild, `HelloMSBuild.proj`, który kompil
   
   <Target Name="Clean">
     <Message Text="Cleaning..." Importance="high" />
-    <Delete Files="$(OutputPath)\$(OutputName)" />
+    <Delete Files="$(OutputPath)/$(OutputName)" />
     <Delete Files="@(CppSource->'$(OutputPath)%(filename).o')" />
     <RemoveDir Directories="$(OutputPath)" />
   </Target>
@@ -70,13 +70,11 @@ Poniżej znajduje się plik projektu MSBuild, `HelloMSBuild.proj`, który kompil
 ```
 
 W tym przykładzie:
-- `<PropertyGroup>` definiuje właściwości `AssemblyName` (nazwa pliku wynikowego), `OutputPath`, `OutputName` oraz `CppVersion`.
+- `<PropertyGroup>` definiuje właściwości `Compiler`, `CppVersion`, `OutputPath` oraz `OutputName`.
 - `<ItemGroup>` zawiera element `<CppSource>`, który wskazuje wszystkie pliki `.cpp` w projekcie do skompilowania.
 - `<Target Name="Build">` definiuje główny target budowania. Zależy on od targetu `Link`, który z kolei zależy od targetu `Compile`. Najpierw target `Compile` po kolei kompiluje każdy z plików z `CppSource`, następnie w targecie `Link` wszystkie pliki obiektów są linkowane w program.
 - `<Target Name="Clean">` usuwa skompilowane pliki.
 - `<Target Name="Rebuild">` wykonuje najpierw `Clean`, a następnie `Build`.
-
-Warto zauważyć, że target `Build` posiada atrybuty `Inputs` i `Outputs`. Służą one do implementacji tzw. buildów przyrostowych - MSBuild porównuje daty modyfikacji plików wejściowych i wyjściowych, aby zdecydować, czy ponowne wykonanie targetu jest konieczne, co znacznie optymalizuje czas budowania.
 
 ### Podstawowe elementy pliku projektu
 
@@ -88,13 +86,13 @@ Plik projektu MSBuild składa się z czterech głównych części:
 
 *   **Tasks (Zadania):** Taski to jednostki kodu wykonywalnego, które MSBuild używa do przeprowadzenia operacji budowania. Przykłady zadań to `Csc` (uruchomienie kompilatora C#), `Copy` (kopiowanie plików), `Message` (wyświetlanie komunikatu).
 
-*   **Targets (Cele):** Definiowane za pomocą elementu `<Target>`. Targety grupują zadania w logiczne sekwencje. Polecenie `msbuild -targets` wyświetla listę wszystkich targetów dostępnych w projekcie.
+*   **Targets (Cele):** Definiowane za pomocą elementu `<Target>`. Targety grupują zadania w logiczne sekwencje. Polecenie `msbuild -targets` wyświetla listę wszystkich targetów dostępnych w projekcie. Warto wspomnieć, że targety posiadają atrybuty `Inputs` i `Outputs`. Służą one do implementacji tzw. buildów przyrostowych - MSBuild porównuje daty modyfikacji plików wejściowych i wyjściowych, aby zdecydować, czy ponowne wykonanie targetu jest konieczne.
 
 ### Odwoływanie się do właściwości i elementów
 
 W plikach MSBuild, aby odwołać się do wartości zdefiniowanych właściwości i elementów, używa się specjalnej składni:
 
-*   **`$()` do właściwości (Properties):** Aby uzyskać wartość właściwości, należy użyć jej nazwy wewnątrz nawiasów `$(NazwaWlasciwosci)`. Na przykład, `$(AssemblyName)` w powyższym przykładzie zostanie zastąpione przez `HelloMSBuild`.
+*   **`$()` do właściwości (Properties):** Aby uzyskać wartość właściwości, należy użyć jej nazwy wewnątrz nawiasów `$(NazwaWlasciwosci)`. Na przykład, `$(OutputName)` w powyższym przykładzie zostanie zastąpione przez `program`.
 
 *   **`@()` do elementów (Items):** Aby uzyskać listę wartości z elementów, należy użyć nazwy grupy elementów wewnątrz nawiasów `@(NazwaGrupyElementow)`. Na przykład, `@(CppSource)` zostanie zastąpione listą wszystkich plików (np. `main.cpp;log.cpp`).
 
@@ -171,7 +169,7 @@ W tym przypadku:
 2.  Dla każdego itemu pobiera metadaną `%(Filename)` (np. `main`, `utils`).
 3.  Dołącza do niej `.o`, tworząc nową listę: `main.o;utils.o`.
 
-Target `ShowObjectFiles` wyświetli: `Pliki obiektowe: main.o;utils.o`.
+Target `ListObjectFiles` wyświetli: `Pliki obiektowe: main.o;utils.o`.
 
 ### Podstawowe polecenia
 
@@ -236,7 +234,7 @@ Dodatkowo, atrybut **`Condition`** na targecie może spowodować jego pominięci
 
 ### Atrybut `Condition`
 
-Jak widać w powyższym przykładzie, atrybut `Condition` pozwala na warunkowe wykonywanie tasków (w tym przypadku `MakeDir`). Jest to jednak tylko jedno z jego wielu zastosowań. Atrybut ten jest niezwykle użyteczny do tworzenia dynamicznych i elastycznych procesów budowania. **Można go dołączyć do niemal każdego węzła**, w tym:
+Atrybut `Condition` pozwala na warunkowe wykonywanie tasków/targetów lub warunkową definicję właściwości/itemów. **Można go dołączyć do niemal każdego węzła**, w tym:
 
 *   `<PropertyGroup>` i `<Property>`
 *   `<ItemGroup>` i poszczególnych `<Item>`

@@ -15,7 +15,7 @@ public class CreateFileTask : Task
         try
         {
             File.WriteAllText(Filename, "Hello, custom task!");
-            Log.LogMessage(MessageImportance.High, $"Empty file {Filename} created successfully");
+            Log.LogMessage(MessageImportance.High, $"File {Filename} with greeting created successfully");
             return true;
         }
         catch (Exception ex)
