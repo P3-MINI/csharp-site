@@ -1,5 +1,5 @@
 ---
 title: "Narzędzia"
 bookCollapseSection: true
-weight: 10
+weight: 20
 ---
