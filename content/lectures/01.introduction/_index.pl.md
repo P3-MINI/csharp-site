@@ -4,66 +4,65 @@ weight: 10
 ---
 ## Język C# i platforma .NET
 
-Język autorstwa zespołu w firmie Microsoft pod kierownictwem duńskiego inżyniera [Andersa Hejlsberga](https://en.wikipedia.org/wiki/Anders_Hejlsberg). Pierwsza wersja języka pojawiła się w roku 2002 jako część inicjatywy .NET Framework. Nazwa C# (C Sharp) jest inspirowana notacją muzyczną, gdzie krzyżyk (sharp) oznacza podniesienie nuty o pół tonu. Jest to też nawiązanie do języka C++, gdzie znak '#' można postrzegać jako cztery połączone znaki '+'.
+Język C# został stworzony w firmie Microsoft przez zespół pod kierownictwem **Andersa Hejlsberga** i wprowadzony na rynek w 2002 roku jako część platformy **.NET Framework**. Nazwa C# (C Sharp) jest inspirowana notacją muzyczną, gdzie krzyżyk (sharp) podnosi nutę o pół tonu, co symbolizuje ewolucję w stosunku do języka C++.
 
-Platforma .NET ewoluowała od początkowego .NET Framework (przeznaczonego głównie dla systemu Windows), poprzez wieloplatformowy .NET Core, aż do obecnej, ujednoliconej platformy nazywanej po prostu .NET. Od tego momentu cała platforma .NET (w tym kompilator C# Roslyn i środowisko uruchomieniowe CoreCLR) jest rozwijana jako projekt open-source, dostępny na GitHubie.
-
-Jest to środowisko uruchomieniowe, które pozwala na tworzenie aplikacji w wielu językach programowania (takich jak C#, F#, Visual Basic), kompilowanych do wspólnego języka pośredniego (Common Intermediate Language - CIL). Dzięki temu, kod napisany w jednym języku może współdziałać z kodem napisanym w innym, a aplikacje mogą być uruchamiane na różnych systemach operacyjnych. W przeciwieństwie do C++, C# posiada jedną główną, oficjalną implementację dostarczaną przez Microsoft (kompilator Roslyn, środowisko uruchomieniowe CoreCLR).
-
-Komitet standaryzacyjny i Microsoft publikują nową wersję platformy co roku - .NET 5, .NET 6, .NET 7, .NET 8 itd.
-
-Aby zapoznać się ze szczegółowymi zmianami w kolejnych wersjach, warto odwiedzić oficjalną dokumentację Microsoftu: [Co nowego w .NET](https://learn.microsoft.com/en-us/dotnet/core/whats-new/) oraz [Co nowego w C#](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/).
+Platforma .NET, początkowo dostępna jako **.NET Framework** tylko dla systemu Windows, została z czasem uzupełniona o **.NET Core** – napisaną od nowa, wieloplatformową i otwartą wersję środowiska. Przez pewien czas oba te rozwiązania były rozwijane równolegle. Ostatecznie linia .NET Core stała się podstawą dla przyszłego rozwoju. Począwszy od wersji .NET 5, platforma została symbolicznie zunifikowana pod jedną nazwą **.NET**, stając się następcą zarówno .NET Core, jak i .NET Framework. To właśnie w ramach tej transformacji całe środowisko – w tym kompilator C# (Roslyn) i środowisko uruchomieniowe (CoreCLR) – stało się projektem **open-source**. Microsoft co roku publikuje nową wersję platformy (.NET 6, .NET 7, .NET 8 itd.). Najnowsze zmiany można śledzić w oficjalnej dokumentacji: [Co nowego w .NET](https://learn.microsoft.com/en-us/dotnet/core/whats-new/) oraz [Co nowego w C#](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/).
 
 C# od lat jest jednym z **najpopularniejszych** języków programowania, regularnie zajmując czołowe miejsca w [indeksie TIOBE](https://www.tiobe.com/tiobe-index/csharp/) i ankietach Stack Overflow. Znajduje szerokie zastosowanie w aplikacjach webowych (ASP.NET Core), desktopowych (WPF, WinUI), chmurowych, a także w tworzeniu gier (silnik Unity).
 
 Język jest **znacznie prostszy** do nauki niż C++. Został zaprojektowany z myślą o produktywności i bezpieczeństwie programisty. Składnia C# należy do rodziny języków C, więc będzie znajoma dla programistów C, C++ czy Java.
 
-Jest to język **zarządzany** (managed), co oznacza, że kod jest wykonywany pod kontrolą środowiska uruchomieniowego .NET, a nie bezpośrednio przez system operacyjny. Kluczowe mechanizmy, takie jak automatyczne zarządzanie pamięcią (Garbage Collector), eliminują całe klasy błędów znanych z języków nienadzorowanych (unmanaged), jednak wiąże się to również z pewnym narzutem wydajnościowym, ponieważ GC musi okresowo przerywać działanie programu, aby zwolnić nieużywaną pamięć.
+### Główne cechy języka
 
-C# jest językiem **silnie typowanym i obiektowym**. Silne typowanie oznacza, że typy danych są ściśle określone i sprawdzane w czasie kompilacji, co pomaga wykrywać błędy na wczesnym etapie. Jako język obiektowy, dostarcza mechanizmy takie jak klasy, interfejsy, enkapsulację, dziedziczenie i polimorfizm, i narzuca to podejście jako podstawowy paradygmat. Jednocześnie, C# bogato czerpie z innych paradygmatów, oferując zaawansowane wsparcie dla programowania funkcyjnego (LINQ, wyrażenia lambda), programowania sterowanego zdarzeniami (events, delegates) i asynchronicznego (`async`/`await`).
+C# jest językiem **zarządzanym** (managed), co oznacza, że kod jest wykonywany pod kontrolą środowiska uruchomieniowego .NET, a nie bezpośrednio przez system operacyjny. Mechanizmy, takie jak automatyczne zarządzanie pamięcią (**Garbage Collector**), eliminują całe klasy błędów znanych z języków nienadzorowanych (unmanaged), jednak wiąże się to z pewnym narzutem wydajnościowym.
+
+Jest to również język **silnie typowany i obiektowy**. Silne typowanie oznacza, że typy danych muszą być zdefiniowane i są sprawdzane w czasie kompilacji, co pomaga wykrywać błędy na wczesnym etapie. Jako język obiektowy, C# dostarcza mechanizmy takie jak klasy, interfejsy, enkapsulację, dziedziczenie i polimorfizm. Jednocześnie, C# czerpie z innych paradygmatów, oferując wsparcie dla programowania funkcyjnego (LINQ, wyrażenia lambda), programowania sterowanego zdarzeniami (events, delegates) i asynchronicznego (`async`/`await`).
+
+### Jak działa kod w C#? Kompilacja do CIL i JIT
+
+W przeciwieństwie do C++, gdzie istnieje wiele kompilatorów, C# ma jedną główną, oficjalną implementację od Microsoftu. Do zbudowania i uruchomienia aplikacji potrzebny jest **zestaw narzędzi .NET SDK**.
+
+Proces uruchamiania kodu C# wygląda następująco:
+1.  Kompilator C# (**Roslyn**) tłumaczy kod źródłowy na **język pośredni** (Common Intermediate Language, CIL).
+2.  Kod CIL jest zapisywany w plikach `.dll` lub `.exe`.
+3.  Dopiero w momencie uruchomienia aplikacji, środowisko uruchomieniowe .NET (**CoreCLR**) kompiluje na bieżąco (**Just-In-Time (JIT)**) kod CIL do kodu maszynowego.
+
+```mermaid
+graph LR
+    subgraph "Compilation Phase"
+        A["C# Code<br>Program.cs"] -- "Compilation" --> B["CIL Assembly<br>Application.dll"]
+    end
+
+    subgraph "Execution Phase"
+        B -- "Running<br>Application.dll" --> C["CIL Code"]
+        C -- "JIT Compilation" --> D["Machine Code"]
+    end
+```
+
+Ten mechanizm pozwala na uruchamianie tego samego skompilowanego kodu CIL na różnych systemach operacyjnych. Warto zaznaczyć, że ze względu na kompilację JIT, kod C# może być potencjalnie wolniejszy od kodu C++ (szczególnie przy pierwszym uruchomieniu danego fragmentu kodu). Wynika to z konieczności alokacji pamięci na kod maszynowy i samego procesu tłumaczenia. Kolejne wywołania tego samego fragmentu kodu są już znacznie szybsze, ponieważ środowisko uruchomieniowe korzysta ze skompilowanej wcześniej wersji.
 
 ## Hello World
 
 Nowy projekt można utworzyć przy pomocy interfejsu linii poleceń `dotnet`:
 
 ```shell
-# Utworzenie nowego projektu konsolowego w folderze "Hello"
 dotnet new console -o Hello
-cd Hello
 ```
 
-Po wykonaniu tych komend, w katalogu `Hello` zostanie wygenerowany plik `Program.cs` z następującą zawartością:
+Po wykonaniu tego polecenia, w katalogu `Hello` zostanie wygenerowany plik `Program.cs` z następującą zawartością:
 
 ```csharp
 // Program.cs
 Console.WriteLine("Hello, World!");
 ```
 
+C# od wersji 9.0 wspiera tzw. **instrukcje najwyższego poziomu** (top-level statements), które pozwalają pominąć definicję klasy `Program` i metody `Main` dla prostych aplikacji. Kompilator generuje je automatycznie, a kod staje się bardziej zwięzły.
+
 Aplikację możemy od razu uruchomić:
 
 ```shell
-# Uruchomienie aplikacji
 dotnet run
 ```
-
-> Popularne środowiska programistyczne (IDE) dla C# to Visual Studio (Windows), Visual Studio Code (wieloplatformowe) i JetBrains Rider (wieloplatformowe). Pod spodem wszystkie używają narzędzi `dotnet`.
-
-Do zbudowania i uruchomienia aplikacji potrzebny jest **zestaw narzędzi .NET SDK**. Kompilator C# (Roslyn) tłumaczy kod źródłowy na **język pośredni** (Intermediate Language, IL), który jest zapisywany w plikach `.dll` lub `.exe`. Dopiero podczas uruchamiania aplikacji, środowisko uruchomieniowe .NET (CoreCLR) kompiluje kod IL do kodu maszynowego (proces ten nazywa się Just-In-Time compilation, JIT).
-
-Warto zaznaczyć, że ze względu na kompilację JIT, kod C# może być potencjalnie nieco wolniejszy od kodu C++ (szczególnie przy pierwszym uruchomieniu danego fragmentu kodu). Wynika to z konieczności alokacji pamięci na kod maszynowy i samego procesu tłumaczenia. Kolejne wywołania tego samego fragmentu kodu są już znacznie szybsze, ponieważ środowisko uruchomieniowe korzysta ze skompilowanej wcześniej wersji.
-
-```mermaid
-graph TD
-    A[Kod źródłowy] --> B[Kompilacja];
-    B --> C[Program.dll];
-    C --> D[Uruchomienie];
-    D --> E[Kompilacja JIT do kodu maszynowego];
-    E --> F[Procesor];
-```
-
-Istnieją również kompilatory online, np. [dotnetfiddle.net](https://dotnetfiddle.net/) lub [sharplab.io](https://sharplab.io/).
-
-Przeanalizujmy strukturę programu. Nowoczesny C# wspiera tzw. **instrukcje najwyższego poziomu** (top-level statements), które pozwalają pominąć definicję klasy `Program` i metody `Main` dla prostych aplikacji. Kompilator generuje je automatycznie.
 
 W starszych szablonach projektów, ten sam kod wyglądałby następująco:
 
@@ -82,13 +81,17 @@ namespace Hello
 }
 ```
 
-Zamiast dyrektywy `#include`, w C# używa się `using`, aby zaimportować typy z danej przestrzeni nazw (np. `using System;`). W ciele funkcji znajduje się instrukcja wypisania:
+> Można wymusić generację programu main przez dodanie parametru `--use-program-main` przy tworzeniu projektu.
 
-```csharp
-Console.WriteLine("Hello, World!");
-```
+W tym przypadku widać całą strukturę:
+- `namespace Hello` grupuje kod w logiczną całość.
+- `class Program` to kontener dla danych i metod.
+- `static void Main(string[] args)` to punkt wejścia programu.
+- `using System;` importuje przestrzeń nazw, w której zdefiniowana jest klasa `Console`. Jest to odpowiednik `#include` z C++.
 
-Jest to wywołanie statycznej metody `WriteLine` na klasie `Console` z przestrzeni nazw `System`.
+Instrukcja `Console.WriteLine("Hello, World!");` to wywołanie statycznej metody `WriteLine` na klasie `Console`.
+
+> Popularne środowiska programistyczne (IDE) dla C# to Visual Studio (Windows), Visual Studio Code (wieloplatformowe) i JetBrains Rider (wieloplatformowe). Pod spodem wszystkie używają narzędzia `dotnet`. Można też eksperymentować online, np. [dotnetfiddle.net](https://dotnetfiddle.net/) lub [sharplab.io](https://sharplab.io/).
 
 ## Podstawowe narzędzia
 
@@ -111,10 +114,9 @@ Konstrukcja `$"..."` to **interpolacja stringów**, prosty sposób na formatowan
 
 ### Typ `string`
 
-Typ `string` (alias dla `System.String`) to podstawowy typ do pracy z tekstem. Jest to typ referencyjny, ale zachowuje się podobnie do typów wartościowych, głównie ze względu na swoją **niezmienność (immutability)** - raz utworzonego stringa nie można zmodyfikować. Każda operacja "modyfikacji" w rzeczywistołości tworzy nowy obiekt w pamięci.
+Typ `string` (alias dla `System.String`) to podstawowy typ do pracy z tekstem. Kluczową cechą stringa jest **niezmienność (immutability)**, co oznacza, że raz utworzonego stringa nie można już zmodyfikować. Każda operacja, która wygląda jak modyfikacja (np. dodawanie tekstu lub zamiana znaków), w rzeczywistości tworzy w pamięci zupełnie nowy obiekt `string` z nową wartością.
 
 ```csharp
-string empty = "";
 string txt = "Hello, ";
 string txt2 = txt + "World!"; // "Hello, World!"
 
@@ -122,7 +124,8 @@ string txt2 = txt + "World!"; // "Hello, World!"
 string txt3 = txt2.Replace(',', '?'); // "Hello? World!"
 
 string option = "first";
-if (option == "first") {
+if (option == "first")
+{
    // ...
 }
 
@@ -131,9 +134,9 @@ Console.WriteLine(txt2.ToUpper()); // "HELLO, WORLD!"
 
 ### Typ `List<T>`
 
-Najważniejszy kontener biblioteki standardowej to `List<T>`, analogiczny do `std::vector` z C++, czyli dynamiczna, ciągła tablica obiektów określonego typu. Definiuje go przestrzeń nazw `System.Collections.Generic`.
+Jednym z najczęściej używanych kontenerów w bibliotece standardowej jest `List<T>`. Jest to odpowiednik `std::vector` z C++, czyli dynamiczna tablica przechowująca elementy określonego typu. Definiuje go przestrzeń nazw `System.Collections.Generic`.
 
-`List<T>` to nazwa tzw. _typu generycznego_ - mechanizmu języka C# do programowania generycznego. Jest to mechanizm podobny do szablonów (templates) z C++, choć w C# jest on prostszy w użyciu i ma inne ograniczenia. Dopiero po wskazaniu typu przechowywanych elementów, np. `List<int>`, `List<string>`, `List<MyClass>`, można go użyć jako typu zmiennej.
+`List<T>` to nazwa tzw. _typu generycznego_ - mechanizmu języka C# do programowania generycznego. Jest to mechanizm podobny do szablonów (templates) z C++, choć w C# jest on prostszy w użyciu i ma inne ograniczenia. Dopiero po wskazaniu typu przechowywanych elementów, np. `List<int>`, `List<string>`, można go użyć jako typu zmiennej.
 
 Domyślnie utworzona lista jest pusta. Można ją zainicjalizować podaną kolekcją elementów.
 

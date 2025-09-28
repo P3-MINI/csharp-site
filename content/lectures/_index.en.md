@@ -8,5 +8,6 @@ weight: 10
 
 - [Introduction]({{< ref "01.introduction" >}})
 - [MSBuild]({{< ref "02.tools/msbuild" >}})
+- [Type System]({{< ref "03.basics/types" >}})
 
 ## Lecture 02
