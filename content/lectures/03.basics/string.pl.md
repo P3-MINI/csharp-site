@@ -122,7 +122,7 @@ var str3 = """"
 
 ## Interpolacja stringów (*String interpolation*)
 
-Interpolacja stringów pozwala na umieszczanie zmiennych, wyrażeń lub wartości wewnątrz literału stringa bez konieczności stosowania konkatenacji (`+`) czy używania metody `string.Format()`. Interpolowany `string` jest poprzedzony znakiem `$`. Wszelkie zmienne, wyrażenia lub wartości, które mają zostać wstawione do stringa, umieszcza się w nawiasach klamrowych. Opcjonalnie po wyrażeniu można po przecinku podać wyrównanie, a po dwukropku specyfikator formatu. Liczba dodatnia wyrównuje do prawej, ujemna do lewej. O formatowaniu można doczytać w (dokumentacji)[https://learn.microsoft.com/en-us/dotnet/standard/base-types/formatting-types].
+Interpolacja stringów pozwala na umieszczanie zmiennych, wyrażeń lub wartości wewnątrz literału stringa bez konieczności stosowania konkatenacji (`+`) czy używania metody `string.Format()`. Interpolowany `string` jest poprzedzony znakiem `$`. Wszelkie zmienne, wyrażenia lub wartości, które mają zostać wstawione do stringa, umieszcza się w nawiasach klamrowych. Opcjonalnie po wyrażeniu można po przecinku podać wyrównanie, a po dwukropku specyfikator formatu. Liczba dodatnia wyrównuje do prawej, ujemna do lewej. O formatowaniu można doczytać w [dokumentacji](https://learn.microsoft.com/en-us/dotnet/standard/base-types/formatting-types).
 
 ```csharp
 string author = "George Orwell";
