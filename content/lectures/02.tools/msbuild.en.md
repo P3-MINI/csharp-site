@@ -1,5 +1,6 @@
 ---
 title: "MSBuild"
+weight: 20
 ---
 
 # Microsoft Build Engine
