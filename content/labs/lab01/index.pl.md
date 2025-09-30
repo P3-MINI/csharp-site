@@ -5,16 +5,16 @@ weight: 10
 
 # Warsztaty z Git
 
-Małe projekty realizowane przez pojedynczych programistów są stosunkowo łatwe w utrzymaniu. Proste zadanie programistyczne to zwykle tylko kilkadziesiąt linii kodu, a zmiany wprowadza się po kolei, jedna po drugiej. Nawet w tak prostej sytuacji możesz jednak chcieć cofnąć część zmian. Twój projekt może też w naturalny sposób urosnąć i wymagać wielu modyfikacji rozrzuconych po różnych plikach. Czasami będziesz chciał sprawdzić nowe podejście, nie wiedząc z góry, czy nie zepsuje ono działania programu. W końcu może się też zdarzyć, że ktoś inny będzie chciał dołączyć do pracy i wprowadzać zmiany równolegle do Ciebie.
+Małe projekty realizowane prowadzone przez pojedyńcze osoby są stosunkowo łatwe w utrzymaniu. Proste zadanie programistyczne to zwykle tylko kilkadziesiąt linii kodu, a zmiany wprowadza się po kolei, jedna po drugiej. Nawet w tak prostej sytuacji możesz jednak chcieć cofnąć część zmian. Twój projekt może też w naturalny sposób urosnąć i wymagać wielu modyfikacji rozrzuconych po różnych plikach. Czasami możesz chcieć sprawdzić nowe podejście, nie wiedząc z góry, czy nie zepsuje ono działania programu. W końcu może się też zdarzyć, że ktoś inny będzie chciał dołączyć do pracy i wprowadzać zmiany równolegle do Ciebie.
 
-Właśnie wtedy potrzebny jest **system kontroli wersji** (VCS, Version Control System). Możesz myśleć o nim jak o funkcji „historii” dla Twojego projektu, która pozwala poruszać się po różnych wersjach tego samego kodu. W tym tutorialu skupimy się na najpopularniejszym systemie VCS, **Git**, ale istnieje ich więcej (np. **Perforce** do pracy z dużymi plikami). Być może spotkałeś się już z pojęciem **GitHub** -- to platforma do hostowania zdalnych repozytoriów. Ten tutorial jej nie obejmuje, ale warto wiedzieć, że GitHub to nie to samo co Git.
+Właśnie wtedy potrzebny jest **system kontroli wersji** (VCS, Version Control System). Możesz myśleć o nim jak o funkcji „historii” dla Twojego projektu, która pozwala poruszać się po różnych wersjach tego samego kodu. W tym tutorialu skupimy się na najpopularniejszym systemie VCS, **Git**, ale istnieje ich więcej (np. **Perforce** do pracy z dużymi plikami). Być może znane Ci jest pojęcie **GitHub** -- to platforma do hostowania zdalnych repozytoriów. Ten tutorial jej nie obejmuje, ale warto wiedzieć, że GitHub to nie to samo co Git.
 
 Możesz wykonywać zadania przy pomocy graficznego interfejsu Visual Studio lub w terminalu. Pamiętaj jednak, że Visual Studio nie wspiera wszystkich funkcji Gita -- np. interaktywnych rebase’ów (o tym później). Nawet jeśli zdecydujesz się korzystać z GUI, zdecydowanie warto poznać polecenia w konsoli. Nie zawsze będziesz mieć dostęp do IDE, a w wielu przypadkach praca w terminalu jest po prostu szybsza.
 
 ## Pierwsze kroki z Gitem
 
 ### Dane uwierzytelniające
-Akcje wykonywane w Gicie, takie jak commity, są powiązane z Twoją tożsamością. Ma to szczególne znaczenie przy wysyłaniu commitów do zdalnych repozytoriów, ale nawet jeśli nie planujesz tego robić, powinieneś ustawić swoje dane --- nazwę użytkownika oraz adres e‑mail. Możesz to zrobić w terminalu następującymi poleceniami: [`git config --global user.name <username>`](https://git-scm.com/docs/git-config) oraz [`git config --global user.email <email>`](https://git-scm.com/docs/git-config).
+Akcje wykonywane w Gicie, takie jak commity, są powiązane z Twoją tożsamością. Ma to szczególne znaczenie przy wysyłaniu commitów do zdalnych repozytoriów, ale nawet jeśli nie planujesz tego robić, warto ustawić swoje dane --- nazwę użytkownika oraz adres e‑mail. Możesz to zrobić w terminalu następującymi poleceniami: [`git config --global user.name <username>`](https://git-scm.com/docs/git-config) oraz [`git config --global user.email <email>`](https://git-scm.com/docs/git-config).
 
 W Visual Studio przejdź do `Git -> Settings` i wprowadź dane.
 
@@ -113,7 +113,7 @@ W Visual Studio otwórz `Git -> Manage Branches`.
 
 ![Branching](/labs/lab01/img/branches.png)
 
-Gałęzie są podstawą pracy zespołowej --- każdy programista może pracować nad swoją izolowaną kopią kodu i dopiero po upewnieniu się, że wszystko działa poprawnie, wprowadzić zmiany do gałęzi `main`. O tym więcej w kolejnych sekcjach.
+Gałęzie są podstawą pracy zespołowej --- każda osoba może pracować nad swoją izolowaną kopią kodu i dopiero po upewnieniu się, że wszystko działa poprawnie, wprowadzić zmiany do gałęzi `main`. O tym więcej w kolejnych sekcjach.
 
 Z założenia Git blokuje przełączanie gałęzi, jeśli w katalogu roboczym masz niezacommitowane zmiany. Możesz je jednak tymczasowo „odłożyć na półkę” i wrócić do nich później bez wykonywania commita. Do tego służy polecenie [`git stash`](https://git-scm.com/docs/git-stash). Zapisuje ono bieżące zmiany w specjalnym schowku (stash) i usuwa je z katalogu roboczego (czyli przywraca kod gałęzi do stanu ostatniego commita).
 - Aby sprawdzić, jakie zmiany masz obecnie odłożone, użyj [`git stash list`](https://git-scm.com/docs/git-stash).
@@ -132,7 +132,8 @@ Jeśli spróbujesz przełączyć gałąź bez wcześniejszego commitowania lub o
 ![Stash popup](/labs/lab01/img/stash-popup.png)
 
 ### Scalanie (Merging)
-Załóżmy, że właśnie zaimplementowałeś nową funkcjonalność w gałęzi `dev`, przetestowałeś ją i chcesz wprowadzić zmiany z powrotem do gałęzi `main`. Aby to zrobić, musisz **scalić** obie gałęzie, czyli zintegrować commity z `dev` z historią `main`.
+
+Załóżmy, że właśnie została zaimplementowana nowa funkcjonalność w gałęzi dev, następnie przetestowana i teraz celem jest wprowadzenie zmian z powrotem do gałęzi main. Aby to zrobić, trzeba scalić obie gałęzie, czyli zintegrować commity z dev z historią main.
 
 ```mermaid
 ---
@@ -189,7 +190,7 @@ Do tej pory wszystko dotyczyło jednego lokalnego repozytorium. Możesz jednak c
 
 **Remote** to po prostu wersja Twojego repozytorium, która znajduje się gdzieś indziej niż oryginał. Najczęściej będzie to serwis hostingowy (np. GitHub) albo sieć lokalna, ale repozytorium zdalne może być też umieszczone na Twoim własnym komputerze.
 
-W **Zadaniu 0** samodzielnie utworzyłeś repozytorium od podstaw, ale często będziesz zaczynać od istniejącego repozytorium dostępnego w Internecie. Jeśli masz adres URL takiego repozytorium, możesz je skopiować komendą [`git clone`](https://git-scm.com/docs/git-clone):
+W **Zadaniu 0** repozytorium zostało utworzone samodzielnie od podstaw, ale często pracę zaczyna się od istniejącego repozytorium dostępnego w Internecie. Jeśli masz adres URL takiego repozytorium, możesz je skopiować komendą [`git clone`](https://git-scm.com/docs/git-clone):
 
 ```
 $ git clone git@github.com:ocornut/imgui.git
@@ -247,8 +248,8 @@ W Visual Studio otwórz `View -> Git Changes`.
 
 ![Push](/labs/lab01/img/push.png)
 
-Są dwa przypadki, w których nie będziesz mógł wysłać (push) swoich zmian:
-1. Brak uprawnień do zapisu w danej gałęzi (to zabezpieczenie, abyś przypadkowo nie zepsuł ważnych części kodu).
+Są dwa przypadki, w których wysłanie (push) zmian jest niemożliwe:
+1. Brak uprawnień do zapisu w danej gałęzi (to zabezpieczenie, dzięki temu przypadkowo nie zepsujesz ważnych części kodu).
 2. Ktoś inny wysłał zmiany przed Tobą. W takim przypadku musisz najpierw pobrać najnowsze zmiany (`git pull`), scalić je ze swoją gałęzią, a dopiero potem ponownie wykonać `git push`.
 
 ### Konflikty
@@ -286,10 +287,9 @@ Po rozwiązaniu wszystkich konfliktów kliknij `Accept Merge`, aby zakończyć s
 
 ## Cofanie się w czasie
 
-Wyobraź sobie, że zrefaktoryzowałeś kod i uważasz, że dzięki temu aplikacja działa szybciej. Aby to udowodnić, musisz przetestować wydajność zarówno aktualnej, jak i poprzedniej wersji. A co, jeśli nie zapisałeś nigdzie zbudowanej aplikacji w starej wersji? W takich momentach Git pozwala ci na powrót do starego commita sprzed refaktoryzacji, dzięki czemu
-możesz ją zbudować. 
+Wyobraź sobie, że po zrefaktorozywaniu kodu, uważasz że twoja aplikacja działa szybciej. Aby to udowodnić, musisz przetestować wydajność zarówno aktualnej, jak i poprzedniej wersji. Co w przypadku gdy nie masz nigdzie zapisanej zbudowanej aplikacji w starej wersji? W takich momentach Git pozwala Ci na powrót do starego commita sprzed refaktoryzacji, dzięki czemu możesz ją zbudować. 
 
-Polecenie `git log` wyświetla historię commitów w bieżącej gałęzi. Każdy commit posiada unikalny *hash*, który może być użyty w innych poleceniach Git.
+Polecenie `git log` wyświetla historię commitów w bieżącej gałęzi. Każdy commit posiada unikalny **hash**, który może być użyty w innych poleceniach Gita.
 
 ```
 $ git log
@@ -320,12 +320,12 @@ Pełny hash commita można uzyskać, klikając trzy kropki w panelu commitów:
 ![Commit hash](/labs/lab01/img/commit-hash.png)
 
 Wcześniej używaliśmy [`git checkout`](https://git-scm.com/docs/git-checkout) do przełączania gałęzi (obecnie dostępne jest również `git switch`), ale `git checkout` ma więcej zastosowań: możesz nim przejść do konkretnego commita, podając jego hash. W ogólności polecenie `git checkout` zmienia wskaźnik `HEAD`. 
-*Working tree* (bieżąca wersja Twoich plików) zawsze odzwierciedla commit, na który wskazuje `HEAD`. `HEAD` może znajdować się w dwóch stanach:
+**Working tree**, czyli bieżąca wersja Twoich plików zawsze odzwierciedla commit, na który wskazuje `HEAD`. `HEAD` może znajdować się w dwóch stanach:
 
 1. **Normal state** – `HEAD` wskazuje na gałąź. Working tree zawsze odzwierciedla szczyt tej gałęzi. Wchodzisz w ten stan, uruchamiając `git checkout <branch-name>`.
 2. **Detached state** – `HEAD` wskazuje bezpośrednio na commit (który może, ale nie musi być szczytem gałęzi). Wchodzisz w ten stan, uruchamiając `git checkout <commit>`.
 
-Aktualny stan sprawdzisz za pomocą `git status`. Jeśli masz niezacommitowane zmiany, przed checkoutem warto zrobić stash lub stworzyć commit typu WIP (Work In Progress).
+Aktualny stan sprawdzisz za pomocą `git status`. Jeśli masz niezacommitowane zmiany, przed checkoutem warto skorzystać ze schowka (stash) lub stworzyć nowy commit typu WIP (Work In Progress).
 
 
 ```bash
@@ -335,7 +335,9 @@ $ git commit -m "WIP"
 
 W Visual Studio możesz zrobić commit WIP w panelu Git Changes (`View -> Git Changes`):
 
-Taki commit można potem łatwo usunąć przy pomocy `git reset`. Jeśli nie zależy Ci na nieśledzonych plikach lub katalogach, które blokują wykonanie `git checkout`, zamiast commita WIP lub stasha możesz użyć opcji `--force` (`-f`).
+![Git commit](/labs/lab01/img/commit-all-wip.png)
+
+Taki commit można potem łatwo usunąć przy pomocy `git reset`, co zostanie pokazane później. Jeśli nie zależy Ci na nieśledzonych plikach lub katalogach, które blokują wykonanie `git checkout`, zamiast commita WIP lub schowka możesz wykorzystać opcję `--force` (`-f`).
 
 ```
 $ git checkout aa5a3e278c0d8815136a1cc1da7ecb6768ba2cb2
@@ -375,7 +377,7 @@ W Visual Studio checkout wykonasz przez `View -> Git Repository`, wybierając ga
 
 ![Git checkout commit](/labs/lab01/img/git-checkout-commit.png)
 
-Jeśli nie zrobiłeś stash lub WIP-commitu swoich zmian, pojawi się okno dialogowe, które poinformuje o potencjalncych konfliktach:
+Jeśli nie przeniesiono zmian do schowka (stash) nie nie wykonano WIP-commitu, pojawi się okno dialogowe, które poinformuje o potencjalncych konfliktach:
 
 ![Checkout dialog](/labs/lab01/img/checkout-dialog.png)
 
@@ -391,7 +393,7 @@ W Visual Studio: `View -> Git Repository`, kliknij prawym przyciskiem na gałą�
 
 ![Checkout master](/labs/lab01/img/checkout-master.png)
 
-Wyobraź sobie, że po przejściu do commita chcesz wprowadzić drobne zmiany i je zacommitować, np. dodać timery do testów wydajności. Co się stanie, jeśli HEAD jest w stanie detached i utworzysz nowe commity?  Załóżmy, że przeszedłeś do commita `B` i utworzyłeś commity `E` i `F`.
+Wyobraź sobie, że po przejściu do commita chcesz wprowadzić drobne zmiany i je zacommitować, np. dodać pomiary czasu do testów wydajności. Co się stanie, jeśli HEAD jest w stanie detached i utworzysz nowe commity?  Załóżmy, że znajdujesz się na commicie `B` w stanie detached oraz tworzysz commity `E` i `F`, co przedstawia pnoiższy graf.
 
 ```mermaid
 ---
@@ -432,7 +434,7 @@ $ git checkout master~2 Makefile # get the Makefile version from 2 commits befor
 
 `Makefile` pobrany z `master~2` pojawi się jako staged change. Jeśli chcesz wrócić do pierwotnego stanu (`master`), możesz go odstage'ować i usunąć. Więcej przykładów znajdziesz w [dokumentacji](https://git-scm.com/docs/git-checkout#_examples).
 
-A co jeśli nie jesteś zadowolony z ostatnich commitów i chcesz je usunąć? Na przykład źle napisałeś wiadomość commita lub chcesz usunąć WIP commit. W takiej sytuacji możesz użyć `git reset`.
+A co jeśli nie satysfakcjonuje Cię któryś z ostatnich commitów i chcesz go usunąć? Na przykład ostatni commit ma niepoprawną wiadomość lub jest commitem WIP. W takiej sytuacji możesz użyć `git reset`.
 
 ```bash
 $ git reset --soft HEAD^ # equivalent of git reset --soft HEAD~1
@@ -448,7 +450,7 @@ W Visual Studio możesz zresetować zmiany w panelu `Git Repository`:
 
 ![Git reset](/labs/lab01/img/git-reset.png)
 
-Wyobraź sobie, że pobierasz zmiany z repozytorium i napotykasz konflikty merge. Jeśli chcesz wrócić do stanu sprzed pulla, możesz użyć `git reset --hard` (synonim: `git reset --hard HEAD`).
+Wyobraź sobie, że podczas pobierania zmian z repozytorium napotykasz konflikty. Jeśli chcesz wrócić do stanu sprzed wykonania `git pull`, możesz użyć `git reset --hard` (synonim: `git reset --hard HEAD`).
 
 ```bash
 $ git pull
@@ -458,7 +460,7 @@ Automatic merge failed; fix conflicts and then commit the result.
 $ git reset --hard 
 ```
 
-Wyobraź sobie, że pracujesz na gałęzi tworzonej w celu dodania nowej funkcji, nazwijmy ją `feature`. Podczas pracy odkrywasz krytyczny błąd, który naprawiasz i commitujesz. Możesz chcieć zastosować tę samą poprawkę na gałęzi `master`, aby inni, tworząc gałęzie z `master` przed połączeniem Twojego `feature`, nie napotkali tego samego problemu. W tym celu możesz zastosować polecenie `git cherry-pick`.
+Wyobraź sobie, że pracujesz na gałęzi tworzonej w celu dodania nowej funkcji, nazwijmy ją `feature`. Podczas pracy odkrywasz krytyczny błąd, który naprawiasz i commitujesz. Możesz chcieć zastosować tę samą poprawkę na gałęzi `master`, aby inni, tworząc gałęzie z `master` przed scaleniem Twojej gałęzi `feature` z gałęzią `master`, nie napotkali tego samego problemu. W tym celu możesz zastosować polecenie `git cherry-pick`.
 
 ```bash
 $ git checkout master
@@ -503,7 +505,7 @@ Więcej przykładów znajdziesz w [dokumentacji](https://git-scm.com/docs/git-ch
 
 ## Nigdy nie zostawaj w tyle dzięki `git merge` oraz `git rebase`
 
-Wyobraź sobie, że utworzyłeś gałąź `feature` z gałęzi `master`, aby zaimplementować nową funkcję. W międzyczasie Twój zespół dodał dwie nowe funkcje i scalił je do `master`. Przykładowa sytuacja wygląda następująco:
+Wyobraź sobie, że znajdujesz się na gałązi `feature` utworzonej z gałęzi `master` i chcesz zaimplementować nową funkcjonalność. W międzyczasie Twój zespół dodał dwie nowe funkcje i scalił je do `master`. Przykładowa sytuacja wygląda następująco:
 
 ```mermaid
 ---
@@ -596,7 +598,7 @@ W Visual Studio użyj opcji `Rebase 'master' onto 'feature'`:
 Niestety, liniowa historia commitów ma swoją cenę:
 
 1. Commity `A'` i `A` nie są tymi samymi commitami.
-2. W repozytoriach zdalnych aktualizacja wymaga **force push**, dlatego tę metodę należy stosować ostrożnie (opcja [`--force-with-lease`](https://git-scm.com/docs/git-push#Documentation/git-push.txt---no-force-with-lease)), szczególnie w gałęziach współdzielonych przez wielu deweloperów.
+2. W repozytoriach zdalnych aktualizacja wymaga **force push**, dlatego tę metodę należy stosować ostrożnie (opcja [`--force-with-lease`](https://git-scm.com/docs/git-push#Documentation/git-push.txt---no-force-with-lease)), szczególnie w gałęziach na których współpracuje wiele osób.
 3. Przy rebase konflikty muszą być rozwiązywane dla każdego konfliktowego commita, podczas gdy merge wymaga rozwiązania konfliktów tylko raz.
 
 Podczas uruchamiania `git rebase` proces zatrzymuje się na commitach konfliktowych. Masz wtedy dwie opcje:
@@ -628,7 +630,7 @@ Możesz użyć opcji `--root`, aby zrebase'ować wszystkie commity osiągalne z 
 $ git rebase -i --root
 ```
 
-Spowoduje to otwarcie edytora tekstu z poleceniami, które zostaną zastosowane do commitów na Twojej gałęzi.  Domyślnie każdy commit ma polecenie `pick`. Edytor zawiera jasne instrukcje dla każdego polecenia, które możesz wykorzystać.
+Spowoduje to otwarcie edytora tekstu z poleceniami, które zostaną zastosowane do commitów na Twojej gałęzi. Domyślnie każdy commit ma polecenie `pick`. Edytor zawiera jasne instrukcje dla każdego polecenia, które możesz wykorzystać.
 
 ```
 pick a11f874 # Add Update method
