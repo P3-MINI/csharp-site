@@ -26,7 +26,7 @@ Date:   Thu Sep 25 23:49:30 2025 +0200
     New commit message
 ```
 
-W Visual Studio możesz zobaczyć historię commitów, przechodząc do `View->Git Repository`:
+W Visual Studio możesz zobaczyć historię commitów, przechodząc do `View -> Git Repository`:
 
 ![Git repository](/labs/lab01/img/view-git-repository.png)
 

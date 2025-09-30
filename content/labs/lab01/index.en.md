@@ -264,7 +264,7 @@ Date:   Thu Sep 25 23:49:30 2025 +0200
     New commit message
 ```
 
-In Visual Studio you can see the commit history by navigating to `View->Git Repository`:
+In Visual Studio you can see the commit history by navigating to `View -> Git Repository`:
 
 ![Git repository](/labs/lab01/img/view-git-repository.png)
 
@@ -292,7 +292,7 @@ $ git add .
 $ git commit -m "WIP"
 ```
 
-In Visual Studio use the `Git Changes` panel (`View->Git Changes`) to make a WIP commit: 
+In Visual Studio use the `Git Changes` panel (`View -> Git Changes`) to make a WIP commit: 
 
 ![Git commit](/labs/lab01/img/commit-all-wip.png)
 
@@ -332,7 +332,7 @@ $ git status
 HEAD detached at aa5a3e2
 ```
 
-You can checkout using Visual Studio UI by navigating to the `View->Git Repository`, choosing a branch, right clicking on the desired commit and choosing the `Checkout` option:
+You can checkout using Visual Studio UI by navigating to the `View -> Git Repository`, choosing a branch, right clicking on the desired commit and choosing the `Checkout` option:
 
 ![Git checkout commit](/labs/lab01/img/git-checkout-commit.png)
 
@@ -348,7 +348,7 @@ How to get back to "the present" (the normal state)? You have to choose the bran
 $ git checkout master
 ```
 
-In Visual Studio, navigate to `View->Git Repository`, right click on the desired branch and choose `Checkout` option:
+In Visual Studio, navigate to `View -> Git Repository`, right click on the desired branch and choose `Checkout` option:
 
 ![Checkout master](/labs/lab01/img/checkout-master.png)
 
@@ -379,7 +379,7 @@ $ git checkout -b <new-branch-name>
 $ git branch <new-branch-name>
 ```
 
-In Visual Studio navigate to `View->Git Repository`, right click on the detached commit and use the `New branch...` option:
+In Visual Studio navigate to `View -> Git Repository`, right click on the detached commit and use the `New branch...` option:
 
 ![New branch from commit](/labs/lab01/img/new-branch-from-commit.png)
 
@@ -495,7 +495,7 @@ In this scenario you probably want to update your `feature` to ensure that you w
 $ git merge feature master # feature <- master
 ```
 
-In Visual Studio navigate to `View->Git Repository`, checkout to the `feature` branch, right click on the master branch and choose `Merge 'master' into 'feature'`:
+In Visual Studio navigate to `View -> Git Repository`, checkout to the `feature` branch, right click on the master branch and choose `Merge 'master' into 'feature'`:
 
 ![Merge master into feature](/labs/lab01/img/merge-update-feature.png)
 
