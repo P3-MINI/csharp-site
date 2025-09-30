@@ -14,7 +14,7 @@ You can complete the tasks using the Visual Studio graphical interface or the te
 ## Learning the ropes 
 
 ### Credentials
-Git actions such as commits are associated with your identity. This is especially important when pushing commits to remote repositories, but you should set up your username and email regardless. You can set your username with `git config --global user.name <username>` and email with `git config --global user.email <email>`.
+Git actions such as commits are associated with your identity. This is especially important when pushing commits to remote repositories, but you should set up your username and email regardless. You can set your username with [`git config --global user.name <username>`](https://git-scm.com/docs/git-config) and email with [`git config --global user.email <email>`](https://git-scm.com/docs/git-config).
 
 In Visual Studio navigate to `Git -> Settings` and enter the credentials.
 
@@ -25,6 +25,7 @@ In Visual Studio navigate to `Git -> Settings` and enter the credentials.
 A **repository** is storage for project files and each file's revision history. Git handles this with a subdirectory called `.git`, which stores all the tracking information. As such, deleting it removes all version control for that project and leaves the files in their most recent state, whether staged or not.
 
 Inside the directory with files you want to track run [`git init`](https://git-scm.com/docs/git-init).
+
 ```bash
 $ git init
 Initialized empty Git repository in <path>/.git/
@@ -41,15 +42,10 @@ In Visual Studio navigate to `Git -> Create Git Repository`. In the `Create a Gi
 Your codebase consists of at least one source file, and likely many more. To start tracking changes in those, you need to specifically instruct Git to do so. As such, a single file can be in three main states: `modified`, `staged`, and `committed`.
 
 ```mermaid
-flowchart TD
-    WD["Working Directory<br/>(<i>modified</i>)"]
-    SA["Staging Area<br/>(<i>staged</i>)"]
-    REPO["Repository<br/>(<i>committed</i>)"]
-
-    WD -->|git add| SA
-    SA -->|git commit| REPO
+flowchart LR
+    WD["Working Directory<br/>(<i>modified</i>)"] -->|git add| SA["Staging Area<br/>(<i>staged</i>)"]
+    SA -->|git commit| REPO["Repository<br/>(<i>committed</i>)"]
 ```
-
 The basic Git workflow goes as follows:
 1. You modify files in the working directory.
 2. You stage only those changes you want to be part of the next commit (documentation: [`git add`](https://git-scm.com/docs/git-add), [Staging Area](https://git-scm.com/about/staging-area))
@@ -65,20 +61,24 @@ To learn more about the states, _staging_ and other related concepts, check out 
 Your project might contain files which you may not want to commit, most notably binaries. A very useful tool at your disposal is a `.gitignore` file. As the name suggests, it is essentially a list of all project files that will be ignored when using [`git add`](https://git-scm.com/docs/git-add). 
 
 In Visual Studio, open `View -> Git Changes`. You will see a list of all changed files. 
-- To stage a file, click the `+` icon next to its name. To unstage a file, click the `–` icon. 
-- You can stage all files at once by clicking the `+` icon next to `Changes`, or unstage all with the corresponding `–` icon. 
+- To stage a file, click the `+` icon next to its name. To unstage a file, click the `--` icon. 
+- You can stage all files at once by clicking the `+` icon next to `Changes`, or unstage all with the corresponding `--` icon. 
 - Once you are done staging, enter a commit message and click the `Commit Staged` button.
 
 ![Staging](/labs/lab01/img/staging.png)
 
 > **Task 1:** Alice has set up an initial version of her 3D renderer project. Before continuing development, she wants to ensure the repository is set up properly. 
-**NOTE: You need to use the repository set up in Task 0**!
+>
+>**NOTE: You need to use the repository set up in Task 0**!
 > 1. The project contains two build output directories `bin/` and `obj/`, IDE metadata files `.vs/` and a temporary file `debug.log` created during runtime. Exclude them from Git tracking and verify the repository status. 
 > 2. Stage all relevant files with a single command and check the status.
 > 3. Unstage `Dummy.txt`, then commit the rest of the changes. Check the status again and verify that the unstaged file appears as `modified`.
 
 ### Branching
-Git branches are particularly useful when making substantial changes that may risk breaking the entire project. You can think of a branch as a snapshot (a parallel copy of the project history) which you can modify. A basic example would be keeping two branches: `main`, where you have the code that is tested and known to be stable, and `dev` for developing new features or making refactors.
+Git branches are particularly useful when making substantial changes that may risk breaking the entire project. You can think of a branch as a snapshot (a parallel copy of the project history) which you can modify. A basic example would be keeping two branches: 
+- `main`, where you have the code that is tested and known to be stable, 
+- `dev`, for developing new features or making refactors.
+
 ```mermaid
 ---
 config:
@@ -108,7 +108,11 @@ In Visual Studio, open `Git -> Manage Branches`.
 
 Branching is also the backbone in collaborative projects, where each developer can work on an isolated copy of the code, and introduce those changes to the `main` branch after making sure it works as intended (more on that in later sections).
 
-By design, Git prevents switching branches if you have uncommitted changes in your working directory. However, you can temporarily ‘shelve’ them and return to them later without committing. Using [`git stash`](https://git-scm.com/docs/git-stash) will save the changes in a "stash", and **remove them from the working tree** (i.e. revert the branch code to the last commit). [`git stash list`](https://git-scm.com/docs/git-stash) shows all stash entries you currently have, and you can apply a specific one on top of the working tree in the current branch by using [`git stash pop stash@{<index>}`](https://git-scm.com/docs/git-stash). Note that the changes stored in a stash are not tied to a specific branch and can be applied anywhere.
+By design, Git prevents switching branches if you have uncommitted changes in your working directory. However, you can temporarily ‘shelve’ them and return to them later without committing. Using [`git stash`](https://git-scm.com/docs/git-stash) will save the changes in a "stash", and **remove them from the working tree** (i.e. revert the branch code to the last commit). 
+- [`git stash list`](https://git-scm.com/docs/git-stash) shows all stash entries you currently have.
+- You can apply a specific one on top of the working tree in the current branch by using [`git stash pop stash@{<index>}`](https://git-scm.com/docs/git-stash). 
+
+Note that the changes stored in a stash are not tied to a specific branch and can be applied anywhere.
 
 In Visual Studio, open View → Git Changes.
 - To stash your changes, click the dropdown arrow next to the Commit All button and choose Stash All.
@@ -120,9 +124,8 @@ If you try to switch branches without committing or stashing your changes, Visua
 
 ![Stash popup](/labs/lab01/img/stash-popup.png)
 
-#### Merging
-
-Suppose you have just implemented a new feature on a `dev` branch, tested it and want to introduce the changes back to `main`. To make it happen, you may want to **merge** both branches, that is integrate `dev` commits into `main` history. 
+### Merging
+Suppose you have just implemented a new feature on a `dev` branch, tested it and want to introduce the changes back to `main`. To make it happen, you may want to **merge** both branches, that is integrate `dev` commits into `main` history.
 
 ```mermaid
 ---
@@ -145,7 +148,7 @@ gitGraph
    merge dev id: "8-95eea0b"
 ```
 
-Navigate to the branch you want to merge something into, and execute `git merge <other branch>`.
+Navigate to the branch you want to merge something into, and execute [`git merge <other_branch>`](https://git-scm.com/docs/git-merge).
 
 ```bash
 $ git checkout main
@@ -161,9 +164,9 @@ Merges can get very tedious if you run into conflicts (more on that in the next 
 > **Task 2:** Alice is developing her 3D renderer project and wants to test it by setting up a simple scene.
 **NOTE: You need to use the repository set up in Task 0**!
 > 1. Initially, the repository is on the `main` branch. Run the application to see its current state.
-> 2. Create and switch to a new branch `feature`. In the `main.cs` file, find `// TODO 2.2` and uncomment the line of code below. Run the application after the changes to see the result. Stage the file and commit.
+> 2. Create and switch to a new branch `feature`. In the `CubeWindow.cs` file, find `// TODO 2.2` and uncomment the line of code below. Run the application after the changes to see the result. Stage the file and commit.
 > 3. Switch back to the `main` branch and run the application.
-> 4. Switch to the `feature` branch, find `// TODO 2.4` and uncomment the line of code below. Run the application to see the result. Without committing any changes, try switching back to `main` branch. Observe the result. 
+> 4. Switch to the `feature` branch, find `// TODO 2.4` in `CubeWindow.cs` and uncomment the line of code below. Run the application to see the result. Without committing any changes, try switching back to `main` branch. Observe the result. 
 > 5. Stash the changes. Switch back to the `main` branch. Create and switch to a new branch `feature-v2`. Apply the stashed changes, stage them and commit.
 > 6. Merge `feature-v2` into `main`. Run the application to see the result. Then compare with the application on `feature` branch.
 > 7. Delete both `feature` and `feature-v2` branches.
@@ -196,26 +199,36 @@ $ git remote -v
 origin  git@github.com:ocornut/imgui.git (fetch)
 origin  git@github.com:ocornut/imgui.git (push)
 ```
-You may want to add multiple remotes, each for different collaborators or hosting websites (for example, one can have origin pointing to GitHub and backup pointing to another server). Simply `git remote add <shortname> <url>`. Note that _shortname_ is used for referencing in commands, so it can be anything you want. If you wish to change the shortname, run `git remote rename <old_shortname> <new_shortname>`. To 'unhook' a remote, use `git remote remove <shortname>`.
+- You may want to add multiple remotes, each for different collaborators or hosting websites (for example, one can have origin pointing to GitHub and backup pointing to another server). Simply `git remote add <shortname> <url>`.
+- If you wish to change the shortname, run `git remote rename <old_shortname> <new_shortname>`. 
+- To 'unhook' a remote, use `git remote remove <shortname>`.
 
-In Visual Studio, open `Git -> Manage Remotes...`. You will see a list of all currently configured remotes for your local repository. To add a new one, click `Add` and type in the name as well as the URL (for now type in the same URL for both `Fetch` and `Push`). You can remove a remote with the `Remove` button, or edit details with `Edit`.
+Note that _shortname_ is used for referencing in commands, so it can be anything you want. 
+
+In Visual Studio, open `Git -> Manage Remotes...`. 
+- You will see a list of all currently configured remotes for your local repository. 
+- To add a new one, click `Add` and type in the name as well as the URL (for now type in the same URL for both `Fetch` and `Push`). 
+- You can remove a remote with the `Remove` button, or edit details with `Edit`.
 
 ![Remotes](/labs/lab01/img/remotes.png)
 
-### Sharing your work
-Now that you know how remotes work, you can use them to actually share code between local and remote repositories.
-
-#### Fetching and pulling
+### Fetching and pulling
 Since remote repositories are separate from your local copies, any data within them can change in the meantime and cause your local repository to be behind. Someone might have added a new branch, made several commits or deleted a bunch of files. To get that new data, you can run [`git fetch <remote>`](https://git-scm.com/docs/git-fetch). This **will not update the code**, only Git-specific objects and references. If you want to actually incorporate the changes, you need to use [`git pull <remote>`](https://git-scm.com/docs/git-pull).
 
-In Visual Studio, open `View -> Git Changes`. Next to the branch name, the first icon (a dotted downward arrow) fetches data, and the second icon (a solid downward arrow) pulls data. You can see how many new commits (relative to the upstream branch) are available to pull, displayed under the branch name.
+In Visual Studio, open `View -> Git Changes`. 
+- Next to the branch name:
+    - the first icon (a dotted downward arrow) fetches data,
+    - the second icon (a solid downward arrow) pulls and merges the data. 
+- You can see how many new commits (relative to the upstream branch) are available to pull, displayed under the branch name.
 
 ![Fetch pull](/labs/lab01/img/fetchpull.png)
 
-#### Pushing
+### Pushing
 When you want to share your code, you have to push it to the corresponding branch on the remote repository with [`git push <remote> <branch>`](https://git-scm.com/docs/git-push). When you push for the first time, Git may ask you to set an upstream branch - this just tells Git which remote branch your local branch should sync with by default. You can read more about remote branches [here](https://git-scm.com/book/en/v2/Git-Branching-Remote-Branches).
 
-In Visual Studio, open `View -> Git Changes`. The third icon next to the branch name (a solid upward arrow) pushes the local changes to the upstream branch. You can also see how many new commits (relative to the upstream branch) will be pushed, displayed under the branch name.
+In Visual Studio, open `View -> Git Changes`. 
+- The third icon next to the branch name (a solid upward arrow) pushes the local changes to the upstream branch. 
+- You can also see how many new commits (relative to the upstream branch) will be pushed, displayed under the branch name.
 
 ![Push](/labs/lab01/img/push.png)
 
@@ -223,7 +236,7 @@ There are two cases in which you will not be able to push your changes:
 1. You do not have permissions to write to the branch (a safeguard to prevent you from accidentally breaking important sections of code).
 2. Somebody else pushed changes before you. In this case, you need to pull the recent changes, merge them into your branch, and then push again.
 
-#### Conflicts
+### Conflicts
 Working in parallel on the same codebase means that the same portions of code can be changed in multiple places. If you try to merge those changes you will inevitably run into **merge conflicts**. Simply put, these happen when Git cannot automatically merge changes. Think of a file that one developer modifies, and another deletes. Or a code section that is modified by three developers independently. 
 ```
  <<<<<<< HEAD
@@ -240,7 +253,10 @@ If you are using an IDE (like Visual Studio) then you will have a nice interface
 2. Keep the correct code (delete unwanted changes).
 3. Stage the resolved file and finish the merge with a commit.
 
-In Visual Studio, once you pull changes and there are conflicts, you can click each conflicting file and choose whether to keep the `Incoming` or `Current` option, while seeing the `Result` preview underneath. After all conflicts are resolved, click `Accept Merge` to finish.
+In Visual Studio, once you pull changes and there are conflicts:
+- You can click each conflicting file and choose whether to keep the `Incoming` or `Current` option,
+- you can see the `Result` preview underneath.
+After all conflicts are resolved, click `Accept Merge` to finish.
 
 ![conflict](/labs/lab01/img/conflict.png)
 
@@ -281,9 +297,9 @@ You can get the full commit hash using the 3 dots in the commit panel:
 ![Commit hash](/labs/lab01/img/commit-hash.png)
 
 Previously we used [`git checkout`](https://git-scm.com/docs/git-checkout) to switch branches  (today, `git switch` is recommended for branch switching). But `git checkout` can do more: you can also check out a specific commit by providing its hash. In general, this command changes what the `HEAD` pointer refers to.  
-The *working tree*—the current version of your files—always reflects the commit that `HEAD` points to. `HEAD` can be in one of two states:
-1. **Normal state** – `HEAD` points to a branch.  The working tree always reflects the tip of that branch. You enter this state when you run `git checkout <branch-name>`.
-2. **Detached state** – `HEAD` points directly to a commit (which may or may not be the tip of a branch). You enter this state when you run `git checkout <commit>`.
+The *working tree* --- the current version of your files --- always reflects the commit that `HEAD` points to. `HEAD` can be in one of two states:
+1. **Normal state** -- `HEAD` points to a branch.  The working tree always reflects the tip of that branch. You enter this state when you run `git checkout <branch-name>`.
+2. **Detached state** -- `HEAD` points directly to a commit (which may or may not be the tip of a branch). You enter this state when you run `git checkout <commit>`.
 
 You can check your current state by invoking `git status`. If you have any uncommitted work in your current working tree, a common approach before checking out, is to stash it or create a WIP (Work In Progress) commit before the checkout.
 
