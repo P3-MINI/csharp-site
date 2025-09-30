@@ -248,7 +248,7 @@ In Visual Studio, once you pull changes and there are conflicts, you can click e
 
 ## Going back in time
 
-Imagine that you’ve refactored your codebase and believe this refactor sped up your application.To prove it, you need to benchmark your current version and the previous one. But what if you don’t have an old executable built? You can simply go back to a commit before the refactor and build the older version. One of Git’s many benefits is how easy it makes this.
+Imagine that you’ve refactored your codebase and believe this refactor sped up your application. To prove it, you need to benchmark your current version and the previous one. But what if you don’t have an old executable built? You can simply go back to a commit before the refactor and build the older version. One of Git’s many benefits is how easy it makes this.
 
 The `git log` command shows the commit history of the current branch. Each commit has its own *hash*, which uniquely identifies it and can be used as an argument in other Git commands.
 
@@ -276,7 +276,7 @@ and see the `git diff` result:
 
 ![Git diff](/labs/lab01/img/git-diff.png)
 
-You can get the full commit hash using by clicking 3 dots in the commit panel:
+You can get the full commit hash using the 3 dots in the commit panel:
 
 ![Commit hash](/labs/lab01/img/commit-hash.png)
 
@@ -285,7 +285,7 @@ The *working tree*—the current version of your files—always reflects the com
 1. **Normal state** – `HEAD` points to a branch.  The working tree always reflects the tip of that branch. You enter this state when you run `git checkout <branch-name>`.
 2. **Detached state** – `HEAD` points directly to a commit (which may or may not be the tip of a branch). You enter this state when you run `git checkout <commit>`.
 
-You can check your current state by invoking `git status`. If you have any uncommited work in your current working tree, a common approach before checking out, is to stash it or create a WIP (Work In Progress) commit before the checkout.
+You can check your current state by invoking `git status`. If you have any uncommitted work in your current working tree, a common approach before checking out, is to stash it or create a WIP (Work In Progress) commit before the checkout.
 
 ```bash
 $ git add .
@@ -339,7 +339,7 @@ If you didn't stash or WIP-commit your changes, a dialog will be shown:
 
 ![Checkout dialog](/labs/lab01/img/checkout-dialog.png)
 
-The discard option is equivalent of the aforementioned `--force`, the stash option will invoke `git stash` command and the bring changes option will leave make the changes available on the commit you are checking out to (if the changes are conflicting you have to resolve the conflicts).
+The discard option is equivalent to the aforementioned `--force`, the stash option will invoke `git stash` command and the bring changes option will leave the changes available on the commit you are checking out to (if the changes are conflicting you have to resolve the conflicts).
 
 How to get back to "the present" (the normal state)? You have to choose the branch you want to work with and invoke `git checkout <branch-name>`.
 
@@ -382,7 +382,7 @@ In Visual Studio navigate to `View->Git Repository`, right click on the detached
 
 ![New branch from commit](/labs/lab01/img/new-branch-from-commit.png)
 
-It's recommended to read [this section in docs](https://git-scm.com/docs/git-checkout#_detached_head).
+It's recommended to read [this section in the docs](https://git-scm.com/docs/git-checkout#_detached_head).
 
 Now imagine that when building your `C` project with `make`, the process fails and you suspect that the `Makefile` is corrupted. In such a situation you probably want to return to the previous `Makefile` version, but leave the rest of your files in the current state. The `git checkout` command allows you to do so by providing a file as an argument:
 
@@ -400,7 +400,7 @@ $ git reset --soft HEAD^ # equivalent of git reset --soft HEAD~1
 
 The `git reset` might work in one of 3 modes:
 1. *soft mode* (set with `--soft`): Index will not be changed, the staged files remain the same. Your working directory doesn't change.
-2. *mixed mode* (set with `--mixed`, used by default): Your currently staged files will be unstaged but your working directory will not change (you don't lose any of the edits you made). 
+2. *mixed mode* (set with `--mixed`, the default): Your currently staged files will be unstaged but your working directory will not change (you don't lose any of the edits you made). 
 3. *hard mode* (set with `--hard`): Resets to match the commit. Everything after the specified commit **will be lost** (including uncommitted changes).
 
 In Visual Studio you can use `Git Repository` panel to reset the changes:
@@ -590,7 +590,7 @@ You can use `--root` option to rebase all commits that are reachable from the cu
 $ git rebase -i --root
 ```
 
-This will open the text editor of your choice with commands that will be applied on your branch commits. By default every commit will have `pick` command applied. The text editor contains a straight-forward instructions for each command that you can use.
+This will open the text editor of your choice with commands that will be applied on your branch commits. By default every commit will have `pick` command applied. The text editor contains a straightforward instructions for each command that you can use.
 
 ```
 pick a11f874 # Add Update method
@@ -671,7 +671,7 @@ gitGraph
     commit id: "A"
 ```
 
-To change the parent branch of `topic` to `master` (example scenario: the functionality that `topic` depends on, was merged to the `master` which is more stable branch). We can use the following command
+To change the parent branch of `topic` to `master` (example scenario: the functionality that `topic` depends on, was merged to `master` which is more stable branch). We can use the following command
 
 ```bash
 $ git rebase --onto master next topic
@@ -748,8 +748,8 @@ gitGraph
 
 It gives you a possibility to inject new commits or reorder/drop them.
 
-> **_Task 5:_** Bob and his colleagues were asked to write the USOS backend application (download the project files: [`task5.zip`](/labs/lab01/task5.zip)). Bob created his feature branch `bob/feature/student-service` to implement the service that manages the students. Unfortunately his colleagues made some changes to the database related code and merged them to `master` which made the Bob's brach behind.
+> **_Task 5:_** Bob and his colleagues were asked to write the USOS backend application (download the project files: [`task5.zip`](/labs/lab01/task5.zip)). Bob created his feature branch `bob/feature/student-service` to implement the service that manages the students. Unfortunately his colleagues made some changes to the database related code and merged them to `master` which made Bob's brach behind.
 >
 >1. Rebase the Bob's branch to follow the updated `master` branch and resolve the conflicts.
->2. Make the `Add Update method` commit more descriptive by renaming it to `Add Update method to StudentDbManger`.
+>2. Make the `Add Update method` commit more descriptive by renaming it to `Add Update method to StudentDbManager`.
 >3. Create a new commit with message `Add welcome message` between `Add Update method` and `Add Student service` on the Bob's branch commits. The commit adds `Console.WriteLine("Welcome!")` at the top of the `Program.cs`. (Hint: `git checkout`, `git rebase --onto`)
