@@ -331,6 +331,7 @@ As you can see git is a quite verbose tool. It informed us about the transition 
 $ git status
 HEAD detached at aa5a3e2
 ```
+
 You can checkout using Visual Studio UI by navigating to the `View->Git Repository`, choosing a branch, right clicking on the desired commit and choosing the `Checkout` option:
 
 ![Git checkout commit](/labs/lab01/img/git-checkout-commit.png)
@@ -466,7 +467,7 @@ Create a new branch named `bob/feature/sort/bubble-sort` that contains the bubbl
 Alice has already fixed it on her branch `alice/feature/user-interface` in a commit named `Fix quick sort`. Apply Alice’s fix to the tip of Bob’s branch.
 
 
-## Never stay behind with merge and rebase 
+## Never stay behind: `git merge` and `git rebase`
 
 Imagine that you created a `feature` branch from the `master` branch in order to implement a new feature. In the meantime your team implemented 2 new features and merged them into the master branch. The example situation is depicted below
 
@@ -558,7 +559,7 @@ In Visual Studio use the `Rebase 'master' onto 'feature` option:
 
 Note that the order of `master` and `feature` differs from the merge command. This is because in a merge you bring `master` *into* `feature`, whereas in a rebase you place `feature` onto `master`. If you wish to rebase onto a commit that is not the tip of a branch, you can specify that commit instead of the branch name.
 
-Unfortunately you have to pay for the linear history. First of all `A'` and `A` are not the same commits. If you work with remote repository, there is no other way to update it than using force push. For that reason this method should be avoided on branches managed by many developers. Moreover when rebasing you have to resolve conflicts for every conflicting commit, while merge requires resolving the conflicts with your current branch state only.
+Unfortunately you have to pay for the linear history. First of all `A'` and `A` are not the same commits. If you work with remote repository, there is no other way to update it than using **force push** (to do it safely always use [`--force-with-lease`](https://git-scm.com/docs/git-push#Documentation/git-push.txt---no-force-with-lease)). For that reason this method should be avoided on branches managed by many developers. Moreover when rebasing you have to resolve conflicts for every conflicting commit, while merge requires resolving the conflicts with your current branch state only.
 
 When you run the `git rebase` command the rebase will stop on the commits that are conflicting with the `master` branch. In such a scenario you transition to the rebase state and have 2 options:
 
