@@ -33,20 +33,23 @@ In Visual Studio navigate to `Git -> Create Git Repository`. In the `Create a Gi
 
 ![Init](/labs/lab01/img/git-repository-init-ui.png)
 
-> **Task 0:** Unzip the files found in [task1-2.zip](/labs/lab01/task1-2.zip) and set up a new repository.
+> **Task 0:** Unzip the files found in [`task1-2.zip`](/labs/lab01/task1-2.zip).
+
+ and set up a new repository.
 
 ### Files
 Your codebase consists of at least one source file, and likely many more. To start tracking changes in those, you need to specifically instruct Git to do so. As such, a single file can be in three main states: `modified`, `staged`, and `committed`.
 
+```mermaid
+flowchart TD
+    WD["Working Directory<br/>(<i>modified</i>)"]
+    SA["Staging Area<br/>(<i>staged</i>)"]
+    REPO["Repository<br/>(<i>committed</i>)"]
+
+    WD -->|git add| SA
+    SA -->|git commit| REPO
 ```
-       Working Directory            (modified)
-              | (git add)
-              v
-         Staging Area               (staged)
-              | (git commit)
-              v
-          Repository                (committed)
-```
+
 The basic Git workflow goes as follows:
 1. You modify files in the working directory.
 2. You stage only those changes you want to be part of the next commit (documentation: [`git add`](https://git-scm.com/docs/git-add), [Staging Area](https://git-scm.com/about/staging-area))
@@ -76,13 +79,22 @@ In Visual Studio, open `View -> Git Changes`. You will see a list of all changed
 
 ### Branching
 Git branches are particularly useful when making substantial changes that may risk breaking the entire project. You can think of a branch as a snapshot (a parallel copy of the project history) which you can modify. A basic example would be keeping two branches: `main`, where you have the code that is tested and known to be stable, and `dev` for developing new features or making refactors.
-
-```
-    o---o---o  (main)
-             \
-              o---o---o---o---o  (dev)
-    
-    [o - a single commit]
+```mermaid
+---
+config:
+  gitGraph:
+      mainBranchName: 'main'
+---
+gitGraph
+   commit 
+   commit 
+   commit 
+   branch dev 
+   checkout dev 
+   commit
+   commit
+   commit
+   commit
 ```
 
 To create a new brach, use [`git checkout -b <branch_name>`](https://git-scm.com/docs/git-checkout). If you wish to delete a branch, checkout to another branch and execute [`git branch -d <branch_name>`](https://git-scm.com/docs/git-branch).
@@ -109,12 +121,30 @@ If you try to switch branches without committing or stashing your changes, Visua
 ![Stash popup](/labs/lab01/img/stash-popup.png)
 
 #### Merging
+
 Suppose you have just implemented a new feature on a `dev` branch, tested it and want to introduce the changes back to `main`. To make it happen, you may want to **merge** both branches, that is integrate `dev` commits into `main` history. 
+
+```mermaid
+---
+config:
+  gitGraph:
+      mainBranchName: 'main'
+---
+gitGraph
+   commit 
+   commit 
+   commit 
+   branch dev 
+   checkout dev 
+   commit 
+   commit 
+   commit 
+   commit 
+   commit 
+   checkout main
+   merge dev id: "8-95eea0b"
 ```
-    o---o---o-------------------o (main)
-             \                 /
-              o---o---o---o---o  (dev)
-```
+
 Navigate to the branch you want to merge something into, and execute `git merge <other branch>`.
 
 ```bash
@@ -214,9 +244,7 @@ In Visual Studio, once you pull changes and there are conflicts, you can click e
 
 ![conflict](/labs/lab01/img/conflict.png)
 
-Task: Michał
-
-> **_Task 4:_** Alice and Bob are building a To-Do application. Communication between them failed and they wanted to add a welcome message simultaneously. Alice committed the welcome message to the `master` branch, while Bob created a separate branch `bob/feature/welcome-message` with the new message commit. Merge the Bob's branch with the master branch and resolve the conflict so that the final welcome message is `"Welcome to Alice and Bob's To-Do App!"`.
+> **_Task 3:_** Alice and Bob are building a To-Do application (download the project files: [`task3.zip`](/labs/lab01/task3.zip)). Communication between them failed and they wanted to add a welcome message simultaneously. Alice committed the welcome message to the `master` branch, while Bob created a separate branch `bob/feature/welcome-message` with the new message commit. Merge the Bob's branch with the master branch and resolve the conflict so that the final welcome message is `"Welcome to Alice and Bob's To-Do App!"`.
 
 ## Going back in time
 
@@ -293,7 +321,7 @@ Turn off this advice by setting config variable advice.detachedHead to false
 HEAD is now at aa5a3e2 Previous commit message
 ```
 
-> Tip: You don't have to specify the full hash, the prefix is enough as long as it can uniquely identify the commit. In our example you could write for example `git checkout aa5a`.
+> Tip: You don't have to specify the full hash, the prefix is enough as long as it can uniquely identify the commit. In our example you could write `git checkout aa5a3e` or even `git checkout aa5a`.
 
 > Tip 2: You can refer to a commit by using offset from a reference instead of using the hash directly. For example you can provide `HEAD~2` to refer to the commit that is 2 commits before `HEAD` or `master~3` when you want to refer to a commit that is 3 commits before the tip of the `master` branch.
 
@@ -323,18 +351,27 @@ In Visual Studio, navigate to `View->Git Repository`, right click on the desired
 
 ![Checkout master](/labs/lab01/img/checkout-master.png)
 
-Imagine that after checking out to some commit you want to do some minor changes and save them, e.g. add some timers to your code for benchmarking. You may wonder what would happen if you created new commits when the `HEAD` is in detached state. Let's assume that you checked out to commit `b` and created commits `e` and `f`, the situation is depicted below: 
+Imagine that after checking out to some commit you want to do some minor changes and save them, e.g. add some timers to your code for benchmarking. You may wonder what would happen if you created new commits when the `HEAD` is in detached state. Let's assume that you checked out to commit `B` and created commits `E` and `F`, the situation is depicted below: 
 
-```
-	     HEAD (refers to commit 'f')
-	      |
-	      v
-      e---f
-     /
-a---b---c---d  branch 'master' (refers to commit 'd')
+```mermaid
+---
+config:
+  gitGraph:
+      mainBranchName: 'master'
+---
+gitGraph
+   commit id: "A" 
+   commit id: "B"
+   branch __detached__
+   checkout __detached__
+   commit id: "E"
+   commit type: HIGHLIGHT id: "F" tag: "HEAD"
+   checkout master 
+   commit id: "C" 
+   commit id: "D"
 ```
 
-As you can see the commits were created, but if you checkout now (e.g. to the `master`), the `e` and `f` commits will be deleted by git garbage collection process (not immediately, by default the process prunes commits that are older than ~90 days). The reason is that there is no branch (or tag) that references the commit `f`. To prevent this from happening you must create a branch (or tag) when HEAD references `f` with one of the following commands:
+As you can see the commits were created, but if you checkout now (e.g. to the `master`), the `E` and `F` commits will be deleted by git garbage collection process (not immediately, by default the process prunes commits that are older than ~90 days). The reason is that there is no branch (or tag) that references the commit `F`. To prevent this from happening you must create a branch (or tag) when HEAD references `F` with one of the following commands:
 
 ```bash
 $ git checkout -b <new-branch-name>
@@ -398,7 +435,7 @@ Now you can select the branch that contains the commit you want to cherry pick b
 
 For more examples see [the docs](https://git-scm.com/docs/git-cherry-pick#_examples).
 
-> **_Task 4:_** Bob and Alice are building an application that sorts an input array of numbers.
+> **_Task 4:_** Bob and Alice are building an application that sorts an input array of numbers (download the project files: [`task4.zip`](/labs/lab01/task4.zip)).
 Bob created a feature branch `bob/feature/sort`, implemented bubble sort, and made a commit named `Implement bubble sort`.
 Later, he discovered the quick sort algorithm and replaced the bubble sort with it (`Implement quick sort` commit).
 Finally, he added a commit named `Ad timer` to measure the algorithm’s execution time. 
@@ -407,10 +444,23 @@ Finally, he added a commit named `Ad timer` to measure the algorithm’s executi
 > 1. Bob misspelled the commit message `Ad timer`. Rename it to `Add timer`.
 > 2. Bob wants to compare the execution times of quick sort and bubble sort.
 Create a new branch named `bob/feature/sort/bubble-sort` that contains the bubble sort implementation and the `Add timer` commit. The resulting tree should look like this:
->```
->      Add timer : branch `bob/feature/sort/bubble-sort`
->     /
->    Implement bubble sort---Implement quick sort---Add timer  : branch 'bob/feature/sort' 
+> ```mermaid
+> ---
+> config:
+>   gitGraph:
+>       mainBranchName: 'master'
+> ---
+> gitGraph
+>   commit id: "Init"
+>   branch bob/feature/sort 
+>   commit id: "Add SortExtension"
+>   commit id: "Implement bubble sort"
+>   branch bob/feature/sort/bubble-sort 
+>   checkout bob/feature/sort/bubble-sort
+>   commit id: "Add timer'" 
+>   checkout bob/feature/sort
+>   commit id: "Implement quick sort"
+>   commit id: "Add timer" 
 >```
 > 3. Bob found a bug in his quick sort implementation.
 Alice has already fixed it on her branch `alice/feature/user-interface` in a commit named `Fix quick sort`. Apply Alice’s fix to the tip of Bob’s branch.
@@ -420,10 +470,22 @@ Alice has already fixed it on her branch `alice/feature/user-interface` in a com
 
 Imagine that you created a `feature` branch from the `master` branch in order to implement a new feature. In the meantime your team implemented 2 new features and merged them into the master branch. The example situation is depicted below
 
-```
-          A---B---C feature
-         /
-    D---E---F---G master
+```mermaid
+---
+config:
+  gitGraph:
+      mainBranchName: 'master'
+---
+gitGraph
+   commit id: "D"
+   commit id: "E"
+   branch feature
+   commit id: "A"
+   commit id: "B"
+   commit id: "C"
+   checkout master
+   commit id: "F"
+   commit id: "G"
 ```
 
 In this scenario you probably want to update your `feature` to ensure that you work with the latest version of the codebase. You can achieve this by merging the `master` branch to the `feature` and resolve the possible conflicts.
@@ -438,10 +500,25 @@ In Visual Studio navigate to `View->Git Repository`, checkout to the `feature` b
 
 The resulting graph will look like this:
 
-```
-          A---B---C---H feature
-         /           /
-    D---E-----F-----G master
+
+```mermaid
+---
+config:
+  gitGraph:
+      mainBranchName: 'master'
+---
+gitGraph
+   commit id: "D"
+   commit id: "E"
+   branch feature
+   commit id: "A"
+   commit id: "B"
+   commit id: "C"
+   checkout master
+   commit id: "F"
+   commit id: "G"
+   checkout feature
+   merge master id: "H"
 ```
 
 Now you can continue your work on the `feature` branch with your updated code. 
@@ -451,10 +528,22 @@ They can achieve this with `git rebase` which is not only useful in this scenari
 
 With the `git rebase` approach, instead of merging `master` into feature, you update the commits of the `feature` branch and place it on top of `master`:
 
-```
-                  A'---B'---C' feature
-                 /
-    D---E---F---G master
+```mermaid
+---
+config:
+  gitGraph:
+      mainBranchName: 'master'
+---
+gitGraph
+   commit id: "D"
+   commit id: "E"
+   commit id: "F"
+   commit id: "G"
+   branch feature
+   checkout feature 
+   commit id: "A'"
+   commit id: "B'"
+   commit id: "C'"
 ```
 
 We can achieve this with
@@ -477,7 +566,7 @@ When you run the `git rebase` command the rebase will stop on the commits that a
 
 2. Abort the rebase process with `git rebase --abort`. You will return to the state before calling the `git rebase` command.
 
-In Visual Studio if the conflicts are encountered after rebase, you will se the warning message. You can click the `Resolve the conflicts` hyperlink to navigate to the `Git Changes` panel:
+In Visual Studio if the conflicts are encountered after rebase, you will see the warning message. You can click the `Resolve the conflicts` hyperlink to navigate to the `Git Changes` panel:
 
 ![Resolve the conflicts](/labs/lab01/img/resolve-the-conflicts-hyperlink.png)
 
@@ -540,7 +629,7 @@ pick a328224 # Add example
 #
 ```
 
-When you change the commands for each commit, you can rename, remove or edit them:
+You can rename, remove or edit the commits by changing the commands:
 
 ```
 reword a11f874 # New commit message
@@ -563,62 +652,103 @@ config:
     parallelCommits: true
 ---
 gitGraph
-    commit
-    commit
+    commit id: "A"
+    commit id: "B"
     branch next
-    commit 
-    commit 
-    commit
-    commit
-    commit
+    commit id: "C"
+    commit id: "D"
+    commit id: "E"
+    commit id: "F"
+    commit id: "G"
     branch topic
-    commit
-    commit
-    commit
+    commit id: "H"
+    commit id: "I"
+    commit id: "J"
     checkout master
-    commit 
-    commit 
-    commit
-    commit
+    commit id: "K"
+    commit id: "L"
+    commit id: "M"
+    commit id: "A"
 ```
 
 To change the parent branch of `topic` to `master` (example scenario: the functionality that `topic` depends on, was merged to the `master` which is more stable branch). We can use the following command
 
-```
+```bash
 $ git rebase --onto master next topic
 ```
 
 This will result in the new graph:
 
-```
-    o---o---o---o---o  master
-        |            \
-        |             o'--o'--o'  topic
-         \
-          o---o---o---o---o  next
+```mermaid
+---
+config:
+  gitGraph:
+    mainBranchName: "master"
+    parallelCommits: true
+---
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    branch next
+    commit id: "C"
+    commit id: "D"
+    commit id: "E"
+    commit id: "F"
+    commit id: "G"
+    checkout master
+    commit id: "K"
+    commit id: "L"
+    commit id: "M"
+    commit id: "N"
+    branch topic
+    commit id: "H"
+    commit id: "I"
+    commit id: "J"
 ```
 
 The `--onto` command allows for tricky branch manipulation as well. Imagine the following branch:
 
-```
- E---F---G---H---I---J  topicA
+```mermaid
+---
+config:
+  gitGraph:
+    mainBranchName: "topic"
+    parallelCommits: true
+---
+gitGraph
+    commit id: "E"
+    commit id: "F"
+    commit id: "G"
+    commit id: "H"
+    commit id: "I"
+    commit id: "J"
 ```
 
 When you call:
 
 ```bash
-git rebase --onto E H topicA
+$ git rebase --onto E H topicA
 ```
 
 You will end up with
 
-```bash
-E---H'---I'---J'  topicA
+```mermaid
+---
+config:
+  gitGraph:
+    mainBranchName: "topic"
+    parallelCommits: true
+---
+gitGraph
+    commit id: "E"
+    commit id: "H'"
+    commit id: "I'"
+    commit id: "J'"
 ```
 
 It gives you a possibility to inject new commits or reorder/drop them.
 
-> **_Task 5:_** Bob and his colleagues were asked to write the USOS backend application. Bob created his feature branch `bob/feature/student-service` to implement the service that manages the students. Unfortunately his colleagues made some changes to the database related code and merged them to `master` which made the Bob's brach behind.
+> **_Task 5:_** Bob and his colleagues were asked to write the USOS backend application (download the project files: [`task5.zip`](/labs/lab01/task5.zip)). Bob created his feature branch `bob/feature/student-service` to implement the service that manages the students. Unfortunately his colleagues made some changes to the database related code and merged them to `master` which made the Bob's brach behind.
 >
 >1. Rebase the Bob's branch to follow the updated `master` branch and resolve the conflicts.
 >2. Make the `Add Update method` commit more descriptive by renaming it to `Add Update method to StudentDbManger`.
