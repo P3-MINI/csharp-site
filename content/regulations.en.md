@@ -55,8 +55,8 @@ Any publicly available code fragments used must not constitute a significant por
 - Each stage is checked and graded during classes.
 - If a student has an excused absence, they may solve the laboratory task at home within a week. In this case, conversion points are awarded at the end of the semester.
   - Conversion points are calculated as follows:
-    - {{< katex >}}S_1{{< /katex >}} is the average score of other students for that task.
-    - {{< katex >}}S_2{{< /katex >}} is the student's average score for other tasks.
+    - {{< katex >}}S_1{{< /katex >}} is the average score of other students who were present for that task.
+    - {{< katex >}}S_2{{< /katex >}} is the student's average score for other tasks on which they were present.
     - {{< katex >}}S_3{{< /katex >}} is the result of the laboratory task solved at home.
   - The formula for points is: {{< katex >}} \frac{(S_1 + S_2)}{2} \cdot \frac{S_3}{12} {{< /katex >}}.
 - Laboratory tasks are done using the Arch Linux or Windows system on laboratory computers.
