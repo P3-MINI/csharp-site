@@ -101,9 +101,21 @@ In MSBuild files, to reference the values of defined properties and items, a spe
 
 Each item in MSBuild, in addition to its value (e.g., a file path), can also have **metadata**. Metadata is additional information associated with a given item that can be defined and used in the build process.
 
+#### Predefined Metadata
+
+Each item has a set of predefined metadata, regardless of whether it was explicitly defined. Here are some of them:
+
+*   **`%(Identity)`**: The value of the item itself (e.g., `main.cpp`).
+*   **`%(Filename)`**: The file name without the extension (e.g., `main`).
+*   **`%(Extension)`**: The file extension (e.g., `.cpp`).
+*   **`%(FullPath)`**: The full, absolute path to the file.
+*   **`%(RelativeDir)`**: The relative path to the directory containing the file.
+
+A full list can be found in the [documentation](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-well-known-item-metadata).
+
 #### Metadata Syntax: `%()`
 
-To reference an item's metadata, the `%(MetadataName)` syntax is used. If we reference metadata within a target where a list of items is being processed (so-called "batching"), MSBuild iterates over each item and makes its metadata available.
+To reference an item's metadata, the `%(MetadataName)` syntax is used. If we reference metadata within a target where a list of items is being processed (so-called "batching"), MSBuild groups the items based on that metadata's value and executes the task for each of those groups.
 
 **Example:**
 
@@ -134,17 +146,7 @@ Compiling main.cpp;log.cpp using standard c++20...
 Compiling legacy.cpp using standard c++11...
 ```
 
-#### Predefined Metadata
-
-Each item has a set of predefined metadata, regardless of whether it was explicitly defined. Here are some of them:
-
-*   **`%(Identity)`**: The value of the item itself (e.g., `main.cpp`).
-*   **`%(Filename)`**: The file name without the extension (e.g., `main`).
-*   **`%(Extension)`**: The file extension (e.g., `.cpp`).
-*   **`%(FullPath)`**: The full, absolute path to the file.
-*   **`%(RelativeDir)`**: The relative path to the directory containing the file.
-
-A full list can be found in the [documentation](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-well-known-item-metadata).
+MSBuild divided the items into two batches (groups) and executed the task for each one.
 
 #### Item Transformations
 
@@ -321,11 +323,24 @@ The following example shows a typical project file, created with the command `do
 </Project>
 ```
 
-This file, although much shorter, contains all the necessary logic to build a simple console application - it imports it from `Microsoft.NET.Sdk`. These imported files can be found in the .NET SDK installation directory. On Windows, this is typically `C:\Program Files\dotnet\sdk\[version]\Sdks\`, and on Linux `/usr/share/dotnet/sdk/[version]/Sdks/`.
+This file, although much shorter, contains all the necessary logic to build a simple console application - it imports it from `Microsoft.NET.Sdk`. These imported files can be found in the .NET SDK installation directory. On Windows, this is typically `C:\Program Files\dotnet\sdk\[version]\Sdks\`, and on Linux `/usr/share/dotnet/sdk/[version]/Sdks/`.  We'll be working with such files for the rest of the semester. Working with them mainly involves **editing the properties and items defined in the SDK and hooking into existing targets**.
+
+### Properties Defined in the SDK
+
+Properties control the entire build flow. Some of them, which are changed most frequently:
+
+* **`TargetFramework`**: Specifies the target version of the .NET framework (e.g., net8.0). It influences which language version can be used in the project and subsequent compatibility with other programs.
+* **`OutputType`**: The type of the output file, `Exe` (application) or `Library` (library).
+* **`Nullable`**: Enables or disables the `Nullable Reference Types` feature in C#. It is most often set to `enable`.
+* **`LangVersion`**: The language version; it can also be set independently of `TargetFramework`.
+* **`CodeAnalysisTreatWarningsAsErrors`**: Causes all compiler warnings to be treated as errors.
+* **`NoWarn`**: A list of warning codes (e.g., 'CS1591') that the compiler should ignore.
+
+More complete list of properties can be found in the [documentation](https://learn.microsoft.com/dotnet/core/project-sdk/msbuild-props).
 
 ### Predefined Items from the SDK
 
-SDK-style projects automatically define many items that make work easier. Here are some of them:
+SDK-style projects define many items. Here are some of them:
 
 *   **`Compile`**: Source code files to be compiled (by default, all `.cs` files in the project).
 *   **`EmbeddedResource`**: Files to be embedded in the resulting assembly.
@@ -338,7 +353,7 @@ A full list of popular items can be found here: [Common MSBuild project items](h
 
 ### Logging and Diagnosing Problems
 
-MSBuild offers advanced logging options that are invaluable when diagnosing build problems.
+MSBuild offers logging options that are invaluable when diagnosing build problems.
 
 *   **Log verbosity:**
     ```bash

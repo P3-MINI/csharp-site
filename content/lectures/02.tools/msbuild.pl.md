@@ -101,9 +101,21 @@ W plikach MSBuild, aby odwołać się do wartości zdefiniowanych właściwości
 
 Każdy item w MSBuild, oprócz swojej wartości (np. ścieżki do pliku), może posiadać również **metadane**. Metadane to dodatkowe informacje powiązane z danym itemem, które można definiować i wykorzystywać w procesie budowania.
 
+#### Predefiniowane metadane (Predefined metadata)
+
+Każdy item posiada zestaw predefiniowanych metadanych, niezależnie od tego, czy zostały zdefiniowane jawnie. Oto niektóre z nich:
+
+*   **`%(Identity)`**: Wartość samego itemu (np. `main.cpp`).
+*   **`%(Filename)`**: Nazwa pliku bez rozszerzenia (np. `main`).
+*   **`%(Extension)`**: Rozszerzenie pliku (np. `.cpp`).
+*   **`%(FullPath)`**: Pełna, absolutna ścieżka do pliku.
+*   **`%(RelativeDir)`**: Ścieżka względna do katalogu, w którym znajduje się plik.
+
+Pełną listę można znaleźć w [dokumentacji](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-well-known-item-metadata).
+
 #### Składnia metadanych: `%()`
 
-Aby odwołać się do metadanych itemu, używa się składni `%(NazwaMetadanej)`. Jeśli odwołujemy się do metadanych wewnątrz targetu, w którym przetwarzana jest lista itemów (tzw. "batching"), MSBuild iteruje po każdym itemie i udostępnia jego metadane.
+Aby odwołać się do metadanych itemu, używa się składni `%(NazwaMetadanej)`. Jeśli odwołujemy się do metadanych wewnątrz targetu, w którym przetwarzana jest lista itemów (tzw. "batching"), MSBuild grupuje itemy po metadanych i wykona zadanie dla każdej z tych grup.
 
 **Przykład:**
 
@@ -134,17 +146,7 @@ Kompilowanie main.cpp;log.cpp przy użyciu standardu c++20...
 Kompilowanie legacy.cpp przy użyciu standardu c++11...
 ```
 
-#### Predefiniowane metadane (Predefined metadata)
-
-Każdy item posiada zestaw predefiniowanych metadanych, niezależnie od tego, czy zostały zdefiniowane jawnie. Oto niektóre z nich:
-
-*   **`%(Identity)`**: Wartość samego itemu (np. `main.cpp`).
-*   **`%(Filename)`**: Nazwa pliku bez rozszerzenia (np. `main`).
-*   **`%(Extension)`**: Rozszerzenie pliku (np. `.cpp`).
-*   **`%(FullPath)`**: Pełna, absolutna ścieżka do pliku.
-*   **`%(RelativeDir)`**: Ścieżka względna do katalogu, w którym znajduje się plik.
-
-Pełną listę można znaleźć w [dokumentacji](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-well-known-item-metadata).
+MSBuild podzielił itemy na dwie grupy i dla każdej z nich wykonał zadanie.
 
 #### Transformacje itemów (Item transformations)
 
@@ -321,11 +323,24 @@ Poniższy przykład pokazuje typowy plik projektu, stworzony poleceniem `dotnet 
 </Project>
 ```
 
-Ten plik, mimo że jest znacznie krótszy, zawiera całą potrzebną logikę do zbudowania prostej aplikacji konsolowej - importuje ją z `Microsoft.NET.Sdk`. Te importowane pliki można znaleźć w katalogu instalacyjnym .NET SDK. W systemie Windows jest to zazwyczaj `C:\Program Files\dotnet\sdk\[wersja]\Sdks\`, a na Linuksie `/usr/share/dotnet/sdk/[wersja]/Sdks/`.
+Ten plik, mimo że jest znacznie krótszy, zawiera całą potrzebną logikę do zbudowania prostej aplikacji konsolowej - importuje ją z `Microsoft.NET.Sdk`. Te importowane pliki można znaleźć w katalogu instalacyjnym .NET SDK. W systemie Windows jest to zazwyczaj `C:\Program Files\dotnet\sdk\[wersja]\Sdks\`, a na Linuksie `/usr/share/dotnet/sdk/[wersja]/Sdks/`. Z takimi plikami będziemy pracować przez resztę semestru. Praca z nimi polega głównie na **edycji właściwości i itemów zdefiniowanych w SDK i podpinaniu się pod istniejące targety**.
 
-### Predefiniowane itemy z SDK
+### Właściwości zdefiniowane w SDK
 
-Projekty w stylu SDK automatycznie definiują wiele elementów, które ułatwiają pracę. Oto niektóre z nich:
+Właściwości sterują całym przepływem budowania. Kilka z nich, które najczęściej się zmienia:
+
+*   **`TargetFramework`**: Określa docelową wersję środowiska .NET (np. net8.0). Ma wpływ na to jakiej wersji języka można używać w projekcie i późniejszą kompatybilność z innymmi programami.
+*   **`OutputType`**: Typ pliku wynikowego, `Exe` (aplikacja) lub `Library` (biblioteka).
+*   **`Nullable`**: Włącza lub wyłącza funkcję `Nullable Reference Types` w C#. Najczęściej ustawiana na `enable`.
+*   **`LangVersion`**: Wersję języka, można też ustawić niezależnie od `TargetFramework`.
+*   **`CodeAnalysisTreatWarningsAsErrors`**: Powoduje, że wszystkie ostrzeżenia kompilatora są traktowane jako błędy.
+*   **`NoWarn`**: Lista kodów ostrzeżeń (np. 'CS1591'), które kompilator ma ignorować.
+
+Dokładniejszą listę właściwości można znaleźć w [dokumentacji](https://learn.microsoft.com/dotnet/core/project-sdk/msbuild-props).
+
+### Itemy zdefiniowane w SDK
+
+Projekty w stylu SDK definiują wiele itemów. Oto niektóre z nich:
 
 *   **`Compile`**: Pliki z kodem źródłowym do skompilowania (domyślnie wszystkie pliki `.cs` w projekcie).
 *   **`EmbeddedResource`**: Pliki, które mają zostać osadzone w wynikowym assembly.
@@ -334,11 +349,11 @@ Projekty w stylu SDK automatycznie definiują wiele elementów, które ułatwiaj
 *   **`ProjectReference`**: Odwołania do innych projektów.
 *   **`PackageReference`**: Odwołania do pakietów NuGet.
 
-Pełną listę popularnych elementów można znaleźć tutaj: [Common MSBuild project items](https://learn.microsoft.com/visualstudio/msbuild/common-msbuild-project-items).
+Pełną listę itemów można znaleźć w [dokumentacji](https://learn.microsoft.com/visualstudio/msbuild/common-msbuild-project-items).
 
 ### Logowanie i diagnozowanie problemów
 
-MSBuild oferuje zaawansowane opcje logowania, które są nieocenione przy diagnozowaniu problemów z budowaniem.
+MSBuild oferuje opcje logowania, które są nieocenione przy diagnozowaniu problemów z budowaniem.
 
 *   **Szczegółowość logów:**
     ```bash
