@@ -22,4 +22,4 @@ menu:
 - Tomasz Herman
 - Piotr Krasowski
 - Anna Kozłowska
-- Piotr Skibiński
+- Piotr Nieciecki
