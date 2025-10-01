@@ -1,0 +1,27 @@
+<Project InitialTargets="Initial" DefaultTargets="Default">
+
+  <Target Name="Initial">
+    <Message Text="This is the Initial target, it always runs first." Importance="high" />
+  </Target>
+
+  <Target Name="Default" DependsOnTargets="Dependency">
+    <Message Text="This is the Default target." Importance="high" />
+  </Target>
+
+  <Target Name="CommandLine">
+    <Message Text="This is the CommandLine target." Importance="high" />
+  </Target>
+
+  <Target Name="Dependency">
+    <Message Text="This is the Dependency target, it runs because Default depends on it." Importance="high" />
+  </Target>
+
+  <Target Name="BeforeDefault" BeforeTargets="Default">
+    <Message Text="This target runs Before the Default target." Importance="high" />
+  </Target>
+
+  <Target Name="AfterDefault" AfterTargets="Default">
+    <Message Text="This target runs After the Default target." Importance="high" />
+  </Target>
+
+</Project>

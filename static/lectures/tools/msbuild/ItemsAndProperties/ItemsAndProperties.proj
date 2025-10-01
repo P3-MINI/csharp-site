@@ -1,0 +1,45 @@
+<Project DefaultTargets="Showcase" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <Compiler>g++</Compiler>
+  </PropertyGroup>
+
+  <Target Name="ShowProperties">
+    <Message Text="Compiler value: $(Compiler)" Importance="high" />
+  </Target>
+
+  <ItemGroup>
+    <CppSource Include="main.cpp">
+      <CppLanguageVersion>c++latest</CppLanguageVersion>
+    </CppSource>
+    <CppSource Include="log.cpp;utils.cpp">
+      <CppLanguageVersion>c++23</CppLanguageVersion>
+    </CppSource>
+    <CppSource Include="legacy.cpp">
+      <CppLanguageVersion>c++11</CppLanguageVersion>
+    </CppSource>
+  </ItemGroup>
+
+  <Target Name="ShowItems">
+    <Message Text="CppSource values: @(CppSource)" Importance="high" />
+  </Target>
+
+  <Target Name="ShowMetadata">
+    <Message Text="Item: %(CppSource.Identity), CppLanguageVersion: %(CppSource.CppLanguageVersion)" Importance="high" />
+  </Target>
+
+  <Target Name="ShowTransforms">
+    <ItemGroup>
+      <ObjectFiles Include="@(CppSource -> '%(Filename).o')" />
+    </ItemGroup>
+    <Message Text="SourceFiles: @(CppSource)" Importance="high" />
+    <Message Text="ObjectFiles: @(ObjectFiles)" Importance="high" />
+  </Target>
+
+  <Target Name="ShowBatching">
+    <Message Text="Compiling @(CppSource) which is a %(CppLanguageVersion) file." Importance="high" />
+  </Target>
+
+  <Target Name="Showcase" DependsOnTargets="ShowProperties;ShowItems;ShowMetadata;ShowTransforms;ShowBatching" />
+
+</Project>
