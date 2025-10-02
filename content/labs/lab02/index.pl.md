@@ -23,7 +23,7 @@ Celem jest dodanie do projektu wsparcia dla dwóch konfiguracji budowania: `Debu
 
 Gdy skończysz zbuduj z lini poleceń aplikację w konfiguracji deweloperskiej i produkcyjnej.
 
-#### 2. Kompilacja przyrostowa (Incremental Builds)
+### 2. Kompilacja przyrostowa (Incremental Builds)
 
 Żeby przyspieszyć proces budowania, często implementuje się tzw. kompilację przyrostową. Oznacza to, że kompilowane powinny być tylko te pliki, które zostały zmienione od ostatniej kompilacji. MSBuild realizuje to zadanie poprzez porównywanie sygnatur czasowych plików zdefiniowanych w atrybutach `Inputs` i `Outputs` danego targetu. Jeżeli wszystkie pliki wyjściowe (`Outputs`) są nowsze niż wszystkie pliki wejściowe (`Inputs`), MSBuild pomija wykonanie danego targetu, oszczędzając czas.
 
@@ -34,7 +34,7 @@ Gdy skończysz zbuduj z lini poleceń aplikację w konfiguracji deweloperskiej i
 
 Wyczyść projekt targetem `Clean`, następnie zbuduj go dwa razy targetem `Build`.
 
-#### 3. Tworzenie paczki dystrybucyjnej
+### 3. Tworzenie paczki dystrybucyjnej
 
 Celem jest zautomatyzowanie tworzenia paczki `.zip` zawierającej gotową aplikację oraz dodatkowe pliki.
 
