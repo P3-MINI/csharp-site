@@ -1,0 +1,26 @@
+Constructing instance of type TypeCrafter.Customer...
+Provide a value of type Int32 for Id:
+2
+Provide a value of type String for Name:
+John
+Provide a value of type Decimal for Balance:
+1,37
+Customer 2: John (Balance: 1,37 zł)
+Constructing instance of type TypeCrafter.Invoice...
+Provide a value of type Guid for Id:
+2aa8fef5-c183-42bf-9a7b-563ade610603
+Provide a value of type String for Description:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit
+Provide a value of type Decimal for Amount:
+1,23
+Type of property 'TypeCrafter.Customer Customer' is not parsable.
+Attempting to craft object recursively:
+Constructing instance of type TypeCrafter.Customer...
+Provide a value of type Int32 for Id:
+2
+Provide a value of type String for Name:
+Paul
+Provide a value of type Decimal for Balance:
+2,34
+Invoice 2aa8fef5-c183-42bf-9a7b-563ade610603: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit', Amount: 1,23 zł, Customer: Customer 2: Paul (Balance: 2,34 zł)
+Press any key to continue...
