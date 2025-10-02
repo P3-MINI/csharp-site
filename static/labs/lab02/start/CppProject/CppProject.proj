@@ -27,8 +27,6 @@
 
   <Target Name="Clean">
     <Message Text="Cleaning..." Importance="high" />
-    <Delete Files="$(OutputPath)$(OutputName)" />
-    <Delete Files="@(CppSource->'$(OutputPath)%(filename).o')" />
     <RemoveDir Directories="$(OutputPath)" />
   </Target>
 
