@@ -1,4 +1,5 @@
 using MiniTest;
+using MiniTest.Attributes;
 using Moq;
 
 namespace AuthenticationService.Tests;

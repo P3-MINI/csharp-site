@@ -1,10 +1,19 @@
 ﻿using System.Reflection;
-using MiniTest;
+using MiniTest.Attributes;
 
 namespace MiniTestRunner;
 
+/// <summary>
+/// Entry point for the MiniTestRunner application.
+/// Responsible for loading test assemblies, discovering test classes and methods, and executing them.
+/// </summary>
 class Program
 {
+    /// <summary>
+    /// Main method that runs the test runner.
+    /// Iterates over provided assembly paths, loads each assembly, discovers tests, and executes them.
+    /// </summary>
+    /// <param name="args">An array of file paths to test assemblies.</param>
     static void Main(string[] args)
     {
         foreach (var path in args)
@@ -31,12 +40,23 @@ class Program
         }
     }
 
+    /// <summary>
+    /// Loads a test assembly from the specified path using a custom <see cref="TestLoadContext"/>.
+    /// </summary>
+    /// <param name="path">The file path to the test assembly.</param>
+    /// <returns>A tuple containing the <see cref="TestLoadContext"/> and the loaded <see cref="Assembly"/>.</returns>
     public static (TestLoadContext, Assembly) LoadTestAssembly(string path)
     {
         var context = new TestLoadContext(path);
         var assembly = context.LoadFromAssemblyPath(Path.GetFullPath(path));
         return (context, assembly);
     }
+
+    /// <summary>
+    /// Discovers all test classes and their associated test methods in the given assembly.
+    /// </summary>
+    /// <param name="assembly">The assembly to scan for test classes.</param>
+    /// <returns>A list of <see cref="TestClass"/> instances representing discovered tests.</returns>
     public static List<TestClass> FindAllTests(Assembly assembly)
     {
         using var _ = new ConsoleColoring(ConsoleColor.Yellow);
@@ -109,14 +129,24 @@ class Program
         return testClasses;
     }
 
+    /// <summary>
+    /// Validates that the provided objects match the expected parameter types.
+    /// </summary>
+    /// <param name="objects">The array of objects to validate.</param>
+    /// <param name="types">The array of expected parameter types.</param>
+    /// <returns><c>true</c> if all objects match the expected types; otherwise, <c>false</c>.</returns>
     private static bool ValidateTypes(object?[] objects, Type[] types)
     {
-        if (objects.Length != types.Length) return false;
+        if (objects.Length != types.Length)
+        {
+            return false;
+        }
+
         for (var index = 0; index < objects.Length; index++)
         {
             var obj = objects[index];
             var type = types[index];
-            
+
             if (!type.IsInstanceOfType(obj))
             {
                 return false;
