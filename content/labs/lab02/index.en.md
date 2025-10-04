@@ -232,7 +232,7 @@ In this way, for the `Validate` method, we have defined the behavior that this m
 A good unit test should be:
 
 * **fast** - there can be thousands of tests in a project; we want to get quick feedback on whether our changes cause regression.
-* **independent** - a test should check only one, specific "unit" of code and be isolated from external dependencies (database, network, UI). Applying the **SOLID** principles (especially the **Dependency Inversion Principle**) is key to achieving this isolation, as it allows the use of so-called "mocks" instead of real dependencies.
+* **independent** - a test should check only one, specific "unit" of code and be isolated from external dependencies (database, network, UI). Applying the [**SOLID**](https://en.wikipedia.org/wiki/SOLID) principles (especially the **Dependency Inversion Principle**) is key to achieving this isolation, as it allows the use of so-called "mocks" instead of real dependencies.
 * **repeatable** - a test must give the same result every time, regardless of the environment in which it is run (e.g., on a developer's machine, on a CI/CD server). It should not depend on external factors such as the current date/time, random values, or system configuration.
 * **simple** - a test should be short - about 3-5 lines - and self-documenting. It is important that in the test we only define the input, call the test method, and check the output; under no circumstances do we write logic in it, especially the logic of the tested method.
 

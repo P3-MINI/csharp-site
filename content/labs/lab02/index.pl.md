@@ -232,7 +232,7 @@ W ten sposób, dla metody `Validate` zdefiniowaliśmy zachowanie, jakie powinna 
 Dobry test jednostkowy powinien być:
 
 * **szybki** - testów w projekcie może być tysiące, chcemy dostać szybki feedback czy nasze zmiany nie powodują regresji.
-* **niezależny** - test powinien sprawdzać tylko jedną, konkretną "jednostkę" kodu i być odizolowany od zewnętrznych zależności (baza danych, sieć, UI). Stosowanie zasad **SOLID** (a zwłaszcza **zasady odwrócenia zależności**) jest kluczowe do osiągnięcia tej izolacji, ponieważ pozwala na użycie tzw. "mocków" zamiast prawdziwych zależności.
+* **niezależny** - test powinien sprawdzać tylko jedną, konkretną "jednostkę" kodu i być odizolowany od zewnętrznych zależności (baza danych, sieć, UI). Stosowanie zasad [**SOLID**](https://en.wikipedia.org/wiki/SOLID) (a zwłaszcza **zasady odwrócenia zależności**) jest kluczowe do osiągnięcia tej izolacji, ponieważ pozwala na użycie tzw. "mocków" zamiast prawdziwych zależności.
 * **powtarzalny** - test musi dawać ten sam wynik za każdym razem, niezależnie od środowiska, w którym jest uruchamiany (np. na maszynie dewelopera, na serwerze CI/CD). Nie powinien zależeć odczynników zewnętrznych, takich jak aktualna data/godzina, losowe wartości czy konfiguracja systemu.
 * **prosty** - test powinien być krótki - około 3-5 linijek - samodokumentujący się. Ważne, że w teście definiujemy tylko input, wywołujemy metodę testową i sprawdzamy output, w żadnym wypadku nie piszemy w nim logiki, w szczególności logiki testowanej metody.
 
