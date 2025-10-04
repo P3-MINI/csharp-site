@@ -130,7 +130,7 @@ W `Program.cs` stwórz nowy obiekt `PasswordValidator` i w pętli odpytuj się u
 
 - Jeżeli hasło jest poprawne, wyświetl komunikat `"✓ Password is valid and safe!"`
 - Jeżeli hasło nie jest poprawne wyświetl komunikat `"✗ Password is invalid:"`
-  - Dla każdej niespełnionej reguły w kolejnej lini wypisz jej słowny opis, np. `"Password should contain at least 8 characters"`
+  - Dla każdej niespełnionej reguły w kolejnej linii wypisz jej słowny opis, np. `"Password should contain at least 8 characters"`
   - Dodaj funkcję `string GetErrorMessage(ValidationError error)`, która zwróci tekstowy opis reguły
 - Jeżeli użytkownik wpisze `exit`, to przerwij pętlę i zakończ program
 
@@ -140,7 +140,7 @@ W `Program.cs` stwórz nowy obiekt `PasswordValidator` i w pętli odpytuj się u
 
 Dostępne paczki można wyszukać na [nuget.org](nuget.org), przez CLI `dotnet package search <search term>` lub przez IDE.
 
-Po dodaniu w pliku projektu powinieneś zuważyć nowy wpis, który deklaruje zależność projektu od pakietu NuGet. Itemy w `PackageReference` to bibioteki, które zostaną pobrane podczas budowania i będzie ich można użyć w projekcie.
+Po dodaniu w pliku projektu powinieneś zauważyć nowy wpis, który deklaruje zależność projektu od pakietu NuGet. Itemy w `PackageReference` to bibioteki, które zostaną pobrane podczas budowania i będzie ich można użyć w projekcie.
 
 ```xml
   <ItemGroup>
@@ -249,4 +249,4 @@ Możesz potrzebować innych metod do asercji: `CollectionAssert.Contains`, `Asse
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie można znaleźć w [PasswordValidator](/labs/lab02/solution/CppProject/PasswordValidator).
+Przykładowe rozwiązanie można znaleźć w [PasswordValidator](/labs/lab02/solution/PasswordValidator).

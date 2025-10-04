@@ -249,4 +249,4 @@ You may need other assertion methods: `CollectionAssert.Contains`, `Assert.IsFal
 
 ### Example Solution
 
-An example solution can be found in [PasswordValidator](/labs/lab02/solution/CppProject/PasswordValidator).
+An example solution can be found in [PasswordValidator](/labs/lab02/solution/PasswordValidator).

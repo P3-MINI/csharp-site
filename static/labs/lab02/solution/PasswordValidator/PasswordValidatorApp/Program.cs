@@ -3,7 +3,7 @@ using Pastel;
 
 var validator = new PasswordValidator();
 
-Console.WriteLine("");
+Console.WriteLine("Enter password to check its strength. Type 'exit' to exit");
 
 while (true)
 {
@@ -24,7 +24,7 @@ while (true)
 
     if (errors.Count == 0)
     {
-        Console.WriteLine("✓ Passsword is valid and safe!".Pastel(ConsoleColor.Green));
+        Console.WriteLine("✓ Password is valid and safe!".Pastel(ConsoleColor.Green));
     }
     else
     {

@@ -3,7 +3,7 @@
 namespace PasswordValidatorTests;
 
 [TestClass]
-public sealed class Test1
+public sealed class PasswordValidatorTests
 {
     [TestMethod]
     public void Validate_ValidPassword_ReturnsEmptyErrorList()
@@ -44,7 +44,7 @@ public sealed class Test1
         var valid = validator.ValidateLength(password);
         
         // Assert
-        Assert.IsFalse(false);
+        Assert.IsFalse(valid);
     }
     
     [TestMethod]
