@@ -8,11 +8,11 @@ Knowledge of the following subjects is required: Programming 1 - Fundamentals, P
 
 ## 2. Regulations on student mandatory attendance at courses for which attendance is obligatory, including the allowable limit of non-attendance and justification of non-attendance
 
-Attendance at laboratory classes is mandatory. In case of absence, a student receives 0 points for activities conducted during the missed session.
+Attendance at laboratory tasks is mandatory. In case of absence, a student receives 0 points for the laboratory task conducted during the missed session.
 
 An absence is considered excused upon presenting a medical leave to the course tutor. In special cases, the course coordinator may recognize absences caused by other reasons as excused.
 
-A maximum of 3 absences from laboratory classes is allowed; more absences will result in failing the course.
+A maximum of 3 absences from laboratory tasks is allowed; more absences will result in failing the course.
 
 ## 3. Detailed methods of partial and/or final verification of learning outcomes achievement (e.g., the number of tests) and types of materials and devices approved for use by students during verification of learning outcomes achievement
 
@@ -38,6 +38,7 @@ Any publicly available code fragments used must not constitute a significant por
 - Parts of the solutions may be created with the instructor during the class—these parts are not subject to anti-plagiarism checks; the rest must be created independently.
 - An excused absence allows the student to complete the workshop at home within a week for full points.
 - Workshops are done using the Arch Linux or Windows system on laboratory computers.
+- An absent student is allowed to complete the workshop at home within a week for full points.
 
 ### Projects
 

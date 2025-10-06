@@ -8,11 +8,11 @@ Wymagana jest wiedza z przedmiotów Programowanie 1 - strukturalne, Programowani
 
 ## 2. Zasady wymaganej obecności studenta na zajęciach, na których obecność jest obowiązkowa, w tym dopuszczalnego limitu nieobecności oraz usprawiedliwiania nieobecności
 
-Obecność na zajęciach laboratoryjnych jest obowiązkowa. W przypadku nieobecności na zajęciach student otrzymuje 0 punktów za aktywności realizowane na zajęciach, na których był nieobecny.
+Obecność na zadaniach laboratoryjnych jest obowiązkowa. W przypadku nieobecności student otrzymuje 0 punktów za zadanie, na którym był nieobecny.
 
 Nieobecność uznawana jest za usprawiedliwioną po okazaniu prowadzącemu zajęcia zwolnienia lekarskiego. W szczególnych przypadkach koordynator przedmiotu może uznać nieobecność spowodowaną innymi przyczynami za usprawiedliwioną.
 
-Dopuszczalne są maksymalnie 3 nieobecności na zajęciach laboratoryjnych, większa liczba nieobecności skutkuje niezaliczeniem przedmiotu.
+Dopuszczalne są maksymalnie 3 nieobecności na zadaniach laboratoryjnych, większa liczba nieobecności skutkuje niezaliczeniem przedmiotu.
 
 ## 3. Szczegółowe sposoby etapowej/końcowej weryfikacji osiągnięcia efektów uczenia się (np. liczba kolokwiów) oraz rodzaje materiałów i urządzeń dopuszczonych do używania przez studentów podczas weryfikacji osiągnięcia efektów uczenia się
 
@@ -36,8 +36,8 @@ W rozwiązaniach używać można dowolnych fragmentów publicznie dostępnych ko
 - Za warsztat student może otrzymać 1 punkt.
 - Na wykonanie warsztatu jest 90 minut w trakcie zajęć.
 - Części rozwiązania mogą być tworzone wspólnie z prowadzącym w trakcie zajęć - te części nie podlegają kontroli systemem anty-plagiatowym, reszta rozwiązania musi być jednak stworzona samodzielnie.
-- Usprawiedliwiona nieobecność upoważnia do rozwiązania warsztatu w domu w terminie 1 tygodnia na pełną ilość punktów.
 - Warsztaty rozwiązywane są z użyciem systemu Arch Linux lub Windows na komputerach w laboratorium.
+- Student nieobecny może rozwiązać warsztat w domu w terminie do 1 tygodnia na pełną ilość punktów.
 
 ### Projekty
 
