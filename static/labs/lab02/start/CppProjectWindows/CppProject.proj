@@ -1,8 +1,8 @@
 <Project DefaultTargets="Build">
   <PropertyGroup>
-    <Compiler Condition="'$(Compiler)' == ''">clang++</Compiler>
-    <CppVersion Condition="'$(CppVersion)' == ''">c++23</CppVersion>
-    <OutputPath>$(SolutionDir)build/</OutputPath>
+    <Compiler Condition="'$(Compiler)' == ''">cl.exe</Compiler>
+    <CppVersion Condition="'$(CppVersion)' == ''">c++23preview</CppVersion>
+    <OutputPath>$(SolutionDir)build\</OutputPath>
     <OutputName>program</OutputName>
   </PropertyGroup>
 
@@ -17,12 +17,12 @@
   <Target Name="Compile">
     <MakeDir Directories="$(OutputPath)" Condition="!Exists('$(OutputPath)')" />
     <Message Text="Compiling with $(Compiler)..." Importance="high" />
-    <Exec Command="$(Compiler) -c -std=$(CppVersion) -o $(OutputPath)%(CppSource.Filename).o %(CppSource.Identity)" />
+    <Exec Command="$(Compiler) /c /std:$(CppVersion) /Fo$(OutputPath)%(CppSource.Filename).obj %(CppSource.Identity)" />
   </Target>
 
   <Target Name="Link" DependsOnTargets="Compile">
     <Message Text="Linking with $(Compiler)..." Importance="high" />
-    <Exec Command="$(Compiler) @(CppSource->'$(OutputPath)%(filename).o', ' ') -o $(OutputPath)$(OutputName)" />
+    <Exec Command="$(Compiler) /Fe$(OutputPath)$(OutputName).exe @(CppSource->'$(OutputPath)%(filename).obj', ' ')" />
   </Target>
 
   <Target Name="Clean">

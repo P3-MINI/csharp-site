@@ -7,9 +7,9 @@ weight: 10
 
 ## Task 1: MSBuild
 
-Twoim zadaniem jest zmodyfikowanie pliku `CppProject.proj` w celu dodania następujących funkcjonalności:
+Twoim zadaniem jest zmodyfikowanie pliku [`CppProject.proj`](/labs/lab02/start/CppProject/CppProject.proj) w celu dodania następujących funkcjonalności:
 
-> Jeżeli pracujesz na systemie Windows, to dodatkowo zamień domyślny kompilator na `cl.exe`. Jako że wymaga on innych opcji to dodatkowo dostosuj też opcje przekazywane do tego kompilatora. Wszystkie potrzebne Ci narzędzia są dostępne w konsoli dla deweloperów (`Visual Studio Developer Command Prompt`). Jak otworzyć konsolę dla deweloperów znajdziesz w [dokumentacji Visual Studio](https://learn.microsoft.com/visualstudio/ide/reference/command-prompt-powershell).
+> Jeżeli pracujesz na systemie Windows zacznij od pliku [`CppProject.proj`](/labs/lab02/start/CppProjectWindows/CppProject.proj). Będziesz pracował z kompilatorem `cl.exe`. Wszystkie potrzebne Ci narzędzia są dostępne w konsoli dla deweloperów (`Visual Studio Developer Command Prompt`). Jak otworzyć konsolę dla deweloperów znajdziesz w [dokumentacji Visual Studio](https://learn.microsoft.com/visualstudio/ide/reference/command-prompt-powershell).
 
 ### 1. Konfiguracja `Debug` i `Release`
 
@@ -20,7 +20,7 @@ Celem jest dodanie do projektu wsparcia dla dwóch konfiguracji budowania: `Debu
 **Wymagania:**
 - Dodaj właściwość `Configuration`, która domyślnie będzie ustawiona na `Debug`.
 - Użyj warunkowych grup właściwości (`PropertyGroup`), aby zdefiniować różne flagi kompilatora (dla symboli debugowania i optymalizacji) w zależności od aktywnej konfiguracji.
-- Zmodyfikuj targety, aby używały zdefiniowanych flag; `-O0` i `-g` dla konfiguracji `Debug`; `-O2` dla konfiguracji `Release`.
+- Zmodyfikuj targety, aby używały zdefiniowanych flag; `-O0` i `-g` (`/Od` `/Zi` dla `cl.exe`) dla konfiguracji `Debug`; `-O2` (`/O2` dla `cl.exe`) dla konfiguracji `Release`.
 - Zmodyfikuj `OutputPath`, aby pliki wynikowe dla każdej konfiguracji trafiały do osobnych podkatalogów (np. `build/Debug/` i `build/Release/`).
 
 Gdy skończysz zbuduj z lini poleceń aplikację w konfiguracji deweloperskiej i produkcyjnej.
@@ -55,7 +55,7 @@ Wywołaj target `CreateDist` dla konfiguracji `Release`.
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie można znaleźć w pliku [CppProject.proj](/labs/lab02/solution/CppProject/CppProject.proj).
+Przykładowe rozwiązanie można znaleźć w pliku [CppProject.proj](/labs/lab02/solution/CppProject/CppProject.proj) lub w pliku [CppProject.proj](/labs/lab02/solution/CppProjectWindows/CppProject.proj) jeżeli pracowałeś na Windowsie.
 
 ## Task 2: .NET SDK
 

@@ -7,9 +7,9 @@ weight: 10
 
 ## Task 1: MSBuild
 
-Your task is to modify the `CppProject.proj` file to add the following functionalities:
+Your task is to modify the [`CppProject.proj`](/labs/lab02/start/CppProject/CppProject.proj) file to add the following functionalities:
 
-> If you are working on Windows, additionally change the default compiler to `cl.exe`. Since it requires different options, you also need to adjust the options passed to this compiler. All tools are available in the Developer Command Prompt for Visual Studio. You can find instructions on how to open the developer console in the [Visual Studio documentation](https://learn.microsoft.com/visualstudio/ide/reference/command-prompt-powershell).
+> If you are working on Windows, you start with [`CppProject.proj`](/labs/lab02/start/CppProjectWindows/CppProject.proj) instead. You will be working with `cl.exe` compiler. All tools are available in the Developer Command Prompt for Visual Studio. You can find instructions on how to open the developer console in the [Visual Studio documentation](https://learn.microsoft.com/visualstudio/ide/reference/command-prompt-powershell).
 
 ### 1. `Debug` and `Release` Configuration
 
@@ -20,7 +20,7 @@ The goal is to add support for two build configurations to the project: `Debug` 
 **Requirements:**
 - Add a `Configuration` property that will be set to `Debug` by default.
 - Use conditional property groups (`PropertyGroup`) to define different compiler flags (for debugging symbols and optimization) depending on the active configuration.
-- Modify the targets to use the defined flags; `-O0` and `-g` for the `Debug` configuration; `-O2` for the `Release` configuration.
+- Modify the targets to use the defined flags; `-O0` and `-g` (`/Od` `/Zi` for `cl.exe`) for the `Debug` configuration; `-O2` (`/O2` for `cl.exe`) for the `Release` configuration.
 - Modify the `OutputPath` so that the output files for each configuration go into separate subdirectories (e.g., `build/Debug/` and `build/Release/`).
 
 When you're done, build the application from the command line in both the development and production configurations.
@@ -55,7 +55,7 @@ Call the `CreateDist` target for the `Release` configuration.
 
 ### Example Solution
 
-An example solution can be found in the file [CppProject.proj](/labs/lab02/solution/CppProject/CppProject.proj).
+An example solution can be found in the file [CppProject.proj](/labs/lab02/solution/CppProject/CppProject.proj) or in a file [CppProject.proj](/labs/lab02/solution/CppProjectWindows/CppProject.proj) jeżeli pracowałeś na Windowsie.
 
 ## Task 2: .NET SDK
 
