@@ -16,7 +16,7 @@ The language is **significantly simpler** to learn than C++. It was designed wit
 
 C# is a **managed** language, which means that the code is executed under the control of the .NET runtime, not directly by the operating system. Mechanisms such as automatic memory management (**Garbage Collector**) eliminate entire classes of errors known from unmanaged languages, but this comes with a certain performance overhead.
 
-It is also a **strongly typed and object-oriented** language. Strong typing means that data types must be defined and are checked at compile time, which helps detect errors at an early stage. As an object-oriented language, C# provides mechanisms such as classes, interfaces, encapsulation, inheritance, and polymorphism. At the same time, C# draws from other paradigms, offering support for functional programming (LINQ, lambda expressions), event-driven programming (events, delegates), and asynchronous programming (`async`/`await`).
+It is also a **strongly typed and object-oriented** language. Strong typing means that data types must be defined and are checked at compile time, which helps detect errors at an early stage. As an object-oriented language, C# provides mechanisms such as classes, interfaces, encapsulation, inheritance, and polymorphism. Unlike C++, all program code must be contained within classes. At the same time, C# draws from other paradigms, offering support for functional programming (LINQ, lambda expressions), event-driven programming (events, delegates), and asynchronous programming (`async`/`await`).
 
 ### How Does C# Code Work? Compilation to CIL and JIT
 
