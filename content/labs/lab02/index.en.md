@@ -55,7 +55,7 @@ Call the `CreateDist` target for the `Release` configuration.
 
 ### Example Solution
 
-An example solution can be found in the file [CppProject.proj](/labs/lab02/solution/CppProject/CppProject.proj) or in a file [CppProject.proj](/labs/lab02/solution/CppProjectWindows/CppProject.proj) jeżeli pracowałeś na Windowsie.
+An example solution can be found in the file [CppProject.proj](/labs/lab02/solution/CppProject/CppProject.proj) or in a file [CppProject.proj](/labs/lab02/solution/CppProjectWindows/CppProject.proj) if you were working on Windows.
 
 ## Task 2: .NET SDK
 
