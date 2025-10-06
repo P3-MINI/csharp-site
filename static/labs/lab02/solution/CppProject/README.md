@@ -1,8 +1,8 @@
 # Simple C++ Application
 
-Simple "Hello World" c++ application,
+Simple "Hello World" C++ application,
 
-## Building
+## Running the application
 
 To run the application:
 
