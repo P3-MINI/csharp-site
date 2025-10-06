@@ -16,7 +16,7 @@ Język jest **znacznie prostszy** do nauki niż C++. Został zaprojektowany z my
 
 C# jest językiem **zarządzanym** (managed), co oznacza, że kod jest wykonywany pod kontrolą środowiska uruchomieniowego .NET, a nie bezpośrednio przez system operacyjny. Mechanizmy, takie jak automatyczne zarządzanie pamięcią (**Garbage Collector**), eliminują całe klasy błędów znanych z języków nienadzorowanych (unmanaged), jednak wiąże się to z pewnym narzutem wydajnościowym.
 
-Jest to również język **silnie typowany i obiektowy**. Silne typowanie oznacza, że typy danych muszą być zdefiniowane i są sprawdzane w czasie kompilacji, co pomaga wykrywać błędy na wczesnym etapie. Jako język obiektowy, C# dostarcza mechanizmy takie jak klasy, interfejsy, enkapsulację, dziedziczenie i polimorfizm. Jednocześnie, C# czerpie z innych paradygmatów, oferując wsparcie dla programowania funkcyjnego (LINQ, wyrażenia lambda), programowania sterowanego zdarzeniami (events, delegates) i asynchronicznego (`async`/`await`).
+Jest to również język **silnie typowany i obiektowy**. Silne typowanie oznacza, że typy danych muszą być zdefiniowane i są sprawdzane w czasie kompilacji, co pomaga wykrywać błędy na wczesnym etapie. Jako język obiektowy, C# dostarcza mechanizmy takie jak klasy, interfejsy, enkapsulację, dziedziczenie i polimorfizm. W odróżnieniu od C++, cały kod programu musi zawierać się w klasach. Jednocześnie, C# czerpie z innych paradygmatów, oferując wsparcie dla programowania funkcyjnego (LINQ, wyrażenia lambda), programowania sterowanego zdarzeniami (events, delegates) i asynchronicznego (`async`/`await`).
 
 ### Jak działa kod w C#? Kompilacja do CIL i JIT
 
