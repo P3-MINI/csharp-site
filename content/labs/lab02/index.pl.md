@@ -9,7 +9,7 @@ weight: 10
 
 Twoim zadaniem jest zmodyfikowanie pliku `CppProject.proj` w celu dodania następujących funkcjonalności:
 
-> Jeżeli pracujesz na systemie Windows, to dodatkowo zamień domyślny kompilator na `cl.exe`. Jako że wymaga on innych opcji to dodatkowo dostosuj też opcje przekazywane do tego kompilatora. Wszystkie narzędzia są dostępne w konsoli dla deweloperów (`Visual Studio Developer Command Prompt`).
+> Jeżeli pracujesz na systemie Windows, to dodatkowo zamień domyślny kompilator na `cl.exe`. Jako że wymaga on innych opcji to dodatkowo dostosuj też opcje przekazywane do tego kompilatora. Wszystkie potrzebne Ci narzędzia są dostępne w konsoli dla deweloperów (`Visual Studio Developer Command Prompt`). Jak otworzyć konsolę dla deweloperów znajdziesz w [dokumentacji Visual Studio](https://learn.microsoft.com/visualstudio/ide/reference/command-prompt-powershell).
 
 ### 1. Konfiguracja `Debug` i `Release`
 
@@ -95,7 +95,9 @@ Po stworzeniu uruchom aplikację konsolową: albo przez IDE, albo `dotnet run`.
 Żeby kod z projektu `PasswordValidatorLib` był widziany w aplikacji konsolowej, należy dodać do niego referencję w projekcie `PasswordValidatorApp`. Można to zrobić na kilka sposobów:
 
 1. `dotnet` CLI: `dotnet add PasswordValidatorApp reference PasswordValidatorLib`
-2. Przez IDE
+2. Przez IDE:
+   * [Visual Studio](https://learn.microsoft.com/visualstudio/ide/how-to-add-or-remove-references-by-using-the-reference-manager)
+   * [Rider](https://www.jetbrains.com/help/rider/Extending_Your_Solution.html#project_assembly_references)
 3. Ręcznie edytując plik projektu `PasswordValidatorApp.csproj`
 
 Niezależnie od wybranej metody w pliku projektu powinieneś w pliku projektu konsolowego zobaczyć wpis:
@@ -138,7 +140,7 @@ W `Program.cs` stwórz nowy obiekt `PasswordValidator` i w pętli odpytuj się u
 
 `NuGet` to oficjalny menedżer pakietów dla platformy .NET. Wyobraź sobie, że budujesz aplikację i potrzebujesz zaimplementować jakąś funkcjonalność, np. kolorowanie tekstu w konsoli, logowanie błędów, albo pracę z plikami JSON. Zamiast pisać cały ten kod od zera, możesz użyć gotowej biblioteki (czyli "pakietu"), którą ktoś już stworzył, przetestował i udostępnił. 
 
-Dostępne paczki można wyszukać na [nuget.org](nuget.org), przez CLI `dotnet package search <search term>` lub przez IDE.
+Dostępne paczki można wyszukać na [nuget.org](nuget.org), przez CLI `dotnet package search <search term>` lub przez IDE. Jak to zrobić dla Visual Studio znajdziesz w [dokumentacji NuGeta](https://learn.microsoft.com/nuget/quickstart/install-and-use-a-package-in-visual-studio#nuget-package-manager), a dla Ridera w jego [dokumetntacji](https://www.jetbrains.com/help/rider/Using_NuGet.html).
 
 Po dodaniu w pliku projektu powinieneś zauważyć nowy wpis, który deklaruje zależność projektu od pakietu NuGet. Itemy w `PackageReference` to bibioteki, które zostaną pobrane podczas budowania i będzie ich można użyć w projekcie.
 
@@ -205,7 +207,7 @@ public sealed class Test1
 }
 ````
 
-Żeby uruchomić testy, możesz to uruchomić w konsoli `dotnet test`, albo przez IDE. Jako że metoda jest teraz pusta, to test powinien przejść.
+Żeby uruchomić testy, możesz to uruchomić w konsoli `dotnet test`, albo przez w IDE. Jak to zrobić znajdziesz w [dokumentacji Visual Studio](https://learn.microsoft.com/visualstudio/test/run-unit-tests-with-test-explorer), lub [dokumentacji Ridera](https://www.jetbrains.com/help/rider/Getting_Started_with_Unit_Testing.html#step-3-run-the-tests). Jako że metoda jest teraz pusta, to test powinien przejść.
 
 ### 2. Testy jednostkowe
 

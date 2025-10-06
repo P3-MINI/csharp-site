@@ -9,7 +9,7 @@ weight: 10
 
 Your task is to modify the `CppProject.proj` file to add the following functionalities:
 
-> If you are working on Windows, additionally change the default compiler to `cl.exe`. Since it requires different options, you also need to adjust the options passed to this compiler. All tools are available in the Developer Command Prompt for Visual Studio.
+> If you are working on Windows, additionally change the default compiler to `cl.exe`. Since it requires different options, you also need to adjust the options passed to this compiler. All tools are available in the Developer Command Prompt for Visual Studio. You can find instructions on how to open the developer console in the [Visual Studio documentation](https://learn.microsoft.com/visualstudio/ide/reference/command-prompt-powershell).
 
 ### 1. `Debug` and `Release` Configuration
 
@@ -95,7 +95,9 @@ After creation, run the console application: either through the IDE or with `dot
 For the code from the `PasswordValidatorLib` project to be visible in the console application, you need to add a reference to it in the `PasswordValidatorApp` project. This can be done in several ways:
 
 1. `dotnet` CLI: `dotnet add PasswordValidatorApp reference PasswordValidatorLib`
-2. Through the IDE
+2. Through the IDE:
+   * [Visual Studio](https://learn.microsoft.com/visualstudio/ide/how-to-add-or-remove-references-by-using-the-reference-manager)
+   * [Rider](https://www.jetbrains.com/help/rider/Extending_Your_Solution.html#project_assembly_references)
 3. By manually editing the `PasswordValidatorApp.csproj` project file
 
 Regardless of the chosen method, you should see the following entry in the console project's file:
@@ -138,7 +140,7 @@ In `Program.cs`, create a new `PasswordValidator` object and, in a loop, ask the
 
 `NuGet` is the official package manager for the .NET platform. Imagine you are building an application and need to implement some functionality, e.g., coloring text in the console, logging errors, or working with JSON files. Instead of writing all this code from scratch, you can use a ready-made library (or "package") that someone has already created, tested, and shared.
 
-Available packages can be searched on [nuget.org](nuget.org), via the CLI `dotnet package search <search term>`, or through an IDE.
+Available packages can be searched on [nuget.org](nuget.org), via the CLI `dotnet package search <search term>`, or through an IDE. You can find out how to do this for Visual Studio in the [NuGet documentation](https://learn.microsoft.com/nuget/quickstart/install-and-use-a-package-in-visual-studio#nuget-package-manager), and for Rider in [its documentation](https://www.jetbrains.com/help/rider/Using_NuGet.html).
 
 After adding, you should notice a new entry in the project file that declares the project's dependency on the NuGet package. Items in `PackageReference` are libraries that will be downloaded during the build and can be used in the project.
 
@@ -205,7 +207,7 @@ public sealed class Test1
 }
 ```
 
-To run the tests, you can run `dotnet test` in the console, or do it through an IDE. Since the method is now empty, the test should pass.
+To run the tests, you can run `dotnet test` in the console, or do it through an IDE. You can find instructions on how to do this in the [Visual Studio documentation](https://learn.microsoft.com/visualstudio/test/run-unit-tests-with-test-explorer) or the [Rider documentation](https://www.jetbrains.com/help/rider/Getting_Started_with_Unit_Testing.html#step-3-run-the-tests). Since the method is now empty, the test should pass.
 
 ### 2. Unit Tests
 
