@@ -136,6 +136,8 @@ var (x, y) = point;
 Console.WriteLine($"x: {x}, y:{y}"); 
 ```
 
+> Do not confuse deconstruction with destruction, the object after deconstruction is still valid.
+
 ## Object Initializers
 An Object initializer can be used to initialize `public` fields or properties, directly after construction.
 
