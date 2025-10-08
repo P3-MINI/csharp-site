@@ -11,9 +11,20 @@ Twoim zadaniem jest zmodyfikowanie pliku [`CppProject.proj`](/labs/lab02/start/C
 
 > Jeżeli pracujesz na systemie Windows zacznij od pliku [`CppProject.proj`](/labs/lab02/start/CppProjectWindows/CppProject.proj). Będziesz pracował z kompilatorem `cl.exe`. Wszystkie potrzebne Ci narzędzia są dostępne w konsoli dla deweloperów (`Visual Studio Developer Command Prompt`). Jak otworzyć konsolę dla deweloperów znajdziesz w [dokumentacji Visual Studio](https://learn.microsoft.com/visualstudio/ide/reference/command-prompt-powershell).
 
-> [!NOTE]
-> **Kod początkowy**
-> {{< filetree dir="labs/lab02/start" >}}
+{{< tabs >}}
+{{% tab "Linux" %}} 
+  {{% hint info %}}
+  **Kod startowy** 
+  {{< filetree dir="labs/lab02/start/CppProject" >}}
+  {{% /hint %}}
+{{% /tab %}}
+{{% tab "Windows" %}} 
+  {{% hint info %}}
+  **Kod startowy** 
+  {{< filetree dir="labs/lab02/start/CppProjectWindows" >}}
+  {{% /hint %}}
+{{% /tab %}}
+{{< /tabs >}}
 
 ### 1. Konfiguracja `Debug` i `Release`
 
@@ -59,16 +70,20 @@ Wywołaj target `CreateDist` dla konfiguracji `Release`.
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie można znaleźć w pliku [CppProject.proj](/labs/lab02/solution/CppProject/CppProject.proj) lub w pliku [CppProject.proj](/labs/lab02/solution/CppProjectWindows/CppProject.proj) jeżeli pracowałeś na Windowsie.
-
-> [!NOTE]
-> **CppProject**
-> {{< filetree dir="labs/lab02/solution/CppProject" >}}
-
-> [!NOTE]
-> **CppProjectWindows**
-> {{< filetree dir="labs/lab02/solution/CppProjectWindows" >}}
-
+{{< tabs >}}
+{{% tab "Linux" %}} 
+  {{% hint info %}}
+  **Rozwiązanie** 
+  {{< filetree dir="labs/lab02/solution/CppProject" >}}
+  {{% /hint %}}
+{{% /tab %}}
+{{% tab "Windows" %}} 
+  {{% hint info %}}
+  **Rozwiązanie** 
+  {{< filetree dir="labs/lab02/solution/CppProjectWindows" >}}
+  {{% /hint %}}
+{{% /tab %}}
+{{< /tabs >}}
 
 ## Task 2: .NET SDK
 
