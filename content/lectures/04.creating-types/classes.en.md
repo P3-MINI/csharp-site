@@ -6,7 +6,8 @@ weight: 10
 # Classes
 
 Classes are defined in the following way:
-```C#
+
+```csharp
 class ClassName
 {
 }
@@ -15,24 +16,26 @@ class ClassName
 Unlike in C++, classes can have class modifiers preceding the class name:
 - `internal`- classes are by default internal, meaning that they are visible only inside assembly (executable or `.dll`)
 - `public` - can be seen from everywhere
-- `static` - there can be only one instance of the class, created automatically
+- `static` - instances cannot be created, must contain only static members
 - `sealed` - the class can be no longer inherited from 
 - `abstract`- an object of this class cannot be initialized (equivalent to a class containing a pure virtual method in C++)
 
 In C#, each class member has it's own access modifier
-```C#
+
+```csharp
 class MyClass
 {
-    public int member1;
+    public int Member1;
     private string _member2;
-    protected float member3;
+    protected float Member3;
 }
 ```
 
-# Fields
+## Fields
 
 A field is a variable that is a member of a class or struct
-```C#
+
+```csharp
 class Student
 {
     private string _name; // This is a field
@@ -40,27 +43,31 @@ class Student
 }
 ```
 
-Field modifiers are similar to those in C++, the main difference lies between `readonly` and `const`. `const` members must be initialised in declaration, meaning the value has to be known at compile time, while `readonly` members have to be initialized after constructor call finishes.
+Field modifiers are similar to those in C++, the main difference lies between `readonly` and `const`. `const` members must be initialized in declaration, meaning the value has to be known at compile time, while `readonly` members have to be initialized after constructor call finishes.
 
-Fields should be written in camelCase, private ones starting with an underscore.
+Fields should be written in camelCase, private ones starting with an underscore, otherwise in PascalCase. More guidelines can be found in the [documentation](https://learn.microsoft.com/dotnet/csharp/fundamentals/coding-style/identifier-names).
 
 Uninitialized fields, have their value set to bitwise `0`, this happens before the constructor is called.
 
-# Methods
+## Methods
 
-Methods work in the same way as in C++, but in C# we do not split delcaration and implementation into different files, implementation is written inside the class itself.
+Methods work in the same way as in C++, but in C# we do not split declaration and implementation into different files, implementation is written inside the class itself.
 
-If a method constains a single expression, such as:
-```C#
-int Foo (int x) {return x * 2;}
+If a method contains a single expression, such as:
+
+```csharp
+int Foo (int x) { return x * 2; }
 ```
+
 It can be written using a simplified syntax
-```C#
+
+```csharp
 int Foo (int x) => x * 2;
 ```
 
-Similarily to C++, we can also define local methods (a method within another method)
-```C#
+Similarly to C++, we can also define local methods (a method within another method)
+
+```csharp
 void MyMethod
 {
     void PrintInt(int value) => Console.Writeline(value);
@@ -73,12 +80,13 @@ void MyMethod
 
 Same as in C++, methods can also be overloaded.
 
-# Constructors
+## Constructors
 
 Constructors are defined in the same way as in C++, but *do not contain an initializer list.*
 
 Constructors can call other constructors using `this` keyword.
-```C#
+
+```csharp
 class Book
 {
     private string _title;
@@ -90,16 +98,19 @@ class Book
     }
 }
 ```
-If there is no user-defined parameterless contructor, one is generated automatically.
 
-# Deconstructors
-Deconstructors are used to reverse the assignment of fields back to the variables
-```C#
+If there is no user-defined parameterless constructor, one is generated automatically.
+
+## Deconstructors
+
+Deconstructors are used to reverse the assignment of fields back to the variables.
+
+```csharp
 class Point
 {
     public float x, y;
 
-    public Point (float x, float y)
+    public Point(float x, float y)
     {
         this.x = x;
         this.y = y;
@@ -114,7 +125,8 @@ class Point
 ```
 
 The deconstructor can be called in the following ways:
-```C#
+
+```csharp
 var point = new Point(1, 2);
 
 (float x, float y) = point;
@@ -124,10 +136,10 @@ var (x, y) = point;
 Console.WriteLine($"x: {x}, y:{y}"); 
 ```
 
-# Object Initializers
+## Object Initializers
 An Object initializer can be used to initialize `public` fields or properties, directly after construction.
 
-```C#
+```csharp
 class Hamster
 {
     public string Name;
@@ -137,10 +149,12 @@ class Hamster
     public Hamster(string name) => Name = name;
 }
 ```
+
 It can be used as follows:
-```C#
+
+```csharp
 Hamster h1 = new Hamster {Name = "Boo", LikesViolence=true};
-Hamster h1 = new Hamster ("Boo")       {LikesViolence=true};
+Hamster h2 = new Hamster ("Boo")       {LikesViolence=true};
 ```
 
 The **order** of initialization is:
@@ -148,11 +162,16 @@ The **order** of initialization is:
 2. constructors
 3. initializer lists
 
-# Properties
+## Properties
 
-Properties look like fields, taste like fields, but are actually getters and setters in disguise. They can contain additional logic if specified and have the same access modifiers as fields.
+Properties look like fields, taste like fields, but are actually getter and setter methods in disguise. They can contain additional logic if specified and have the same access modifiers as fields.
 
-```C#
+```csharp
+var book = new ShopItem();
+book.Price = 9.99m;
+book.Price -= 1.0m;
+Console.WriteLine($"Price: {book.Price}$");
+
 class ShopItem
 {
     private decimal _price;
@@ -164,25 +183,26 @@ class ShopItem
 }
 ```
 
-Both `get` and `set` are optional. If `get` and `set` bodies are ommited, the compiler will automatically generate a corresponding field. This is the most common use case of properties.
+Both `get` and `set` are optional. If `get` and `set` bodies are omitted, the compiler will automatically generate a corresponding field. This is the most common use case of properties.
 
-```C#
+```csharp
 class ShopItem
 {
-    public decimal Price {get; set;} = 0.0m; // like fields, properties can be initialized here
-    public string Name {get; set;}
+    public decimal Price { get; set; } = 0.0m; // like fields, properties can be initialized here
+    public string Name { get; set ;}
 }
 ```
-> Both `get` and `set` can have their own access modifiers: `public decimal Price {get; private set;}`, they inherit the access modifier of the corresponding property.
 
-# Init-only setters
+> Both `get` and `set` can have their own access modifiers: `public decimal Price {get; private set;}`, otherwise they inherit the access modifier of the corresponding property.
 
-The `set` accessor can be replaced with `init` effectively making the read-only properties. Init setters can be initialized in the constructor, object initializer list or inline. if we ommit `set` accessor the property can still be initialized in the constructor or inline.
+## Init-only setters
 
-# Indexers
+The `set` accessor can be replaced with `init` effectively making the read-only properties. Init setters can be initialized in the constructor, object initializer list or inline. If we omit `set` accessor the property can still be initialized in the constructor or inline, and cannot be changes later.
+
+## Indexers
 Indexers are similar to overloading `operator[]` in C++. To write an indexer, we define a property called `this`, specifying the arguments in square brackets:
 
-```C#
+```csharp
 class Example
 {
     
