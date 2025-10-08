@@ -154,6 +154,8 @@ In `Program.cs`, create a new `PasswordValidator` object and, in a loop, ask the
 
 Available packages can be searched on [nuget.org](nuget.org), via the CLI `dotnet package search <search term>`, or through an IDE. You can find out how to do this for Visual Studio in the [NuGet documentation](https://learn.microsoft.com/nuget/quickstart/install-and-use-a-package-in-visual-studio#nuget-package-manager), and for Rider in [its documentation](https://www.jetbrains.com/help/rider/Using_NuGet.html).
 
+We will add output coloring to our console application. We will use the ready-made `Pastel` library available in the `NuGet` repository. To add the package to the project, you can do it in two ways: via the `dotnet` command: `dotnet add PasswordValidatorApp package Pastel`, or through an IDE.
+
 After adding, you should notice a new entry in the project file that declares the project's dependency on the NuGet package. Items in `PackageReference` are libraries that will be downloaded during the build and can be used in the project.
 
 ```xml
@@ -161,8 +163,6 @@ After adding, you should notice a new entry in the project file that declares th
     <PackageReference Include="Pastel" Version="7.0.0" />
   </ItemGroup>
 ```
-
-We will add output coloring to our console application. We will use the ready-made `Pastel` library available in the `NuGet` repository. To add the package to the project, you can do it in two ways: via the `dotnet` command: `dotnet add PasswordValidatorApp package Pastel`, or through an IDE.
 
 Next, add syntax coloring to the application.
 

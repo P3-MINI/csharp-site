@@ -154,6 +154,8 @@ W `Program.cs` stwórz nowy obiekt `PasswordValidator` i w pętli odpytuj się u
 
 Dostępne paczki można wyszukać na [nuget.org](nuget.org), przez CLI `dotnet package search <search term>` lub przez IDE. Jak to zrobić dla Visual Studio znajdziesz w [dokumentacji NuGeta](https://learn.microsoft.com/nuget/quickstart/install-and-use-a-package-in-visual-studio#nuget-package-manager), a dla Ridera w jego [dokumetntacji](https://www.jetbrains.com/help/rider/Using_NuGet.html).
 
+My do aplikacji konsolowej dodamy kolorowanie wyjścia. Użyjemy gotowej bilbioteki `Pastel` dostępnej w repozytorium `NuGet`. Żeby dodać paczkę do projektu można to zrobić na dwa sposoby przez komendę `dotnet`: `dotnet add PasswordValidatorApp package Pastel`, lub przez IDE.
+
 Po dodaniu w pliku projektu powinieneś zauważyć nowy wpis, który deklaruje zależność projektu od pakietu NuGet. Itemy w `PackageReference` to bibioteki, które zostaną pobrane podczas budowania i będzie ich można użyć w projekcie.
 
 ```xml
@@ -161,8 +163,6 @@ Po dodaniu w pliku projektu powinieneś zauważyć nowy wpis, który deklaruje z
     <PackageReference Include="Pastel" Version="7.0.0" />
   </ItemGroup>
 ```
-
-My do aplikacji konsolowej dodamy kolorowanie wyjścia. Użyjemy gotowej bilbioteki `Pastel` dostępnej w repozytorium `NuGet`. Żeby dodać paczkę do projektu można to zrobić na dwa sposoby przez komendę `dotnet`: `dotnet add PasswordValidatorApp package Pastel`, lub przez IDE.
 
 Następnie dodaj do aplikacji kolorowanie składni.
 
