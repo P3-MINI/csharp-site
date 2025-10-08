@@ -11,6 +11,10 @@ Twoim zadaniem jest zmodyfikowanie pliku [`CppProject.proj`](/labs/lab02/start/C
 
 > Jeżeli pracujesz na systemie Windows zacznij od pliku [`CppProject.proj`](/labs/lab02/start/CppProjectWindows/CppProject.proj). Będziesz pracował z kompilatorem `cl.exe`. Wszystkie potrzebne Ci narzędzia są dostępne w konsoli dla deweloperów (`Visual Studio Developer Command Prompt`). Jak otworzyć konsolę dla deweloperów znajdziesz w [dokumentacji Visual Studio](https://learn.microsoft.com/visualstudio/ide/reference/command-prompt-powershell).
 
+#### Kod początkowy
+
+{{< filetree dir="labs/lab02/start" >}}
+
 ### 1. Konfiguracja `Debug` i `Release`
 
 Celem jest dodanie do projektu wsparcia dla dwóch konfiguracji budowania: `Debug` i `Release`.
@@ -56,6 +60,14 @@ Wywołaj target `CreateDist` dla konfiguracji `Release`.
 ### Przykładowe rozwiązanie
 
 Przykładowe rozwiązanie można znaleźć w pliku [CppProject.proj](/labs/lab02/solution/CppProject/CppProject.proj) lub w pliku [CppProject.proj](/labs/lab02/solution/CppProjectWindows/CppProject.proj) jeżeli pracowałeś na Windowsie.
+
+#### CppProject
+
+{{< filetree dir="labs/lab02/solution/CppProject" >}}
+
+#### CppProjectWindows
+
+{{< filetree dir="labs/lab02/solution/CppProjectWindows" >}}
 
 ## Task 2: .NET SDK
 
@@ -252,3 +264,5 @@ Możesz potrzebować innych metod do asercji: `CollectionAssert.Contains`, `Asse
 ### Przykładowe rozwiązanie
 
 Przykładowe rozwiązanie można znaleźć w [PasswordValidator](/labs/lab02/solution/PasswordValidator).
+
+{{< filetree dir="labs/lab02/solution/PasswordValidator" >}}

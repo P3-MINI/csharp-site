@@ -11,6 +11,10 @@ Your task is to modify the [`CppProject.proj`](/labs/lab02/start/CppProject/CppP
 
 > If you are working on Windows, you start with [`CppProject.proj`](/labs/lab02/start/CppProjectWindows/CppProject.proj) instead. You will be working with `cl.exe` compiler. All tools are available in the Developer Command Prompt for Visual Studio. You can find instructions on how to open the developer console in the [Visual Studio documentation](https://learn.microsoft.com/visualstudio/ide/reference/command-prompt-powershell).
 
+#### Starting code
+
+{{< filetree dir="labs/lab02/start" >}}
+
 ### 1. `Debug` and `Release` Configuration
 
 The goal is to add support for two build configurations to the project: `Debug` and `Release`.
@@ -56,6 +60,14 @@ Call the `CreateDist` target for the `Release` configuration.
 ### Example Solution
 
 An example solution can be found in the file [CppProject.proj](/labs/lab02/solution/CppProject/CppProject.proj) or in a file [CppProject.proj](/labs/lab02/solution/CppProjectWindows/CppProject.proj) if you were working on Windows.
+
+#### CppProject
+
+{{< filetree dir="labs/lab02/solution/CppProject" >}}
+
+#### CppProjectWindows
+
+{{< filetree dir="labs/lab02/solution/CppProjectWindows" >}}
 
 ## Task 2: .NET SDK
 
@@ -252,3 +264,5 @@ You may need other assertion methods: `CollectionAssert.Contains`, `Assert.IsFal
 ### Example Solution
 
 An example solution can be found in [PasswordValidator](/labs/lab02/solution/PasswordValidator).
+
+{{< filetree dir="labs/lab02/solution/PasswordValidator" >}}
