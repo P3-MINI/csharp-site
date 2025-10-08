@@ -10,6 +10,9 @@ weight: 10
 - [MSBuild]({{< ref "02.tools/msbuild" >}})
 - [Type System]({{< ref "03.basics/types" >}})
 - [Basic Types]({{< ref "03.basics/basic-types" >}})
+
+## Lecture 02
+
 - [String]({{< ref "03.basics/string" >}})
 - [Arrays]({{< ref "03.basics/arrays" >}})
 - [Object]({{< ref "03.basics/object" >}})
@@ -17,5 +20,3 @@ weight: 10
 - [Variables]({{< ref "03.basics/variables" >}})
 - [Parameters]({{< ref "03.basics/parameters" >}})
 - [Namespaces]({{< ref "03.basics/namespaces" >}})
-
-## Lecture 02
