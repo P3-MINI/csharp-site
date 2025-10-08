@@ -188,7 +188,7 @@ Both `get` and `set` are optional. If `get` and `set` bodies are omitted, the co
 ```csharp
 class ShopItem
 {
-    public decimal Price { get; set; } = 0.0m; // like fields, properties can be initialized here
+    public decimal Price { get; set; } = 0.0m; // auto-generated properties can be initialized here
     public string Name { get; set ;}
 }
 ```
@@ -203,8 +203,38 @@ The `set` accessor can be replaced with `init` effectively making the read-only 
 Indexers are similar to overloading `operator[]` in C++. To write an indexer, we define a property called `this`, specifying the arguments in square brackets:
 
 ```csharp
-class Example
+class Sentence
 {
+    private string[] Words { get; }
     
+    public string this[int i]
+    {
+        get => Words[i];
+        set { Words[i] = value; }
+    }
+    
+    public Sentence(string sentence) => Words = sentence.Split(' ');
 }
 ```
+
+We use indexers the same way as we use an array, except we can define index arguments to be of any type. The type can declare multiple indexers, and the indexers can have multiple parameters.
+
+```csharp
+Sentence sentence = new Sentence("The quick brown fox jumps over lazy dog");
+sentence[1] = "swift";
+Console.WriteLine(sentence[3]);
+```
+
+## Finalizers
+
+Finalizers may seem like destructors from C++, but the difference is that we never know when finalizer will be called. After the last reference of an object is out of scope, the object awaits garbage collection. When will that happen? When Garbage Collector feels like it - most of the time when there is memory pressure or at random, periodically.
+
+```csharp
+class Class1
+{
+    ~Class1()
+    {
+    }
+}
+```
+
