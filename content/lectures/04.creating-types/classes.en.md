@@ -39,13 +39,13 @@ A field is a variable that is a member of a class or struct
 class Student
 {
     private string _name; // This is a field
-    public int year; // Still a field
+    public int Year; // Still a field
 }
 ```
 
-Field modifiers are similar to those in C++, the main difference lies between `readonly` and `const`. `const` members must be initialized in declaration, meaning the value has to be known at compile time, while `readonly` members have to be initialized after constructor call finishes.
+Field modifiers are similar to those in C++, the main difference lies between `readonly` and `const`. `const` members must be initialized in declaration, and the value has to be known at compile time, while `readonly` members have to be initialized after constructor call finishes.
 
-Fields should be written in camelCase, private ones starting with an underscore, otherwise in PascalCase. More guidelines can be found in the [documentation](https://learn.microsoft.com/dotnet/csharp/fundamentals/coding-style/identifier-names).
+Private fields should be written in camelCase, starting with an underscore, otherwise in PascalCase. More guidelines can be found in the [documentation](https://learn.microsoft.com/dotnet/csharp/fundamentals/coding-style/identifier-names).
 
 Uninitialized fields, have their value set to bitwise `0`, this happens before the constructor is called.
 
