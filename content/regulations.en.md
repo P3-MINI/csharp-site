@@ -36,7 +36,6 @@ Any publicly available code fragments used must not constitute a significant por
 - Students can earn 1 point per workshop.
 - Each workshop duration is 90 minutes during classes.
 - Parts of the solutions may be created with the instructor during the class—these parts are not subject to anti-plagiarism checks; the rest must be created independently.
-- An excused absence allows the student to complete the workshop at home within a week for full points.
 - Workshops are done using the Arch Linux or Windows system on laboratory computers.
 - An absent student is allowed to complete the workshop at home within a week for full points.
 
