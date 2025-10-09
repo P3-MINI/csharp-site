@@ -94,6 +94,80 @@ if (alice is Teacher teacher)
 
 ## Metody wirtualne
 
+Funkcje wirtualne działają na tej samej zasadzie co w C++. Pod spodem wykorzystują mechanizm podobny do tablic funkcji wirtualnych: [*Virtual Stub Dispatch*](https://github.com/dotnet/runtime/blob/main/docs/design/coreclr/botr/virtual-stub-dispatch.md). Zasada działania jest podobna, z tą różnicą, że wywołanie metody wirtualnej prowadzi do fragmentu kodu, zwanego `Stub`em, który podobnie jak vtable znajduje adres właściwej metody. Jednak zamiast przekazać sterowanie do metody, jakby to się stało w przypadku vtable, `Stub` podmienia w locie adres metody tak żeby następne wywołanie bezpośrednio wskazywało na znaleziony adres. Kolejne wywołania wywołują bezpośrednio odpowiednią implementację.
+
+W C# wirtualne mogą być nie tylko metody, ale też właściwości, indeksery i zdarzenia.
+
+```csharp
+public class Vehicle
+{
+    public float Position { get; protected set; } = 0;
+    public virtual float Speed { get; protected set; } = 1.0;
+    public string Name { get; }
+    
+    public Vehicle(string name) => Name = name;
+    public virtual float Run(float dt)
+    {
+        Console.WriteLine($"Vehicle.Run({dt})");
+        return (Position = Position + dt * Speed);
+    }
+}
+
+public class Car
+{
+    public override float Speed { get; protected set; } = 0.0;
+    public virtual float Acceleration { get; }
+    
+    public Car(string name, float acceleration) : base(name) => Acceleration = acceleration;
+    public override float Run(float dt)
+    {
+        Console.WriteLine($"Car.Run({dt})");
+        Position += dt * Speed;
+        Speed += dt * Acceleration;
+        return Position;
+    }
+}
+
+public class Bike
+{    
+    public Bike(string name) : base(name) {}
+    public override float Run(float dt)
+    {
+        Console.WriteLine($"Bike.Run({dt})"); // We can skip implementation if not for the output.
+        return base.Run(dt);
+    }
+}
+```
+
+> [!IMPORTANT]
+> ### `base`
+> Jeżeli chodzi o słowo kluczowe `base`, to ma ono tutaj dwa znaczenia. Możemy go użyć do:
+>
+> - Wywołania do metod nadpisanych
+> - Wywołania konstruktora klasy bazowej
+>
+> Działa analogicznie do słówka `this`, ale dla klasy bazowej.
+
+```csharp
+List<Vehicle> vehicles = [new Bike("Romet"), new Car("Honda Civic", 1.5f), new Car("Toyota Yaris", 1.0f)];
+
+const float dt = 1.0f;
+for (float time = 0.0f; time < 4.0f; time += dt)
+{
+    Console.WriteLine($"====== time: {time,5:F1}s ======");
+    foreach (var vehicle in vehicles)
+    {
+        vehicle.Run(dt);
+    }
+    foreach (var vehicle in vehicles)
+    {
+        Console.WriteLine($"Vehicle {vehicle.Name}, Position {vehicle.Position}");
+    }
+}
+```
+
+Całość działa analogicznie jak by to działało w C++. Jeśli `vehicle` jest typu `Car`, to wywoła się `Car.Run`, jeżeli typu `Bike`, to wywoła się `Bike.Run`. Jeżeli typ nie nadpisałby tej metody to wywołałoby się `Vehicle.Run`. Jedyna kosmetyczna różnica jest taka, że w C# słówko `override` jest wymagane, jeżeli nadpisujemy wirtualną metodę.
+
 ## Klasy abstrakcyjne
 
 ## Ukrywanie składowych
