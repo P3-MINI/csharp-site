@@ -170,6 +170,20 @@ Całość działa analogicznie jak by to działało w C++. Jeśli `vehicle` jest
 
 ## Klasy abstrakcyjne
 
+Klasy abstrakcyjne to klasy ze słówkiem kluczowym `abstract`. Nie możemy inicjalizować obiektów tej klasy, możemy w takiej klasie definiować abstrakcyjne składowe - czyli takie, które mają sygnaturę, ale nie mają implementacji. Mogą to być abstrakcyjne metody, właściwości, indeksery i zdarzenia. Jest to analogia do klas z C++, które mają zadeklarowane funkcje czysto wirtualne.
+
+```csharp
+public abstract class Vehicle
+{
+    public float Position { get; protected set; } = 0;
+    public virtual float Speed { get; protected set; } = 1.0;
+    public string Name { get; }
+    
+    public Vehicle(string name) => Name = name;
+    public abstract float Run(float dt);
+}
+```
+
 ## Ukrywanie składowych
 
 ## `sealed`
