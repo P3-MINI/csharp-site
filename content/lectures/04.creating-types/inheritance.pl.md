@@ -113,9 +113,9 @@ public class Vehicle
     }
 }
 
-public class Car
+public class Car : Vehicle
 {
-    public override float Speed { get; protected set; } = 0.0;
+    public override float Speed { get; protected set; } = 0.0f;
     public virtual float Acceleration { get; }
     
     public Car(string name, float acceleration) : base(name) => Acceleration = acceleration;
@@ -128,7 +128,7 @@ public class Car
     }
 }
 
-public class Bike
+public class Bike : Vehicle
 {    
     public Bike(string name) : base(name) {}
     public override float Run(float dt)
@@ -166,17 +166,23 @@ for (float time = 0.0f; time < 4.0f; time += dt)
 }
 ```
 
-Całość działa analogicznie jak by to działało w C++. Jeśli `vehicle` jest typu `Car`, to wywoła się `Car.Run`, jeżeli typu `Bike`, to wywoła się `Bike.Run`. Jeżeli typ nie nadpisałby tej metody to wywołałoby się `Vehicle.Run`. Jedyna kosmetyczna różnica jest taka, że w C# słówko `override` jest wymagane, jeżeli nadpisujemy wirtualną metodę.
+> [!NOTE]
+> **Kod źródłowy**
+> {{< filetree dir="lectures/creating-types/inheritance/Race" >}}
+
+Całość działa analogicznie jakby to działało w C++. Jeśli `vehicle` jest typu `Car`, to wywoła się `Car.Run`, jeżeli typu `Bike`, to wywoła się `Bike.Run`. Jeżeli typ nie nadpisałby tej metody to wywołałoby się `Vehicle.Run`. Jedyna kosmetyczna różnica jest taka, że w C# słówko `override` jest wymagane, jeżeli nadpisujemy wirtualną metodę.
 
 ## Klasy abstrakcyjne
 
 Klasy abstrakcyjne to klasy ze słówkiem kluczowym `abstract`. Nie możemy inicjalizować obiektów tej klasy, możemy w takiej klasie definiować abstrakcyjne składowe - czyli takie, które mają sygnaturę, ale nie mają implementacji. Mogą to być abstrakcyjne metody, właściwości, indeksery i zdarzenia. Jest to analogia do klas z C++, które mają zadeklarowane funkcje czysto wirtualne.
 
+Zamiast dostarczać implementację metody `Vehicle.Run`, możemy zrobić ją abstrakcyjną. Wtedy, każda nieabstrakcyjna subklasa musi dostarczyć własną implementację.
+
 ```csharp
 public abstract class Vehicle
 {
     public float Position { get; protected set; } = 0;
-    public virtual float Speed { get; protected set; } = 1.0;
+    public virtual float Speed { get; protected set; } = 1.0f;
     public string Name { get; }
     
     public Vehicle(string name) => Name = name;
