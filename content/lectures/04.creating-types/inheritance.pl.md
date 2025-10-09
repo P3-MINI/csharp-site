@@ -253,6 +253,47 @@ public class Hider : Base
 
 ## `sealed`
 
+Słówko `sealed` zaaplikowane do metody powoduje, że nie można jej nadpisywać w podklasie. Nie znaczy to jednak że takiej metody nie można przykryć. Zaaplikowane dla klasy powoduje, że takiej klasy nie można dziedziczyć.
+
 ## Konstruktory
 
-Konstruktory nie są dziedziczone. Klasa pochodna musi zdefiniować swój własny zestaw konstruktorów.
+Konstruktory nie są dziedziczone. Klasa pochodna musi zdefiniować swój własny zestaw konstruktorów. 
+
+Jeżeli pochodna musi także zadbać o inicjalizację klasy bazowej. W konstruktorze klasy pochodnej możemy użyć `base`, żeby wywołać któryś z konstruktorów klasy bazowej.
+
+```csharp
+public class Base
+{
+    public int X;
+    public Base(int x) => X = x;
+}
+
+public class Derived : Base
+{
+    public int Y;
+    public Derived(int x, int y) : base(x) => Y = y;
+}
+```
+
+Jeżeli klasa bazowa dostarcza konstruktor bezparametrowy, to możemy pominąć jawne wywołanie konstruktora klasy bazowej, ale niejawnie będzie wywoływany wtedy konstruktor bezparametrowy klasy bazowej.
+
+```csharp
+public class Base
+{
+    public int X;
+    public Base() => X = 1;
+}
+
+public class Derived : Base
+{
+    public int Y;
+    public Derived() => Y = 1; // Can skip implicit base call
+}
+```
+
+### Kolejność inicjalizacji
+
+1. Pola i właściwości klasy pochodnej
+2. Pola i właściwości klasy bazowej
+3. Konstruktor klasy bazowej
+4. Konstruktor klasy pochodnej
