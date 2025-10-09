@@ -170,13 +170,13 @@ for (float time = 0.0f; time < 4.0f; time += dt)
 > **Kod źródłowy**
 > {{< filetree dir="lectures/creating-types/inheritance/Race" >}}
 
-Całość działa analogicznie jakby to działało w C++. Jeśli `vehicle` jest typu `Car`, to wywoła się `Car.Run`, jeżeli typu `Bike`, to wywoła się `Bike.Run`. Jeżeli typ nie nadpisałby tej metody to wywołałoby się `Vehicle.Run`. Jedyna kosmetyczna różnica jest taka, że w C# słówko `override` jest wymagane, jeżeli nadpisujemy wirtualną metodę.
+Całość działa analogicznie jakby to działało w C++. Jeśli `vehicle` jest typu `Car`, to wywoła się `Car.Run`, jeżeli typu `Bike`, to wywoła się `Bike.Run`. Jeżeli typ nie nadpisałby tej metody to wywołałoby się `Vehicle.Run`. Jedyna kosmetyczna różnica jest taka, że w C# słówko `override` jest wymagane, jeżeli chcemy nadpisać wirtualną metodę - jeżeli tego nie zrobimy tylko ją przykryjemy i wygenerujemy ostrzeżenie kompilatora.
 
 ## Klasy abstrakcyjne
 
 Klasy abstrakcyjne to klasy ze słówkiem kluczowym `abstract`. Nie możemy inicjalizować obiektów tej klasy, możemy w takiej klasie definiować abstrakcyjne składowe - czyli takie, które mają sygnaturę, ale nie mają implementacji. Mogą to być abstrakcyjne metody, właściwości, indeksery i zdarzenia. Jest to analogia do klas z C++, które mają zadeklarowane funkcje czysto wirtualne.
 
-Zamiast dostarczać implementację metody `Vehicle.Run`, możemy zrobić ją abstrakcyjną. Wtedy, każda nieabstrakcyjna subklasa musi dostarczyć własną implementację.
+Zamiast dostarczać implementację metody `Vehicle.Run`, możemy zrobić ją abstrakcyjną. Wtedy, każda nieabstrakcyjna podklasa musi dostarczyć własną implementację.
 
 ```csharp
 public abstract class Vehicle
@@ -190,8 +190,69 @@ public abstract class Vehicle
 }
 ```
 
-## Ukrywanie składowych
+## Przykrywanie składowych
+
+Podklasa może definiować te same składowe, co klasa bazowa.
+
+```csharp
+public class Base
+{
+    public int Member = 0;
+    public string Method() => "Base.Method";
+    public virtual string VirtualMethod() => "Base.VirtualMethod";
+}
+
+public class Hider : Base
+{
+    public int Member = 1;
+    public string Method() => "Hider.Method";
+    public string VirtualMethod() => "Hider.VirtualMethod";
+}
+
+public class Overrider : Base
+{
+    public override string VirtualMethod() => "Overrider.VirtualMethod";
+}
+```
+
+W tym przykładzie pola i metody w `Hider` są *przykrywane*. Zazwyczaj nie jest to celowe działanie - kompilator w takim przypadku generuje ostrzeżenie (*warning*).
+
+Konsekwencje przykrywania możemy zobaczyć na przykładzie:
+
+```csharp
+Hider hider = new Hider();
+Base baseHider = hider;
+
+Overrider overrider = new Overrider();
+Base baseOverrider = overrider;
+
+Console.WriteLine(hider.Method()); // Hider.Method
+Console.WriteLine(hider.VirtualMethod()); // Hider.VirtualMethod
+Console.WriteLine(baseHider.Method()); // Base.Method
+Console.WriteLine(baseHider.VirtualMethod()); // Base.VirtualMethod
+
+Console.WriteLine(overrider.Method()); // Base.Method
+Console.WriteLine(overrider.VirtualMethod()); // Overrider.VirtualMethod
+Console.WriteLine(baseOverrider.Method()); // Base.Method
+Console.WriteLine(baseOverrider.VirtualMethod()); // Overrider.VirtualMethod
+```
+> [!NOTE]
+> **Kod źródłowy**
+> {{< filetree dir="lectures/creating-types/inheritance/Hiding" >}}
+
+Przykrywane metody nie są nadpisywane, zazwyczaj jeżeli metoda była oznaczona jako `virtual`, to intencją jest jej nadpisanie. Jeżeli faktycznie zamiarem było przykrycie, to można ostrzeżenia kompilatora uciszyć słówkiem kluczowym `new`. Jest to jedyne działanie tego słowa kluczowego w tym kontekście.
+
+```csharp
+public class Hider : Base
+{
+    public new int Member = 1;
+    public new string Method() => "Hider.Method";
+    public new string VirtualMethod() => "Hider.VirtualMethod";
+}
+```
 
 ## `sealed`
 
 ## Konstruktory
+
+Konstruktory nie są dziedziczone. Klasa pochodna musi zdefiniować swój własny zestaw konstruktorów.
