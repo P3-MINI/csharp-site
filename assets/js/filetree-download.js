@@ -11,7 +11,6 @@ document.addEventListener('click', (event) => {
 async function downloadTreeAsZip(event, containerId, basePath, zipFileName) {
   event.preventDefault();
   const container = document.getElementById(containerId);
-  console.log('Container element:', container);
   if (!container) {
     console.error('Filetree container not found:', containerId);
     return;
@@ -33,16 +32,12 @@ async function downloadTreeAsZip(event, containerId, basePath, zipFileName) {
 
   const zip = new JSZip();
   const fileLinks = container.querySelectorAll('a');
-  console.log('File links found:', fileLinks); // Debug log
   const promises = [];
 
   for (const link of fileLinks) {
     const url = link.href;
-    console.log('Processing URL:', url);
     const urlPath = new URL(url).pathname;
-    console.log('urlPath:', urlPath);
     const searchPath = basePath.startsWith('/') ? basePath : '/' + basePath;
-    console.log('searchPath:', searchPath);
 
     let pathInZip = '';
     if (urlPath.startsWith(searchPath)) {
@@ -51,7 +46,6 @@ async function downloadTreeAsZip(event, containerId, basePath, zipFileName) {
       console.warn('Skipping URL not within basePath:', urlPath, 'Base path:', searchPath);
       continue; // Skip to the next link
     }
-    console.log('pathInZip:', pathInZip);
 
     const promise = fetch(url)
       .then(response => {
@@ -62,9 +56,7 @@ async function downloadTreeAsZip(event, containerId, basePath, zipFileName) {
       })
       .then(blob => {
         const dirName = zipFileName.replace('.zip', '');
-        console.log('dirName:', dirName);
         const finalZipPath = `${dirName}/${pathInZip}`;
-        console.log('Adding to zip:', finalZipPath);
         zip.file(finalZipPath, blob);
       });
     promises.push(promise);
