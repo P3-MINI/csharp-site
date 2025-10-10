@@ -21,7 +21,7 @@ W celu przechodzenia do następnych etapów należy odkomentowywać poszczególn
 
 ## Etap 1 (4 pkt)
 
-W folderze `Matrices` stwórz abstrakcyjną klasę `Matrix`, która będzie posiadała:
+W folderze `Matrix` stwórz abstrakcyjną klasę `Matrix`, która będzie posiadała:
  - konstruktor przyjmujący ilość wierszy i kolumn macierzy jako `int`
  - publiczną właściwość `Rows`, zwracająca ilość wierszy w macierzy
  - publiczną właściwość `Columns`, zwracająca ilość kolumn w macierzy

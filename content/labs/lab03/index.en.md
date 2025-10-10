@@ -21,7 +21,7 @@ To proceed to the next stages, you must uncomment the individual lines like `#de
 
 ## Stage 1 (4 points)
 
-In the `Matrices` folder, create an abstract class `Matrix` that will have:
+In the `Matrix` folder, create an abstract class `Matrix` that will have:
  - a constructor that takes the number of rows and columns of the matrix as `int`
  - a public property `Rows`, which returns the number of rows in the matrix
  - a public property `Columns`, which returns the number of columns in the matrix
