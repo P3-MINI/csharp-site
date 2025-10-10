@@ -16,16 +16,6 @@ async function downloadTreeAsZip(event, containerId, basePath, zipFileName) {
     return;
   }
 
-  // Load JSZip if not already loaded
-  if (typeof JSZip === 'undefined') {
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-    document.head.appendChild(script);
-    await new Promise(resolve => {
-      script.onload = resolve;
-    });
-  }
-
   const button = event.target;
   button.textContent = 'Zipping...';
   button.disabled = true;
