@@ -1,2 +1,23 @@
 {{ $path := .Get "dir" }}
-{{ partial "filetree.html" (dict "path" (printf "/%s" $path)) }}
+{{ $path = strings.TrimSuffix "/" $path }}
+{{ $containerId := printf "filetree-%s" ($path | urlize) }}
+
+<div id="{{ $containerId }}">
+  {{ partial "filetree.html" (dict "path" (printf "/%s" $path)) }}
+
+  {{ if eq (.Get "zip") "true" }}
+  <p class="filetree-download">
+    <a href="#" class="book-btn filetree-download-btn" data-container-id="{{ $containerId }}" data-base-path="{{ $path }}" data-zip-filename="{{ path.Base $path }}.zip">Download as zip</a>
+  </p>
+  {{ end }}
+</div>
+
+{{ if not (.Page.Scratch.Get "filetree_script_loaded") }}
+  {{ .Page.Scratch.Set "filetree_script_loaded" true }}
+  {{ $script := resources.Get "js/filetree-download.js" }}
+  {{ if $script }}
+    <script src="{{ $script.RelPermalink }}"></script>
+  {{ else }}
+    {{ errorf "js/filetree-download.js not found in assets directory" }}
+  {{ end }}
+{{ end }}
