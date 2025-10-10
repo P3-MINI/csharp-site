@@ -1,25 +1,12 @@
-const setupDownloadButtons = () => {
-  const downloadButtons = document.querySelectorAll('.filetree-download-btn');
-  downloadButtons.forEach(button => {
-    if (button.dataset.listenerAttached) {
-      return;
-    }
-    button.dataset.listenerAttached = 'true';
-
-    button.addEventListener('click', (event) => {
-      const containerId = button.dataset.containerId;
-      const basePath = button.dataset.basePath;
-      const zipFileName = button.dataset.zipFilename;
-      downloadTreeAsZip(event, containerId, basePath, zipFileName);
-    });
-  });
-};
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', setupDownloadButtons);
-} else {
-  setupDownloadButtons();
-}
+document.addEventListener('click', (event) => {
+  const button = event.target.closest('.filetree-download-btn');
+  if (button) {
+    const containerId = button.dataset.containerId;
+    const basePath = button.dataset.basePath;
+    const zipFileName = button.dataset.zipFilename;
+    downloadTreeAsZip(event, containerId, basePath, zipFileName);
+  }
+});
 
 async function downloadTreeAsZip(event, containerId, basePath, zipFileName) {
   event.preventDefault();

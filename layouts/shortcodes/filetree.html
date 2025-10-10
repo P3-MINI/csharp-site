@@ -11,12 +11,12 @@
   {{- end -}}
 </div>
 
-{{ if not (.Page.Scratch.Get "filetree_script_loaded") }}
-  {{ .Page.Scratch.Set "filetree_script_loaded" true }}
-  {{ $script := resources.Get "js/filetree-download.js" }}
-  {{ if $script }}
+{{- if not (.Page.Scratch.Get "filetree_script_loaded") -}}
+  {{- .Page.Scratch.Set "filetree_script_loaded" true -}}
+  {{- $script := resources.Get "js/filetree-download.js" -}}
+  {{- if $script -}}
     <script src="{{ $script.RelPermalink }}"></script>
-  {{ else }}
-    {{ errorf "js/filetree-download.js not found in assets directory" }}
-  {{ end }}
-{{ end }}
+  {{- else -}}
+    {{- errorf "js/filetree-download.js not found in assets directory" -}}
+  {{- end -}}
+{{- end -}}
