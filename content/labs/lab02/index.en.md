@@ -140,19 +140,44 @@ Regardless of the chosen method, you should see the following entry in the conso
 
 ### 2. Library Part
 
-We can start by deleting the template file `Class1.cs`. We will create two files:
 
-- `ValidationError.cs` with a public enum of possible errors.
-- `PasswordValidator.cs` with a public class of the same name, and in it, a method `public List<ValidationError> Validate(string password)`.
+We begin by removing the default template file `Class1.cs`.  
+Next, we create two new source files:
 
-To avoid putting all the long logic in one method, we will divide the detection of specific password features into separate methods:
+1. **`ValidationError.cs`** — defines a public `enum` listing all possible validation errors:
 
-- `public bool ValidatePasswordLength(string password)`: checks if the password is at least 8 characters long.
-- `public bool ValidatePasswordHasLowerCaseLetter(string password)`: checks if the password contains a lowercase letter.
-- `public bool ValidateContainsSpecialCharacter(string password)`: checks if it contains one special character from the set: `!@#$%^&*(),.?'";:{}|<>[]`.
-- ... etc.
+```csharp
+public enum ValidationError
+{
+    PasswordTooShort,
+    NoLowercaseLetter,
+    NoUppercaseLetter,
+    NoDigit,
+    NoSpecialCharacter
+}
+```
 
-For each method, add a corresponding enum value to `ValidationError`.
+2. **`PasswordValidator.cs`** — contains a public class `PasswordValidator` with the method
+
+   ```csharp
+   public List<ValidationError> Validate(string password)
+   ```
+
+   responsible for checking whether the given password satisfies all defined criteria.
+
+To keep the logic modular and maintainable, each password rule is verified by a dedicated helper method:
+
+* `ValidateLength(string password)` – returns `true` if the password has at least 8 characters.
+* `ValidateContainsLowercase(string password)` – checks for at least one lowercase ASCII letter.
+* `ValidateContainsUppercase(string password)` – checks for at least one uppercase ASCII letter.
+* `ValidateContainsDigit(string password)` – checks for at least one numeric digit.
+* `ValidateContainsSpecialCharacter(string password)` – verifies that the password includes at least one character from the set:
+  `!@#$%^&*(),.?'";:{}|<>[]`
+
+Each of these helper methods corresponds to one value in the `ValidationError` enumeration.
+Inside the `Validate` method, failed checks are added to a `List<ValidationError>` which is then returned to the caller.
+
+
 
 ### 3. Console Part
 
