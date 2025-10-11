@@ -100,7 +100,7 @@ dotnet [command] --help
 
 > You can do this task in two ways: from the command line using the `dotnet` command, or using an IDE of your choice. On Windows, you can choose between `Visual Studio` and `Rider`; on Linux, `Rider` is available.
 
-We'll start by creating a solution and two projects: a library and a console application. The console project will be a command-line interface for the library. We will be creating a password validation application. Come up with a name for the solution and projects. It could be `PasswordValidator` for the solution and `PasswordValidator.App`, `PasswordValidator.Lib` for the projects if you don't have better ideas.
+We'll start by creating a solution and two projects: a library and a console application. The console project will be a command-line interface for the library. We will be creating a password validation application. Come up with a name for the solution and projects. It could be `PasswordValidator` for the solution and `PasswordValidatorApp`, `PasswordValidatorLib` for the projects if you don't have better ideas.
 
 ```shell
 # Create a solution
