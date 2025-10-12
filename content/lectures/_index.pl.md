@@ -20,3 +20,10 @@ weight: 10
 - [Zmienne]({{< ref "03.basics/variables" >}})
 - [Paramentry]({{< ref "03.basics/parameters" >}})
 - [Przestrzenie nazw]({{< ref "03.basics/namespaces" >}})
+- [Klasy]({{< ref "04.creating-types/classes" >}})
+- [Dziedziczenie]({{< ref "04.creating-types/inheritance" >}})
+- [Struktury]({{< ref "04.creating-types/structs" >}})
+- [Modyfikatory dostępu]({{< ref "04.creating-types/access-modifiers" >}})
+- [Interfejsy]({{< ref "04.creating-types/interfaces" >}})
+
+## Wykład 03
