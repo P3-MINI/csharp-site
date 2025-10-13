@@ -1,5 +1,6 @@
 ---
 title: "Interfejsy"
+weight: 50
 ---
 
 # Interfejsy
