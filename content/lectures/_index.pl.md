@@ -23,7 +23,9 @@ weight: 10
 - [Klasy]({{< ref "04.creating-types/classes" >}})
 - [Dziedziczenie]({{< ref "04.creating-types/inheritance" >}})
 - [Struktury]({{< ref "04.creating-types/structs" >}})
-- [Modyfikatory dostępu]({{< ref "04.creating-types/access-modifiers" >}})
 - [Interfejsy]({{< ref "04.creating-types/interfaces" >}})
 
 ## Wykład 03
+
+- [Modyfikatory dostępu]({{< ref "04.creating-types/access-modifiers" >}})
+- [Interfejsy]({{< ref "04.creating-types/interfaces#rozszerzanie-interfejsów" >}})

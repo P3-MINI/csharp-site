@@ -22,8 +22,10 @@ weight: 10
 - [Namespaces]({{< ref "03.basics/namespaces" >}})
 - [Classes]({{< ref "04.creating-types/classes" >}})
 - [Inheritance]({{< ref "04.creating-types/inheritance" >}})
+
+## Lecture 03
+
+- [Inheritance]({{< ref "04.creating-types/inheritance#abstract-classes" >}})
 - [Structs]({{< ref "04.creating-types/structs" >}})
 - [Access Modifiers]({{< ref "04.creating-types/access-modifiers" >}})
 - [Interfaces]({{< ref "04.creating-types/interfaces" >}})
-
-## Lecture 03
