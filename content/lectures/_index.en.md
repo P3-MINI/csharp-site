@@ -20,3 +20,10 @@ weight: 10
 - [Variables]({{< ref "03.basics/variables" >}})
 - [Parameters]({{< ref "03.basics/parameters" >}})
 - [Namespaces]({{< ref "03.basics/namespaces" >}})
+- [Classes]({{< ref "04.creating-types/classes" >}})
+- [Inheritance]({{< ref "04.creating-types/inheritance" >}})
+- [Structs]({{< ref "04.creating-types/structs" >}})
+- [Access Modifiers]({{< ref "04.creating-types/access-modifiers" >}})
+- [Interfaces]({{< ref "04.creating-types/interfaces" >}})
+
+## Lecture 03
