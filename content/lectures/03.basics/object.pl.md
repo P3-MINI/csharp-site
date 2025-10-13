@@ -19,7 +19,7 @@ int unboxedNum = (int)obj; // Unboxing
 
 ## Definicja typu `object`
 
-Definicja tego typu w bibliotece standardowej wygląda następująco. Metody oznaczone `virtual` są przeznaczone do przeciążania w klasach pochodnych.
+Definicja tego typu w bibliotece standardowej wygląda następująco. Metody oznaczone `virtual` są przeznaczone do nadpisywania w klasach pochodnych.
 
 ```csharp
 public class Object

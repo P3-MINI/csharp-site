@@ -14,7 +14,7 @@ class ClassName
 ```
 
 W przeciwieństwie do C++, klasy mogą mieć modyfikatory poprzedzające nazwę klasy:
-- `internal` - klasy są domyślnie wewnętrzne, co oznacza, że są widoczne tylko wewnątrz assembly (pliku wykonywalnego lub `.dll`)
+- `internal` - klasy są domyślnie wewnętrzne, co oznacza, że są widoczne tylko wewnątrz *assembly* (pliku wykonywalnego lub `.dll`)
 - `public` - widoczne zewsząd
 - `static` - nie można tworzyć instancji, musi zawierać tylko statyczne składowe
 - `sealed` - z klasy nie można już dziedziczyć
@@ -99,7 +99,7 @@ class Book
 }
 ```
 
-Jeśli nie ma zdefiniowanego przez użytkownika konstruktora bez parametrów, jest on generowany automatycznie.
+Jeśli klasa nie ma zdefiniowanego żadnego konstruktora, to zostanie wygenerowany konstruktor bezparametrowy. 
 
 ## Dekonstruktory
 
@@ -162,7 +162,7 @@ Hamster h2 = new Hamster ("Boo")       {LikesViolence=true};
 **Kolejność inicjalizacji** to:
 1. pola
 2. konstruktory
-3. listy inicjalizacyjne
+3. inicjalizatory
 
 ## Właściwości
 
@@ -199,7 +199,7 @@ class ShopItem
 
 ## Init-only setter
 
-Akcesor `set` można zastąpić `init`, co czyni właściwości tylko do odczytu. Sety init można inicjalizować w konstruktorze, liście inicjalizatorów obiektów lub w linii. Jeśli pominiemy akcesor `set`, właściwość nadal może być inicjalizowana w konstruktorze lub w deklaracji i nie może być później zmieniana.
+Akcesor `set` można zastąpić `init`, co czyni właściwości tylko do odczytu. Właściwość `init` można inicjalizować w konstruktorze, inicjalizatorze obiektów lub przy deklaracji. Jeśli pominiemy akcesor `set`, właściwość nadal może być inicjalizowana w konstruktorze lub w deklaracji i nie może być później zmieniana.
 
 ## Indeksery
 Indeksery są podobne do przeciążania `operator[]` w C++. Aby napisać indeksator, definiujemy właściwość o nazwie `this`, określając argumenty w nawiasach kwadratowych:
@@ -229,7 +229,7 @@ Console.WriteLine(sentence[3]);
 
 ## Finalizatory
 
-Finalizatory mogą wydawać się destruktorami z C++, ale różnica polega na tym, że nigdy nie wiemy, kiedy finalizator zostanie wywołany. Po tym, jak ostatnia referencja do obiektu zginie, obiekt czeka na odśmiecanie pamięci. Kiedy to nastąpi? Kiedy Garbage Collector uzna to za stosowne - najczęściej, gdy jest presja na pamięć lub losowo co jakiś czas.
+Finalizatory mogą wydawać się destruktorami z C++, ale różnica polega na tym, że nigdy nie wiemy, kiedy finalizator zostanie wywołany. Po tym, jak ostatnia referencja do obiektu zginie, obiekt czeka na odśmiecanie pamięci. Kiedy to nastąpi? Kiedy Garbage Collector uzna to za stosowne - najczęściej, gdy jest presja na pamięć lub losowo co jakiś czas. Przez to nie jest to zbyt przydatna konstrukcja.
 
 ```csharp
 class Class1
