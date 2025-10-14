@@ -99,7 +99,7 @@ class Book
 }
 ```
 
-If there is no user-defined parameterless constructor, one is generated automatically.
+If there is no defined constructors, parameterless constructor is generated automatically.
 
 ## Deconstructors
 
@@ -162,7 +162,7 @@ Hamster h2 = new Hamster ("Boo")       {LikesViolence=true};
 The **order** of initialization is:
 1. fields
 2. constructors
-3. initializer lists
+3. initializers
 
 ## Properties
 
@@ -199,7 +199,7 @@ class ShopItem
 
 ## Init-only setters
 
-The `set` accessor can be replaced with `init` effectively making the read-only properties. Init setters can be initialized in the constructor, object initializer list or inline. If we omit `set` accessor the property can still be initialized in the constructor or inline, and cannot be changes later.
+The `set` accessor can be replaced with `init` effectively making the read-only properties. Init properties can be initialized in the constructor, object initializer or inline. If we omit `set` accessor the property can still be initialized in the constructor or inline, and cannot be changes later.
 
 ## Indexers
 Indexers are similar to overloading `operator[]` in C++. To write an indexer, we define a property called `this`, specifying the arguments in square brackets:
@@ -229,7 +229,7 @@ Console.WriteLine(sentence[3]);
 
 ## Finalizers
 
-Finalizers may seem like destructors from C++, but the difference is that we never know when finalizer will be called. After the last reference of an object is out of scope, the object awaits garbage collection. When will that happen? When Garbage Collector feels like it - most of the time when there is memory pressure or at random, periodically.
+Finalizers may seem like destructors from C++, but the difference is that we never know when finalizer will be called. After the last reference of an object is out of scope, the object awaits garbage collection. When will that happen? When Garbage Collector feels like it - most of the time when there is memory pressure or at random, periodically. Because of that it is not the most useful construct.
 
 ```csharp
 class Class1

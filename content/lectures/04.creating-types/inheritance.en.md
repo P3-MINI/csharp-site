@@ -94,7 +94,7 @@ if (alice is Teacher teacher)
 
 ## Virtual Methods
 
-Virtual functions work on the same principle as in C++. Under the hood, they use a mechanism similar to virtual function tables: [*Virtual Stub Dispatch*](https://github.com/dotnet/runtime/blob/main/docs/design/coreclr/botr/virtual-stub-dispatch.md). The principle of operation is similar, with the difference that a call to a virtual method leads to a piece of code, called a `Stub`, which, like a vtable, finds the address of the correct method. However, instead of transferring control to the method, as would happen with a vtable, the `Stub` replaces the method address on the fly so that the next call points directly to the found address. Subsequent calls directly invoke the appropriate implementation.
+Virtual functions work on the same principle as in C++. Under the hood, they use a virtual function tables.
 
 In C#, not only methods can be virtual, but also properties, indexers, and events.
 

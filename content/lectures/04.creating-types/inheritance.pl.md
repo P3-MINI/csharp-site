@@ -94,7 +94,7 @@ if (alice is Teacher teacher)
 
 ## Metody wirtualne
 
-Funkcje wirtualne działają na tej samej zasadzie co w C++. Pod spodem wykorzystują mechanizm podobny do tablic funkcji wirtualnych: [*Virtual Stub Dispatch*](https://github.com/dotnet/runtime/blob/main/docs/design/coreclr/botr/virtual-stub-dispatch.md). Zasada działania jest podobna, z tą różnicą, że wywołanie metody wirtualnej prowadzi do fragmentu kodu, zwanego `Stub`em, który podobnie jak vtable znajduje adres właściwej metody. Jednak zamiast przekazać sterowanie do metody, jakby to się stało w przypadku vtable, `Stub` podmienia w locie adres metody tak żeby następne wywołanie bezpośrednio wskazywało na znaleziony adres. Kolejne wywołania wywołują bezpośrednio odpowiednią implementację.
+Funkcje wirtualne działają na tej samej zasadzie co w C++. Pod spodem wykorzystują mechanizm tablic funkcji wirtualnych.
 
 W C# wirtualne mogą być nie tylko metody, ale też właściwości, indeksery i zdarzenia.
 
