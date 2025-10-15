@@ -25,6 +25,44 @@ W C# żeby wiedzieć, że typy możemy ze sobą porównywać musielibyśmy na pr
 ```csharp
 static T Max<T>(T a, T b) where T : IComparable<T>
 {
-    return a.CompareTo(b) > 0 ? a : b;
+    return a > b ? a : b;
 }
 ```
+
+## Samoodnoszące się deklaracje generyczne
+
+W deklaracji typu można używać deklarowanego typu jako parametru generycznego:
+
+```csharp
+public class Product : IEquatable<Product>
+{
+    public string EanCode { get; }
+    
+    public Product(string eanCode) => EanCode = eanCode;
+    
+    public bool Equals(Product? other) => EanCode == other?.EanCode;
+}
+```
+
+To ma sens, komunikujemy w ten sposób, że `Product` jest porównywalny z innymi przedstawicielami swojego typu pod względem równości.
+
+W deklaracji możemy także używać parametru generycznego do jego ograniczenia.
+
+```csharp
+public class Finder<T> : where T : IEquatable<T>
+{
+    public T? Find(Collection<T> collection, T? item)
+    {
+        foreach(var t in collection)
+        {
+            if (t == item) return t;
+        }
+        
+        return default(T);
+    }
+}
+```
+
+To też ma sens, chcemy szukać obiektów, które są porównywalne równościowo, inaczej nie wiedzielibyśmy jak szukać.
+
+Poprawne jest też: `class Foo<Bar> : where Bar : Foo<Bar>`.
