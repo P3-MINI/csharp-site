@@ -1,6 +1,6 @@
 ---
-title: "Generic Types"
+title: "Generics"
 weight: 80
 ---
 
-# Generic Types
+# Generics
