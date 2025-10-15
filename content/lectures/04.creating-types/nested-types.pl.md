@@ -1,6 +1,6 @@
 ---
 title: "Typy zagnieżdżone"
-weight: 60
+weight: 70
 ---
 
 # Typy zagnieżdżone
