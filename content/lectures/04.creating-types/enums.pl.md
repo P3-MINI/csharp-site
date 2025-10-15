@@ -1,5 +1,5 @@
 ---
-title: "Typ Wyliczeniowy"
+title: "Typ wyliczeniowy"
 weight: 60
 ---
 
