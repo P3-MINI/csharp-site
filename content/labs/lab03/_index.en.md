@@ -1,6 +1,7 @@
 ---
 title: "Lab03"
 weight: 10
+bookCollapseSection: true
 ---
 
 # Laboratory 3 - Example - Classes/Structures, Inheritance, Properties, Access Modifiers
