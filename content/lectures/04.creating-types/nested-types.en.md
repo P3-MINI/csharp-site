@@ -5,7 +5,7 @@ weight: 60
 
 # Nested Types
 
-In C#, you can define types within other types. These are called **nested types**. This practice is useful for organizing your code when a type is tightly coupled with its containing type and is not intended for general use, thus avoiding clutter in the namespace.
+In C#, you can define types within other types. These are called **nested types**. This is useful when a type is tightly coupled with its containing type, and you want to avoid cluttering the namespace.
 
 ```csharp
 public class Car
@@ -20,9 +20,7 @@ public class Car
 }
 ```
 
-By default, nested types have a `private` access modifier, just like other members of a class. However, you can specify any access modifier, such as `public` or `internal`.
-
-A key feature is that **a nested type has access to all members of its containing type, including private ones.** A great way to demonstrate this is with the Builder pattern.
+By default, nested types have a `private` access modifier, just like other members of classes and structs. However, you can specify any access modifier. A nested type has access to all members of its containing type, including private ones. In the example, the `Builder` class calls the private constructor of the `Pizza` class:
 
 ```csharp
 public class Pizza
@@ -43,10 +41,7 @@ public class Pizza
         public int SizeCm { get; }
         public List<Topping> Toppings { get; } = new List<Topping>();
         
-        public Builder(int sizeCm)
-        {
-            SizeCm = sizeCm;
-        }
+        public Builder(int sizeCm) => SizeCm = sizeCm;
         
         public Builder AddTopping(Topping topping)
         {
@@ -62,7 +57,7 @@ public class Pizza
 From outside the containing class, creating and referencing a nested type requires using its full, qualified name:
 
 ```csharp
-var largePepperoniBuilder = new Pizza.Builder(40);
+Pizza.Builder largePepperoniBuilder = new Pizza.Builder(40);
 
 largePepperoniBuilder.AddTopping(Pizza.Topping.Pepperoni);
 largePepperoniBuilder.AddTopping(Pizza.Topping.Cheese);
