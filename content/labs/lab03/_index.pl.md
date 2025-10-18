@@ -1,6 +1,7 @@
 ---
 title: "Lab03"
 weight: 10
+bookCollapseSection: true
 ---
 
 # Laboratorium 3 - Przykładowe - Klasy/Struktury, Dziedzicznie, Właściwości, Modyfikatory dostępu
