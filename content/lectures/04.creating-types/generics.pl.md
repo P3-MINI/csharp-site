@@ -51,18 +51,18 @@ W deklaracji możemy także używać parametru generycznego do jego ograniczenia
 ```csharp
 public class Finder<T> : where T : IEquatable<T>
 {
-    public T? Find(Collection<T> collection, T? item)
+    public T? Find(Collection<T> collection, T item)
     {
         foreach(var t in collection)
         {
-            if (t == item) return t;
+            if (t.Equals(item)) return t;
         }
-        
+
         return default(T);
     }
 }
 ```
 
-To też ma sens, chcemy szukać obiektów, które są porównywalne równościowo, inaczej nie wiedzielibyśmy jak szukać.
+To też ma sens, chcemy szukać obiektów, które są porównywalne ze sobą równościowo, inaczej nie wiedzielibyśmy jak szukać.
 
 Poprawne jest też: `class Foo<Bar> : where Bar : Foo<Bar>`.
