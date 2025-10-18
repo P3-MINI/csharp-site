@@ -52,7 +52,7 @@ public readonly struct Point
 
 Pojedyncze metody również można oznaczać `readonly`, co sprawia, że nie możemy zmieniać pól struktur w takiej metodzie.
 
-## sturktury `ref`
+## struktury `ref`
 
 Struktury ze słówkiem kluczowym ref mogą być alokowane jedynie na stosie, każda konstrukcja, która wymuszała by umieszczenie takiej zmiennej na stercie, kończy się błędem kompilacji. Między innymi nie można tworzyć tablic takich struktur, nie mogą być polami klas lub nie `ref` struktur, nie mogą być używane wewnątrz iteratorów, metod asynchronicznych ani lambd, nie mogą implementować interfejsów.
 

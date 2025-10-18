@@ -23,10 +23,154 @@ template <class T> T Max(T a, T b)
 W C# żeby wiedzieć, że typy możemy ze sobą porównywać musielibyśmy na przykład ograniczyć `T` do typu implementującego `IComparable<T>`. Dzięki temu, tej generycznej metody możemy używać tylko na typach porównywalnych, przez co nie będzie niespodzianek po podstawieniu.
 
 ```csharp
-static T Max<T>(T a, T b) where T : IComparable<T>
+static T Max<T>(T a, T b) where T : IComparisonOperators<T, T, bool>
 {
     return a > b ? a : b;
 }
+```
+
+## Bez generyków
+
+Wyobraźmy sobie, że mamy do zaimplementowania stos, który ma działać z typami: `int`, `float` i `string`. Bez typów generycznych możemy na przykład zaimplementować trzy klasy: `IntStack`, `FloatStack`, `StringStack`. Jest to jednak dużo kodu do utrzymania, w dodatku powtórzonego. Innym rozwiązaniem jest użycie klasy `object`, żeby napisać jedną implementację stosu, która będzie działać z każdym typem:
+
+```csharp
+public class ObjectStack
+{
+    private object[] _items = new object[8];
+    public int Count { get; private set; }
+
+    public void Push(object item)
+    {
+        if (_items.Length == Count)
+        {
+            Array.Resize(ref _items, _items.Length * 2);
+        }
+        _items[Count++] = item;
+    }
+
+    public object Pop()
+    {
+        if (Count == 0)
+        {
+            throw new InvalidOperationException("Stack is empty");
+        }
+        return _items[--Count];
+    }
+}
+```
+
+Jednak próba użycia takiego stosu uwidacznia problemy z tą implementacją. Po pierwsze wrzucanie na stos typów bezpośrednich wymaga pakowania. Po drugie, taki stos nie zapewnia nam bezpieczeństwa typów. Pobranie elementu wiąże się z niebezpiecznym rzutowaniem w dół. Typy generyczne rozwiązują oba te problemy.
+
+```csharp
+ObjectStack stack = new ObjectStack();
+
+for (int i = 0; i < 10; i++)
+{
+    stack.Push(i);
+}
+
+int number = (int) stack.Pop();
+string str = (string) stack.Pop(); // Runtime error: InvalidCastException
+```
+
+## Typy generyczne
+
+Generyczna implementacja wygląda następująco:
+
+```csharp
+public class Stack<T>
+{
+    private T[] _items = new T[8];
+    public int Count { get; private set; }
+
+    public void Push(T item)
+    {
+        if (_items.Length == Count)
+        {
+            Array.Resize(ref _items, _items.Length * 2);
+        }
+        _items[Count++] = item;
+    }
+
+    public T Pop()
+    {
+        if (Count == 0)
+        {
+            throw new InvalidOperationException("Stack is empty");
+        }
+        return _items[--Count];
+    }
+}
+```
+
+Korzystanie z takiego stosu nie powoduje już operacji pakowania i jest bezpieczne:
+
+```csharp
+Stack<int> stack = new Stack<int>();
+
+for (int i = 0; i < 10; i++)
+{
+    stack.Push(i);
+}
+
+int number = stack.Pop();
+// string str = stack.Pop(); // Compilation error
+```
+
+## Metody generyczne
+
+Metody również mogą wprowadzać parametry generyczne:
+
+```csharp
+public static void Swap<T>(ref T a, ref T b)
+{
+    T temp = a;
+    a = b;
+    b = temp;
+}
+```
+
+## Ograniczenia typów generycznych
+
+Normalnie o parametrze generycznym wiemy jedynie, że jest typu `object`, co znaczy, że można na nim wywołać metody dostępne na typie `object`. Nie można zrobić nic więcej.
+
+Ograniczenia pozwalają na przekazanie dodatkowych informacji o typie generycznym. Na przykład, jeśli ograniczysz parametr generyczny do konkretnej klasy lub interfejsu, kompilator pozwoli Ci używać metod z tej klasy/interfejsu.
+
+```csharp
+public static T Max<T>(T value, params T[] values) where T : IComparable<T>
+{
+    var max = value;
+    foreach (var t in values)
+    {
+        if (max.CompareTo(t) < 0)
+        {
+            max = t;
+        }
+    }
+    return max;
+}
+```
+
+Możliwe ograniczenia:
+
+* `where T : `*<base class/interface>* - najczęstsze ograniczenie i najbardziej przydatne, pozwala wywołać metody z ograniczanych klas i interfejsów.
+* `where T : `*<base class/interface>?* - pozwala wywołać metody z ograniczanych klas i interfejsów, dodatkowo może być `null`owalny
+* `where T : new()` - typ musi zawierać konstruktor bezparametrowy, przydatne jeżeli musimy tworzyć nowe instancje
+* `where T : class` - typ musi być referencyjny
+* `where T : class?` - typ musi być referencyjny, może być `null`owalny
+* `where T : struct` - typ musi być bezpośredni
+* `where T : allows ref struct` - typ może być "ref strukturą"
+* `where T : unmanaged` - typ musi być bezpośredni i rekursywnie składać się z innych typów bezpośrednich lub wskaźnikowych
+* `where T : notnull` - nie może być `null`owalny
+
+Na typ generyczny możemy nanosić kilka ograniczeń:
+
+```csharp
+class Base {}
+class Test<T, U>
+    where U : struct
+    where T : Base, new()
+{}
 ```
 
 ## Samoodnoszące się deklaracje generyczne
