@@ -36,7 +36,7 @@ Typy generyczne w C# mogą przyjmować tylko parametry typowe (czyli inne typy, 
 Wyobraźmy sobie, że mamy do zaimplementowania stos, który ma działać z typami: `int`, `float` i `string`. Bez typów generycznych możemy na przykład zaimplementować trzy klasy: `IntStack`, `FloatStack`, `StringStack`. Jest to jednak dużo kodu do utrzymania, w dodatku powtórzonego. Innym rozwiązaniem jest użycie klasy `object`, żeby napisać jedną implementację stosu, która będzie działać z każdym typem:
 
 ```csharp
-public class ObjectStack
+public class Stack
 {
     private object[] _items = new object[8];
     public int Count { get; private set; }
@@ -61,18 +61,23 @@ public class ObjectStack
 }
 ```
 
+> [!NOTE]
+> **Kod źródłowy - ObjectStack**
+> {{< filetree dir="lectures/creating-types/generics/ObjectStack" >}}
+
+
 Jednak próba użycia takiego stosu uwidacznia problemy z tą implementacją. Po pierwsze wrzucanie na stos typów bezpośrednich wymaga pakowania. Po drugie, taki stos nie zapewnia nam bezpieczeństwa typów. Pobranie elementu wiąże się z niebezpiecznym rzutowaniem w dół. Typy generyczne rozwiązują oba te problemy.
 
 ```csharp
-ObjectStack stack = new ObjectStack();
+Stack stack = new Stack();
 
 for (int i = 0; i < 10; i++)
 {
     stack.Push(i);
 }
 
-int number = (int) stack.Pop();
-string str = (string) stack.Pop(); // Runtime error: InvalidCastException
+int number = (int)stack.Pop();
+string str = (string)stack.Pop(); // Runtime error: InvalidCastException
 ```
 
 ## Typy generyczne
@@ -105,6 +110,11 @@ public class Stack<T>
 }
 ```
 
+> [!NOTE]
+> **Kod źródłowy - GenericStack**
+> {{< filetree dir="lectures/creating-types/generics/GenericStack" >}}
+
+
 Korzystanie z takiego stosu nie powoduje już operacji pakowania i jest bezpieczne:
 
 ```csharp
@@ -115,8 +125,12 @@ for (int i = 0; i < 10; i++)
     stack.Push(i);
 }
 
-int number = stack.Pop();
 // string str = stack.Pop(); // Compilation error
+while (stack.Count > 0)
+{
+    int number = stack.Pop();
+    Console.WriteLine(number);
+}
 ```
 
 Można definiować wiele parametrów generycznych:
@@ -210,9 +224,9 @@ To ma sens, komunikujemy w ten sposób, że `Product` jest porównywalny z innym
 W deklaracji możemy także używać parametru generycznego do jego ograniczenia.
 
 ```csharp
-public class Finder<T> : where T : IEquatable<T>
+public class Finder<T> where T : IEquatable<T>
 {
-    public T? Find(Collection<T> collection, T item)
+    public T? Find(IEnumerable<T> collection, T item)
     {
         foreach(var t in collection)
         {
@@ -226,7 +240,7 @@ public class Finder<T> : where T : IEquatable<T>
 
 To też ma sens, chcemy szukać obiektów, które są porównywalne ze sobą równościowo, inaczej nie wiedzielibyśmy jak szukać.
 
-Poprawne jest też: `class Foo<Bar> : where Bar : Foo<Bar>`.
+Poprawne jest też: `class Foo<Bar> where Bar : Foo<Bar>`.
 
 ## Niezmienność
 
@@ -256,7 +270,7 @@ public class Bike : Vehicle;
 
 ## Wariancja
 
-W interfejsach możemy deklarować zmienne (*wariantne*) parametry generyczne. Ograniczają one sposób użycia parametru generycznego, ale dzięki temu pozwalają na rzutowanie tego parametru w jedną ze stron. Parametry kowarientne (out) mogą być używane tylko do zwracania wartości. Parametry kontrawarientne (int) mogą być używane tylko jako parametry wejściowe do metod.
+W interfejsach możemy deklarować zmienne (*wariantne*) parametry generyczne. Ograniczają one sposób użycia parametru generycznego, ale dzięki temu pozwalają na rzutowanie tego parametru w jedną ze stron. Parametry kowarientne (out) mogą być używane tylko do zwracania wartości. Parametry kontrawarientne (in) mogą być używane tylko jako parametry wejściowe do metod.
 
 ```csharp
 // Covariant T type parameter (can be used only as a return value)
@@ -272,7 +286,7 @@ public interface IPushable<in T>
     void Push(T item);
 }
 
-public class VariantStack<T> : IPoppable<T>, IPushable<T>
+public class Stack<T> : IPoppable<T>, IPushable<T>
 {
     private T[] _items = new T[8];
     public int Count { get; private set; }
@@ -297,12 +311,16 @@ public class VariantStack<T> : IPoppable<T>, IPushable<T>
 }
 ```
 
+> [!NOTE]
+> **Kod źródłowy - VariantStack**
+> {{< filetree dir="lectures/creating-types/generics/VariantStack" >}}
+
 ### Kowariancja
 
 Kowariantne parametry generyczne (out) pozwalają na rzutowanie w górę. Będzie to umożliwiało przekazanie wyspecjalizowanego typu do bardziej ogólnej metody:
 
 ```csharp
-var carStack = new VariantStack<Car>();
+var carStack = new Stack<Car>();
 carStack.Push(new Car());
 carStack.Push(new Car());
 IPoppable<Car> vehiclePoppable = carStack;
@@ -327,7 +345,7 @@ public class Bike : Vehicle;
 Kontrawariantne parametry generyczne (in) pozwalają na rzutowanie w dół. Będzie to umożliwiało przekazanie ogólniejszego typu do bardziej wyspecjalizowanej metody:
 
 ```csharp
-var vehiclesStack = new VariantStack<Vehicle>();
+var vehiclesStack = new Stack<Vehicle>();
 vehiclesStack.Push(new Car());
 vehiclesStack.Push(new Bike());
 IPushable<Vehicle> carPushable = vehiclesStack;
@@ -337,11 +355,12 @@ public void DeliverCars(IPushable<Car> cars, int count)
 {
     for (int i = 0; i < count; i++)
     {
+        Console.WriteLine("Adding car to IPushable");
         cars.Push(new Car());
     }
 }
 
-private abstract class Vehicle;
-private class Car : Vehicle;
-private class Bike : Vehicle;
+public abstract class Vehicle;
+public class Car : Vehicle;
+public class Bike : Vehicle;
 ```
