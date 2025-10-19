@@ -29,7 +29,7 @@ static T Max<T>(T a, T b) where T : IComparisonOperators<T, T, bool>
 }
 ```
 
-Typy generyczne w C# mogą przyjmować tylko parametry typowe (czyli inne typy, np. string, int, MyClass), a nie parametry nietypowe (stałe wartości, np. 10, true, "hello"), jak ma to miejsce w C++.
+Typy generyczne w C# mogą przyjmować tylko parametry typowe (czyli inne typy, np. `string`, `int`, `MyClass`), a nie parametry nietypowe (stałe wartości, np. `10`, `true`, `"hello"`), jak ma to miejsce w C++.
 
 ## Bez generyków
 
