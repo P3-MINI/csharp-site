@@ -149,11 +149,11 @@ Next, we create two new source files:
 ```csharp
 public enum ValidationError
 {
-    PasswordTooShort,
-    NoLowercaseLetter,
-    NoUppercaseLetter,
-    NoDigit,
-    NoSpecialCharacter
+   PasswordTooShort,
+   NoLowercaseLetter,
+   NoUppercaseLetter,
+   NoDigit,
+   NoSpecialCharacter
 }
 ```
 
