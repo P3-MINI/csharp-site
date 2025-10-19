@@ -61,7 +61,7 @@ Console.WriteLine(t1 != t2); // output: False
 
 ## Dekonstrukcja krotek
 
-Krotki wspierają dekonstrukcję:
+Krotki wspierają [dekonstrukcję]({{< ref "/lectures/04.creating-types/classes#dekonstruktory" >}}):
 
 ```csharp
 var bob = ("Bob", 23);

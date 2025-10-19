@@ -61,7 +61,7 @@ Console.WriteLine(t1 != t2); // output: False
 
 ## Deconstructing Tuples
 
-Tuples support deconstruction:
+Tuples support [deconstruction]({{< ref "/lectures/04.creating-types/classes#deconstructors" >}}):
 
 ```csharp
 var bob = ("Bob", 23);
