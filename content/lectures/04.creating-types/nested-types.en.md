@@ -1,6 +1,6 @@
 ---
 title: "Nested Types"
-weight: 60
+weight: 70
 ---
 
 # Nested Types
