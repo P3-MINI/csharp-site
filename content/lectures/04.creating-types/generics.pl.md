@@ -29,6 +29,8 @@ static T Max<T>(T a, T b) where T : IComparisonOperators<T, T, bool>
 }
 ```
 
+Typy generyczne w C# mogą przyjmować tylko parametry typowe (czyli inne typy, np. string, int, MyClass), a nie parametry nietypowe (stałe wartości, np. 10, true, "hello"), jak ma to miejsce w C++.
+
 ## Bez generyków
 
 Wyobraźmy sobie, że mamy do zaimplementowania stos, który ma działać z typami: `int`, `float` i `string`. Bez typów generycznych możemy na przykład zaimplementować trzy klasy: `IntStack`, `FloatStack`, `StringStack`. Jest to jednak dużo kodu do utrzymania, w dodatku powtórzonego. Innym rozwiązaniem jest użycie klasy `object`, żeby napisać jedną implementację stosu, która będzie działać z każdym typem:
@@ -117,6 +119,12 @@ int number = stack.Pop();
 // string str = stack.Pop(); // Compilation error
 ```
 
+Można definiować wiele parametrów generycznych:
+
+```csharp
+class Test<T, U, W>;
+```
+
 ## Metody generyczne
 
 Metody również mogą wprowadzać parametry generyczne:
@@ -128,6 +136,15 @@ public static void Swap<T>(ref T a, ref T b)
     a = b;
     b = temp;
 }
+```
+
+Jeżeli kompilator potrafi wywnioskować parametry generyczne, to nie trzeba ich podawać przy wywołaniu:
+
+```csharp
+int i = 3, j = 5;
+Swap<int>(ref i, ref j);
+Swap(ref i, ref j);
+Console.WriteLine($"i: {i}, j: {j}");
 ```
 
 ## Ograniczenia typów generycznych
@@ -210,3 +227,121 @@ public class Finder<T> : where T : IEquatable<T>
 To też ma sens, chcemy szukać obiektów, które są porównywalne ze sobą równościowo, inaczej nie wiedzielibyśmy jak szukać.
 
 Poprawne jest też: `class Foo<Bar> : where Bar : Foo<Bar>`.
+
+## Niezmienność
+
+Typy generyczne domyślnie są niezmienne. Nie można rzutować ich parametrów generycznych w dół ani w górę.
+
+Rzutowanie w dół jest niedozwolone, bo moglibyśmy ze stosu samochodów nagle zdjąć inny rodzaj pojazdu.
+
+```csharp
+Stack<Vehicle> vehicleStack = new Stack<Vehicle>();
+Stack<Car> carStack = vehicleStack; // Compilation error
+
+public abstract class Vehicle;
+public class Car : Vehicle;
+public class Bike : Vehicle;
+```
+
+Rzutowanie w górę jest niedozwolone, bo moglibyśmy na stos samochodów nagle wepchnąć inny rodzaj pojazdu.
+
+```csharp
+Stack<Car> carStack = new Stack<Car>();
+Stack<Vehicle> vehicleStack = carStack; // Compilation error
+
+public abstract class Vehicle;
+public class Car : Vehicle;
+public class Bike : Vehicle;
+```
+
+## Wariancja
+
+W interfejsach możemy deklarować zmienne (*wariantne*) parametry generyczne. Ograniczają one sposób użycia parametru generycznego, ale dzięki temu pozwalają na rzutowanie tego parametru w jedną ze stron. Parametry kowarientne (out) mogą być używane tylko do zwracania wartości. Parametry kontrawarientne (int) mogą być używane tylko jako parametry wejściowe do metod.
+
+```csharp
+// Covariant T type parameter (can be used only as a return value)
+public interface IPoppable<out T> 
+{
+    int Count { get; }
+    T Pop();
+}
+
+// Contravariant T type parameter (can be used only as an input parameter)
+public interface IPushable<in T> 
+{
+    void Push(T item);
+}
+
+public class VariantStack<T> : IPoppable<T>, IPushable<T>
+{
+    private T[] _items = new T[8];
+    public int Count { get; private set; }
+
+    public void Push(T item)
+    {
+        if (_items.Length == Count)
+        {
+            Array.Resize(ref _items, _items.Length * 2);
+        }
+        _items[Count++] = item;
+    }
+
+    public T Pop()
+    {
+        if (Count == 0)
+        {
+            throw new InvalidOperationException("Stack is empty");
+        }
+        return _items[--Count];
+    }
+}
+```
+
+### Kowariancja
+
+Kowariantne parametry generyczne (out) pozwalają na rzutowanie w górę. Będzie to umożliwiało przekazanie wyspecjalizowanego typu do bardziej ogólnej metody:
+
+```csharp
+var carStack = new VariantStack<Car>();
+carStack.Push(new Car());
+carStack.Push(new Car());
+IPoppable<Car> vehiclePoppable = carStack;
+WashVehicles(vehiclePoppable);
+
+public void WashVehicles(IPoppable<Vehicle> vehicles)
+{
+    while (vehicles.Count > 0)
+    {
+        Vehicle vehicle = vehicles.Pop();
+        Console.WriteLine($"Washing {vehicle}");
+    }
+}
+
+public abstract class Vehicle;
+public class Car : Vehicle;
+public class Bike : Vehicle;
+```
+
+### Kontrawariancja
+
+Kontrawariantne parametry generyczne (in) pozwalają na rzutowanie w dół. Będzie to umożliwiało przekazanie ogólniejszego typu do bardziej wyspecjalizowanej metody:
+
+```csharp
+var vehiclesStack = new VariantStack<Vehicle>();
+vehiclesStack.Push(new Car());
+vehiclesStack.Push(new Bike());
+IPushable<Vehicle> carPushable = vehiclesStack;
+DeliverCars(carPushable, 2);
+
+public void DeliverCars(IPushable<Car> cars, int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        cars.Push(new Car());
+    }
+}
+
+private abstract class Vehicle;
+private class Car : Vehicle;
+private class Bike : Vehicle;
+```
