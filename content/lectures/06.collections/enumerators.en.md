@@ -205,7 +205,7 @@ private sealed class <Fibs>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int
 ```
 {{% /details %}}
 
-An iterator method is invoked after `MoveNext` is called on the enumerator from its last state. The next value is calculated, the `yield return` statement returns the calculated value by writing it to the `Current` property, and control returns to the caller.
+Just calling the iterator method only creates a state machine. The code of the iterator method itself is called after `MoveNext` is called on the enumerator from its last state. The next value is calculated, the `yield return` statement returns the calculated value by writing it to the `Current` property, and control returns to the caller.
 
 There is also a `yield break` statement, which also returns control to the caller, but it causes `MoveNext` to return `false`, indicating no further elements.
 

@@ -29,3 +29,13 @@ weight: 10
 
 - [Modyfikatory dostępu]({{< ref "04.creating-types/access-modifiers" >}})
 - [Interfejsy]({{< ref "04.creating-types/interfaces#rozszerzanie-interfejsów" >}})
+- [Typ wyliczeniowy]({{< ref "04.creating-types/enums" >}})
+- [Typy zagnieżdżone]({{< ref "04.creating-types/nested-types" >}})
+- [Generyki]({{< ref "04.creating-types/generics" >}})
+- [Krotki]({{< ref "05.csharp-features/tuples" >}})
+- [Nullowalność]({{< ref "05.csharp-features/nullable" >}})
+- [Enumeratory]({{< ref "06.collections/enumerators" >}})
+
+## Wykład 04
+
+- [Enumeratory]({{< ref "06.collections/enumerators#metoda-iterująca" >}})

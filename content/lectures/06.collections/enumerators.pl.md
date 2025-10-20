@@ -205,7 +205,7 @@ private sealed class <Fibs>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int
 ```
 {{% /details %}}
 
-Metoda iterująca jest wywoływana po wywołaniu `MoveNext` na enumeratorze od ostatniego stanu. Obliczana jest następna wartość, instrukcja `yield return` zwraca obliczoną wartość przez zapis jej do właściwości `Current` i kontrola wraca do wywołującego.
+Samo wywołanie metody iterującej powoduje tylko stworzenie maszyny stanów. Sam kod metody iterującej jest wywoływany po wywołaniu `MoveNext` na enumeratorze od ostatniego stanu. Obliczana jest następna wartość, instrukcja `yield return` zwraca obliczoną wartość przez zapis jej do właściwości `Current` i kontrola wraca do wywołującego.
 
 Istnieje także instrukcja `yield break`, która również zwraca kontrolę do wywołującego, ale sprawia że `MoveNext` zwraca `false`, oznaczając brak dalszych elementów.
 

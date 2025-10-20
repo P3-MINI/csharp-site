@@ -10,7 +10,7 @@ Poniedziałki, 14:15 - 16:00, sala 328
 |------------|------------------------------------------------------------------|
 | 06.10.2025 | L01: git, Wprowadzenie do .NET i C#, MSBuild                     |
 | 13.10.2025 | L02: Klasy/Struktury/Interfejsy, Dziedziczenie, Właściwości      |
-| 20.10.2025 | L03:                                                             |
+| 20.10.2025 | L03: Generyki, Krotki, Nullowalność, Enumeratory                 |
 | 27.10.2025 | L04:                                                             |
 | 03.11.2025 | L05:                                                             |
 | 13.11.2025 | L06:                                                             |
