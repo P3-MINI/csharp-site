@@ -1,5 +1,6 @@
 ---
 title: "Enumerators"
+weight: 10
 ---
 
 # Enumerators
@@ -313,7 +314,7 @@ The `Odds` method acts as a filter for the `Fibonacci` sequence; most LINQ metho
 
 > [!NOTE]
 > **Source Code - IteratorMethods**
-> {{< filetree dir="lectures/csharp-features/IteratorMethods" >}}
+> {{< filetree dir="lectures/collections/IteratorMethods" >}}
 
 ## Implementing a Custom Enumerable Type
 
@@ -381,4 +382,4 @@ foreach (var str in stack)
 
 > [!NOTE]
 > **Source Code - EnumerableStack**
-> {{< filetree dir="lectures/csharp-features/EnumerableStack" >}}
+> {{< filetree dir="lectures/collections/EnumerableStack" >}}
