@@ -1,5 +1,6 @@
 ---
 title: "Enumeratory"
+weight: 10
 ---
 
 # Enumeratory
@@ -313,7 +314,7 @@ Metoda `Odds` jest filtrem dla sekwencji `Fibonacci`, na tej zasadzie opieraja s
 
 > [!NOTE]
 > **Kod źródłowy - IteratorMethods**
-> {{< filetree dir="lectures/csharp-features/IteratorMethods" >}}
+> {{< filetree dir="lectures/collections/IteratorMethods" >}}
 
 ## Implementacja własnego typu enumerowalnego
 
@@ -381,4 +382,4 @@ foreach (var str in stack)
 
 > [!NOTE]
 > **Kod źródłowy - EnumerableStack**
-> {{< filetree dir="lectures/csharp-features/EnumerableStack" >}}
+> {{< filetree dir="lectures/collections/EnumerableStack" >}}
