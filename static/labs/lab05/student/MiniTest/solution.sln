@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36203.30
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeCrafter", "TypeCrafter\TypeCrafter.csproj", "{CFB6616D-F9E2-44CE-9F7C-BFC53850702F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationService", "AuthenticationService\AuthenticationService.csproj", "{E0040A55-4CD0-5840-1CA3-81656A8D10F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationService", "..\common\AuthenticationService\AuthenticationService.csproj", "{E0040A55-4CD0-5840-1CA3-81656A8D10F4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationService.Tests", "..\common\AuthenticationService.Tests\AuthenticationService.Tests.csproj", "{E6ED9543-9A20-4DF3-9A06-98754A4692BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationService.Tests", "AuthenticationService.Tests\AuthenticationService.Tests.csproj", "{E6ED9543-9A20-4DF3-9A06-98754A4692BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CFB6616D-F9E2-44CE-9F7C-BFC53850702F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CFB6616D-F9E2-44CE-9F7C-BFC53850702F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CFB6616D-F9E2-44CE-9F7C-BFC53850702F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CFB6616D-F9E2-44CE-9F7C-BFC53850702F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E0040A55-4CD0-5840-1CA3-81656A8D10F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E0040A55-4CD0-5840-1CA3-81656A8D10F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0040A55-4CD0-5840-1CA3-81656A8D10F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -32,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {1081CD64-CE10-40F5-84E0-5F371940E2FD}
+		SolutionGuid = {3494A548-F1C1-4026-AAD8-E0762DE76ECF}
 	EndGlobalSection
 EndGlobal

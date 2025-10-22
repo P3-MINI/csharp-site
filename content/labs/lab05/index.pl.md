@@ -32,7 +32,13 @@ Dzięki refleksji kod może działać "na typach", których nie znał w czasie k
 
 ### Opis zadania
 
-Zaimplementuj klasę `TypeCrafter`, która przy pomocy metody `CraftInstance<>` potrafi dynamicznie zbudować instancję dowolnego typu `T` w czasie wykonania, czytając wartości z konsoli i przypisując je do właściwości obiektu. Twoja implementacja ma powinna intensywnie korzystać z refleksji (przestrzeń nazw `System.Reflection`).
+Zaimplementuj klasę `TypeCrafter`, która przy pomocy metody `CraftInstance<>` potrafi dynamicznie zbudować instancję dowolnego typu `T` w czasie wykonania, czytając wartości z konsoli i przypisując je do właściwości obiektu. Twoja implementacja powinna intensywnie korzystać z refleksji (przestrzeń nazw `System.Reflection`).
+
+> [!TIP]
+> **Kod początkowy**
+> {{< filetree dir="labs/lab05/student/TypeCrafter" >}}
+> 
+> **Wyjście:** [TypeCrafter.txt](/labs/lab05/outputs/TypeCrafter.txt)
 
 ```csharp
 public static class TypeCrafter
@@ -141,8 +147,11 @@ public sealed class Invoice
 
 ### Przykładowe rozwiązanie
 
-- Przykładowe rozwiązanie można znaleźć w projekcie [TypeCrafter](/labs/lab05/solution/TypeCrafter/TypeCrafter.cs).
-- Plik tekstowy [TypeCrafter.txt](/labs/lab05/outputs/TypeCrafter.txt), zawiera informacje wypisywane na konsole przez przykładowe rozwiązanie.
+> [!TIP]
+> **Rozwiązanie**
+> {{< filetree dir="labs/lab05/solution/TypeCrafter" >}}
+> 
+> **Wyjście:** [TypeCrafter.txt](/labs/lab05/outputs/TypeCrafter.txt)
 
 ## Biblioteka testów jednostkowych
 
@@ -176,6 +185,13 @@ Projekt powinien zawierać 2 komponenty:
 
 - **Biblioteka `MiniTest`** – zawierająca atrybuty testowe pozwalające użytkownikom oznaczać klasy i metody jako kontenery testów oraz metody asercji.
 - **`MiniTestRunner` (program wykonywalny)** – aplikacja, która dynamicznie ładuje kolekcję assembly zawierających testy, wyszukuje kontenery testów, uruchamia znalezione testy i prezentuje wyniki w konsoli.
+
+> [!TIP]
+> **Kod początkowy**  
+> Kod początkowy zawiera bibliotekę z testami jednostkowymi, którą będzie można użyć jako wejście dla programu **MiniTestRunner**.
+> {{< filetree dir="labs/lab05/student/MiniTest" >}}
+> 
+> **Wyjście:** [MiniTestRunner.txt](/labs/lab05/outputs/MiniTestRunner.txt)
 
 #### MiniTest
 
@@ -308,5 +324,8 @@ Kolorowanie konsoli:
 
 ### Przykładowe rozwiązanie
 
-- Projekt [student](/labs/lab05/student/student.sln) to projekt startowy, od którego można rozpocząć implementację zadania, natomiast projekt [solution](/labs/lab05/solution/solution.sln) zawiera kompletną propozycję rozwiązania.
-- Plik tekstowy [MiniTestRunner.txt](/labs/lab05/outputs/MiniTestRunner.txt), zawiera informacje wypisywane na konsole przez przykładowe rozwiązanie.
+> [!TIP]
+> **Rozwiązanie**
+> {{< filetree dir="labs/lab05/solution/MiniTest" >}}
+> 
+> **Wyjście:** [MiniTestRunner.txt](/labs/lab05/outputs/MiniTestRunner.txt)

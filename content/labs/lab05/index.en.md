@@ -34,6 +34,12 @@ Thanks to reflection, code can operate "on types" that it didn't know at compile
 
 Implement a `TypeCrafter` class that, using the `CraftInstance<>` method, can dynamically build an instance of any type `T` at runtime, reading values from the console and assigning them to object properties. Your implementation should intensively use reflection (namespace `System.Reflection`).
 
+> [!TIP]
+> **Starting code**
+> {{< filetree dir="labs/lab05/student/TypeCrafter" >}}
+> 
+> **Output:** [TypeCrafter.txt](/labs/lab05/outputs/TypeCrafter.txt)
+
 ```csharp
 public static class TypeCrafter
 {
@@ -141,8 +147,11 @@ public sealed class Invoice
 
 ### Example Solution
 
-- Example solution can be found in the [TypeCrafter](/labs/lab05/solution/TypeCrafter/TypeCrafter.cs) project.
-- Text file [TypeCrafter.txt](/labs/lab05/outputs/TypeCrafter.txt) contains information printed to console by the example solution.
+> [!TIP]
+> **Solution**
+> {{< filetree dir="labs/lab05/solution/TypeCrafter" >}}
+> 
+> **Output:** [TypeCrafter.txt](/labs/lab05/outputs/TypeCrafter.txt)
 
 ## Unit Testing Library
 
@@ -176,6 +185,13 @@ The project should contain 2 components:
 
 - **`MiniTest` Library** – containing test attributes allowing users to mark classes and methods as test containers and assertion methods.
 - **`MiniTestRunner` (executable program)** – application that dynamically loads a collection of assemblies containing tests, searches for test containers, runs found tests and presents results in console.
+
+> [!TIP]
+> **Starting code**  
+> Starting code contains a library with unit tests that can may be used as an input for **MiniTestRunner** program.
+> {{< filetree dir="labs/lab05/student/MiniTest" >}}
+> 
+> **Output:** [MiniTestRunner.txt](/labs/lab05/outputs/MiniTestRunner.txt)
 
 #### MiniTest
 
@@ -308,5 +324,8 @@ Console coloring:
 
 ### Example Solution
 
-- The [student](/labs/lab05/student/student.sln) project is a starter project from which you can begin implementing the task, while the [solution](/labs/lab05/solution/solution.sln) project contains a complete proposed solution.
-- Text file [MiniTestRunner.txt](/labs/lab05/outputs/MiniTestRunner.txt) contains information printed to console by the example solution.
+> [!TIP]
+> **Solution**
+> {{< filetree dir="labs/lab05/solution/MiniTest" >}}
+> 
+> **Output:** [MiniTestRunner.txt](/labs/lab05/outputs/MiniTestRunner.txt)
