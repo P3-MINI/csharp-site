@@ -377,7 +377,7 @@ Następnie, przy pomocy metody `Fill` wypełnij i wypisz listy w następujący s
 | `2` | 0.4 | 0.2 | 0.4 |
 | `3` | 0.5 | 0.3 | 0.2 |
 
-> Przykładowo dla wiersza 2 i kolumny 1 przejście ze stanu `2` do stanu `1` odbywa się z prawdopodobieństwem `0.5`.
+> Przykładowo dla wiersza 2 i kolumny 1 przejście ze stanu `3` do stanu `1` odbywa się z prawdopodobieństwem `0.5`.
 >
 > Tablicę przejść można przykładowo zaimplementować jako słownik list o elementach będących krotkami postaci (stan, prawdopodobieństwo).
 
@@ -426,7 +426,7 @@ Użyje wyrażenia regularnego z nazwanymi grupami, aby wyodrębnić następując
 - `RESOURCE`: nazwę zasobu,
 - `ID`: identyfikator zasobu,
 - `HTTP_STATUS`: kod odpowiedzi,
-- `HTTP_STATUS`: status odpowiedzi.
+- `HTTP_CODE`: status odpowiedzi.
 
 Uzyskane informacje powinny zostać zmapowane do kolekcji rekordów `LogEntry`, a następnie wypisane w konsoli w przykładowym formacie:
 

@@ -23,7 +23,7 @@ In practice, almost every modern web or mobile application exposes a REST API.
 URL paths define which resources and at what hierarchy we want to refer to on the server. Each segment after the host is either a resource name or its identifier.
 
 - `/v1/users/42`: version `1`, resource `users`, identifier `42`.
-- `/v2/countries/100/cities/3`: version `2`, resource `countries` (id `100`), nested resource `items` (id `200`).
+- `/v2/countries/100/cities/3`: version `2`, resource `countries` (id `100`), nested resource `cities` (id `3`).
 
 **Query Parameters**
 
@@ -378,7 +378,7 @@ Then, using `Fill`, generate and print:
 | `2` | 0.4 | 0.2 | 0.4 |
 | `3` | 0.5 | 0.3 | 0.2 |
 
-> For example, for row 2 and column 1, transition from state `2` to `1` has probability `0.5`.
+> For example, for row 2 and column 1, transition from state `3` to `1` has probability `0.5`.
 >
 > You can represent the transition table as a dictionary of lists of `(state, probability)` tuples.
 
@@ -418,7 +418,7 @@ Although regex-based processing can be less efficient than dedicated algorithms 
 Write a program that, given the text file [logs.txt](/labs/lab04/logs.txt) containing logs in the following format:
 
 ```
-[YYYY-MM-DD HH:mm:ss] LEVEL: IP - METHOD /api/RESOURCE/ID - HTTP_CODE HTTP_STATUS[: opcjonalny komunikat]
+[YYYY-MM-DD HH:mm:ss] LEVEL: IP - METHOD /api/RESOURCE/ID - HTTP_CODE HTTP_STATUS[: optional message]
 ```
 
 Use a regular expression with named capture groups to extract the following fields from each log entry:
