@@ -10,58 +10,44 @@ Temperatures:
   25,90 °C  18,00 °C   9,50 °C  24,30 °C
 
 Location: France Paris
-Date: vendredi 20 juin 2025
+Date: dimanche 20 juillet 2025
 Temperatures:
   22,10 °C  19,40 °C
 
 Location: Germany Berlin
-Date: Donnerstag, 19. Juni 2025
+Date: Freitag, 5. September 2025
 Temperatures:
   20,00 °C  21,50 °C  19,80 °C  18,60 °C
   17,20 °C
 
-Location: Spain Madrid
-Date: miércoles, 18 de junio de 2025
-Temperatures:
-
-Location: Italy Rome
-Date: martedi 17 giugno 2025
-Temperatures:
-  27,30 °C  26,80 °C  25,50 °C  24,10 °C
-
-Location: United Kingdom
-Date: Monday, 16 June 2025
-Temperatures:
-  18.20 °C
-
 Location: Portugal Lisbon
-Date: domingo, 15 de junho de 2025
+Date: sábado, 14 de junho de 2025
 Temperatures:
   24,00 °C  23,50 °C  22,10 °C
 
 Location: Netherlands Amsterdam
-Date: vrijdag 13 juni 2025
+Date: zondag 15 juni 2025
 Temperatures:
   19,30 °C  20,00 °C  18,80 °C
 
 Location: Belgium Brussels
-Date: donderdag 12 juni 2025
+Date: zaterdag 21 juni 2025
 Temperatures:
   21,00 °C  20,50 °C  19,90 °C  18,70 °C
 
 Location: Austria Vienna
-Date: Mittwoch, 11. Juni 2025
+Date: Freitag, 27. Juni 2025
 Temperatures:
   23,40 °C  22,80 °C
 
 Location: Sweden Stockholm
-Date: tisdag 10 juni 2025
+Date: torsdag 26 juni 2025
 Temperatures:
   17,50 °C  16,80 °C  18,00 °C  19,20 °C
   20,10 °C  21,30 °C  22,40 °C  23,50 °C
 
 Location: Norway Oslo
-Date: mandag 9. juni 2025
+Date: onsdag 25. juni 2025
 Temperatures:
   15,20 °C  14,80 °C  16,00 °C
 
@@ -78,58 +64,53 @@ Temperatures:
   25,90 °C  18,00 °C   9,50 °C  24,30 °C
 
 Location: France Paris
-Date: vendredi 20 juin 2025
+Date: dimanche 20 juillet 2025
 Temperatures:
   22,10 °C  19,40 °C
 
 Location: Germany Berlin
-Date: Donnerstag, 19. Juni 2025
+Date: Freitag, 5. September 2025
 Temperatures:
   20,00 °C  21,50 °C  19,80 °C  18,60 °C
   17,20 °C
 
 Location: Spain Madrid
-Date: miércoles, 18 de junio de 2025
+Date: miércoles, 15 de enero de 2025
 Temperatures:
 
 Location: Italy Rome
-Date: martedi 17 giugno 2025
+Date: lunedi 10 marzo 2025
 Temperatures:
   27,30 °C  26,80 °C  25,50 °C  24,10 °C
 
-Location: United Kingdom
-Date: Monday, 16 June 2025
-Temperatures:
-  18.20 °C
-
 Location: Portugal Lisbon
-Date: domingo, 15 de junho de 2025
+Date: sábado, 14 de junho de 2025
 Temperatures:
   24,00 °C  23,50 °C  22,10 °C
 
 Location: Netherlands Amsterdam
-Date: vrijdag 13 juni 2025
+Date: zondag 15 juni 2025
 Temperatures:
   19,30 °C  20,00 °C  18,80 °C
 
 Location: Belgium Brussels
-Date: donderdag 12 juni 2025
+Date: zaterdag 21 juni 2025
 Temperatures:
   21,00 °C  20,50 °C  19,90 °C  18,70 °C
 
 Location: Austria Vienna
-Date: Mittwoch, 11. Juni 2025
+Date: Freitag, 27. Juni 2025
 Temperatures:
   23,40 °C  22,80 °C
 
 Location: Sweden Stockholm
-Date: tisdag 10 juni 2025
+Date: torsdag 26 juni 2025
 Temperatures:
   17,50 °C  16,80 °C  18,00 °C  19,20 °C
   20,10 °C  21,30 °C  22,40 °C  23,50 °C
 
 Location: Norway Oslo
-Date: mandag 9. juni 2025
+Date: onsdag 25. juni 2025
 Temperatures:
   15,20 °C  14,80 °C  16,00 °C
 
@@ -148,12 +129,6 @@ Date: piątek, 6 czerwca 2025
 Temperatures:
   24,10 °C  23,30 °C  22,20 °C
 
-Location: Czech Republic
-Date: čtvrtek 5. června 2025
-Temperatures:
-  20,50 °C  19,70 °C  18,40 °C  17,20 °C
-  16,00 °C
-
 Location: Hungary Budapest
 Date: 2025. június 4., szerda
 Temperatures:
@@ -165,7 +140,7 @@ Temperatures:
   19.50 °C
 
 Location: Croatia Zagreb
-Date: ponedjeljak, 2. lipnja 2025.
+Date: ponedjeljak, 20. listopada 2025.
 Temperatures:
   25,00 °C  24,50 °C  23,80 °C  22,10 °C
   21,50 °C  20,90 °C  19,70 °C  18,30 °C
@@ -178,10 +153,25 @@ Date: sobota, 21 czerwca 2025
 Temperatures:
   25,90 °C  18,00 °C   9,50 °C  24,30 °C
 
+Location: France Paris
+Date: dimanche 20 juillet 2025
+Temperatures:
+  22,10 °C  19,40 °C
+
 Location: Portugal Lisbon
-Date: domingo, 15 de junho de 2025
+Date: sábado, 14 de junho de 2025
 Temperatures:
   24,00 °C  23,50 °C  22,10 °C
+
+Location: Netherlands Amsterdam
+Date: zondag 15 juni 2025
+Temperatures:
+  19,30 °C  20,00 °C  18,80 °C
+
+Location: Belgium Brussels
+Date: zaterdag 21 juni 2025
+Temperatures:
+  21,00 °C  20,50 °C  19,90 °C  18,70 °C
 
 Location: Denmark Copenhagen
 Date: sondag den 8. juni 2025
@@ -195,25 +185,12 @@ Temperatures:
 
 Applying filter 4:
 
-Location: Poland Warsaw
-Date: sobota, 21 czerwca 2025
+Location: Croatia Zagreb
+Date: ponedjeljak, 20. listopada 2025.
 Temperatures:
-  25,90 °C  18,00 °C   9,50 °C  24,30 °C
-
-Location: France Paris
-Date: vendredi 20 juin 2025
-Temperatures:
-  22,10 °C  19,40 °C
-
-Location: Germany Berlin
-Date: Donnerstag, 19. Juni 2025
-Temperatures:
-  20,00 °C  21,50 °C  19,80 °C  18,60 °C
-  17,20 °C
-
-Location: Spain Madrid
-Date: miércoles, 18 de junio de 2025
-Temperatures:
+  25,00 °C  24,50 °C  23,80 °C  22,10 °C
+  21,50 °C  20,90 °C  19,70 °C  18,30 °C
+  17,80 °C  16,20 °C
 
 Executing Task03...
 3, 11, 19, 27, 35, 43, 51, 59, 67, 75
