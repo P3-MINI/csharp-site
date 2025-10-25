@@ -5,6 +5,12 @@ weight: 10
 
 # Laboratorium 5: Enumerable, LINQ i Metody Rozszerzające
 
+## Kod początkowy
+
+> [!NOTE] 
+> **Student** 
+> {{< filetree dir="labs/lab03/solution" >}}
+
 ## Metody rozszerzające dla istniejących typów
 
 {{% hint info %}}
