@@ -1,15 +1,7 @@
 ﻿namespace tasks;
 
-public sealed class Task02 : IExecutable
+public static class PrimeFinder
 {
-    public void Execute(string[] args)
-    {
-        foreach (var prime in SieveOfEratosthenes(1000))
-        {
-            Console.WriteLine(prime);
-        }
-    }
-
     public static IEnumerable<int> SieveOfEratosthenes(int upperBound)
     {
         if (upperBound < 2)
@@ -29,5 +21,4 @@ public sealed class Task02 : IExecutable
             }
         }
     }
-
 }

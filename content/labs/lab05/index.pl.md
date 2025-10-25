@@ -22,7 +22,7 @@ Jednym z podstawowych elementów pisania czytelnego i spójnego kodu jest trzyma
   - Popularny w: **JavaScript** (dla zmiennych i funkcji), **Java** (dla zmiennych i metod).
 - `snake_case`:
   - Wszystkie litery są małe, a słowa oddzielone znakiem podkreślenia (np. `user_profile_id`, `json_response_data`).
-  - Często używany w: **Python**, bazy danych, nazwy pól w obiektach JSON.
+  - Często używany w: **Python**, **Rust**, bazy danych, nazwy pól w obiektach JSON.
 - `kebab-case`:
   - Słowa oddzielane są myślnikiem (np. `html-element-id`).
   - Spotykany głównie w: URL, atrybuty HTML, nazwy plików (np. w projektach opartych o **JavaScript**/**Node.js**).
@@ -64,7 +64,9 @@ Console.WriteLine(snake); // "html_element_id"
 
 ### Przykładowe rozwiązanie
 
-Rozwiązanie wraz z przykładami do testowania można znaleźć w pliku [Task01.cs](/labs/lab05/solution/tasks/Task01.cs).
+Przykładowe rozwiązanie można znaleźć w pliku [StringExtensions.cs](/labs/lab05/solution/tasks/StringExtensions.cs).
+
+W pliku [StringExtensionsTests.cs](/labs/lab05/solution/tests/StringExtensionsTests.cs) dostępne są również testy jednostkowe.
 
 ## Iteratory, `yield` i generowanie liczb pierwszych
 
@@ -98,7 +100,10 @@ Sito Eratostenesa to klasyczny algorytm pozwalający na wyznaczenie wszystkich l
 Twoim zadaniem jest zaimplementowanie metody:
 
 ```csharp
-public static IEnumerable<int> SieveOfEratosthenes(int upperBound);
+public static class PrimeFinder
+{
+  public static IEnumerable<int> SieveOfEratosthenes(int upperBound);
+}
 ```
 
 wykorzystującej `yield break` oraz `yield return` do generowania liczb pierwszych na żądanie.
@@ -123,7 +128,112 @@ foreach (var prime in SieveOfEratosthenes(1000))
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie można znaleźć w pliku [Task02.cs](/labs/lab05/solution/tasks/Task02.cs).
+Przykładowe rozwiązanie można znaleźć w pliku [PrimeFinder.cs](/labs/lab05/solution/tasks/PrimeFinder.cs).
+
+W pliku [PrimeFinderTests.cs](/labs/lab05/solution/tests/PrimeFinderTests.cs) dostępne są również testy jednostkowe.
+
+## Implementacja interfejsu `IEnumerable<T>`
+
+{{% hint info %}}
+**Reprezentacja drzewa w tablicy**
+
+Drzewa binarne to fundamentalna struktura danych służąca do przechowywania danych w porządku hierarchicznym. Choć najczęściej implementuje się je przy użyciu wskaźników (lub referencji) do poszczególnych węzłów, istnieje alternatywne i bardzo wydajne podejście: **reprezentacja tablicowa**.
+
+W tym modelu korzeń drzewa (`root`) umieszczamy w tablicy pod indeksem `0`. Następnie, dla dowolnego węzła-rodzica znajdującego się pod indeksem `i`:
+
+- Jego lewe dziecko znajdzie się pod indeksem `2 * i + 1`.
+- Jego prawe dziecko znajdzie się pod indeksem `2 * i + 2`.
+
+Takie podejście eliminuje potrzebę przechowywania referencji w każdym węźle, oszczędzając pamięć. Wyzwaniem staje się jednak dynamiczne zarządzanie rozmiarem tablicy, gdy drzewo się rozrasta i musimy dodać element pod indeksem, który wykracza poza jej aktualne granice.
+
+**Przykład**
+
+```mermaid
+graph TB
+    A0["10 (index 0)"]
+    A1["5 (index 1)"]
+    A2["20 (index 2)"]
+    A3["3 (index 3)"]
+    A4["7 (index 4)"]
+
+    A0 -->|left| A1
+    A0 -->|right| A2
+    A1 -->|left| A3
+    A1 -->|right| A4
+
+    style A0 fill:#c6e2ff,stroke:#4682b4
+    style A1 fill:#c6e2ff,stroke:#4682b4
+    style A2 fill:#c6e2ff,stroke:#4682b4
+    style A3 fill:#c6e2ff,stroke:#4682b4
+    style A4 fill:#c6e2ff,stroke:#4682b4
+```
+
+**Przechodzenie po strukturze (`IEnumerable`)**
+
+Aby nasza klasa drzewa była użyteczna, powinna udostępniać sposób na iterowanie po jej elementach. Standardem w .NET jest implementacja interfejsu `IEnumerable<T>`. W przypadku drzewa binarnego najczęściej implementuje się przechodzenie `In-Order` (lewostronne), które w przypadku drzewa BST zwraca posortowane elementy. Wykorzystanie `yield return` pozwala zaimplementować tę logikę rekurencyjnie w bardzo elegancki sposób.
+
+**Czego się nauczysz?**
+
+- Implementacji struktury drzewa binarnego przy użyciu płaskiej tablicy.
+- Mapowania relacji rodzic-dziecko na indeksy tablicy.
+- Dynamicznego powiększania tablicy (`Array.Resize`) w miarę potrzeb.
+- Implementacji interfejsu `IEnumerable<T>` dla niestandardowej kolekcji.
+- Rekurencyjnego tworzenia iteratora `In-Order` przy użyciu `yield return`.
+
+{{% /hint %}}
+
+### Opis zadania
+
+Twoim zadaniem jest zaimplementowanie klasy `ArrayBinaryTreeInt`, która realizuje interfejs `IBinaryTree<int>`. Klasa ta ma reprezentować drzewo binarne liczb całkowitych, wykorzystując do ich przechowywania wewnętrzną tablicę.
+
+Należy zaimplementować podany interfejs:
+
+```csharp
+public interface IBinaryTree<T> : IEnumerable<T>
+{
+    int Count { get; }
+    T Get(int index);
+    void SetRoot(T value);
+    void SetLeft(int parentIndex, T value);
+    void SetRight(int parentIndex, T value);
+    bool Exists(int index);
+    void Clear();
+}
+```
+
+Oraz klasę, która go implementuje, dbając o logikę `Count`, obsługę wyjątków (np. próba dodania dziecka do nieistniejącego rodzica) oraz dynamiczne rozszerzanie tablicy, gdy indeks dziecka wykracza poza jej rozmiar.
+
+Przykładowe użycie powinno wyglądać następująco:
+
+```csharp
+var tree = new ArrayBinaryTreeInt();
+tree.SetRoot(10);
+tree.SetLeft(0, 5);
+tree.SetRight(0, 20);
+tree.SetLeft(1, 3);
+tree.SetRight(1, 7);
+
+// Expected output (In-Order traversal): 3, 5, 7, 10, 20
+foreach (var value in tree)
+{
+    Console.WriteLine(value);
+}
+```
+
+{{% hint info %}}
+**Materiały pomocnicze:**
+
+- [Binary Tree (Array implementation)](https://en.wikipedia.org/wiki/Binary_tree#Arrays)
+- [Microsoft Learn: IEnumerable<T> Interface](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1?view=net-9.0)
+- [Microsoft Learn: Array.Resize Method](https://learn.microsoft.com/en-us/dotnet/api/system.array.resize?view=net-9.0)
+
+{{% /hint %}}
+
+### Przykładowe rozwiązanie
+
+Przykładowe rozwiązanie można znaleźć w pliku [ArrayBinaryTreeInt.cs](/labs/lab05/solution/tasks/ArrayBinaryTreeInt.cs).
+
+W pliku [ArrayBinaryTreeIntTests.cs](/labs/lab05/solution/tests/ArrayBinaryTreeIntTests.cs) dostępne są również testy jednostkowe.
 
 ## `IEnumerable`, typy generyczne i LINQ
 
@@ -225,30 +335,6 @@ Zaimplementuj generyczną metodę rozszerzającą `Batch`, dla dowolnej sekwencj
 - Ostatnia porcja może być krótsza, jeśli liczba elementów nie dzieli się dokładnie przez `size`.
 
 W implementacji należy wykorzystać jawnie stworzony obiekt enumeratora kolekcji.
-
-**Wyzwania**
-{{% details "Analiza danych z czujnika w minutowych porcjach" false %}}
-<br>
-Zaimplementuj metodę `AnalyzeSensorData`, która:
-
-- Symuluje odczyt pomiarów z czujnika, które są wysyłane co sekundę i są określone funkcją `f(t) = sin(t / 10.0)`, gdzie `t` oznacza czas od uruchomienia urządzenia.
-- Oblicz średnią wartość danych wysyłanych przez czujnik w każdej minucie w ciągu pierwszej godziny i wyświetla je w konsoli.
-- Wyświetla wyniki w formacie: `Minute XX: average = Y.YYYY`, gdzie `XX` to numer minuty (`01–60`), a `Y.YYYY` to średnia z czterema miejscami po przecinku.
-
-Przykład użycia:
-
-```csharp
-AnalyzeSensorData();
-
-/* Wypisuje w konsoli (liczby oznaczające średnią są przypadkowe):
-Minute 01: average = 0.0499
-Minute 02: average = 0.2975
-…
-Minute 60: average = -0.0033
-*/
-```
-
-{{% /details %}}
 
 **SlidingWindow**
 
@@ -386,7 +472,9 @@ zwrócona zostaje zatem kolekcja:
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie można znaleźć w pliku [Task03.cs](/labs/lab05/solution/tasks/Task03.cs).
+Przykładowe rozwiązanie można znaleźć w pliku [EnumerableExtensions.cs](/labs/lab05/solution/tasks/EnumerableExtensions.cs).
+
+W pliku [EnumerableExtensionsTests.cs](/labs/lab05/solution/tests/EnumerableExtensionsTests.cs) dostępne są również testy jednostkowe.
 
 ## LINQ i analiza danych dotyczących filmów
 
@@ -418,57 +506,52 @@ Dwa interesujące nas rodzaje złączeń to:
 
 ### Opis zadania
 
-W zadaniu, dla uproszczenia, dane o filmach są reprezentowane jako kolekcje obiektów (`List<Movie>`, `List<Actor>` itp.). Modele danych reprezentują następujące rekordy:
+W pliku [SampleMovieDatabase.cs](/labs/lab05/solution/tasks/Databases/SampleMovieDatabase.cs) znajduje się przykładowa baza danych o filmach, przechowywana w pamięci w postaci kolekcji rekordów poszczególnych encji (`List<Movie>`, `List<Actor>` itp.).
+
+Modele danych reprezentują następujące rekordy:
 
 ```csharp
 public record Movie(
-  int Id,              // klucz główny
-  string Title,
-  int Year,
-  Genre Genre,
-  int DurationMinutes
+    int Id, // klucz główny
+    string Title,
+    int Year,
+    [property: JsonConverter(typeof(JsonStringEnumConverter))]
+    Genre Genre,
+    int DurationMinutes
 );
 
 public record Actor(
-  int Id,              // klucz główny
-  string Name
+    int Id, // klucz główny
+    string Name
 );
 
 public record Rating(
-  int Id,              // klucz główny
-  int MovieId,         // klucz obcy
-  int Score,
-  DateTime CreatedAt
+    int Id, // klucz główny
+    int MovieId, // klucz obcy
+    int Score,
+    DateTime CreatedAt
 );
 
-public record Cast(    // tabela asocjacyjna
-  int MovieId,         // klucz główny
-  int ActorId,         // klucz obcy
-  string Role
+public record Cast( // tabela asocjacyjna
+    int MovieId, // klucz obcy
+    int ActorId, // klucz obcy
+    string Role
 );
-
-public enum Genre
-{
-    Comedy,
-    Drama,
-    Horror,
-    Romance,
-    Thriller,
-    Fantasy,
-}
 ```
 
-Zakładając, że dostępne są kolekcje: `movies`, `actors`, `casts` oraz `ratings`, zaimplementuj zapytania LINQ, które umożliwią analizę danych o zbiorze filmów.
+W pliku `DatabaseQueries.cs` zaimplementuj zapytania LINQ, które umożliwią analizę danych o zbiorze filmów.
 
-Do wypisywania wyników zapytań możesz użyć prostej metody:
+Do wypisywania wyników użyjemy prostej metody opartej na serializacji obiektu przekazanego w parametrze `query` do formatu JSON:
 
 ```csharp
-public static void DisplayQueryResults<T>(IEnumerable<T> query)
+public static void DisplayQueryResults<T>(T query)
 {
     var options = new JsonSerializerOptions
     {
         WriteIndented = true
     };
+
+    options.Converters.Add(new JsonStringEnumConverter());
 
     var json = JsonSerializer.Serialize(query, options);
 
@@ -522,14 +605,15 @@ Znajdź aktorów, którzy zagrali w największej liczbie różnych gatunków fil
 {{% hint warning %}}
 **Uwagi implementacyjne**
 
-- W zapytaniach 2, 4, oraz 6 wynik różni się w zależności od rodzaju złączenia. W ramach ćwiczenia spróbuj zastosować dwa rodzaje złączeń (`INNER JOIN` oraz `LEFT JOIN`) i porównaj wyniki.
+- W zapytaniach 2, 4, oraz 6 wynik może się różnić w zależności od rodzaju złączenia. W ramach ćwiczenia spróbuj zastosować dwa rodzaje złączeń (`INNER JOIN` oraz `LEFT JOIN`) i porównaj wyniki.
+- Przyjmujemy, że w każdym z tych zapytań oba możliwe rozwiązania są poprawne, pod warunkiem, że rozumiesz skąd bierze się różnica 😉.
 - W przypadku zapytania 2 może się zdarzyć tak, że w bazie nie ma żadnego filmu z pewnego gatunku.
 - W zapytaniu 3 niektórzy aktorzy mogli nie grać w żadnym filmie znajdującym się w bazie.
 - W zapytaniu 6 niektórym gatunkom może nie odpowiadać żadna wystawiona ocena.
-- Przyjmujemy, że w każdym z tych zapytań oba możliwe rozwiązania są poprawne, pod warunkiem, że rozumiesz skąd się bierze różnica 😉.
+- Dla uproszczenia, w zapytaniach nie określamy dokładnie, które kolumny poszczególnych rekordów mają zostać zwrócone.
 
 {{% /hint %}}
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie można znaleźć w pliku [Task04.cs](/labs/lab05/solution/tasks/Task04.cs).
+Przykładowe rozwiązanie można znaleźć w pliku [DatabaseQueries.cs](/labs/lab05/solution/tasks/DatabaseQueries.cs). Kod ten uruchamiany jest w pliku [Program.cs](/labs/lab05/solution/tasks/Program.cs)

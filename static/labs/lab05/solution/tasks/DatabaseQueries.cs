@@ -1,18 +1,33 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using tasks.Databases;
 
 namespace tasks;
 
-public sealed class Task04 : IExecutable
+public static class DatabaseQueries
 {
-    public void Execute(string[] args)
+    public static void RunQueries(this IMovieDatabase movieDatabase)
     {
-        var movies = new List<Movie>();
-        var actors = new List<Actor>();
-        var ratings = new List<Rating>();
-        var casts = new List<Cast>();
+        movieDatabase.ActorsFromFantasyMovies();
+        movieDatabase.LongestMovieByGenre();
+        movieDatabase.HighRatedMoviesWithCast();
+        movieDatabase.DistinctRolesCountPerActor();
+        movieDatabase.RecentMoviesWithAverageRating();
+        movieDatabase.AverageRatingByGenre();
+        movieDatabase.ActorsWhoNeverPlayedInThriller();
+        movieDatabase.Top3MoviesByRatingCount();
+        movieDatabase.MoviesWithoutRatings();
+        movieDatabase.MostVersatileActors();
+    }
 
-        // Query 1:
-        var fantasyActors = casts
+    public static void ActorsFromFantasyMovies(this IMovieDatabase movieDatabase)
+    {
+        var movies = movieDatabase.Movies;
+        var actors = movieDatabase.Actors;
+        var ratings = movieDatabase.Ratings;
+        var casts = movieDatabase.Casts;
+
+        var queryResult = casts
             .Join(movies.Where(m => m.Genre == Genre.Fantasy),
                 cast => cast.MovieId,
                 movie => movie.Id,
@@ -24,10 +39,19 @@ public sealed class Task04 : IExecutable
                 (actorId, actor) => actor)
             .ToList();
 
-        DisplayQueryResults(fantasyActors);
+        Console.WriteLine("Actors From Fantasy Movies");
+        DisplayQueryResults(queryResult);
+        Console.WriteLine();
+    }
 
-        // Query 2:
-        var longestMoviesByGenre = movies
+    public static void LongestMovieByGenre(this IMovieDatabase movieDatabase)
+    {
+        var movies = movieDatabase.Movies;
+        var actors = movieDatabase.Actors;
+        var ratings = movieDatabase.Ratings;
+        var casts = movieDatabase.Casts;
+
+        var queryResult = movies
             .GroupBy(movie => movie.Genre)
             .Select(group => new
             {
@@ -36,10 +60,19 @@ public sealed class Task04 : IExecutable
             })
             .ToList();
 
-        DisplayQueryResults(longestMoviesByGenre);
+        Console.WriteLine("Longest Movie By Genre");
+        DisplayQueryResults(queryResult);
+        Console.WriteLine();
+    }
 
-        // Query 3:
-        var topRatedMoviesWithCast = ratings
+    public static void HighRatedMoviesWithCast(this IMovieDatabase movieDatabase)
+    {
+        var movies = movieDatabase.Movies;
+        var actors = movieDatabase.Actors;
+        var ratings = movieDatabase.Ratings;
+        var casts = movieDatabase.Casts;
+
+        var queryResult = ratings
             .GroupBy(r => r.MovieId)
             .Select(g => new
             {
@@ -77,10 +110,19 @@ public sealed class Task04 : IExecutable
             })
             .ToList();
 
-        DisplayQueryResults(topRatedMoviesWithCast);
+        Console.WriteLine("High Rated Movies With Cast");
+        DisplayQueryResults(queryResult);
+        Console.WriteLine();
+    }
 
-        // Query 4:
-        var actorsWithRoleCount = actors
+    public static void DistinctRolesCountPerActor(this IMovieDatabase movieDatabase)
+    {
+        var movies = movieDatabase.Movies;
+        var actors = movieDatabase.Actors;
+        var ratings = movieDatabase.Ratings;
+        var casts = movieDatabase.Casts;
+
+        var queryResult = actors
             .GroupJoin(
                 casts,
                 actor => actor.Id,
@@ -97,11 +139,19 @@ public sealed class Task04 : IExecutable
             .OrderByDescending(x => x.Roles)
             .ToList();
 
+        Console.WriteLine("Distinct Roles Count Per Actor");
+        DisplayQueryResults(queryResult);
+        Console.WriteLine();
+    }
 
-        DisplayQueryResults(actorsWithRoleCount);
+    public static void RecentMoviesWithAverageRating(this IMovieDatabase movieDatabase)
+    {
+        var movies = movieDatabase.Movies;
+        var actors = movieDatabase.Actors;
+        var ratings = movieDatabase.Ratings;
+        var casts = movieDatabase.Casts;
 
-        // Query 5:
-        var recentTopRatedMovies = movies
+        var queryResult = movies
             .Where(m => m.Year > DateTime.Now.Year - 5)
             .GroupJoin(
                 ratings,
@@ -118,10 +168,19 @@ public sealed class Task04 : IExecutable
             .OrderByDescending(x => x.AverageScore)
             .ToList();
 
-        DisplayQueryResults(recentTopRatedMovies);
+        Console.WriteLine("Recent Movies With Average Rating");
+        DisplayQueryResults(queryResult);
+        Console.WriteLine();
+    }
 
-        // Query 6:
-        var averageRatingByGenre = ratings
+    public static void AverageRatingByGenre(this IMovieDatabase movieDatabase)
+    {
+        var movies = movieDatabase.Movies;
+        var actors = movieDatabase.Actors;
+        var ratings = movieDatabase.Ratings;
+        var casts = movieDatabase.Casts;
+
+        var queryResult = ratings
             .Join(movies, rating => rating.MovieId, movie => movie.Id,
                 (rating, movie) => new
                 {
@@ -138,9 +197,18 @@ public sealed class Task04 : IExecutable
             })
             .ToList();
 
-        DisplayQueryResults(averageRatingByGenre);
+        Console.WriteLine("Average Rating By Genre");
+        DisplayQueryResults(queryResult);
+        Console.WriteLine();
+    }
 
-        // Query 7:
+    public static void ActorsWhoNeverPlayedInThriller(this IMovieDatabase movieDatabase)
+    {
+        var movies = movieDatabase.Movies;
+        var actors = movieDatabase.Actors;
+        var ratings = movieDatabase.Ratings;
+        var casts = movieDatabase.Casts;
+
         var thrillerMovieIds = movies
             .Where(movie => movie.Genre == Genre.Thriller)
             .Select(movie => movie.Id)
@@ -151,24 +219,42 @@ public sealed class Task04 : IExecutable
             .Select(cast => cast.ActorId)
             .ToHashSet();
 
-        var actorsNotInThriller = actors
+        var queryResult = actors
             .Where(actor => !thrillerActorIds.Contains(actor.Id))
             .ToList();
 
-        DisplayQueryResults(actorsNotInThriller);
+        Console.WriteLine("Actors Who Never Played In Thriller");
+        DisplayQueryResults(queryResult);
+        Console.WriteLine();
+    }
 
-        // Query 8:
-        var top3RatedMovies = ratings
+    public static void Top3MoviesByRatingCount(this IMovieDatabase movieDatabase)
+    {
+        var movies = movieDatabase.Movies;
+        var actors = movieDatabase.Actors;
+        var ratings = movieDatabase.Ratings;
+        var casts = movieDatabase.Casts;
+
+        var queryResult = ratings
             .GroupBy(rating => rating.MovieId)
             .OrderByDescending(group => group.Count())
             .Take(3)
             .Select(group => movies.First(movie => movie.Id == group.Key))
             .ToList();
 
-        DisplayQueryResults(top3RatedMovies);
+        Console.WriteLine("Top 3 Movies By Rating Count");
+        DisplayQueryResults(queryResult);
+        Console.WriteLine();
+    }
 
-        // Query 9:
-        var moviesWithoutRatings = movies
+    public static void MoviesWithoutRatings(this IMovieDatabase movieDatabase)
+    {
+        var movies = movieDatabase.Movies;
+        var actors = movieDatabase.Actors;
+        var ratings = movieDatabase.Ratings;
+        var casts = movieDatabase.Casts;
+
+        var queryResult = movies
             .GroupJoin(ratings, movie => movie.Id, rating => rating.MovieId,
                 (movie, movieRatings) => new
                 {
@@ -179,10 +265,19 @@ public sealed class Task04 : IExecutable
             .Select(movie => movie.Movie)
             .ToList();
 
-        DisplayQueryResults(moviesWithoutRatings);
+        Console.WriteLine("Movies Without Ratings");
+        DisplayQueryResults(queryResult);
+        Console.WriteLine();
+    }
 
-        // Query 10:
-        var versatileActors = casts
+    public static void MostVersatileActors(this IMovieDatabase movieDatabase)
+    {
+        var movies = movieDatabase.Movies;
+        var actors = movieDatabase.Actors;
+        var ratings = movieDatabase.Ratings;
+        var casts = movieDatabase.Casts;
+
+        var queryResult = casts
             .Join(
                 movies,
                 cast => cast.MovieId,
@@ -214,35 +309,23 @@ public sealed class Task04 : IExecutable
             )
             .OrderByDescending(x => x.GenreCount)
             .ToList();
+
+        Console.WriteLine("Most Versatile Actors");
+        DisplayQueryResults(queryResult);
+        Console.WriteLine();
     }
 
-    public static void DisplayQueryResults<T>(IEnumerable<T> query)
+    public static void DisplayQueryResults<T>(T query)
     {
         var options = new JsonSerializerOptions
         {
             WriteIndented = true
         };
 
+        options.Converters.Add(new JsonStringEnumConverter());
+
         var json = JsonSerializer.Serialize(query, options);
 
         Console.WriteLine(json);
     }
-}
-
-public record Movie(int Id, string Title, int Year, Genre Genre, int DurationMinutes);
-
-public record Actor(int Id, string Name);
-
-public record Rating(int Id, int MovieId, int Score, DateTime CreatedAt);
-
-public record Cast(int MovieId, int ActorId, string Role);
-
-public enum Genre
-{
-    Comedy,
-    Drama,
-    Horror,
-    Romance,
-    Thriller,
-    Fantasy,
 }
