@@ -7,8 +7,8 @@ weight: 10
 
 ## Starter code
 
-> [!NOTE]
-> **Student**
+> [!NOTE] 
+> **Student** 
 > {{< filetree dir="labs/lab05/student" >}}
 
 ## Extension methods for existing types
@@ -197,15 +197,15 @@ Implement the following interface:
 ```csharp
 public interface IBinaryTree<TKey, TValue> : IEnumerable<TValue>
 {
-    int Count { get; }
-    void SetRoot(TValue value);
-    TValue Get(int index);
-    TKey GetLeftKey(TKey parentKey);
-    TKey GetRightKey(TKey parentKey);
-    void SetLeft(TKey parentKey, TValue value);
-    void SetRight(TKey parentKey, TValue value);
-    bool Exists(TKey key);
-    void Clear();
+  int Count { get; }
+  void SetRoot(TValue value);
+  TValue Get(int index);
+  TKey GetLeftKey(TKey parentKey);
+  TKey GetRightKey(TKey parentKey);
+  void SetLeft(TKey parentKey, TValue value);
+  void SetRight(TKey parentKey, TValue value);
+  bool Exists(TKey key);
+  void Clear();
 }
 ```
 
@@ -629,6 +629,6 @@ An example solution is available in [DatabaseQueries.cs](/labs/lab05/solution/ta
 
 ## Solution for download
 
-> [!NOTE] 
-> **Solution** 
+> [!NOTE]
+> **Solution**
 > {{< filetree dir="labs/lab05/solution" >}}

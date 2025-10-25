@@ -197,15 +197,15 @@ Należy zaimplementować podany interfejs:
 ```csharp
 public interface IBinaryTree<TKey, TValue> : IEnumerable<TValue>
 {
-    int Count { get; }
-    void SetRoot(TValue value);
-    TValue Get(int index);
-    TKey GetLeftKey(TKey parentKey);
-    TKey GetRightKey(TKey parentKey);
-    void SetLeft(TKey parentKey, TValue value);
-    void SetRight(TKey parentKey, TValue value);
-    bool Exists(TKey key);
-    void Clear();
+  int Count { get; }
+  void SetRoot(TValue value);
+  TValue Get(int index);
+  TKey GetLeftKey(TKey parentKey);
+  TKey GetRightKey(TKey parentKey);
+  void SetLeft(TKey parentKey, TValue value);
+  void SetRight(TKey parentKey, TValue value);
+  bool Exists(TKey key);
+  void Clear();
 }
 ```
 
