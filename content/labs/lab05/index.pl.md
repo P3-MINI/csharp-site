@@ -7,9 +7,9 @@ weight: 10
 
 ## Kod początkowy
 
-> [!NOTE] 
-> **Student** 
-> {{< filetree dir="labs/lab03/solution" >}}
+> [!NOTE]
+> **Student**
+> {{< filetree dir="labs/lab05/solution" >}}
 
 ## Metody rozszerzające dla istniejących typów
 
