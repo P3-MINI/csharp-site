@@ -1,0 +1,61 @@
+<Project DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Compiler Condition="'$(Compiler)' == ''">clang++</Compiler>
+    <CppVersion Condition="'$(CppVersion)' == ''">c++23</CppVersion>
+    <Version Condition="'$(Version)' == ''">1.0.0</Version>
+    <OutputPath>$(SolutionDir)build/$(Configuration)/</OutputPath>
+    <OutputName>program</OutputName>
+    <DistDir>$(OutputPath)dist/</DistDir>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DebugSymbols>-g</DebugSymbols>
+    <Optimization>-O0</Optimization>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugSymbols></DebugSymbols>
+    <Optimization>-O2</Optimization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <CppSource Include="**/*.cpp" />
+    <CppHeader Include="**/*.h" />
+    <DistFiles Include="README.md;LICENSE" />
+  </ItemGroup>
+
+  <Target Name="Build" DependsOnTargets="Link">
+    <Message Text="Building with $(Compiler)..." Importance="high" />
+  </Target>
+
+  <Target Name="Compile" Inputs="%(CppSource.Identity);@(CppHeader)" Outputs="$(OutputPath)%(CppSource.Filename).o">
+    <MakeDir Directories="$(OutputPath)" Condition="!Exists('$(OutputPath)')" />
+    <Message Text="Compiling %(CppSource.Identity)..." Importance="high" />
+    <Exec Command="$(Compiler) -c -std=$(CppVersion) $(DebugSymbols) $(Optimization) -o $(OutputPath)%(CppSource.Filename).o %(CppSource.Identity)" />
+  </Target>
+
+  <Target Name="Link" DependsOnTargets="Compile" Inputs="@(CppSource->'$(OutputPath)%(filename).o')" Outputs="$(OutputPath)$(OutputName)">
+    <Message Text="Linking with $(Compiler)..." Importance="high" />
+    <Exec Command="$(Compiler) @(CppSource->'$(OutputPath)%(filename).o', ' ') $(DebugSymbols) -o $(OutputPath)$(OutputName)" />
+  </Target>
+
+  <Target Name="Clean">
+    <Message Text="Cleaning..." Importance="high" />
+    <RemoveDir Directories="$(OutputPath)" />
+  </Target>
+
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build">
+    <Message Text="Rebuilding with $(Compiler)..." Importance="high" />
+  </Target>
+
+  <Target Name="CreateDist" DependsOnTargets="Build">
+    <Message Text="Creating distribution package..." Importance="high" />
+    <RemoveDir Directories="$(DistDir)" />
+    <MakeDir Directories="$(DistDir)" />
+    <Copy SourceFiles="$(OutputPath)$(OutputName);@(DistFiles)" DestinationFolder="$(DistDir)" />
+    <ZipDirectory SourceDirectory="$(DistDir)" DestinationFile="$(OutputPath)$(OutputName)-$(Version).zip" Overwrite="true" />
+    <RemoveDir Directories="$(DistDir)" />
+    <Message Text="Distribution package created at $(OutputPath)$(OutputName)-$(Version).zip" Importance="high" />
+  </Target>
+</Project>

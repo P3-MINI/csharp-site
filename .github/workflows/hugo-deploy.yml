@@ -15,7 +15,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: recursive
+          lfs: true
 
       - name: Set up Hugo
         uses: peaceiris/actions-hugo@v3

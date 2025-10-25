@@ -26,6 +26,8 @@ params:
   BookTheme: "auto"
   BookSection: "*"
   BookRepo: https://github.com/P3-MINI/csharp-site
+  BookEditLink: https://github.com/P3-MINI/csharp-site/edit/master/{{ .Path }}
+  BookLastChangeLink: https://github.com/P3-MINI/csharp-site/commit/{{ .GitInfo.Hash }}
   BookEditPath: edit/master
   BookCommitPath: commit
   BookDateFormat: '2 January 2006'

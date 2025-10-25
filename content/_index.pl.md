@@ -19,6 +19,7 @@ menu:
 ### Laboratorium
 
 - Adam Grącikowski
-- Anna Kozłowska
-- Maciej Spychała
 - Tomasz Herman
+- Piotr Krasowski
+- Anna Kozłowska
+- Piotr Nieciecki

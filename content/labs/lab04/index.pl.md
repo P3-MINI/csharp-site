@@ -31,7 +31,7 @@ Parametry zapytania, umieszczone po znaku `?`, pozwalają przekazywać dodatkowe
 
 - Każdy parametr to `klucz=wartość` (np. `lang=pl`).
 - Poszczególne pary `klucz=wartość` oddzielane są znakiem `&`, np. `?tag=new&active=true`.
-{{% /hint %}}
+  {{% /hint %}}
 
 ### Opis zadania
 
@@ -127,7 +127,7 @@ gdzie:
   - `InvalidQuery`: błędny format _query_ (np. brak `=`),
   - `UnexpectedFormat`: dowolny inny błąd.
 - **Debuggowanie:** Zadanie jest dobrą okazją do zaznajomienia się z działaniem debuggera.
-{{% /hint %}}
+  {{% /hint %}}
 
 {{% hint info %}}
 **Materiały pomocnicze:**
@@ -136,7 +136,7 @@ gdzie:
 - [Microsoft Learn: Extract substrings from a string](https://learn.microsoft.com/en-us/dotnet/standard/base-types/divide-up-strings)
 - [Microsoft Learn: How to separate strings using String.Split in C#](https://learn.microsoft.com/en-us/dotnet/csharp/how-to/parse-strings-using-split)
 - [Microsoft Learn: Dictionary<TKey,TValue> Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=net-8.0)
-{{% /hint %}}
+  {{% /hint %}}
 
 **Przykłady**
 
@@ -235,7 +235,7 @@ CSV (ang. _comma-separated values_) to format przechowywania danych w plikach te
 - Operacji na datach i interwałach czasowych (klasy `DateTime` i `Timespan`).
 - Formatowania wyjścia zgodnie z ustawieniami kulturowymi (`CultureInfo`).
 - Użycia metody `ForEach` standardowej kolekcji `List<T>` oraz konstruowania prostych wyrażeń lambda do filtrowania i wyświetlania danych.
-{{% /hint %}}
+  {{% /hint %}}
 
 ### Opis zadania
 
@@ -309,7 +309,7 @@ Skorzystaj z następującego pliku CSV: [measurements.csv](/labs/lab04/measureme
 - **Wypisywanie obiektów**:
   - Należy zachować formatowanie z przykładu (format daty, szerokość wypisywania wyrównanie, liczba miejsc po przecinku, liczba pomiarów w jednej linii itp.).
   - Do filtrowania obiektów wykorzystaj metodę `ForEach` oraz wyrażenia lambda. Nie należy korzystać z jawnej pętli.
-{{% /hint %}}
+    {{% /hint %}}
 
 {{% hint info %}}
 **Materiały pomocnicze:**
@@ -321,7 +321,7 @@ Skorzystaj z następującego pliku CSV: [measurements.csv](/labs/lab04/measureme
 - [Microsoft Learn: Standard numeric format strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings)
 - [Microsoft Learn: CultureInfo Class](https://learn.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo?view=net-9.0)
 - [Microsoft Learn: List<T>.ForEach(Action<T>) Method](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.foreach?view=net-9.0)
-{{% /hint %}}
+  {{% /hint %}}
 
 **Zadanie dla chętnych**
 
@@ -377,7 +377,7 @@ Następnie, przy pomocy metody `Fill` wypełnij i wypisz listy w następujący s
 | `2` | 0.4 | 0.2 | 0.4 |
 | `3` | 0.5 | 0.3 | 0.2 |
 
-> Przykładowo dla wiersza 2 i kolumny 1 przejście ze stanu `2` do stanu `1` odbywa się z prawdopodobieństwem `0.5`.
+> Przykładowo dla wiersza 3 i kolumny 1 przejście ze stanu `3` do stanu `1` odbywa się z prawdopodobieństwem `0.5`.
 >
 > Tablicę przejść można przykładowo zaimplementować jako słownik list o elementach będących krotkami postaci (stan, prawdopodobieństwo).
 
@@ -387,7 +387,7 @@ Następnie, przy pomocy metody `Fill` wypełnij i wypisz listy w następujący s
 - [Microsoft Learn: Lambda expressions and anonymous functions](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)
 - [Microsoft Learn: Func<T,TResult> Delegate](https://learn.microsoft.com/en-us/dotnet/api/system.func-2?view=net-9.0)
 - [Microsoft Learn: Random Class](https://learn.microsoft.com/en-us/dotnet/api/system.random?view=net-9.0)
-{{% /hint %}}
+  {{% /hint %}}
 
 ### Przykładowe rozwiązanie
 
@@ -410,7 +410,7 @@ Pomimo że ich działanie bywa mniej wydajne niż dedykowane algorytmy (np. opar
 
 - Jak tworzyć i stosować wyrażenia regularne w C# do parsowania złożonych formatów tekstowych, takich jak logi serwera.
 - Jak definiować nazwy grup w wyrażeniach regularnych, aby wygodnie wyodrębniać interesujące dane.
-{{% /hint %}}
+  {{% /hint %}}
 
 ### Opis zadania
 
@@ -426,7 +426,7 @@ Użyje wyrażenia regularnego z nazwanymi grupami, aby wyodrębnić następując
 - `RESOURCE`: nazwę zasobu,
 - `ID`: identyfikator zasobu,
 - `HTTP_STATUS`: kod odpowiedzi,
-- `HTTP_STATUS`: status odpowiedzi.
+- `HTTP_CODE`: status odpowiedzi.
 
 Uzyskane informacje powinny zostać zmapowane do kolekcji rekordów `LogEntry`, a następnie wypisane w konsoli w przykładowym formacie:
 
@@ -450,7 +450,7 @@ public record LogEntry(
 **Uwagi**
 
 - Zadanie to należy traktować jako dodatkowe (z uwagi na podwyższony poziom trudności i złożoność zagadnienia).
-{{% /hint %}}
+  {{% /hint %}}
 
 {{% hint info %}}
 **Materiały pomocnicze:**
@@ -459,7 +459,7 @@ public record LogEntry(
 - [Microsoft Learn: .NET regular expressions](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions)
 - [Microsoft Learn: Regular Expression Language - Quick Reference](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference)
 - [regex101.com](https://regex101.com/)
-{{% /hint %}}
+  {{% /hint %}}
 
 ### Przykładowe rozwiązanie
 
