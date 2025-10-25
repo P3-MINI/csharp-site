@@ -7,7 +7,9 @@ weight: 10
 
 ## Starter code
 
-> [!NOTE] > **Student** > {{< filetree dir="labs/lab05/solution" >}}
+> [!NOTE]
+> **Student**
+> {{< filetree dir="labs/lab05/solution" >}}
 
 ## Extension methods for existing types
 
