@@ -1,9 +1,9 @@
 ---
-title: "Lab05"
+title: "Lab08"
 weight: 10
 ---
 
-# Laboratorium 5: Assembly, Refleksja
+# Laboratorium 8: Assembly, Refleksja
 
 ## Dynamiczne tworzenie obiektów
 
@@ -34,11 +34,9 @@ Dzięki refleksji kod może działać "na typach", których nie znał w czasie k
 
 Zaimplementuj klasę `TypeCrafter`, która przy pomocy metody `CraftInstance<>` potrafi dynamicznie zbudować instancję dowolnego typu `T` w czasie wykonania, czytając wartości z konsoli i przypisując je do właściwości obiektu. Twoja implementacja powinna intensywnie korzystać z refleksji (przestrzeń nazw `System.Reflection`).
 
-> [!TIP]
-> **Kod początkowy**
-> {{< filetree dir="labs/lab05/student/TypeCrafter" >}}
-> 
-> **Wyjście:** [TypeCrafter.txt](/labs/lab05/outputs/TypeCrafter.txt)
+> [!TIP] > **Kod początkowy** > {{< filetree dir="labs/lab08/student/TypeCrafter" >}}
+>
+> **Wyjście:** [TypeCrafter.txt](/labs/lab08/outputs/TypeCrafter.txt)
 
 ```csharp
 public static class TypeCrafter
@@ -147,11 +145,9 @@ public sealed class Invoice
 
 ### Przykładowe rozwiązanie
 
-> [!TIP]
-> **Rozwiązanie**
-> {{< filetree dir="labs/lab05/solution/TypeCrafter" >}}
-> 
-> **Wyjście:** [TypeCrafter.txt](/labs/lab05/outputs/TypeCrafter.txt)
+> [!TIP] > **Rozwiązanie** > {{< filetree dir="labs/lab08/solution/TypeCrafter" >}}
+>
+> **Wyjście:** [TypeCrafter.txt](/labs/lab08/outputs/TypeCrafter.txt)
 
 ## Biblioteka testów jednostkowych
 
@@ -186,12 +182,11 @@ Projekt powinien zawierać 2 komponenty:
 - **Biblioteka `MiniTest`** – zawierająca atrybuty testowe pozwalające użytkownikom oznaczać klasy i metody jako kontenery testów oraz metody asercji.
 - **`MiniTestRunner` (program wykonywalny)** – aplikacja, która dynamicznie ładuje kolekcję assembly zawierających testy, wyszukuje kontenery testów, uruchamia znalezione testy i prezentuje wyniki w konsoli.
 
-> [!TIP]
-> **Kod początkowy**  
+> [!TIP] > **Kod początkowy**  
 > Kod początkowy zawiera bibliotekę z testami jednostkowymi, którą będzie można użyć jako wejście dla programu **MiniTestRunner**.
-> {{< filetree dir="labs/lab05/student/MiniTest" >}}
-> 
-> **Wyjście:** [MiniTestRunner.txt](/labs/lab05/outputs/MiniTestRunner.txt)
+> {{< filetree dir="labs/lab08/student/MiniTest" >}}
+>
+> **Wyjście:** [MiniTestRunner.txt](/labs/lab08/outputs/MiniTestRunner.txt)
 
 #### MiniTest
 
@@ -324,8 +319,6 @@ Kolorowanie konsoli:
 
 ### Przykładowe rozwiązanie
 
-> [!TIP]
-> **Rozwiązanie**
-> {{< filetree dir="labs/lab05/solution/MiniTest" >}}
-> 
-> **Wyjście:** [MiniTestRunner.txt](/labs/lab05/outputs/MiniTestRunner.txt)
+> [!TIP] > **Rozwiązanie** > {{< filetree dir="labs/lab08/solution/MiniTest" >}}
+>
+> **Wyjście:** [MiniTestRunner.txt](/labs/lab08/outputs/MiniTestRunner.txt)
