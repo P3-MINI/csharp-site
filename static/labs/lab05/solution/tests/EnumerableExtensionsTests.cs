@@ -115,49 +115,22 @@ public class EnumerableExtensionsTests
         batches[0].Should().Equal(1, 2, 3);
     }
 
-    [Fact]
-    public void Batch_ShouldReturnBatchesOfSizeOne_WhenSizeIsOne()
-    {
-        // Arrange
-        var items = Enumerable.Range(1, 3); // [1, 2, 3]
-
-        // Act
-        var batches = items.Batch(1).ToList();
-
-        // Assert
-        batches.Should().HaveCount(3);
-        batches[0].Should().Equal(1);
-        batches[1].Should().Equal(2);
-        batches[2].Should().Equal(3);
-    }
-
-    [Fact]
-    public void Batch_ShouldThrowException_WhenSizeIsNegative()
+    [Theory]
+    [InlineData(-10)]
+    [InlineData(-1)]
+    [InlineData(0)]
+    public void Batch_ShouldThrowException_WhenSizeIsLessThanOne(int size)
     {
         // Arrange
         var items = Enumerable.Range(1, 5);
 
         // Act
-        var act = () => items.Batch(-1).ToList();
+        var act = () => items.Batch(size).ToList();
 
         // Assert
-        act.Should().Throw<ArgumentOutOfRangeException>();
-    }
-
-    [Fact]
-    public void Batch_ShouldReturnBatchesOfSizeOne_WhenSizeIsZero()
-    {
-        // Arrange
-        var items = Enumerable.Range(1, 3); // [1, 2, 3]
-
-        // Act
-        var batches = items.Batch(0).ToList();
-
-        // Assert
-        batches.Should().HaveCount(3);
-        batches[0].Should().Equal(1);
-        batches[1].Should().Equal(2);
-        batches[2].Should().Equal(3);
+        act.Should().Throw<ArgumentOutOfRangeException>()
+            .WithMessage("Batch size must be at least 1. (Parameter 'size')")
+            .And.ParamName.Should().Be("size");
     }
 
     [Fact]

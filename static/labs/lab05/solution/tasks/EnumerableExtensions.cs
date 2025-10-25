@@ -24,6 +24,11 @@ public static class EnumerableExtensions
         this IEnumerable<T> collection,
         int size)
     {
+        if (size < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(size), "Batch size must be at least 1.");
+        }
+
         using var enumerator = collection.GetEnumerator();
 
         while (enumerator.MoveNext())

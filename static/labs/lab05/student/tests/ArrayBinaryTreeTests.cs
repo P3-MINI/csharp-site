@@ -3,13 +3,13 @@ using tasks;
 
 namespace tests;
 
-public class ArrayBinaryTreeIntTests
+public class ArrayBinaryTreeTests
 {
     [Fact]
     public void Constructor_Default_InitializesEmptyTree()
     {
         // Arrange & Act
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
 
         // Assert
         tree.Count.Should().Be(0);
@@ -24,7 +24,7 @@ public class ArrayBinaryTreeIntTests
     {
         // Arrange & Act
         // The class should internally set a default capacity
-        var tree = new ArrayBinaryTreeInt(invalidCapacity);
+        var tree = new ArrayBinaryTree<int>(invalidCapacity);
 
         // Assert
         tree.Count.Should().Be(0);
@@ -35,7 +35,7 @@ public class ArrayBinaryTreeIntTests
     public void SetRoot_OnEmptyTree_SetsRootAndIncrementsCount()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
 
         // Act
         tree.SetRoot(10);
@@ -50,7 +50,7 @@ public class ArrayBinaryTreeIntTests
     public void SetRoot_OnExistingTree_UpdatesValueAndCountIsUnchanged()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
         tree.SetRoot(10); // Initial value
 
         // Act
@@ -65,7 +65,7 @@ public class ArrayBinaryTreeIntTests
     public void SetLeftAndRight_ValidParent_AddsChildrenAndIncrementsCount()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
         tree.SetRoot(10); // index 0
 
         // Act
@@ -84,7 +84,7 @@ public class ArrayBinaryTreeIntTests
     public void SetLeft_NonExistentParent_ThrowsInvalidOperationException()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
 
         // Act
         // Attempting to add to parent 0, which does not exist
@@ -92,14 +92,14 @@ public class ArrayBinaryTreeIntTests
 
         // Assert
         act.Should().Throw<InvalidOperationException>()
-            .WithMessage("Parent with index #0 not found.");
+            .WithMessage("Parent with key #0 not found.");
     }
 
     [Fact]
     public void SetRight_NonExistentParent_ThrowsInvalidOperationException()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
 
         // Act
         // Attempting to add to parent 1 (which doesn't exist), even if root (0) exists
@@ -108,14 +108,14 @@ public class ArrayBinaryTreeIntTests
 
         // Assert
         act.Should().Throw<InvalidOperationException>()
-            .WithMessage("Parent with index #1 not found.");
+            .WithMessage("Parent with key #1 not found.");
     }
 
     [Fact]
     public void Set_UpdatingExistingChild_UpdatesValueAndCountIsUnchanged()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
         tree.SetRoot(10);
         tree.SetLeft(0, 5); // Set the left child
 
@@ -135,7 +135,7 @@ public class ArrayBinaryTreeIntTests
     public void Get_IndexNegative_ThrowsIndexOutOfRangeException()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
 
         // Act
         var act = () => tree.Get(-1);
@@ -148,7 +148,7 @@ public class ArrayBinaryTreeIntTests
     public void Get_IndexOutOfBounds_ThrowsIndexOutOfRangeException()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
         tree.SetRoot(10); // Tree has capacity (e.g., 8), but only 1 element
 
         // Act
@@ -162,7 +162,7 @@ public class ArrayBinaryTreeIntTests
     public void Get_IndexInBoundsButNotSet_ThrowsIndexOutOfRangeException()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
         tree.SetRoot(10); // Sets _present[0] = true
 
         // Act
@@ -177,7 +177,7 @@ public class ArrayBinaryTreeIntTests
     public void Exists_ShouldReturnCorrectStatus()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
         tree.SetRoot(10); // index 0
         tree.SetLeft(0, 5);  // index 1
 
@@ -194,7 +194,7 @@ public class ArrayBinaryTreeIntTests
     public void Clear_ResetsTreeState()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
         tree.SetRoot(10);
         tree.SetLeft(0, 5);
         tree.SetRight(0, 15);
@@ -222,7 +222,7 @@ public class ArrayBinaryTreeIntTests
     {
         // Arrange
         // Set a small initial capacity
-        var tree = new ArrayBinaryTreeInt(2); // Will hold indices [0] and [1]
+        var tree = new ArrayBinaryTree<int>(2); // Will hold indices [0] and [1]
 
         // Act
         tree.SetRoot(10); // index 0
@@ -242,7 +242,7 @@ public class ArrayBinaryTreeIntTests
     public void GetEnumerator_EmptyTree_ReturnsEmptyCollection()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
 
         // Act
         var list = tree.ToList();
@@ -255,7 +255,7 @@ public class ArrayBinaryTreeIntTests
     public void GetEnumerator_ComplexTree_ReturnsCorrectInOrderTraversal()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
 
         // Building the tree:
         //       10 (0)
@@ -286,7 +286,7 @@ public class ArrayBinaryTreeIntTests
     public void GetEnumerator_TreeWithGaps_ReturnsCorrectInOrderTraversal()
     {
         // Arrange
-        var tree = new ArrayBinaryTreeInt();
+        var tree = new ArrayBinaryTree<int>();
 
         // Building a tree with "gaps" (missing root's left child):
         //       10 (0)

@@ -9,7 +9,7 @@ weight: 10
 
 > [!NOTE]
 > **Student**
-> {{< filetree dir="labs/lab05/solution" >}}
+> {{< filetree dir="labs/lab05/student" >}}
 
 ## Extension methods for existing types
 
@@ -190,20 +190,22 @@ To make the tree class useful, it should provide a way to iterate over its eleme
 
 ### Task description
 
-Implement the `ArrayBinaryTreeInt` class that implements the `IBinaryTree<int>` interface. This class should represent a binary tree of integers using an internal array.
+Implement the `ArrayBinaryTree<T>` class that implements the `IBinaryTree<int, T>` interface. This class should represent a binary tree of integers using an internal array.
 
 Implement the following interface:
 
 ```csharp
-public interface IBinaryTree<T> : IEnumerable<T>
+public interface IBinaryTree<TKey, TValue> : IEnumerable<TValue>
 {
-  int Count { get; }
-  T Get(int index);
-  void SetRoot(T value);
-  void SetLeft(int parentIndex, T value);
-  void SetRight(int parentIndex, T value);
-  bool Exists(int index);
-  void Clear();
+    int Count { get; }
+    void SetRoot(TValue value);
+    TValue Get(int index);
+    TKey GetLeftKey(TKey parentKey);
+    TKey GetRightKey(TKey parentKey);
+    void SetLeft(TKey parentKey, TValue value);
+    void SetRight(TKey parentKey, TValue value);
+    bool Exists(TKey key);
+    void Clear();
 }
 ```
 
@@ -212,7 +214,7 @@ The implementing class should maintain correct `Count` logic, handle exceptions 
 Example usage:
 
 ```csharp
-var tree = new ArrayBinaryTreeInt();
+var tree = new ArrayBinaryTreeInt<int>();
 tree.SetRoot(10);
 tree.SetLeft(0, 5);
 tree.SetRight(0, 20);
@@ -237,9 +239,9 @@ foreach (var value in tree)
 
 ### Example solution
 
-An example solution can be found in [ArrayBinaryTreeInt.cs](/labs/lab05/solution/tasks/ArrayBinaryTreeInt.cs).
+An example solution can be found in [ArrayBinaryTree.cs](/labs/lab05/solution/tasks/ArrayBinaryTree.cs).
 
-Unit tests are available in [ArrayBinaryTreeIntTests.cs](/labs/lab05/solution/tests/ArrayBinaryTreeIntTests.cs).
+Unit tests are available in [ArrayBinaryTreeTests.cs](/labs/lab05/solution/tests/ArrayBinaryTreeTests.cs).
 
 ## `IEnumerable`, generics and LINQ
 
@@ -339,6 +341,7 @@ Implement a generic extension method `Batch` for any sequence (`IEnumerable<T>`)
 
 - Splits the input sequence into successive batches with a maximum size `size`, returning them lazily as `IEnumerable<IEnumerable<T>>`.
 - The last batch may be smaller if the item count is not a multiple of `size`.
+- The `size` should be `>= 1` (otherwise `ArgumentOutOfRangeException(nameof(size), "Batch size must be at least 1.")` is being thrown).
 
 Use an explicit enumerator in the implementation.
 
@@ -623,3 +626,9 @@ Find actors who performed in the largest number of different movie genres.
 ### Example solution
 
 An example solution is available in [DatabaseQueries.cs](/labs/lab05/solution/tasks/DatabaseQueries.cs). This code is executed from [Program.cs](/labs/lab05/solution/tasks/Program.cs).
+
+## Solution for download
+
+> [!NOTE] 
+> **Solution** 
+> {{< filetree dir="labs/lab05/solution" >}}

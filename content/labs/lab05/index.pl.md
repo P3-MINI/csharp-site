@@ -7,9 +7,9 @@ weight: 10
 
 ## Kod początkowy
 
-> [!NOTE]
-> **Student**
-> {{< filetree dir="labs/lab05/solution" >}}
+> [!NOTE] 
+> **Student** 
+> {{< filetree dir="labs/lab05/student" >}}
 
 ## Metody rozszerzające dla istniejących typów
 
@@ -190,19 +190,21 @@ Aby nasza klasa drzewa była użyteczna, powinna udostępniać sposób na iterow
 
 ### Opis zadania
 
-Twoim zadaniem jest zaimplementowanie klasy `ArrayBinaryTreeInt`, która realizuje interfejs `IBinaryTree<int>`. Klasa ta ma reprezentować drzewo binarne liczb całkowitych, wykorzystując do ich przechowywania wewnętrzną tablicę.
+Twoim zadaniem jest zaimplementowanie klasy `ArrayBinaryTree<T>`, która realizuje interfejs `IBinaryTree<int, T>`. Klasa ta ma reprezentować drzewo binarne liczb całkowitych, wykorzystując do ich przechowywania wewnętrzną tablicę.
 
 Należy zaimplementować podany interfejs:
 
 ```csharp
-public interface IBinaryTree<T> : IEnumerable<T>
+public interface IBinaryTree<TKey, TValue> : IEnumerable<TValue>
 {
     int Count { get; }
-    T Get(int index);
-    void SetRoot(T value);
-    void SetLeft(int parentIndex, T value);
-    void SetRight(int parentIndex, T value);
-    bool Exists(int index);
+    void SetRoot(TValue value);
+    TValue Get(int index);
+    TKey GetLeftKey(TKey parentKey);
+    TKey GetRightKey(TKey parentKey);
+    void SetLeft(TKey parentKey, TValue value);
+    void SetRight(TKey parentKey, TValue value);
+    bool Exists(TKey key);
     void Clear();
 }
 ```
@@ -212,7 +214,7 @@ Oraz klasę, która go implementuje, dbając o logikę `Count`, obsługę wyjąt
 Przykładowe użycie powinno wyglądać następująco:
 
 ```csharp
-var tree = new ArrayBinaryTreeInt();
+var tree = new ArrayBinaryTree<int>();
 tree.SetRoot(10);
 tree.SetLeft(0, 5);
 tree.SetRight(0, 20);
@@ -237,9 +239,9 @@ foreach (var value in tree)
 
 ### Przykładowe rozwiązanie
 
-Przykładowe rozwiązanie można znaleźć w pliku [ArrayBinaryTreeInt.cs](/labs/lab05/solution/tasks/ArrayBinaryTreeInt.cs).
+Przykładowe rozwiązanie można znaleźć w pliku [ArrayBinaryTree.cs](/labs/lab05/solution/tasks/ArrayBinaryTree.cs).
 
-W pliku [ArrayBinaryTreeIntTests.cs](/labs/lab05/solution/tests/ArrayBinaryTreeIntTests.cs) dostępne są również testy jednostkowe.
+W pliku [ArrayBinaryTreeTests.cs](/labs/lab05/solution/tests/ArrayBinaryTreeTests.cs) dostępne są również testy jednostkowe.
 
 ## `IEnumerable`, typy generyczne i LINQ
 
@@ -328,7 +330,6 @@ var (start, end, value) = source.LongestSequence();
 Console.WriteLine($"Start = {start}"); // 2
 Console.WriteLine($"End = {end}");     // 4
 Console.WriteLine($"Value = {value}"); // 2
-
 ```
 
 {{% /details %}}
@@ -339,6 +340,7 @@ Zaimplementuj generyczną metodę rozszerzającą `Batch`, dla dowolnej sekwencj
 
 - Dzieli sekwencję wejściową na kolejne porcje o maksymalnym rozmiarze `size`, zwracając je leniwie jako `IEnumerable<IEnumerable<T>>`.
 - Ostatnia porcja może być krótsza, jeśli liczba elementów nie dzieli się dokładnie przez `size`.
+- Wartość argumentu `size` powinna być `>= 1` (w przeciwnym wypadku zgłaszany jest wyjątek `ArgumentOutOfRangeException(nameof(size), "Batch size must be at least 1.")`).
 
 W implementacji należy wykorzystać jawnie stworzony obiekt enumeratora kolekcji.
 
@@ -623,3 +625,9 @@ Znajdź aktorów, którzy zagrali w największej liczbie różnych gatunków fil
 ### Przykładowe rozwiązanie
 
 Przykładowe rozwiązanie można znaleźć w pliku [DatabaseQueries.cs](/labs/lab05/solution/tasks/DatabaseQueries.cs). Kod ten uruchamiany jest w pliku [Program.cs](/labs/lab05/solution/tasks/Program.cs)
+
+## Rozwiązanie do pobrania
+
+> [!NOTE] 
+> **Solution** 
+> {{< filetree dir="labs/lab05/solution" >}}

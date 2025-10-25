@@ -1,21 +1,24 @@
 ﻿using System.Collections;
-using System.Xml.Linq;
 
 namespace tasks;
 
-public interface IBinaryTree<T> : IEnumerable<T>
+public interface IBinaryTree<TKey, TValue> : IEnumerable<TValue>
 {
     int Count { get; }
 
-    void SetRoot(T value);
+    void SetRoot(TValue value);
 
-    T Get(int index);
+    TValue Get(int index);
 
-    void SetLeft(int parentIndex, T value);
+    TKey GetLeftKey(TKey parentKey);
 
-    void SetRight(int parentIndex, T value);
+    TKey GetRightKey(TKey parentKey);
 
-    bool Exists(int index);
+    void SetLeft(TKey parentKey, TValue value);
+
+    void SetRight(TKey parentKey, TValue value);
+
+    bool Exists(TKey key);
 
     void Clear();
 }
@@ -23,9 +26,9 @@ public interface IBinaryTree<T> : IEnumerable<T>
 /// <summary>
 /// Here you should implement a binary tree using an array-based representation for integers.
 /// </summary>
-public class ArrayBinaryTreeInt : IBinaryTree<int>
+public class ArrayBinaryTree<T> : IBinaryTree<int, T>
 {
-    public ArrayBinaryTreeInt(int initialCapacity = 8)
+    public ArrayBinaryTree(int initialCapacity = 8)
     {
 
     }
@@ -43,32 +46,42 @@ public class ArrayBinaryTreeInt : IBinaryTree<int>
         throw new NotImplementedException();
     }
 
-    public bool Exists(int index)
+    public bool Exists(int key)
     {
         throw new NotImplementedException();
     }
 
-    public int Get(int index)
+    public T Get(int index)
     {
         throw new NotImplementedException();
     }
 
-    public IEnumerator<int> GetEnumerator()
+    public IEnumerator<T> GetEnumerator()
     {
         throw new NotImplementedException();
     }
 
-    public void SetLeft(int parentIndex, int value)
+    public int GetLeftKey(int parentKey)
     {
         throw new NotImplementedException();
     }
 
-    public void SetRight(int parentIndex, int value)
+    public int GetRightKey(int parentKey)
     {
         throw new NotImplementedException();
     }
 
-    public void SetRoot(int value)
+    public void SetLeft(int parentKey, T value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetRight(int parentKey, T value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetRoot(T value)
     {
         throw new NotImplementedException();
     }
