@@ -34,7 +34,9 @@ Thanks to reflection, code can operate "on types" that it didn't know at compile
 
 Implement a `TypeCrafter` class that, using the `CraftInstance<>` method, can dynamically build an instance of any type `T` at runtime, reading values from the console and assigning them to object properties. Your implementation should intensively use reflection (namespace `System.Reflection`).
 
-> [!TIP] > **Starting code** > {{< filetree dir="labs/lab08/student/TypeCrafter" >}}
+> [!TIP] 
+> **Starting code** 
+> {{< filetree dir="labs/lab08/student/TypeCrafter" >}}
 >
 > **Output:** [TypeCrafter.txt](/labs/lab08/outputs/TypeCrafter.txt)
 
@@ -145,7 +147,9 @@ public sealed class Invoice
 
 ### Example Solution
 
-> [!TIP] > **Solution** > {{< filetree dir="labs/lab08/solution/TypeCrafter" >}}
+> [!TIP] 
+> **Solution** 
+> {{< filetree dir="labs/lab08/solution/TypeCrafter" >}}
 >
 > **Output:** [TypeCrafter.txt](/labs/lab08/outputs/TypeCrafter.txt)
 
@@ -319,6 +323,8 @@ Console coloring:
 
 ### Example Solution
 
-> [!TIP] > **Solution** > {{< filetree dir="labs/lab08/solution/MiniTest" >}}
+> [!TIP] 
+> **Solution** 
+> {{< filetree dir="labs/lab08/solution/MiniTest" >}}
 >
 > **Output:** [MiniTestRunner.txt](/labs/lab08/outputs/MiniTestRunner.txt)

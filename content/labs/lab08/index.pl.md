@@ -34,7 +34,9 @@ Dzięki refleksji kod może działać "na typach", których nie znał w czasie k
 
 Zaimplementuj klasę `TypeCrafter`, która przy pomocy metody `CraftInstance<>` potrafi dynamicznie zbudować instancję dowolnego typu `T` w czasie wykonania, czytając wartości z konsoli i przypisując je do właściwości obiektu. Twoja implementacja powinna intensywnie korzystać z refleksji (przestrzeń nazw `System.Reflection`).
 
-> [!TIP] > **Kod początkowy** > {{< filetree dir="labs/lab08/student/TypeCrafter" >}}
+> [!TIP] 
+> **Kod początkowy** 
+> {{< filetree dir="labs/lab08/student/TypeCrafter" >}}
 >
 > **Wyjście:** [TypeCrafter.txt](/labs/lab08/outputs/TypeCrafter.txt)
 
@@ -145,7 +147,9 @@ public sealed class Invoice
 
 ### Przykładowe rozwiązanie
 
-> [!TIP] > **Rozwiązanie** > {{< filetree dir="labs/lab08/solution/TypeCrafter" >}}
+> [!TIP] 
+> **Rozwiązanie** 
+> {{< filetree dir="labs/lab08/solution/TypeCrafter" >}}
 >
 > **Wyjście:** [TypeCrafter.txt](/labs/lab08/outputs/TypeCrafter.txt)
 
@@ -319,6 +323,8 @@ Kolorowanie konsoli:
 
 ### Przykładowe rozwiązanie
 
-> [!TIP] > **Rozwiązanie** > {{< filetree dir="labs/lab08/solution/MiniTest" >}}
+> [!TIP] 
+> **Rozwiązanie** 
+> {{< filetree dir="labs/lab08/solution/MiniTest" >}}
 >
 > **Wyjście:** [MiniTestRunner.txt](/labs/lab08/outputs/MiniTestRunner.txt)
