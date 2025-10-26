@@ -146,8 +146,7 @@ writeLog("DEBUG: This is a test entry");
 
 private static void WriteLogToFile(string log)
 {
-    File.AppendAllText("test.log", $"{log}
-");
+    File.AppendAllText("test.log", $"{log}");
 }
 ```
 
