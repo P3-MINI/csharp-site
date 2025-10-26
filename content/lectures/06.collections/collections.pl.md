@@ -1,6 +1,6 @@
 ---
 title: "Kolekcje"
-weight: 10
+weight: 20
 ---
 
 # Kolekcje

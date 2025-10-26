@@ -1,6 +1,6 @@
 --- 
 title: "Collections"
-weight: 10
+weight: 20
 ---
 
 # Collections
