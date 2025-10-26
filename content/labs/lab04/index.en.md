@@ -23,7 +23,7 @@ In practice, almost every modern web or mobile application exposes a REST API.
 URL paths define which resources and at what hierarchy we want to refer to on the server. Each segment after the host is either a resource name or its identifier.
 
 - `/v1/users/42`: version `1`, resource `users`, identifier `42`.
-- `/v2/countries/100/cities/3`: version `2`, resource `countries` (id `100`), nested resource `items` (id `200`).
+- `/v2/countries/100/cities/3`: version `2`, resource `countries` (id `100`), nested resource `cities` (id `3`).
 
 **Query Parameters**
 
@@ -31,7 +31,7 @@ Query parameters, placed after the `?` symbol, allow passing additional data to 
 
 - Each parameter is `key=value` (e.g., `lang=pl`).
 - Multiple key-value pairs are separated with `&`, e.g., `?tag=new&active=true`.
-{{% /hint %}}
+  {{% /hint %}}
 
 ### Task Description
 
@@ -127,7 +127,7 @@ where:
   - `InvalidQuery`: query string format is invalid (e.g., missing `=`).
   - `UnexpectedFormat`: any other error.
 - **Debugging:** A good opportunity to get familiar with the debugger.
-{{% /hint %}}
+  {{% /hint %}}
 
 {{% hint info %}}
 **Helpful resources:**
@@ -136,7 +136,7 @@ where:
 - [Microsoft Learn: Extract substrings from a string](https://learn.microsoft.com/en-us/dotnet/standard/base-types/divide-up-strings)
 - [Microsoft Learn: How to separate strings using String.Split](https://learn.microsoft.com/en-us/dotnet/csharp/how-to/parse-strings-using-split)
 - [Microsoft Learn: Dictionary<TKey,TValue> Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=net-8.0)
-{{% /hint %}}
+  {{% /hint %}}
 
 **Examples**
 
@@ -240,7 +240,7 @@ CSV (comma-separated values) is a format for storing tabular data in text files 
 - Working with dates and time intervals (`DateTime`, `TimeSpan`).
 - Formatting output according to a culture (`CultureInfo`).
 - Using `List<T>.ForEach` and simple lambda expressions to filter and display data.
-{{% /hint %}}
+  {{% /hint %}}
 
 ### Task Description
 
@@ -299,7 +299,7 @@ Location; Code; Date; Temperatures
 Poland  Warsaw  ; pl-PL; 2025-06-21; [  25.9, 18.0  , 9.5 , 24.3  ]
 ```
 
-Use the following CSV file: `measurements.csv`.
+Use the following CSV file: [measurements.csv](/labs/lab04/measurements.csv).
 
 {{% hint warning %}}
 **Implementation notes**
@@ -312,7 +312,7 @@ Use the following CSV file: `measurements.csv`.
 - **Printing:**
   - Preserve formatting as in the example (date format, spacing, decimals, line width).
   - Use `List<T>.ForEach` and lambda expressions - no explicit loops.
-{{% /hint %}}
+    {{% /hint %}}
 
 {{% hint info %}}
 **Helpful resources:**
@@ -324,7 +324,7 @@ Use the following CSV file: `measurements.csv`.
 - [Microsoft Learn: Standard numeric format strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings)
 - [Microsoft Learn: CultureInfo Class](https://learn.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo?view=net-9.0)
 - [Microsoft Learn: List<T>.ForEach(Action<T>) Method](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.foreach?view=net-9.0)
-{{% /hint %}}
+  {{% /hint %}}
 
 **Bonus Task**
 
@@ -350,7 +350,7 @@ Lambda expressions are short, anonymous functions using `=>`. They allow passing
 - Creating lambda expressions as `Func<T>` delegates.
 - Understanding variable capture.
 - Generating random numbers and making probability-based decisions.
-{{% /hint %}}
+  {{% /hint %}}
 
 ### Task Description
 
@@ -378,7 +378,7 @@ Then, using `Fill`, generate and print:
 | `2` | 0.4 | 0.2 | 0.4 |
 | `3` | 0.5 | 0.3 | 0.2 |
 
-> For example, for row 2 and column 1, transition from state `2` to `1` has probability `0.5`.
+> For example, for row 3 and column 1, transition from state `3` to `1` has probability `0.5`.
 >
 > You can represent the transition table as a dictionary of lists of `(state, probability)` tuples.
 
@@ -388,7 +388,7 @@ Then, using `Fill`, generate and print:
 - [Microsoft Learn: Lambda expressions and anonymous functions](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)
 - [Microsoft Learn: Func<T,TResult> Delegate](https://learn.microsoft.com/en-us/dotnet/api/system.func-2?view=net-9.0)
 - [Microsoft Learn: Random Class](https://learn.microsoft.com/en-us/dotnet/api/system.random?view=net-9.0)
-{{% /hint %}}
+  {{% /hint %}}
 
 ### Example Solution
 
@@ -411,14 +411,14 @@ Although regex-based processing can be less efficient than dedicated algorithms 
 
 - How to create and use regular expressions in C# to parse complex text formats such as server logs.
 - How to define named capture groups in your regex to conveniently extract relevant data.
-{{% /hint %}}
+  {{% /hint %}}
 
 ### Task Description
 
 Write a program that, given the text file [logs.txt](/labs/lab04/logs.txt) containing logs in the following format:
 
 ```
-[YYYY-MM-DD HH:mm:ss] LEVEL: IP - METHOD /api/RESOURCE/ID - HTTP_CODE HTTP_STATUS[: opcjonalny komunikat]
+[YYYY-MM-DD HH:mm:ss] LEVEL: IP - METHOD /api/RESOURCE/ID - HTTP_CODE HTTP_STATUS[: optional message]
 ```
 
 Use a regular expression with named capture groups to extract the following fields from each log entry:
@@ -451,7 +451,7 @@ public record LogEntry(
 **Notes**
 
 - This task is considered optional (due to its higher difficulty and complexity).
-{{% /hint %}}
+  {{% /hint %}}
 
 {{% hint info %}}
 **Resources:**
@@ -460,7 +460,7 @@ public record LogEntry(
 - [Microsoft Learn: .NET regular expressions](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions)
 - [Microsoft Learn: Regular Expression Language - Quick Reference](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference)
 - [regex101.com](https://regex101.com/)
-{{% /hint %}}
+  {{% /hint %}}
 
 ### Example Solution
 
