@@ -4,7 +4,7 @@ title: "Wyjątki"
 
 # Wyjątki
 
-Implementacja wyjątków w C# jest bardzo podobna do tej w C++. Składniowo jest niemalże identycznie, z kilkoma nowymi możliwościami w C#. Zmianą jest to, że w C# możemy rzucać jedynie obiektami dziedziczącymi po `System.Exception`. W C++ mogliśmy rzucać w zasadzie dowolnym obiektem, czego się w i tak nie robi w praktyce.
+Implementacja wyjątków w C# jest bardzo podobna do tej w C++. Składniowo jest niemalże identycznie, z kilkoma nowymi możliwościami w C#. Zmianą jest to, że w C# możemy rzucać jedynie obiektami dziedziczącymi po `System.Exception`. W C++ mogliśmy rzucać w zasadzie dowolnym obiektem, czego się i tak nie robi w praktyce.
 
 ## Łapanie wyjątków
 

@@ -146,8 +146,7 @@ writeLog("DEBUG: This is a test entry");
 
 private static void WriteLogToFile(string log)
 {
-    File.AppendAllText("test.log", $"{log}
-");
+    File.AppendAllText("test.log", $"{log}");
 }
 ```
 
@@ -275,7 +274,7 @@ Numerics.Function derivative = delegate (double x) { return 2 * x - 2; };
 double root = Numerics.NewtonRootFinding(function, derivative);
 ```
 
-The only useful feature of anonymous methods is the ability to create an empty method by omitting the parameters; such an anonymous method can be assigned to any delegate. This is an alternative to initializing a delegate with `null`, which helps avoid `NullReferenceException` when trying to invoke an 'empty' delegate.
+The only useful feature of anonymous methods is the ability to create an empty method by omitting the parameters; such an anonymous method can be assigned to any delegate that has no return value. This is an alternative to initializing a delegate with `null`, which helps avoid `NullReferenceException` when trying to invoke an 'empty' delegate.
 
 ```csharp
 Action<string> writeLog = delegate {};
