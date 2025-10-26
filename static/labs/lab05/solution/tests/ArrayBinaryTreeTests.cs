@@ -23,12 +23,81 @@ public class ArrayBinaryTreeTests
     public void Constructor_WithInvalidCapacity_ShouldNotThrowAndInitializeEmptyTree(int invalidCapacity)
     {
         // Arrange & Act
-        // The class should internally set a default capacity
         var tree = new ArrayBinaryTree<int>(invalidCapacity);
 
         // Assert
         tree.Count.Should().Be(0);
         tree.Exists(0).Should().BeFalse();
+    }
+
+    [Fact]
+    public void RootIndex_ShouldAlwaysBeZero()
+    {
+        // Arrange
+        var tree = new ArrayBinaryTree<int>();
+
+        // Act & Assert
+        tree.RootIndex.Should().Be(0);
+    }
+
+    [Theory]
+    [InlineData(0, 1, 2)]
+    [InlineData(1, 3, 4)]
+    [InlineData(2, 5, 6)]
+    [InlineData(5, 11, 12)]
+    public void GetChildrenIndices_ValidIndex_ReturnsCorrectIndices(int parentIndex, int expectedLeft, int expectedRight)
+    {
+        // Arrange
+        var tree = new ArrayBinaryTree<int>();
+
+        // Act
+        var (left, right) = tree.GetChildrenIndices(parentIndex);
+
+        // Assert
+        left.Should().Be(expectedLeft);
+        right.Should().Be(expectedRight);
+    }
+
+    [Fact]
+    public void GetChildrenIndices_NegativeIndex_ThrowsArgumentOutOfRangeException()
+    {
+        // Arrange
+        var tree = new ArrayBinaryTree<int>();
+
+        // Act
+        var act = () => tree.GetChildrenIndices(-1);
+
+        // Assert
+        act.Should().Throw<ArgumentOutOfRangeException>()
+            .WithParameterName("parentIndex");
+    }
+
+    [Fact]
+    public void SetLeftChild_NegativeParentIndex_ThrowsArgumentOutOfRangeException()
+    {
+        // Arrange
+        var tree = new ArrayBinaryTree<int>();
+
+        // Act
+        var act = () => tree.SetLeftChild(-1, 10);
+
+        // Assert
+        act.Should().Throw<ArgumentOutOfRangeException>()
+            .WithParameterName("parentIndex");
+    }
+
+    [Fact]
+    public void SetRightChild_NegativeParentIndex_ThrowsArgumentOutOfRangeException()
+    {
+        // Arrange
+        var tree = new ArrayBinaryTree<int>();
+
+        // Act
+        var act = () => tree.SetRightChild(-1, 10);
+
+        // Assert
+        act.Should().Throw<ArgumentOutOfRangeException>()
+            .WithParameterName("parentIndex");
     }
 
     [Fact]
@@ -42,7 +111,7 @@ public class ArrayBinaryTreeTests
 
         // Assert
         tree.Count.Should().Be(1);
-        tree.Get(0).Should().Be(10);
+        tree[0].Should().Be(10);
         tree.Exists(0).Should().BeTrue();
     }
 
@@ -58,7 +127,7 @@ public class ArrayBinaryTreeTests
 
         // Assert
         tree.Count.Should().Be(1); // Count should not change
-        tree.Get(0).Should().Be(20);
+        tree[0].Should().Be(20);
     }
 
     [Fact]
@@ -69,46 +138,45 @@ public class ArrayBinaryTreeTests
         tree.SetRoot(10); // index 0
 
         // Act
-        tree.SetLeft(0, 5);  // index 1
-        tree.SetRight(0, 15); // index 2
+        tree.SetLeftChild(0, 5);  // index 1
+        tree.SetRightChild(0, 15); // index 2
 
         // Assert
         tree.Count.Should().Be(3);
-        tree.Get(1).Should().Be(5);
+        tree[1].Should().Be(5);
         tree.Exists(1).Should().BeTrue();
-        tree.Get(2).Should().Be(15);
+        tree[2].Should().Be(15);
         tree.Exists(2).Should().BeTrue();
     }
 
     [Fact]
-    public void SetLeft_NonExistentParent_ThrowsInvalidOperationException()
+    public void SetLeftChild_NonExistentParent_ThrowsArgumentOutOfRangeException()
     {
         // Arrange
         var tree = new ArrayBinaryTree<int>();
 
         // Act
         // Attempting to add to parent 0, which does not exist
-        var act = () => tree.SetLeft(0, 5);
+        var act = () => tree.SetLeftChild(0, 5);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
-            .WithMessage("Parent with key #0 not found.");
+        act.Should().Throw<ArgumentOutOfRangeException>()
+           .WithParameterName("parentIndex");
     }
 
     [Fact]
-    public void SetRight_NonExistentParent_ThrowsInvalidOperationException()
+    public void SetRightChild_NonExistentParent_ThrowsArgumentOutOfRangeException()
     {
         // Arrange
         var tree = new ArrayBinaryTree<int>();
 
         // Act
-        // Attempting to add to parent 1 (which doesn't exist), even if root (0) exists
         tree.SetRoot(10);
-        var act = () => tree.SetRight(1, 5);
+        var act = () => tree.SetRightChild(1, 5);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>()
-            .WithMessage("Parent with key #1 not found.");
+        act.Should().Throw<ArgumentOutOfRangeException>()
+           .WithParameterName("parentIndex");
     }
 
     [Fact]
@@ -117,60 +185,62 @@ public class ArrayBinaryTreeTests
         // Arrange
         var tree = new ArrayBinaryTree<int>();
         tree.SetRoot(10);
-        tree.SetLeft(0, 5); // Set the left child
+        tree.SetLeftChild(0, 5); // Set the left child
 
         // Assert
         tree.Count.Should().Be(2);
-        tree.Get(1).Should().Be(5);
+        tree[1].Should().Be(5);
 
         // Act
-        tree.SetLeft(0, 6); // Update the left child
+        tree.SetLeftChild(0, 6); // Update the left child
 
         // Assert
         tree.Count.Should().Be(2); // The count does not change
-        tree.Get(1).Should().Be(6); // Value updated
+        tree[1].Should().Be(6); // Value updated
     }
 
     [Fact]
-    public void Get_IndexNegative_ThrowsIndexOutOfRangeException()
+    public void IndexerGet_IndexNegative_ThrowsArgumentOutOfRangeException()
     {
         // Arrange
         var tree = new ArrayBinaryTree<int>();
 
         // Act
-        var act = () => tree.Get(-1);
+        var act = () => tree[-1];
 
         // Assert
-        act.Should().Throw<IndexOutOfRangeException>();
+        act.Should().Throw<ArgumentOutOfRangeException>()
+           .WithParameterName("index");
     }
 
     [Fact]
-    public void Get_IndexOutOfBounds_ThrowsIndexOutOfRangeException()
+    public void IndexerGet_IndexOutOfBounds_ThrowsArgumentOutOfRangeException()
     {
         // Arrange
         var tree = new ArrayBinaryTree<int>();
         tree.SetRoot(10); // Tree has capacity (e.g., 8), but only 1 element
 
         // Act
-        var act = () => tree.Get(100); // 100 > capacity
+        var act = () => tree[100]; // 100 > capacity
 
         // Assert
-        act.Should().Throw<IndexOutOfRangeException>();
+        act.Should().Throw<ArgumentOutOfRangeException>()
+           .WithParameterName("index");
     }
 
     [Fact]
-    public void Get_IndexInBoundsButNotSet_ThrowsIndexOutOfRangeException()
+    public void IndexerGet_IndexInBoundsButNotSet_ThrowsArgumentOutOfRangeException()
     {
         // Arrange
         var tree = new ArrayBinaryTree<int>();
-        tree.SetRoot(10); // Sets _present[0] = true
+        tree.SetRoot(10);
 
         // Act
-        // Index 1 is within array bounds, but _present[1] = false
-        var act = () => tree.Get(1);
+        var act = () => tree[1];
 
         // Assert
-        act.Should().Throw<IndexOutOfRangeException>();
+        act.Should().Throw<ArgumentOutOfRangeException>()
+           .WithParameterName("index");
     }
 
     [Fact]
@@ -179,7 +249,7 @@ public class ArrayBinaryTreeTests
         // Arrange
         var tree = new ArrayBinaryTree<int>();
         tree.SetRoot(10); // index 0
-        tree.SetLeft(0, 5);  // index 1
+        tree.SetLeftChild(0, 5);  // index 1
 
         // Assert
         tree.Exists(0).Should().BeTrue();  // Root
@@ -196,8 +266,8 @@ public class ArrayBinaryTreeTests
         // Arrange
         var tree = new ArrayBinaryTree<int>();
         tree.SetRoot(10);
-        tree.SetLeft(0, 5);
-        tree.SetRight(0, 15);
+        tree.SetLeftChild(0, 5);
+        tree.SetRightChild(0, 15);
         tree.Count.Should().Be(3);
 
         // Act
@@ -209,11 +279,10 @@ public class ArrayBinaryTreeTests
         tree.Exists(1).Should().BeFalse();
         tree.Exists(2).Should().BeFalse();
 
-        // Check if Get throws an exception
-        var act = () => tree.Get(0);
-        act.Should().Throw<IndexOutOfRangeException>();
+        var act = () => tree[0];
+        act.Should().Throw<ArgumentOutOfRangeException>()
+            .WithParameterName("index");
 
-        // Check the enumerator
         tree.ToList().Should().BeEmpty();
     }
 
@@ -221,19 +290,18 @@ public class ArrayBinaryTreeTests
     public void Set_ShouldResize_WhenIndexExceedsInitialCapacity()
     {
         // Arrange
-        // Set a small initial capacity
         var tree = new ArrayBinaryTree<int>(2); // Will hold indices [0] and [1]
 
         // Act
         tree.SetRoot(10); // index 0
-        tree.SetLeft(0, 5); // index 1 (fits)
+        tree.SetLeftChild(0, 5); // index 1 (fits)
 
         // This operation requires index 2 (2*0 + 2), which will force a resize
-        var act = () => tree.SetRight(0, 15);
+        var act = () => tree.SetRightChild(0, 15);
 
         // Assert
         act.Should().NotThrow(); // Resize must succeed
-        tree.Get(2).Should().Be(15);
+        tree[2].Should().Be(15);
         tree.Count.Should().Be(3);
         tree.Exists(2).Should().BeTrue();
     }
@@ -258,17 +326,17 @@ public class ArrayBinaryTreeTests
         var tree = new ArrayBinaryTree<int>();
 
         // Building the tree:
-        //       10 (0)
-        //      /   \
-        //     5(1)  15(2)
-        //    / \
-        //   3(3) 7(4)
+        //        10 (0)
+        //       /    \
+        //      5(1)  15(2)
+        //     / \
+        //    3(3) 7(4)
 
         tree.SetRoot(10);
-        tree.SetLeft(0, 5);
-        tree.SetRight(0, 15);
-        tree.SetLeft(1, 3);
-        tree.SetRight(1, 7);
+        tree.SetLeftChild(0, 5);
+        tree.SetRightChild(0, 15);
+        tree.SetLeftChild(1, 3);
+        tree.SetRightChild(1, 7);
 
         // Expected In-Order traversal: Left, Root, Right
         var expectedOrder = new[] { 3, 5, 7, 10, 15 };
@@ -289,15 +357,15 @@ public class ArrayBinaryTreeTests
         var tree = new ArrayBinaryTree<int>();
 
         // Building a tree with "gaps" (missing root's left child):
-        //       10 (0)
-        //          \
-        //           15(2)
-        //          /
-        //         12(5)
+        //        10 (0)
+        //           \
+        //            15(2)
+        //           /
+        //          12(5)
 
         tree.SetRoot(10);
-        tree.SetRight(0, 15); // index 2, _present[1] is false
-        tree.SetLeft(2, 12);  // index 5
+        tree.SetRightChild(0, 15); // index 2, _present[1] is false
+        tree.SetLeftChild(2, 12);  // index 5
 
         var expectedOrder = new[] { 10, 12, 15 };
 

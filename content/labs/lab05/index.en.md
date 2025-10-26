@@ -190,22 +190,22 @@ To make the tree class useful, it should provide a way to iterate over its eleme
 
 ### Task description
 
-Implement the `ArrayBinaryTree<T>` class that implements the `IBinaryTree<int, T>` interface. This class should represent a binary tree of integers using an internal array.
+Implement the `ArrayBinaryTree<T>` class that implements the `IArrayBinaryTree<T>` interface. This class should represent a binary tree of integers using an internal array.
 
 Implement the following interface:
 
 ```csharp
-public interface IBinaryTree<TKey, TValue> : IEnumerable<TValue>
+public interface IArrayBinaryTree<T> : IEnumerable<T>
 {
-  int Count { get; }
-  void SetRoot(TValue value);
-  TValue Get(int index);
-  TKey GetLeftKey(TKey parentKey);
-  TKey GetRightKey(TKey parentKey);
-  void SetLeft(TKey parentKey, TValue value);
-  void SetRight(TKey parentKey, TValue value);
-  bool Exists(TKey key);
-  void Clear();
+    int Count { get; }
+    int RootIndex { get; }
+    void SetRoot(T value);
+    (int leftIndex, int rightIndex) GetChildrenIndices(int parentIndex);
+    void SetLeftChild(int parentIndex, T value);
+    void SetRightChild(int parentIndex, T value);
+    T this[int index] { get; }
+    bool Exists(int index);
+    void Clear();
 }
 ```
 
@@ -214,17 +214,17 @@ The implementing class should maintain correct `Count` logic, handle exceptions 
 Example usage:
 
 ```csharp
-var tree = new ArrayBinaryTreeInt<int>();
+var tree = new ArrayBinaryTree<int>();
 tree.SetRoot(10);
-tree.SetLeft(0, 5);
-tree.SetRight(0, 20);
-tree.SetLeft(1, 3);
-tree.SetRight(1, 7);
+tree.SetLeftChild(0, 5);
+tree.SetRightChild(0, 20);
+tree.SetLeftChild(1, 3);
+tree.SetRightChild(1, 7);
 
 // Expected output (In-Order traversal): 3, 5, 7, 10, 20
 foreach (var value in tree)
 {
-  Console.WriteLine(value);
+    Console.WriteLine(value);
 }
 ```
 

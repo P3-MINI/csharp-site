@@ -2,38 +2,83 @@
 
 namespace tasks;
 
-public interface IBinaryTree<TKey, TValue> : IEnumerable<TValue>
+/// <summary>
+/// Interface for an array-based binary tree.
+/// </summary>
+public interface IArrayBinaryTree<T> : IEnumerable<T>
 {
+    /// <summary>
+    /// Gets the number of nodes in the tree.
+    /// </summary>
     int Count { get; }
 
-    void SetRoot(TValue value);
+    /// <summary>
+    /// Gets the index of the root.
+    /// </summary>
+    int RootIndex { get; }
 
-    TValue Get(int index);
+    /// <summary>
+    /// Sets the value of the root node.
+    /// </summary>
+    void SetRoot(T value);
 
-    TKey GetLeftKey(TKey parentKey);
+    /// <summary>
+    /// Returns the indices of the left and right children for a given parent.
+    /// </summary>
+    (int leftIndex, int rightIndex) GetChildrenIndices(int parentIndex);
 
-    TKey GetRightKey(TKey parentKey);
+    /// <summary>
+    /// Sets the value of the left child of a given parent.
+    /// </summary>
+    void SetLeftChild(int parentIndex, T value);
 
-    void SetLeft(TKey parentKey, TValue value);
+    /// <summary>
+    /// Sets the value of the right child of a given parent.
+    /// </summary>
+    void SetRightChild(int parentIndex, T value);
 
-    void SetRight(TKey parentKey, TValue value);
+    /// <summary>
+    /// Gets the node at the specified index.
+    /// </summary>
+    T this[int index] { get; }
 
-    bool Exists(TKey key);
+    /// <summary>
+    /// Checks if a node at the specified index exists.
+    /// </summary>
+    bool Exists(int index);
 
+    /// <summary>
+    /// Clears all nodes from the tree.
+    /// </summary>
     void Clear();
 }
 
 /// <summary>
-/// Here you should implement a binary tree using an array-based representation for integers.
+/// An implementation of a binary tree based on an array.
+/// Indices are calculated as:
+/// - Left Child: 2 * i + 1
+/// - Right Child: 2 * i + 2
+/// - Parent: (i - 1) / 2
 /// </summary>
-public class ArrayBinaryTree<T> : IBinaryTree<int, T>
+public class ArrayBinaryTree<T> : IArrayBinaryTree<T>
 {
-    public ArrayBinaryTree(int initialCapacity = 8)
+    public T this[int index]
     {
-
+        get
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public int Count
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public int RootIndex
     {
         get
         {
@@ -46,12 +91,12 @@ public class ArrayBinaryTree<T> : IBinaryTree<int, T>
         throw new NotImplementedException();
     }
 
-    public bool Exists(int key)
+    public bool Exists(int index)
     {
         throw new NotImplementedException();
     }
 
-    public T Get(int index)
+    public (int leftIndex, int rightIndex) GetChildrenIndices(int parentIndex)
     {
         throw new NotImplementedException();
     }
@@ -61,22 +106,12 @@ public class ArrayBinaryTree<T> : IBinaryTree<int, T>
         throw new NotImplementedException();
     }
 
-    public int GetLeftKey(int parentKey)
+    public void SetLeftChild(int parentIndex, T value)
     {
         throw new NotImplementedException();
     }
 
-    public int GetRightKey(int parentKey)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void SetLeft(int parentKey, T value)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void SetRight(int parentKey, T value)
+    public void SetRightChild(int parentIndex, T value)
     {
         throw new NotImplementedException();
     }
