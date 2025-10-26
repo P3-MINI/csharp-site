@@ -1,6 +1,6 @@
 ---
 title: "Kolekcje"
-weight: 10
+weight: 20
 ---
 
 # Kolekcje
@@ -310,3 +310,38 @@ Poza głównymi gałęziami hierarchii, istnieją inne ważne kolekcje, które *
 - `Stack<T>` - Implementuje stos **LIFO** (Last-In, First-Out), również wewnętrznie używając **dynamicznie rozszerzanej tablicy**. Główne metody to `Push` (dodaje na wierzch) i `Pop` (pobiera z wierzchu).
 
 > Warto również wspomnieć o `BitArray` z przestrzeni nazw `System.Collections`. Jest to specjalistyczna, **niegeneryczna** kolekcja, która pozwala na efektywne przechowywanie i manipulowanie tablicą bitów (wartości `true`/`false`), używając tylko jednego bitu na każdą wartość.
+
+### Inicjalizatory Kolekcji
+
+Ta składnia, dostępna od dawna, wymaga użycia `new` oraz nawiasów klamrowych `{...}`. Kompilator tłumaczy ją na serię wywołań metody `Add` lub wstawiania za pomocą indeksatora (od C# 6.0).
+
+```csharp
+var numbers = new List<int> { 1, 2, 3 };
+
+var cityPopulations = new Dictionary<string, int>
+{
+    { "Tokyo", 37_000_000 },
+    { "Delhi", 32_000_000 }
+};
+
+// For types defining an indexer (C# 6.0):
+var cityPopulationsByIndexer = new Dictionary<string, int>
+{
+    ["Shanghai"] = 28_000_000,
+    ["London"] = 9_000_000
+};
+```
+
+### Wyrażenia Kolekcji (C# 12)
+
+Począwszy od C# 12, wprowadzono nową, jeszcze bardziej zwięzłą składnię znaną jako **wyrażenia kolekcji**. Używa ona nawiasów kwadratowych `[...]` i pozwala kompilatorowi na wywnioskowanie typu kolekcji na podstawie kontekstu (typu zmiennej, do której jest przypisywana).
+
+```csharp
+List<int> numbers1 = [1, 2, 3, 4];
+
+int[] numbers2 = [5, 6, 7, 8];
+
+// Spread operator `..` to concatenate collections.
+var combined = [..numbers1, ..numbers2, 9, 10];
+// 'combined' contains { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+```

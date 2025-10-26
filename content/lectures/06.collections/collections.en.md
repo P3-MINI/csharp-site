@@ -1,6 +1,6 @@
 --- 
 title: "Collections"
-weight: 10
+weight: 20
 ---
 
 # Collections
@@ -310,4 +310,41 @@ Besides the main branches of the hierarchy, there are other important collection
 - `Stack<T>` - Implements a **LIFO** (Last-In, First-Out) stack, also internally using a **dynamically sized array**. The main methods are `Push` (adds to the top) and `Pop` (retrieves from the top).
 
 > It is also worth mentioning `BitArray` from the `System.Collections` namespace. It is a specialized, **non-generic** collection that allows for the efficient storage and manipulation of an array of bits (true/false values), using only one bit for each value.
+
+### Collection Initializers
+
+This syntax, available for a long time, requires the use of `new` and curly braces `{...}`. The compiler translates it into a series of `Add` method calls or insertions via an indexer (since C# 6.0).
+
+```csharp
+// Initializer for a List<T>
+var numbers = new List<int> { 1, 2, 3 };
+
+// Initializer for a Dictionary<TKey, TValue> (using pairs)
+var cityPopulations = new Dictionary<string, int>
+{
+    { "Tokyo", 37_000_000 },
+    { "Delhi", 32_000_000 }
+};
+
+// For types defining an indexer (C# 6.0):
+var cityPopulationsByIndexer = new Dictionary<string, int>
+{
+    ["Shanghai"] = 28_000_000,
+    ["London"] = 9_000_000
+};
+```
+
+### Collection Expressions (C# 12)
+
+Starting with C# 12, a new, even more concise syntax known as **collection expressions** was introduced. It uses square brackets `[...]` and allows the compiler to infer the collection type from the context (the type of the variable it is being assigned to).
+
+```csharp
+List<int> numbers1 = [1, 2, 3, 4];
+
+int[] numbers2 = [5, 6, 7, 8];
+
+// Spread operator `..` to concatenate collections.
+var combined = [..numbers1, ..numbers2, 9, 10];
+// 'combined' contains { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+```
 
