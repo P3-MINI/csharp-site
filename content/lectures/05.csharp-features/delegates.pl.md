@@ -272,7 +272,7 @@ Numerics.Function derivative = delegate (double x) { return 2 * x - 2; };
 double root = Numerics.NewtonRootFinding(function, derivative);
 ```
 
-Jedyną przydatną funkcją metod anonimowych jest możliwość stworzenia pustej metody z pominięciem parametrów, taką metodę anonimową możemy przypisać do dowolnego delegata. Jest to alternatywa od inicjowania delegata `null`em, dzięki temu unikamy wyjątków `NullReferenceException` przy próbie wywołania 'pustego' delegata.
+Jedyną przydatną funkcją metod anonimowych jest możliwość stworzenia pustej metody z pominięciem parametrów, taką metodę anonimową możemy przypisać do dowolnego delegata nie zwracającego wartości. Jest to alternatywa od inicjowania delegata `null`em, dzięki temu unikamy wyjątków `NullReferenceException` przy próbie wywołania 'pustego' delegata.
 
 ```csharp
 Action<string> writeLog = delegate {};
