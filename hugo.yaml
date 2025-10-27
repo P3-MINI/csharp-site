@@ -24,7 +24,7 @@ languages:
     weight: 2
 
 params:
-  BookTheme: "light"
+  BookTheme: "auto"
   BookSection: "*"
   BookRepo: https://github.com/P3-MINI/csharp-site
   BookEditLink: https://github.com/P3-MINI/csharp-site/edit/master/{{ .Path }}
