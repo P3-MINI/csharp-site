@@ -1,0 +1,8 @@
+/* Force Disqus to use dark mode */
+iframe {
+    color-scheme: light;
+}
+
+.book-comments {
+    color: #fff !important;
+}
