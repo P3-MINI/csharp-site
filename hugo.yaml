@@ -7,6 +7,7 @@ disableKinds:
 
 buildFuture: true
 defaultContentLanguageInSubdir: true
+disqusShortname: "csharp-mini"
 enableGitInfo: true
 
 baseURL: "https://csharp.mini.pw.edu.pl/"
@@ -23,7 +24,7 @@ languages:
     weight: 2
 
 params:
-  BookTheme: "auto"
+  BookTheme: "light"
   BookSection: "*"
   BookRepo: https://github.com/P3-MINI/csharp-site
   BookEditLink: https://github.com/P3-MINI/csharp-site/edit/master/{{ .Path }}
