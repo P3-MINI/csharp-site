@@ -76,7 +76,7 @@ finally
 
 ## Iterator Method
 
-A **coroutine** is a special type of function that **has the ability to suspend its execution** at any moment and **return control** to the code that called it, and then, after some time, **resume execution** exactly from the place where it was suspended.
+A **coroutine** is a special type of function that **has the ability to suspend its execution** at any moment and **return control** to the code that called it, and then, after some time, **resume execution**.
 
 Iterator methods are one of two examples of coroutines in C#. Such a method must return `IEnumerable<T>` or `IEnumerator<T>` (or `IEnumerable` or `IEnumerator`) and use the `yield` statement. Such a method is treated in a special way by the compiler. The compiler creates a state machine in its place, which remembers the state of the iteration, i.e., local variables and information about the suspension point.
 
