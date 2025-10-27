@@ -39,3 +39,14 @@ weight: 10
 ## Wykład 04
 
 - [Enumeratory]({{< ref "06.collections/enumerators#metoda-iterująca" >}})
+- [Delegaty]({{< ref "05.csharp-features/delegates" >}})
+- [Metody Rozszerzające]({{< ref "05.csharp-features/extension-methods" >}})
+- [Kolekcje]({{< ref "06.collections/collections" >}})
+
+## Wykład 05
+
+- [Kolekcje]({{< ref "06.collections/collections#klasa-dictionarytkey-tvalue" >}})
+- [LINQ]({{< ref "06.collections/linq" >}})
+- [Nullable]({{< ref "05.csharp-features/nullable" >}})
+- [Exceptions]({{< ref "05.csharp-features/exceptions" >}})
+- [Operator Overloading]({{< ref "05.csharp-features/operator-overloading" >}})
