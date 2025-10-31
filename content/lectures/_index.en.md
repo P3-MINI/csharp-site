@@ -35,7 +35,16 @@ weight: 10
 - [Tuples]({{< ref "05.csharp-features/tuples" >}})
 - [Enumerators]({{< ref "06.collections/enumerators" >}})
 
-## Wykład 04
+## Lecture 04
 
-- [Enumeratory]({{< ref "06.collections/enumerators#iterator-method" >}})
+- [Enumerators]({{< ref "06.collections/enumerators#iterator-method" >}})
+- [Delegates]({{< ref "05.csharp-features/delegates" >}})
+- [Extension Methods]({{< ref "05.csharp-features/extension-methods" >}})
+- [Collections]({{< ref "06.collections/collections" >}})
+- [LINQ]({{< ref "06.collections/linq" >}})
+
+## Lecture 05
+
 - [Nullable]({{< ref "05.csharp-features/nullable" >}})
+- [Exceptions]({{< ref "05.csharp-features/exceptions" >}})
+- [Operator Overloading]({{< ref "05.csharp-features/operator-overloading" >}})

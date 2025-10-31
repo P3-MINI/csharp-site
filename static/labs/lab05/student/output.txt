@@ -1,0 +1,402 @@
+Actors From Fantasy Movies
+[
+  {
+    "Id": 201,
+    "Name": "Ian McKellen"
+  },
+  {
+    "Id": 206,
+    "Name": "Elijah Wood"
+  },
+  {
+    "Id": 207,
+    "Name": "Emma Stone"
+  }
+]
+
+Longest Movie By Genre
+[
+  {
+    "Genre": "Fantasy",
+    "Movie": {
+      "Id": 101,
+      "Title": "The Lord of the Rings: The Fellowship of the Ring",
+      "Year": 2001,
+      "Genre": "Fantasy",
+      "DurationMinutes": 201
+    }
+  },
+  {
+    "Genre": "Drama",
+    "Movie": {
+      "Id": 110,
+      "Title": "Saving Private Ryan",
+      "Year": 1998,
+      "Genre": "Drama",
+      "DurationMinutes": 169
+    }
+  },
+  {
+    "Genre": "Romance",
+    "Movie": {
+      "Id": 103,
+      "Title": "Forrest Gump",
+      "Year": 1994,
+      "Genre": "Romance",
+      "DurationMinutes": 142
+    }
+  },
+  {
+    "Genre": "Thriller",
+    "Movie": {
+      "Id": 104,
+      "Title": "Se7en",
+      "Year": 1995,
+      "Genre": "Thriller",
+      "DurationMinutes": 127
+    }
+  },
+  {
+    "Genre": "Horror",
+    "Movie": {
+      "Id": 105,
+      "Title": "Alien",
+      "Year": 1979,
+      "Genre": "Horror",
+      "DurationMinutes": 117
+    }
+  },
+  {
+    "Genre": "Comedy",
+    "Movie": {
+      "Id": 106,
+      "Title": "The Truman Show",
+      "Year": 1998,
+      "Genre": "Comedy",
+      "DurationMinutes": 103
+    }
+  }
+]
+
+High Rated Movies With Cast
+[
+  {
+    "Movie": {
+      "Id": 102,
+      "Title": "The Shawshank Redemption",
+      "Year": 1994,
+      "Genre": "Drama",
+      "DurationMinutes": 142
+    },
+    "Average": 9.5,
+    "Cast": [
+      {
+        "Id": 202,
+        "Name": "Tim Robbins"
+      },
+      {
+        "Id": 203,
+        "Name": "Morgan Freeman"
+      }
+    ]
+  },
+  {
+    "Movie": {
+      "Id": 101,
+      "Title": "The Lord of the Rings: The Fellowship of the Ring",
+      "Year": 2001,
+      "Genre": "Fantasy",
+      "DurationMinutes": 201
+    },
+    "Average": 9.666666666666666,
+    "Cast": [
+      {
+        "Id": 201,
+        "Name": "Ian McKellen"
+      },
+      {
+        "Id": 206,
+        "Name": "Elijah Wood"
+      }
+    ]
+  }
+]
+
+Distinct Roles Count Per Actor
+[
+  {
+    "Actor": {
+      "Id": 203,
+      "Name": "Morgan Freeman"
+    },
+    "Roles": 2
+  },
+  {
+    "Actor": {
+      "Id": 204,
+      "Name": "Tom Hanks"
+    },
+    "Roles": 2
+  },
+  {
+    "Actor": {
+      "Id": 209,
+      "Name": "Jim Carrey"
+    },
+    "Roles": 2
+  },
+  {
+    "Actor": {
+      "Id": 201,
+      "Name": "Ian McKellen"
+    },
+    "Roles": 1
+  },
+  {
+    "Actor": {
+      "Id": 202,
+      "Name": "Tim Robbins"
+    },
+    "Roles": 1
+  },
+  {
+    "Actor": {
+      "Id": 205,
+      "Name": "Brad Pitt"
+    },
+    "Roles": 1
+  },
+  {
+    "Actor": {
+      "Id": 206,
+      "Name": "Elijah Wood"
+    },
+    "Roles": 1
+  },
+  {
+    "Actor": {
+      "Id": 207,
+      "Name": "Emma Stone"
+    },
+    "Roles": 1
+  },
+  {
+    "Actor": {
+      "Id": 208,
+      "Name": "Sigourney Weaver"
+    },
+    "Roles": 1
+  }
+]
+
+Recent Movies With Average Rating
+[
+  {
+    "Movie": {
+      "Id": 107,
+      "Title": "Poor Things",
+      "Year": 2023,
+      "Genre": "Fantasy",
+      "DurationMinutes": 141
+    },
+    "AverageScore": 8
+  },
+  {
+    "Movie": {
+      "Id": 108,
+      "Title": "Unreleased Project",
+      "Year": 2025,
+      "Genre": "Drama",
+      "DurationMinutes": 120
+    },
+    "AverageScore": 0
+  }
+]
+
+Average Rating By Genre
+[
+  {
+    "Genre": "Drama",
+    "AverageScore": 9.5
+  },
+  {
+    "Genre": "Fantasy",
+    "AverageScore": 9.25
+  },
+  {
+    "Genre": "Thriller",
+    "AverageScore": 8
+  }
+]
+
+Actors Who Never Played In Thriller
+[
+  {
+    "Id": 201,
+    "Name": "Ian McKellen"
+  },
+  {
+    "Id": 202,
+    "Name": "Tim Robbins"
+  },
+  {
+    "Id": 204,
+    "Name": "Tom Hanks"
+  },
+  {
+    "Id": 206,
+    "Name": "Elijah Wood"
+  },
+  {
+    "Id": 207,
+    "Name": "Emma Stone"
+  },
+  {
+    "Id": 208,
+    "Name": "Sigourney Weaver"
+  },
+  {
+    "Id": 209,
+    "Name": "Jim Carrey"
+  }
+]
+
+Top 3 Movies By Rating Count
+[
+  {
+    "Id": 101,
+    "Title": "The Lord of the Rings: The Fellowship of the Ring",
+    "Year": 2001,
+    "Genre": "Fantasy",
+    "DurationMinutes": 201
+  },
+  {
+    "Id": 102,
+    "Title": "The Shawshank Redemption",
+    "Year": 1994,
+    "Genre": "Drama",
+    "DurationMinutes": 142
+  },
+  {
+    "Id": 107,
+    "Title": "Poor Things",
+    "Year": 2023,
+    "Genre": "Fantasy",
+    "DurationMinutes": 141
+  }
+]
+
+Movies Without Ratings
+[
+  {
+    "Id": 103,
+    "Title": "Forrest Gump",
+    "Year": 1994,
+    "Genre": "Romance",
+    "DurationMinutes": 142
+  },
+  {
+    "Id": 105,
+    "Title": "Alien",
+    "Year": 1979,
+    "Genre": "Horror",
+    "DurationMinutes": 117
+  },
+  {
+    "Id": 106,
+    "Title": "The Truman Show",
+    "Year": 1998,
+    "Genre": "Comedy",
+    "DurationMinutes": 103
+  },
+  {
+    "Id": 108,
+    "Title": "Unreleased Project",
+    "Year": 2025,
+    "Genre": "Drama",
+    "DurationMinutes": 120
+  },
+  {
+    "Id": 109,
+    "Title": "Eternal Sunshine of the Spotless Mind",
+    "Year": 2004,
+    "Genre": "Drama",
+    "DurationMinutes": 108
+  },
+  {
+    "Id": 110,
+    "Title": "Saving Private Ryan",
+    "Year": 1998,
+    "Genre": "Drama",
+    "DurationMinutes": 169
+  }
+]
+
+Most Versatile Actors
+[
+  {
+    "Actor": {
+      "Id": 203,
+      "Name": "Morgan Freeman"
+    },
+    "GenreCount": 2
+  },
+  {
+    "Actor": {
+      "Id": 204,
+      "Name": "Tom Hanks"
+    },
+    "GenreCount": 2
+  },
+  {
+    "Actor": {
+      "Id": 209,
+      "Name": "Jim Carrey"
+    },
+    "GenreCount": 2
+  },
+  {
+    "Actor": {
+      "Id": 201,
+      "Name": "Ian McKellen"
+    },
+    "GenreCount": 1
+  },
+  {
+    "Actor": {
+      "Id": 206,
+      "Name": "Elijah Wood"
+    },
+    "GenreCount": 1
+  },
+  {
+    "Actor": {
+      "Id": 202,
+      "Name": "Tim Robbins"
+    },
+    "GenreCount": 1
+  },
+  {
+    "Actor": {
+      "Id": 205,
+      "Name": "Brad Pitt"
+    },
+    "GenreCount": 1
+  },
+  {
+    "Actor": {
+      "Id": 208,
+      "Name": "Sigourney Weaver"
+    },
+    "GenreCount": 1
+  },
+  {
+    "Actor": {
+      "Id": 207,
+      "Name": "Emma Stone"
+    },
+    "GenreCount": 1
+  }
+]
+
+Press ENTER key to continue...

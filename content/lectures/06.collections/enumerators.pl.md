@@ -76,7 +76,7 @@ finally
 
 ## Metoda iterująca
 
-**Korutyna** to specjalny rodzaj funkcji, która **ma zdolność do wstrzymania swojego działania** w dowolnym momencie i **zwrócenia kontroli** do kodu, który ją wywołał, a następnie, po jakimś czasie, **wznowienia działania** dokładnie od miejsca, w którym została wstrzymana.
+**Korutyna** to specjalny rodzaj funkcji, która **ma zdolność do wstrzymania swojego działania** w dowolnym momencie i **zwrócenia kontroli** do kodu, który ją wywołał, a następnie, po jakimś czasie, **wznowienia działania**.
 
 Metody iterujące to jeden z dwóch przykładów korutyn w C#. Taka metoda musi zwracać `IEnumerable<T>` lub `IEnumerator<T>` (lub `IEnumerable` lub `IEnumerator`) i używać instrukcji `yield`. Taka metoda jest przez kompilator traktowana w szczególny sposób. Kompilator w jej miejsce tworzy maszynę stanów, która zapamiętuje stan iteracji, czyli lokalne zmienne oraz informację o miejscu wstrzymania.
 

@@ -34,14 +34,14 @@ LINQ oferuje dwa równoważne sposoby zapisu zapytań, które kompilator i tak s
 ```csharp
 var numbers = new List<int> { 1, 2, 3, 4, 5, 6 };
 
-// 1. Query Syntax
+// 1. Method Syntax
+var methodSyntaxResult = numbers.Where(num => num % 2 == 0)
+                                .Select(num => num * num);
+
+// 2. Query Syntax
 var querySyntaxResult = from num in numbers
                         where num % 2 == 0
                         select num * num;
-
-// 2. Method Syntax
-var methodSyntaxResult = numbers.Where(num => num % 2 == 0)
-                                .Select(num => num * num);
 
 // Both queries produce the sequence { 4, 16, 36 }
 ```

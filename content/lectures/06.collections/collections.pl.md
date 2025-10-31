@@ -22,6 +22,11 @@ Bazą dla wszystkich kolekcji jest interfejs `IEnumerable<T>`, który jedynie gw
 Dalej w hierarchii mamy już tylko wyspecjalizowane kolekcje: listy (`IList<T>`), słowniki (`IDictionary<TKey, TValue>`) i zbiory (`ISet<T>`).
 
 ```mermaid
+---
+config:
+  class:
+    hideEmptyMembersBox: true
+---
 classDiagram
 IEnumerable~T~ --> ICollection~T~
 ICollection~T~ --> IList~T~
@@ -29,54 +34,21 @@ ICollection~T~ --> IDictionary~TKey, TValue~ : implements<br>ICollection&ltKeyVa
 ICollection~T~ --> ISet~T~
 class IEnumerable~T~{
     <<interface>>
-    IEnumerator GetEnumerator~T~()
 }
 class IEnumerator~T~{
     <<interface>>
-    T Current
-    bool MoveNext()
-    void Reset()
 }
 class ICollection~T~{
     <<interface>>
-    int Count
-    bool IsReadOnly
-    void Add(T item);
-    bool Remove(T item)
-    bool Contains(T item)
-    void Clear()
-    void CopyTo(T[] array, int arrayIndex)
 }
 class IList~T~{
     <<interface>>
-    T this[int index]
-    int IndexOf(T item)
-    void Insert(int index, T item)
-    void RemoveAt(int index)
 }
 class IDictionary~TKey, TValue~{
     <<interface>>
-    TValue this[TKey key]
-    ICollection<TKey> Keys
-    ICollection<TValue> Values
-    bool ContainsKey(TKey key)
-    void Add(TKey key, TValue value)
-    bool Remove(TKey key)
-    bool TryGetValue(TKey key, out TValue value)
 }
 class ISet~T~{
     <<interface>>
-    new bool Add(T item)
-    void UnionWith(IEnumerable<T> other)
-    void IntersectWith(IEnumerable<T> other)
-    void ExceptWith(IEnumerable<T> other)
-    void SymmetricExceptWith(IEnumerable<T> other)
-    bool IsSubsetOf(IEnumerable<T> other)
-    bool IsSupersetOf(IEnumerable<T> other)
-    bool IsProperSupersetOf(IEnumerable<T> other)
-    bool IsProperSubsetOf(IEnumerable<T> other)
-    bool Overlaps(IEnumerable<T> other)
-    bool SetEquals(IEnumerable<T> other)
 }
 ```
 
