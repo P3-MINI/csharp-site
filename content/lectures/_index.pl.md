@@ -47,6 +47,7 @@ weight: 10
 
 - [Kolekcje]({{< ref "06.collections/collections#klasa-dictionarytkey-tvalue" >}})
 - [LINQ]({{< ref "06.collections/linq" >}})
-- [Nullable]({{< ref "05.csharp-features/nullable" >}})
-- [Exceptions]({{< ref "05.csharp-features/exceptions" >}})
-- [Operator Overloading]({{< ref "05.csharp-features/operator-overloading" >}})
+- [Zdarzenia]({{< ref "05.csharp-features/events" >}})
+- [Rekordy]({{< ref "05.csharp-features/records" >}})
+- [Wyjątki]({{< ref "05.csharp-features/exceptions" >}})
+- [Przeciążanie Operatorów]({{< ref "05.csharp-features/operator-overloading" >}})
