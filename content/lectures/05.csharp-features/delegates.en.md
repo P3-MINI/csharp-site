@@ -98,7 +98,7 @@ public static class Program
 
 > [!NOTE]
 > **Source Code**
-> {{< filetree dir="/lectures/csharp-features/delegates/Numerics/" >}}
+> {{< filetree dir="lectures/csharp-features/delegates/Numerics/" >}}
 
 ### Generic Delegates
 
