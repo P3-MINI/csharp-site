@@ -308,15 +308,14 @@ var cityPopulationsByIndexer = new Dictionary<string, int>
 
 ### Collection Expressions (C# 12)
 
-Starting with C# 12, a new, even more concise syntax known as **collection expressions** was introduced. It uses square brackets `[...]` and allows the compiler to infer the collection type from the context (the type of the variable it is being assigned to).
+Starting with C# 12, a new, even more concise syntax known as **collection expressions** was introduced. A collection expression is a terse syntax using square brackets `[...]` that, when evaluated, can be assigned to many different collection types. The compiler automatically infers how to insert the provided elements into the collection.
 
 ```csharp
-List<int> numbers1 = [1, 2, 3, 4];
+List<int> numbers1 = [1, 2, 3, 4, 5];
 
-int[] numbers2 = [5, 6, 7, 8];
+int[] numbers2 = [4, 5, 6, 7, 8];
 
 // Spread operator `..` to concatenate collections.
-var combined = [..numbers1, ..numbers2, 9, 10];
-// 'combined' contains { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+SortedSet<int> combined = [9, ..numbers1, ..numbers2, 10];
+// 'combined' contains { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } in order without repetitions
 ```
-
