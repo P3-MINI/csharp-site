@@ -12,7 +12,7 @@ Mondays, 16:15 - 18:00, room 328
 | 13.10.2025 | L02: Classes/Structs/Interfaces, Inheritance, Properties         |
 | 20.10.2025 | L03: Generics, Enumerators, Tuples                               |
 | 27.10.2025 | L04: Delegates, Extension Methods, Collections, LINQ             |
-| 03.11.2025 | L05:                                                             |
+| 03.11.2025 | L05: Nullable, Exceptions, Records, Events                      |
 | 13.11.2025 | L06:                                                             |
 | 17.11.2025 | L07:                                                             |
 | 24.11.2025 | L08:                                                             |
