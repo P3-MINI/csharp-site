@@ -47,7 +47,10 @@ weight: 10
 
 - [Kolekcje]({{< ref "06.collections/collections#klasa-dictionarytkey-tvalue" >}})
 - [LINQ]({{< ref "06.collections/linq" >}})
-- [Zdarzenia]({{< ref "05.csharp-features/events" >}})
 - [Rekordy]({{< ref "05.csharp-features/records" >}})
 - [Wyjątki]({{< ref "05.csharp-features/exceptions" >}})
+
+# Wykład 06
+
+- [Zdarzenia]({{< ref "05.csharp-features/events" >}})
 - [Przeciążanie Operatorów]({{< ref "05.csharp-features/operator-overloading" >}})

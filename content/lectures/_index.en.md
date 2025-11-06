@@ -48,7 +48,9 @@ weight: 10
 - [LINQ cont.]({{< ref "06.collections/linq" >}})
 - [Nullable]({{< ref "05.csharp-features/nullable" >}})
 - [Exceptions]({{< ref "05.csharp-features/exceptions" >}})
-- [Operator Overloading]({{< ref "05.csharp-features/operator-overloading" >}})
 - [Records]({{< ref "05.csharp-features/records" >}})
 - [Events]({{< ref "05.csharp-features/events" >}})
-- [Exceptions]({{< ref "05.csharp-features/exceptions" >}})
+
+# Lecture 06
+
+- [Operator Overloading]({{< ref "05.csharp-features/operator-overloading" >}})
