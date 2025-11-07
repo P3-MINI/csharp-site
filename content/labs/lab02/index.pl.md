@@ -168,7 +168,7 @@ W `Program.cs` stwórz nowy obiekt `PasswordValidator` i w pętli odpytuj się u
 
 `NuGet` to oficjalny menedżer pakietów dla platformy .NET. Wyobraź sobie, że budujesz aplikację i potrzebujesz zaimplementować jakąś funkcjonalność, np. kolorowanie tekstu w konsoli, logowanie błędów, albo pracę z plikami JSON. Zamiast pisać cały ten kod od zera, możesz użyć gotowej biblioteki (czyli "pakietu"), którą ktoś już stworzył, przetestował i udostępnił. 
 
-Dostępne paczki można wyszukać na [nuget.org](nuget.org), przez CLI `dotnet package search <search term>` lub przez IDE. Jak to zrobić dla Visual Studio znajdziesz w [dokumentacji NuGeta](https://learn.microsoft.com/nuget/quickstart/install-and-use-a-package-in-visual-studio#nuget-package-manager), a dla Ridera w jego [dokumetntacji](https://www.jetbrains.com/help/rider/Using_NuGet.html).
+Dostępne paczki można wyszukać na [nuget.org](https://nuget.org), przez CLI `dotnet package search <search term>` lub przez IDE. Jak to zrobić dla Visual Studio znajdziesz w [dokumentacji NuGeta](https://learn.microsoft.com/nuget/quickstart/install-and-use-a-package-in-visual-studio#nuget-package-manager), a dla Ridera w jego [dokumetntacji](https://www.jetbrains.com/help/rider/Using_NuGet.html).
 
 My do aplikacji konsolowej dodamy kolorowanie wyjścia. Użyjemy gotowej bilbioteki `Pastel` dostępnej w repozytorium `NuGet`. Żeby dodać paczkę do projektu można to zrobić na dwa sposoby przez komendę `dotnet`: `dotnet add PasswordValidatorApp package Pastel`, lub przez IDE.
 

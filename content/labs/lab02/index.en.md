@@ -193,7 +193,7 @@ In `Program.cs`, create a new `PasswordValidator` object and, in a loop, ask the
 
 `NuGet` is the official package manager for the .NET platform. Imagine you are building an application and need to implement some functionality, e.g., coloring text in the console, logging errors, or working with JSON files. Instead of writing all this code from scratch, you can use a ready-made library (or "package") that someone has already created, tested, and shared.
 
-Available packages can be searched on [nuget.org](nuget.org), via the CLI `dotnet package search <search term>`, or through an IDE. You can find out how to do this for Visual Studio in the [NuGet documentation](https://learn.microsoft.com/nuget/quickstart/install-and-use-a-package-in-visual-studio#nuget-package-manager), and for Rider in [its documentation](https://www.jetbrains.com/help/rider/Using_NuGet.html).
+Available packages can be searched on [nuget.org](https://nuget.org), via the CLI `dotnet package search <search term>`, or through an IDE. You can find out how to do this for Visual Studio in the [NuGet documentation](https://learn.microsoft.com/nuget/quickstart/install-and-use-a-package-in-visual-studio#nuget-package-manager), and for Rider in [its documentation](https://www.jetbrains.com/help/rider/Using_NuGet.html).
 
 We will add output coloring to our console application. We will use the ready-made `Pastel` library available in the `NuGet` repository. To add the package to the project, you can do it in two ways: via the `dotnet` command: `dotnet add PasswordValidatorApp package Pastel`, or through an IDE.
 
