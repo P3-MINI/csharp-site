@@ -482,7 +482,7 @@ Więcej przykładów znajdziesz w [dokumentacji](https://git-scm.com/docs/git-ch
 > Bob utworzył gałąź feature `bob/feature/sort`, zaimplementował sortowanie bąbelkowe i wykonał commit o nazwie `Implement bubble sort`. Później odkrył algorytm quick sort i zastąpił nim sortowanie bąbelkowe (commit `Implement quick sort`). Na końcu dodał commit o nazwie `Ad timer`, aby mierzyć czas wykonania algorytmu.  
 > ⚠️ Ważne: W każdym podzadaniu nie wolno pisać kodu C#. Wszystkie zmiany muszą być wykonane wyłącznie za pomocą poleceń Git lub interfejsu Git UI.  
 > 1. Bob źle napisał wiadomość commita `Ad timer`. Zmień ją na `Add timer`.  
-> 2. Bob chce porównać czasy wykonania quick sort i bubble sort. Utwórz nową gałąź o nazwie `bob/feature/sort/bubble-sort`, która zawiera implementację bubble sort oraz commit `Add timer`. Struktura drzewa powinna wyglądać następująco:
+> 2. Bob chce porównać czasy wykonania quick sort i bubble sort. Utwórz nową gałąź o nazwie `bob/feature/sort-bubble-sort`, która zawiera implementację bubble sort oraz commit `Add timer`. Struktura drzewa powinna wyglądać następująco:
 > ```mermaid
 > ---
 > config:
@@ -494,8 +494,8 @@ Więcej przykładów znajdziesz w [dokumentacji](https://git-scm.com/docs/git-ch
 >   branch bob/feature/sort 
 >   commit id: "Add SortExtension"
 >   commit id: "Implement bubble sort"
->   branch bob/feature/sort/bubble-sort 
->   checkout bob/feature/sort/bubble-sort
+>   branch bob/feature/sort-bubble-sort 
+>   checkout bob/feature/sort-bubble-sort
 >   commit id: "Add timer'" 
 >   checkout bob/feature/sort
 >   commit id: "Implement quick sort"

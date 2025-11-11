@@ -306,14 +306,14 @@ var cityPopulationsByIndexer = new Dictionary<string, int>
 
 ### Wyrażenia Kolekcji (C# 12)
 
-Począwszy od C# 12, wprowadzono nową, jeszcze bardziej zwięzłą składnię znaną jako **wyrażenia kolekcji**. Używa ona nawiasów kwadratowych `[...]` i pozwala kompilatorowi na wywnioskowanie typu kolekcji na podstawie kontekstu (typu zmiennej, do której jest przypisywana).
+Począwszy od C# 12, wprowadzono nową, jeszcze bardziej zwięzłą składnię znaną jako **wyrażenia kolekcji**. Jest to cukier składniowy używający nawiasów kwadratowych `[...]`, który pozwala na przypisanie elementów do kolekcji w prosty sposób. Kompilator sam domyśla się jak wstawić podane elementy do kolekcji.
 
 ```csharp
-List<int> numbers1 = [1, 2, 3, 4];
+List<int> numbers1 = [1, 2, 3, 4, 5];
 
-int[] numbers2 = [5, 6, 7, 8];
+int[] numbers2 = [4, 5, 6, 7, 8];
 
 // Spread operator `..` to concatenate collections.
-var combined = [..numbers1, ..numbers2, 9, 10];
-// 'combined' contains { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+SortedSet<int> combined = [9, ..numbers1, ..numbers2, 10];
+// 'combined' contains { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } in order without repetitions
 ```

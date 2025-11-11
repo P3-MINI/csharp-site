@@ -277,10 +277,24 @@ foreach (var item in query)
 public record Category(int Id, string Name);
 public record Product(string Name, int CategoryId);
 ```
+We combine two lists on categories.Id and products.CategoryId
+The output in the format of table for the example above looks like this:
+
+```diff
++-----------+-------------+
+| Product   | Category    |
++-----------+-------------+
+| Laptop    | Electronics |
+| Milk      | Food        |
+| Keyboard  | Electronics |
+| Bread     | Food        |
+| Monitor   | Electronics |
++-----------+-------------+
+```
 
 #### The `GroupJoin` Method
 
-Joins two sequences based on matching keys but preserves the grouping. It acts like a `LEFT OUTER JOIN` in SQL, where for each element from the first (left) sequence, we get a group of matching elements from the second.
+Joins two sequences based on matching keys but preserves the grouping. It acts like a `LEFT OUTER JOIN` combined with `GROUP BY` in SQL, where for each element from the first (left) sequence, we get a group of matching elements from the second.
 
 ```csharp
 var categories = new List<Category>
@@ -320,6 +334,18 @@ foreach (var group in query)
 
 public record Category(int Id, string Name);
 public record Product(string Name, int CategoryId);
+```
+
+The output for the example above is:
+
+```diff
+Category: Electronics
+  - Laptop
+  - Keyboard
+Category: Food
+  - Milk
+Category: Toys
+  - (No products in this category)
 ```
 
 #### The `Zip` Method
@@ -381,6 +407,55 @@ Groups elements based on a key. The result is a sequence of groups (`IGrouping<T
 var numbers = new[] { 1, 2, 3, 4, 5 };
 var groups = numbers.GroupBy(n => n % 2 == 0 ? "Even" : "Odd");
 // Creates two groups: one for "Odd" key with {1,3,5}, one for "Even" key with {2,4}
+```
+
+It is common for `GroupBy` to be used with [aggregating functions](#aggregation).
+In the following example it is used with `Count` and counts the number of products per category
+
+```csharp
+var categories = new List<Category>
+{
+    new(1, "Electronics"),
+    new(2, "Food"),
+    new(3, "Toys") 
+};
+var products = new List<Product>
+{
+    new("Laptop", 1),
+    new("Milk", 2),
+    new("Keyboard", 1),
+    new("Bread", 2),
+    new("Monitor", 1),
+    new("Spaceship", 4) 
+};
+
+var counts = products
+    .GroupBy(p => p.CategoryId)
+    .Select(g => new { CategoryId = g.Key, Count = g.Count() })
+    .OrderBy(x => x.CategoryId);
+
+// Print as a table
+Console.WriteLine("+------------+-------+");
+Console.WriteLine("| CategoryId | Count |");
+Console.WriteLine("+------------+-------+");
+foreach (var row in counts)
+    Console.WriteLine($"| {row.CategoryId,-10} | {row.Count,5} |");
+Console.WriteLine("+------------+-------+");
+
+public record Category(int Id, string Name);
+public record Product(string Name, int CategoryId);
+```
+
+The output in the format of table for the example above looks like this:
+
+```diff
++------------+-------+
+| CategoryId | Count |
++------------+-------+
+| 1          |     3 |
+| 2          |     2 |
+| 4          |     1 |
++------------+-------+
 ```
 
 #### The `Chunk` Method

@@ -460,7 +460,7 @@ Finally, he added a commit named `Ad timer` to measure the algorithm’s executi
 > ⚠️ Important: In every subtask, you must not write C# code. All changes must be done only with Git commands or a Git UI.
 > 1. Bob misspelled the commit message `Ad timer`. Rename it to `Add timer`.
 > 2. Bob wants to compare the execution times of quick sort and bubble sort.
-Create a new branch named `bob/feature/sort/bubble-sort` that contains the bubble sort implementation and the `Add timer` commit. The resulting tree should look like this:
+Create a new branch named `bob/feature/sort-bubble-sort` that contains the bubble sort implementation and the `Add timer` commit. The resulting tree should look like this:
 > ```mermaid
 > ---
 > config:
@@ -472,8 +472,8 @@ Create a new branch named `bob/feature/sort/bubble-sort` that contains the bubbl
 >   branch bob/feature/sort 
 >   commit id: "Add SortExtension"
 >   commit id: "Implement bubble sort"
->   branch bob/feature/sort/bubble-sort 
->   checkout bob/feature/sort/bubble-sort
+>   branch bob/feature/sort-bubble-sort 
+>   checkout bob/feature/sort-bubble-sort
 >   commit id: "Add timer'" 
 >   checkout bob/feature/sort
 >   commit id: "Implement quick sort"
