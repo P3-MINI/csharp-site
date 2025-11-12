@@ -22,7 +22,7 @@ Console.WriteLine($"Can Seek: {stream.CanSeek}");
 
 Streams provide methods similar in their operation to those from the POSIX API. The main difference is how exceptions are handled. In C#, stream-related methods throw errors using exceptions inheriting from `IOException`.
 
-> Working with a "raw stream" is usually inconvenient/unadvisable; it's better to do it through [stream adapters]({{< ref "#stream-adapters" >}}) or by using the [file facade]({{< ref "#facades" >}}).
+> Working with a "raw stream" is usually inconvenient/unadvisable; it's better to do it through [stream adapters]({{< ref "#stream-adapters" >}}) or by using the [file facade]({{< ref "#facade" >}}).
 
 > Most stream operations have their asynchronous (non-blocking) counterparts, e.g., `Read` - `ReadAsync`. At this stage, we will omit their existence.
 
