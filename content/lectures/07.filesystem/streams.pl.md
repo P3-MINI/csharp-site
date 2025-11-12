@@ -22,7 +22,7 @@ Console.WriteLine($"Can Seek: {stream.CanSeek}");
 
 Strumienie dostarczają metody podobne w swoim działaniu do tych z API POSIXa. Główną różnicą jest sposób obsługi wyjątków. W C# metody związane ze strumieniami zgłaszają błędy za pomocą wyjątków dziedziczących po `IOException`. 
 
-> Praca z "surowym strumieniem" jest zazwyczaj niewygodna/niewskazana, lepiej to robić przez [adaptery strumieni]({{< ref "#adaptery-strumieni" >}}) lub korzystając z [fasady pliku]({{< ref "#fasady" >}})
+> Praca z "surowym strumieniem" jest zazwyczaj niewygodna/niewskazana, lepiej to robić przez [adaptery strumieni]({{< ref "#adaptery-strumieni" >}}) lub korzystając z [fasady pliku]({{< ref "#fasada" >}})
 
 > Większość operacji na strumieniach ma swoje odpowiedniki asynchroniczne (nieblokujące), np. `Read` - `ReadAsync`. Na tym etapie przemilczymy ich istnienie.
 
