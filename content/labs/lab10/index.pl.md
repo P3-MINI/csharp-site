@@ -96,7 +96,7 @@ Aplikacja kliencka powinna:
 - Wszystkie pobrane oferty z różnych linii muszą zostać zebrane, odfiltrowane z błędów i zagregowane w jedną, "płaską" listę.
 - Na koniec, aplikacja ma wyświetlić 10 najtańszych znalezionych ofert.
 
-### Modele Danych
+#### Modele Danych
 
 API operuje na następujących obiektach DTO (ang. _Data Transfer Objects_). Znajdują się one we współdzielonej bibliotece klas `FlightScanner.Common`.
 
