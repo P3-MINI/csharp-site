@@ -15,9 +15,9 @@ public sealed class Program
         var generators = new MandelbrotSetGenerator[]
         {
             new SingleThreadGenerator(maxIterations),
-            new MultiThreadGenerator(maxIterations),
-            new TasksGenerator(maxIterations),
-            new ParallelGenerator(maxIterations),
+            //new MultiThreadGenerator(maxIterations),
+            //new TasksGenerator(maxIterations),
+            //new ParallelGenerator(maxIterations),
         };
 
         foreach (var generator in generators)

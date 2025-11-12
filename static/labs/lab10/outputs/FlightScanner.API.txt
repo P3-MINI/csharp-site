@@ -1,0 +1,38 @@
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5222
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\Users\AG\Desktop\CSharp\csharp-site\static\labs\lab10\solution\FlightScanner.API
+info: Program[0]
+      Fetching providers...
+info: FlightScanner.API.Services.ProviderService[0]
+      Request received for Reliable Air (reliable-air).
+info: FlightScanner.API.Services.ProviderService[0]
+      Delay of 1088ms for Reliable Air.
+info: FlightScanner.API.Services.ProviderService[0]
+      Request received for Phantom Flights (phantom-flights).
+info: FlightScanner.API.Services.ProviderService[0]
+      Delay of 692ms for Phantom Flights.
+info: FlightScanner.API.Services.ProviderService[0]
+      Request received for Budget Wings (budget-wings).
+info: FlightScanner.API.Services.ProviderService[0]
+      Delay of 533ms for Budget Wings.
+info: FlightScanner.API.Services.ProviderService[0]
+      Request received for Slow Sky (slow-sky).
+info: FlightScanner.API.Services.ProviderService[0]
+      Request received for Secure Jet (secure-jet).
+warn: FlightScanner.API.Services.ProviderService[0]
+      Unauthorized for Secure Jet.
+info: FlightScanner.API.Services.ProviderService[0]
+      Delay of 4085ms for Slow Sky.
+info: FlightScanner.API.Services.ProviderService[0]
+      Successfully generated 2 flights for Phantom Flights.
+info: FlightScanner.API.Services.ProviderService[0]
+      Successfully generated 1 flights for Reliable Air.
+info: FlightScanner.API.Services.ProviderService[0]
+      Successfully generated 2 flights for Budget Wings.
+info: FlightScanner.API.Services.ProviderService[0]
+      Successfully generated 2 flights for Slow Sky.
