@@ -53,4 +53,8 @@ weight: 10
 
 # Lecture 06
 
+- [Streams]({{< ref "07.filesystem/streams" >}})
+- [Filesystem]({{< ref "07.filesystem/filesystem" >}})
+- [Archives]({{< ref "07.filesystem/archives" >}})
+- [Disposable]({{< ref "05.csharp-features/disposable" >}})
 - [Operator Overloading]({{< ref "05.csharp-features/operator-overloading" >}})

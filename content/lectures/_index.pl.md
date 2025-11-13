@@ -53,4 +53,8 @@ weight: 10
 # Wykład 06
 
 - [Zdarzenia]({{< ref "05.csharp-features/events" >}})
+- [Strumienie]({{< ref "07.filesystem/streams" >}})
+- [System plików]({{< ref "07.filesystem/filesystem" >}})
+- [Archiwa]({{< ref "07.filesystem/archives" >}})
+- [Disposable]({{< ref "05.csharp-features/disposable" >}})
 - [Przeciążanie Operatorów]({{< ref "05.csharp-features/operator-overloading" >}})
