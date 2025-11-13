@@ -7,8 +7,8 @@ weight: 10
 
 ## Starter Code
 
-> [!NOTE] 
-> **Student** 
+> [!NOTE]
+> **Student**
 > {{< filetree dir="labs/lab10/student" >}}
 
 ## Generating Fractals
@@ -66,8 +66,8 @@ A correctly generated fractal should look as follows:
 
 ### Example Solution
 
-> [!TIP] 
-> **Solution** 
+> [!TIP]
+> **Solution**
 > {{< filetree dir="labs/lab10/solution/FractalsGenerator" >}}
 
 ## Offer Aggregator
@@ -152,8 +152,8 @@ public record FlightOfferDto(
 
 ### Example Solution
 
-> [!TIP] 
-> **Solution** 
+> [!TIP]
+> **Solution**
 > {{< filetree dir="labs/lab10/solution/FlightScanner.Client" >}}
 >
 > **Output:**
