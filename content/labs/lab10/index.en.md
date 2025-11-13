@@ -124,8 +124,6 @@ public record FlightOfferDto(
 
 {{% hint warning %}}
 
-{{% hint warning %}}
-
 **Implementation Notes**
 
 - **Concurrency:**
@@ -158,6 +156,7 @@ public record FlightOfferDto(
 > **Solution** 
 > {{< filetree dir="labs/lab10/solution/FlightScanner.Client" >}}
 >
-> **Output:** 
-> [FlightScanner.Client.txt](/labs/lab10/outputs/FlightScanner.Client.txt) 
-> [FlightScanner.API.txt](/labs/lab10/outputs/FlightScanner.API.txt)
+> **Output:**
+>
+> - [FlightScanner.Client.txt](/labs/lab10/outputs/FlightScanner.Client.txt)
+> - [FlightScanner.API.txt](/labs/lab10/outputs/FlightScanner.API.txt)
