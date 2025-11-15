@@ -1,13 +1,4 @@
----
-title: "Lab06"
-weight: 10
----
-
-# Laboratory 6: Enumerable, LINQ and Extension Methods
-
-> [!NOTE]
-> ## Starting code
-> {{< filetree dir="labs/lab06/student" >}}
+# Lab2: Enumerable, Lambda Expressions, LINQ, Extension Methods
 
 > [!NOTE]
 > The lab assignment is divided into two parts.
@@ -135,7 +126,3 @@ gitGraph
 ```
 
 Detailed information about the contents of each commit can be found in the `SampleRepository.cs` file.
-
-> [!NOTE]
-> ## Example solution
-> {{< filetree dir="labs/lab06/solution" >}}
