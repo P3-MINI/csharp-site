@@ -1,0 +1,30 @@
+--- Flight Scanner Client ---
+[Phase 1] Fetching providers from /api/providers...
+[Phase 1] Found 5 providers.
+        [START] Querying Reliable Air (/api/flights/reliable-air)
+
+[Phase 2] Fetching all flights concurrently...
+        [START] Querying Budget Wings (/api/flights/budget-wings)
+        [START] Querying Phantom Flights (/api/flights/phantom-flights)
+        [START] Querying Secure Jet (/api/flights/secure-jet)
+        [START] Querying Slow Sky (/api/flights/slow-sky)
+        [FAIL] Secure Jet returned HTTP 401 (Unauthorized)
+        [SUCCESS] Phantom Flights returned 2 flights.
+        [SUCCESS] Reliable Air returned 1 flights.
+        [SUCCESS] Budget Wings returned 2 flights.
+        [TIMEOUT] Slow Sky did not respond in time.
+
+[Phase 3] Aggregating and displaying results...
+
+--- Top 10 Cheapest Flights Found ---
+Price        Provider                  Flight     Route
+------------------------------------------------------------
+201,32 zł    Phantom Flights           PH-4792    CDG -> MIA
+484,25 zł    Budget Wings              BU-8883    JFK -> SFO
+705,15 zł    Phantom Flights           PH-9915    JFK -> SFO
+772,58 zł    Budget Wings              BU-5883    CDG -> SFO
+872,27 zł    Reliable Air              RE-1708    JFK -> MIA
+
+--- Aggregation Complete ---
+Total operation time: 3346 ms
+Press any key to continue...
