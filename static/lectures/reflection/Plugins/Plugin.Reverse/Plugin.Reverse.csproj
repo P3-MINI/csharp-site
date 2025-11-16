@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Plugin.Common\Plugin.Common.csproj" />
+    </ItemGroup>
+
+    <Target Name="CopyPluginToHost" AfterTargets="Build">
+      <ItemGroup>
+        <PluginFiles Include="$(TargetPath)" />
+        <PluginFiles Include="$(OutputPath)$(AssemblyName).deps.json" />
+        <PluginFiles Include="@(RuntimeCopyLocalItems)" />
+      </ItemGroup>
+      <Copy SourceFiles="@(PluginFiles)" DestinationFolder="..\Plugin.Host\Plugins\" SkipUnchangedFiles="true" />
+    </Target>
+
+</Project>
