@@ -51,10 +51,19 @@ weight: 10
 - [Records]({{< ref "05.csharp-features/records" >}})
 - [Events]({{< ref "05.csharp-features/events" >}})
 
-# Lecture 06
+## Lecture 06
 
 - [Streams]({{< ref "07.filesystem/streams" >}})
 - [Filesystem]({{< ref "07.filesystem/filesystem" >}})
 - [Archives]({{< ref "07.filesystem/archives" >}})
+
+## Lecture 07
+
 - [Disposable]({{< ref "05.csharp-features/disposable" >}})
+- [Attributes]({{< ref "08.reflection/attributes" >}})
+- [Reflection]({{< ref "08.reflection/reflection" >}})
+- [Assembly]({{< ref "08.reflection/assembly" >}})
 - [Operator Overloading]({{< ref "05.csharp-features/operator-overloading" >}})
+- [XML Documentation]({{< ref "05.csharp-features/xml-documentation" >}})
+- [Preprocessor Directives]({{< ref "05.csharp-features/preprocessor-directives" >}})
+- [Patterns]({{< ref "05.csharp-features/patterns" >}})
