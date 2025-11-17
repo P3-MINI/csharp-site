@@ -1,0 +1,225 @@
+---
+title: "XML Documentation"
+---
+
+# XML Documentation
+
+XML documentation in C# is a special type of comment that you place directly in your source code, written in XML format. The C# compiler processes these comments and, based on them, generates a separate XML file that accompanies the compiled assembly (.dll or .exe). For the compiler to generate the .xml documentation file, you must enable the `GenerateDocumentationFile` option in the project settings.
+
+```xml
+<PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+</PropertyGroup>
+```
+
+The main purpose of XML documentation is to make the code easier to understand and use, both for other developers and for tools.
+
+1. **IntelliSense and IDE Tooltips**: Integrated Development Environments (IDEs) like *Visual Studio*, *Visual Studio Code*, or *Rider* use XML documentation to display tooltips, parameter descriptions, etc.
+2. **Documentation Generation**: The XML file can be used by external tools (e.g., `DocFX`, `Sandcastle`, `doxygen`) to automatically generate documentation (e.g., in the form of HTML pages).
+3. **Code Maintainability**: It encourages developers to document the public interfaces of their code, which improves its clarity and makes it easier to maintain in the future.
+
+XML documentation is written using `///` (for single-line comments) or `/** ... */` (for multi-line comments), placed directly above a member's declaration (class, method, property, field, event, enum member, etc.).
+
+```csharp
+/// <summary>
+/// Abstract base class representing a mathematical matrix.
+/// </summary>
+public abstract class Matrix;
+```
+
+> [!INFO]
+> Example project with documentation:
+> {{< filetree dir="lectures/csharp-features/xml-documentation" >}}
+
+## XML Special Characters
+
+Only 5 characters require escaping with special sequences:
+
+| Character | Sequence |
+|:---:|:---:|
+| \"   | \&quot;   |
+| \'   | \&apos;   |
+| \<   | \&lt;     |
+| \>   | \&gt;     |
+| \&   | \&amp;    |
+
+```csharp
+/// <summary>
+/// This property always returns a value &lt; 1.
+/// </summary>
+```
+
+## General Tags
+
+`summary` contains a short, concise description of the type or member:
+
+```xml
+<summary>
+description
+</summary>
+```
+
+`remarks` contains more detailed information, notes, or usage context:
+```xml
+<remarks>
+description
+</remarks>
+```
+
+## Method Documentation
+
+`returns` describes the value returned by a method:
+```xml
+<returns>description</returns>
+```
+
+`param` describes a method's parameter:
+```xml
+<param name="name">description</param>
+```
+
+`exception` describes an exception that can be thrown by a method.
+```xml
+<exception cref="ExceptionType">description</exception>
+```
+
+## Formatting
+
+The `para` tag allows you to divide documentation into paragraphs:
+
+```xml
+<remarks>
+    <para>
+        This is an introductory paragraph.
+    </para>
+    <para>
+        This paragraph contains more details.
+    </para>
+</remarks>
+```
+
+The `list` tag allows you to create lists and tables:
+
+```xml
+<list type="bullet|number|table">
+    <listheader>
+        <term>term</term>
+        <description>description</description>
+    </listheader>
+    <item>
+        <term>Assembly</term>
+        <description>
+            The library or executable built from a compilation.
+        </description>
+    </item>
+</list>
+```
+
+## Code Examples
+
+The `c` tag allows you to place single-line code inline with text:
+
+```xml
+<c>x = x++;</c>
+```
+
+The `code` tag allows you to place code in a block in a separate paragraph:
+
+```xml
+<code>
+    var index = 5;
+    index++;
+</code>
+```
+
+The `example` tag contains a code example demonstrating the use of a member.
+
+```xml
+<example>
+    This shows how to increment an integer.
+    <code>
+        var index = 5;
+        index++;
+    </code>
+</example>
+```
+
+## Reusing Documentation
+
+An element's documentation can be inherited from a base type or interface using the `inheritdoc` tag:
+
+```xml
+<inheritdoc [cref=""] [path=""]/>
+```
+
+Or it can be included from another XML file:
+
+```xml
+<include file='filename' path='tagpath[@name="id"]' />
+```
+
+## Links
+
+You can include links to other members or any URL in the documentation text:
+
+```xml
+<see cref="member"/>
+<!-- or -->
+<see cref="member">Link text</see>
+<!-- or -->
+<see href="link">Link Text</see>
+<!-- or -->
+<see langword="keyword"/>
+```
+
+> cref = code reference
+> href = hyperlink reference (url)
+
+The `seealso` tag will be placed in its own paragraph:
+
+```xml
+<seealso cref="member"/>
+<!-- or -->
+<seealso href="link">Link Text</seealso>
+```
+
+## Generic Parameters
+
+The `typeparam` tag describes generic parameters:
+```xml
+<typeparam name="TResult">description</typeparam>
+```
+
+To refer to a generic type, use `{}` characters instead of `<>`:
+```xml
+<see cref="Foo{T,U}"/>
+```
+
+## Generating Documentation
+
+From the XML file generated by the compiler, you can further generate more user-friendly documentation formats, such as `pdf` files, `HTML` pages, `CHM` help files, or manual pages (*manpages*).
+
+### Doxygen
+
+Doxygen works best when you point it directly to the directory with the `.cs` source files. It will parse them on its own and extract the XML comments. This approach is better than providing it with just the `.xml` file, as Doxygen can then build additional diagrams, such as function call graphs.
+
+First, you need to generate a `Doxyfile` configuration file in the project directory:
+
+```bash
+doxygen -g Doxyfile
+```
+
+After finishing the configuration, you can generate the documentation based on it:
+
+```bash
+doxygen Doxyfile
+```
+
+Alternatively, you can use the graphical interface provided by Doxygen:
+
+```bash
+doxywizard
+```

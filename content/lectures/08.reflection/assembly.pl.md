@@ -156,6 +156,8 @@ class PluginLoadContext : AssemblyLoadContext
 }
 ```
 
+> `AssemblyDependencyResolver` czyta plik `[application_name].deps.json` w poszukiwaniu zależności.
+
 ### System pluginów
 
 Przy użyciu dynamicznego wczytywania assembly, za pomocą *ALC*, można zaimplementować system pluginów.
