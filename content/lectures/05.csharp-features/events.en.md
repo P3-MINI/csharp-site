@@ -51,7 +51,7 @@ public class Product
         set
         {
             if (value == _price) return;
-            OnPriceChanged(new PriceChangedEventArgs(_price, value));
+            OnPriceChanged(new PriceChangedEventArgs(value, _price));
             _price = value;
         }
     }

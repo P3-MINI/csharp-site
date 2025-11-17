@@ -56,5 +56,14 @@ weight: 10
 - [Strumienie]({{< ref "07.filesystem/streams" >}})
 - [System plików]({{< ref "07.filesystem/filesystem" >}})
 - [Archiwa]({{< ref "07.filesystem/archives" >}})
+
+# Wykład 07
+
 - [Disposable]({{< ref "05.csharp-features/disposable" >}})
-- [Przeciążanie Operatorów]({{< ref "05.csharp-features/operator-overloading" >}})
+- [Atrybuty]({{< ref "08.reflection/attributes" >}})
+- [Refleksja]({{< ref "08.reflection/reflection" >}})
+- [Assembly]({{< ref "08.reflection/assembly" >}})
+- [Przeciążanie operatorów]({{< ref "05.csharp-features/operator-overloading" >}})
+- [Dokumentacja XML]({{< ref "05.csharp-features/xml-documentation" >}})
+- [Dyrektywy preprocesora]({{< ref "05.csharp-features/preprocessor-directives" >}})
+- [Wzorce]({{< ref "05.csharp-features/patterns" >}})

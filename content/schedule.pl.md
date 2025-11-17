@@ -12,8 +12,8 @@ Poniedziałki, 14:15 - 16:00, sala 328
 | 13.10.2025 | L02: Klasy/Struktury/Interfejsy, Dziedziczenie, Właściwości      |
 | 20.10.2025 | L03: Generyki, Krotki, Nullowalność, Enumeratory                 |
 | 27.10.2025 | L04: Delegaty, Metody Rozszerzające, Kolekcje                    |
-| 03.11.2025 | L05: LINQ, Rekordy, Wyjątki                                     |
-| 13.11.2025 | L06:                                                             |
+| 03.11.2025 | L05: LINQ, Rekordy, Wyjątki                                      |
+| 13.11.2025 | L06: Zdarzenia, Pliki, Strumienie, System plików, archiwa        |
 | 17.11.2025 | L07:                                                             |
 | 24.11.2025 | L08:                                                             |
 | 01.12.2025 | L09:                                                             |

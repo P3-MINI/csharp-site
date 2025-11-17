@@ -156,6 +156,8 @@ class PluginLoadContext : AssemblyLoadContext
 }
 ```
 
+> `AssemblyDependencyResolver` reads file `[application_name].deps.json` when searching for dependencies.
+
 ### Plugin System
 
 Using dynamic assembly loading with an ALC, you can implement a plugin system.
