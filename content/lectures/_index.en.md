@@ -63,7 +63,11 @@ weight: 10
 - [Attributes]({{< ref "08.reflection/attributes" >}})
 - [Reflection]({{< ref "08.reflection/reflection" >}})
 - [Assembly]({{< ref "08.reflection/assembly" >}})
+
+## Lecture 08
+
 - [Operator Overloading]({{< ref "05.csharp-features/operator-overloading" >}})
 - [XML Documentation]({{< ref "05.csharp-features/xml-documentation" >}})
 - [Preprocessor Directives]({{< ref "05.csharp-features/preprocessor-directives" >}})
 - [Patterns]({{< ref "05.csharp-features/patterns" >}})
+- [Threads]({{< ref "09.concurrency/threads" >}})
