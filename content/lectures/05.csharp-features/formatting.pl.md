@@ -4,7 +4,7 @@ title: "Formatowanie"
 
 # Formatowanie
 
-Wszystkie typy w .NET posiadają metodę `ToString()`, ale jej podstawowa wersja rzadko kiedy jest wystarczająca. Potrzebujemy mechanizmu, który pozwoli precyzyjnie kontrolować tekstową reprezentację obiektu - na przykład, aby wyświetlić liczbę jako walutę, albo sformatować datę według określonego wzorca.
+Wszystkie typy w .NET posiadają metodę `ToString()`, ale czasami jej podstawowa wersja jest niewystarczająca. Czasami potrzebujemy mechanizmu, który pozwoli precyzyjnie kontrolować tekstową reprezentację obiektu - na przykład, aby wyświetlić liczbę jako walutę, albo sformatować datę według określonego wzorca.
 
 Do tego właśnie służy system formatowania oparty o interfejs `IFormattable`.
 
@@ -52,7 +52,11 @@ Console.WriteLine($"Price: {price:C}"); // Output: Price: 1 250,50 zł
 Console.WriteLine($"Date: {date:D}");   // Output: Date: 25 grudnia 2025
 ```
 
-> Jeśli pominiemy dostawcę formatu, domyślnie zostanie użyta bieżąca kultura systemu, w którym uruchomiony jest program (`CultureInfo.CurrentCulture`).
+> Od .NETa 6 możemy też interpolować `string`i przy użyciu wybranego dostawcy formatu, z pomocą statycznej metody `string.Create`:
+> 
+> ```csharp
+> string.Create(culture, $"{date,23}{number,20:N3}");
+> ```
 
 ### `NumberFormatInfo` i `DateTimeFormatInfo`
 
