@@ -50,20 +50,24 @@ weight: 10
 - [Rekordy]({{< ref "05.csharp-features/records" >}})
 - [Wyjątki]({{< ref "05.csharp-features/exceptions" >}})
 
-# Wykład 06
+## Wykład 06
 
 - [Zdarzenia]({{< ref "05.csharp-features/events" >}})
 - [Strumienie]({{< ref "07.filesystem/streams" >}})
 - [System plików]({{< ref "07.filesystem/filesystem" >}})
 - [Archiwa]({{< ref "07.filesystem/archives" >}})
 
-# Wykład 07
+## Wykład 07
 
 - [Disposable]({{< ref "05.csharp-features/disposable" >}})
 - [Atrybuty]({{< ref "08.reflection/attributes" >}})
 - [Refleksja]({{< ref "08.reflection/reflection" >}})
 - [Assembly]({{< ref "08.reflection/assembly" >}})
+
+## Wykład 08
+
 - [Przeciążanie operatorów]({{< ref "05.csharp-features/operator-overloading" >}})
 - [Dokumentacja XML]({{< ref "05.csharp-features/xml-documentation" >}})
 - [Dyrektywy preprocesora]({{< ref "05.csharp-features/preprocessor-directives" >}})
 - [Wzorce]({{< ref "05.csharp-features/patterns" >}})
+- [Wątki]({{< ref "09.concurrency/threads" >}})
