@@ -260,7 +260,7 @@ foreach (var type in assembly.GetTypes())
 
 ## Własne atrybuty
 
-Możemy definiować własne atrybuty - to klasy dziedziczące po `System.Attribute`. Zwyczajowo ich nazwa powinna kończyć się na `..Attribute`, kompilator pozwala omijać ten suffix podczas używania atrybutu. Atrybut `AttributeUsage` służy do oznaczania co możemy zrobić później z atrybutem, am on trzy właściwości:
+Możemy definiować własne atrybuty - to klasy dziedziczące po `System.Attribute`. Zwyczajowo ich nazwa powinna kończyć się na `..Attribute`, kompilator pozwala omijać ten suffix podczas używania atrybutu. Atrybut `AttributeUsage` służy do oznaczania co możemy zrobić później z atrybutem, ma on trzy właściwości:
 
 * **`AttributeTargets`** - do jakich elementów kodu możemy przyczepić atrybut.
 * **`AllowMultiple`** (opcjonalny) - flaga określająca czy atrybut możemy przyczepiać wiele razy. Domyślnie `false`.
