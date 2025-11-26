@@ -159,4 +159,6 @@ public record FlightOfferDto(
 > **Rozwiązanie** 
 > {{< filetree dir="labs/lab10/solution/FlightScanner.Client" >}}
 >
-> **Wyjście:** > [FlightScanner.Client.txt](/labs/lab10/outputs/FlightScanner.Client.txt) > [FlightScanner.API.txt](/labs/lab10/outputs/FlightScanner.API.txt)
+> **Wyjście:** 
+> [FlightScanner.Client.txt](/labs/lab10/outputs/FlightScanner.Client.txt) 
+> [FlightScanner.API.txt](/labs/lab10/outputs/FlightScanner.API.txt)
