@@ -33,8 +33,8 @@ The `SingleThreadGenerator` class is a concrete single-threaded implementation o
 You must implement the following computation parallelization methods:
 
 - `MultiThreadGenerator`: A multi-threaded method that manually creates and manages `Thread` objects.
-- `TasksGenerator`: A method that parallelizes the work using the thread pool (`ThreadPool`) via `Task` objects.
-- `ParallelGenerator`: A method that uses the TPL (Task Parallel Library).
+- `TasksGenerator`: A method that uses the `Task` class from the Task Parallel Library (TPL) to manage parallel work on the `ThreadPool`.
+- `ParallelGenerator`: A method that uses the high-level Parallel` class from the TPL.
 
 `Program.cs` contains the logic for measuring time and running each generator sequentially.
 
@@ -87,6 +87,9 @@ In this case, the goal is not faster computation, but better management of waiti
 The goal of the task is to build an asynchronous console client (in the `FlightScanner.Client` project) that will aggregate flight offers from multiple services simultaneously. The client will communicate with a locally running REST API (the `FlightScanner.API` project).
 
 The API, running at `http://localhost:5222` (the address can be found in the [launchSettings.json](/labs/lab10/solution/FlightScanner.API/Properties/launchSettings.json) file), is fully implemented and does not require modification. It must be run before running the console application.
+
+> [!NOTE]
+> On Linux run the `FlightScanner.API` project through the provided script `run.sh`. It will download missing `ASP.NET` runtime, then run the project.
 
 The client application should:
 

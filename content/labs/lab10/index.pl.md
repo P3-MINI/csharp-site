@@ -33,8 +33,8 @@ Klasa `SingleThreadGenerator` stanowi konkretną jednowątkową implementację g
 Należy zaimplementować następujące metody zrównoleglania obliczeń:
 
 - `MultiThreadGenerator`: Metoda wielowątkowa, która ręcznie tworzy i zarządza obiektami `Thread`.
-- `TasksGenerator`: Metoda, która zrównolegla pracę przy użyciu puli wątków (`ThreadPool`) poprzez obiekty `Task`.
-- `ParallelGenerator`: Metoda, która używa biblioteki TPL (ang. _Task Parallel Library_).
+- `TasksGenerator`: Metoda, która używa klasy `Task` z biblioteki TPL (ang. _Task Parallel Library_) do zarządzania pracą równoległą w puli wątków (`ThreadPool`).
+- `ParallelGenerator`: Metoda, która używa wysokopoziomowej klasy `Parallel` z biblioteki TPL.
 
 `Program.cs` zawiera logikę mierzenia czasu i uruchamiania każdego generatora po kolei.
 
@@ -88,6 +88,9 @@ W tym przypadku, celem nie jest szybsze liczenie, a lepsze zarządzanie czasem o
 Celem zadania jest zbudowanie asynchronicznego klienta konsolowego (w projekcie `FlightScanner.Client`), który będzie agregował oferty lotnicze z wielu serwisów jednocześnie. Klient będzie komunikował się z lokalnie uruchomionym REST-owym API (projekt `FlightScanner.API`).
 
 API, działające pod adresem `http://localhost:5222` (adres można znaleźć w pliku [launchSettings.json](/labs/lab10/solution/FlightScanner.API/Properties/launchSettings.json)), jest w pełni zaimplementowane i nie wymaga modyfikacji. Należy je uruchomić przed uruchomieniem aplikacji konsolowej.
+
+> [!NOTE]
+> Na Linuxie uruchom projekt `FlightScanner.API` przez dostarczony skrypt `run.sh`. Pobierze on brakujące środowisko uruchomieniowe `ASP.NET` i uruchomi projekt.
 
 Aplikacja kliencka powinna:
 
