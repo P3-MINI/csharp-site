@@ -51,7 +51,7 @@ Poprawnie wygenerowany fraktal powinien wyglądać następująco:
   - W implementacjach `MultiThreadGenerator` i `TasksGenerator` należy stworzyć `N` jednostek pracy (wątków/zadań), gdzie `N` jest równe liczbie rdzeni procesora. Jest to optymalna liczba dla zadań w 100% obciążających CPU.
 - **Podział pracy:**
   - W przypadku generowania fraktala, najprostszą strategią jest podział obrazu na `N` równych, poziomych pasów.
-  - Oblicz, ile wierszy przypada na jeden wątek, a następnie w pętli przekaż każdemi wątkowi/zadaniu odpowiedni zakres do przetworzenia.
+  - Oblicz, ile wierszy przypada na jeden wątek, a następnie w pętli przekaż każdemu wątkowi/zadaniu odpowiedni zakres do przetworzenia.
 
 {{% /hint %}}
 
@@ -66,8 +66,8 @@ Poprawnie wygenerowany fraktal powinien wyglądać następująco:
 
 ### Przykładowe rozwiązanie
 
-> [!TIP] 
-> **Rozwiązanie** 
+> [!TIP]
+> **Rozwiązanie**
 > {{< filetree dir="labs/lab10/solution/FractalsGenerator" >}}
 
 ## Agregator ofert
@@ -155,10 +155,10 @@ public record FlightOfferDto(
 
 ### Przykładowe rozwiązanie
 
-> [!TIP] 
-> **Rozwiązanie** 
+> [!TIP]
+> **Rozwiązanie**
 > {{< filetree dir="labs/lab10/solution/FlightScanner.Client" >}}
 >
-> **Wyjście:** 
-> [FlightScanner.Client.txt](/labs/lab10/outputs/FlightScanner.Client.txt) 
+> **Wyjście:**
+> [FlightScanner.Client.txt](/labs/lab10/outputs/FlightScanner.Client.txt)
 > [FlightScanner.API.txt](/labs/lab10/outputs/FlightScanner.API.txt)

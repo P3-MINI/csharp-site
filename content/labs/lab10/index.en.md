@@ -34,7 +34,7 @@ You must implement the following computation parallelization methods:
 
 - `MultiThreadGenerator`: A multi-threaded method that manually creates and manages `Thread` objects.
 - `TasksGenerator`: A method that uses the `Task` class from the Task Parallel Library (TPL) to manage parallel work on the `ThreadPool`.
-- `ParallelGenerator`: A method that uses the high-level Parallel` class from the TPL.
+- `ParallelGenerator`: A method that uses the high-level `Parallel` class from the TPL.
 
 `Program.cs` contains the logic for measuring time and running each generator sequentially.
 

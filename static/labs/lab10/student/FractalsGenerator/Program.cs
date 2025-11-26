@@ -8,9 +8,9 @@ public sealed class Program
 {
     static void Main(string[] args)
     {
-        var maxIterations = args.Length > 1 ? int.Parse(args[0]) : 10_000;
-        var width = args.Length > 2 ? int.Parse(args[1]) : 800;
-        var height = args.Length > 3 ? int.Parse(args[2]) : 800;
+        var maxIterations = args.Length > 0 ? int.Parse(args[0]) : 10_000;
+        var width = args.Length > 1 ? int.Parse(args[1]) : 800;
+        var height = args.Length > 2 ? int.Parse(args[2]) : 800;
 
         var generators = new MandelbrotSetGenerator[]
         {
