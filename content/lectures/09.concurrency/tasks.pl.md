@@ -1,6 +1,6 @@
 ---
 title: "Zadania"
-weight: 40
+weight: 20
 ---
 
 # Zadania

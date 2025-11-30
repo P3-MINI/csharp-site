@@ -1,6 +1,6 @@
 ---
 title: "Tasks"
-weight: 40
+weight: 20
 ---
 
 # Tasks

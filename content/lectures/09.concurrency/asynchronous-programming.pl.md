@@ -1,6 +1,6 @@
 ---
 title: "Programowanie asynchroniczne"
-weight: 50
+weight: 40
 ---
 
 # Programowanie asynchroniczne

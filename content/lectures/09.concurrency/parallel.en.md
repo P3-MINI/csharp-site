@@ -1,6 +1,6 @@
 ---
 title: "Parallel"
-weight: 20
+weight: 50
 ---
 
 # Parallel

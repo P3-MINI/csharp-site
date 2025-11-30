@@ -1,6 +1,6 @@
 ---
 title: "Asynchronous Programming"
-weight: 50
+weight: 40
 ---
 
 # Asynchronous Programming
