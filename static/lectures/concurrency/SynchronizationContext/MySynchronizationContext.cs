@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 
 namespace SynchronizationContexts;
 
-public class MySynchronizationContext : SynchronizationContext
+public class MySynchronizationContext : SynchronizationContext, IDisposable
 {
     private readonly BlockingCollection<(SendOrPostCallback Callback, object? State)> _workItems = new();
 
