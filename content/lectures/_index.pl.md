@@ -71,3 +71,11 @@ weight: 10
 - [Dyrektywy preprocesora]({{< ref "05.csharp-features/preprocessor-directives" >}})
 - [Wzorce]({{< ref "05.csharp-features/patterns" >}})
 - [Wątki]({{< ref "09.concurrency/threads" >}})
+
+## Wykład 09
+
+- [Zadania]({{< ref "09.concurrency/tasks" >}})
+- [Kontekst synchronizacji]({{< ref "09.concurrency/synchronization-context" >}})
+- [Programowanie asynchroniczne]({{< ref "09.concurrency/asynchronous-programming" >}})
+- [Parallel]({{< ref "09.concurrency/parallel" >}})
+- [Formatowanie]({{< ref "05.csharp-features/formatting" >}})
