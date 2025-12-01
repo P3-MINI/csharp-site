@@ -69,5 +69,13 @@ weight: 10
 - [Operator Overloading]({{< ref "05.csharp-features/operator-overloading" >}})
 - [XML Documentation]({{< ref "05.csharp-features/xml-documentation" >}})
 - [Preprocessor Directives]({{< ref "05.csharp-features/preprocessor-directives" >}})
-- [Patterns]({{< ref "05.csharp-features/patterns" >}})
 - [Threads]({{< ref "09.concurrency/threads" >}})
+
+## Lecture 09
+
+- [Tasks]({{< ref "09.concurrency/tasks" >}})
+- [Synchronization Context]({{< ref "09.concurrency/synchronization-context" >}})
+- [Asynchronous Programming]({{< ref "09.concurrency/asynchronous-programming" >}})
+- [Parallel]({{< ref "09.concurrency/parallel" >}})
+- [Patterns]({{< ref "05.csharp-features/patterns" >}})
+- [Formatting]({{< ref "05.csharp-features/formatting" >}})
