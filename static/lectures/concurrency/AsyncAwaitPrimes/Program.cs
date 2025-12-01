@@ -10,34 +10,35 @@ class Program
         Console.WriteLine($"Primes(1000-2000): {await task2}");
     }
 
-    static async Task<int> CountPrimesAsync(int start, int end)
+    private static async Task<int> CountPrimesAsync(int start, int end)
     {
-        int count = 0;
-
-        for (int i = start; i < end; i++)
+        return await Task.Run(() =>
         {
-            if (await IsPrime(i))
+            int count = 0;
+            
+            for (int i = start; i < end; i++)
             {
-                count++;
+                if (IsPrime(i))
+                {
+                    count++;
+                }
             }
-        }
-
-        return count;
+            
+            return count;
+        });
     }
-
-    static async Task<bool> IsPrime(int number)
+    
+    static bool IsPrime(int number)
     {
         if (number < 2)
             return false;
-
-        return await Task.Run(() => 
+        
+        for (int i = 2; i <= Math.Sqrt(number); i++)
         {
-            for (int i = 2; i <= Math.Sqrt(number); i++)
-            {
-                if (number % i == 0)
-                    return false;
-            }
-            return true;
-        });
+            if (number % i == 0)
+                return false;
+        }
+        
+        return true;
     }
 }

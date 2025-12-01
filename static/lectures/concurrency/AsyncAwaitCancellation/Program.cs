@@ -19,37 +19,35 @@ class Program
     
     static async Task<List<int>> GetPrimesAsync(int start, CancellationToken token)
     {
-        List<int> primes = [];
-
-        for (int i = start; i < int.MaxValue; i++)
+        return await Task.Run(() =>
         {
-            // if (token.IsCancellationRequested) break;
-            token.ThrowIfCancellationRequested();
-            if (await IsPrime(i, token))
+            List<int> primes = [];
+            
+            for (int i = start; i < int.MaxValue; i++)
             {
-                primes.Add(i);
+                // if (token.IsCancellationRequested) break;
+                token.ThrowIfCancellationRequested();
+                if (IsPrime(i))
+                {
+                    primes.Add(i);
+                }
             }
-        }
 
-        return primes;
+            return primes;
+        });
     }
 
-    static async Task<bool> IsPrime(int number, CancellationToken token)
+    static bool IsPrime(int number)
     {
         if (number < 2)
             return false;
         
-        return await Task.Run(() =>
+        for (int i = 2; i <= Math.Sqrt(number); i++)
         {
-            for (int i = 2; i <= Math.Sqrt(number); i++)
-            {
-                // if (token.IsCancellationRequested) break;
-                token.ThrowIfCancellationRequested();
-                if (number % i == 0)
-                    return false;
-            }
+            if (number % i == 0)
+                return false;
+        }
 
-            return true;
-        });
+        return true;
     }
 }
