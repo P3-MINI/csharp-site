@@ -14,9 +14,9 @@ Poniedziałki, 14:15 - 16:00, sala 328
 | 27.10.2025 | L04: Delegaty, Metody Rozszerzające, Kolekcje                    |
 | 03.11.2025 | L05: LINQ, Rekordy, Wyjątki                                      |
 | 13.11.2025 | L06: Zdarzenia, Pliki, Strumienie, System plików, archiwa        |
-| 17.11.2025 | L07:                                                             |
-| 24.11.2025 | L08:                                                             |
-| 01.12.2025 | L09:                                                             |
+| 17.11.2025 | L07: Disposable, Atrybuty, Refleksja, Assembly                   |
+| 24.11.2025 | L08: Operatory, Dokumentacja, Preprocesor, Wzorce, Wątki         |
+| 01.12.2025 | L09: Zadania, Programowanie asynchroniczne, Parallel             |
 | 08.12.2025 | L10:                                                             |
 | 15.12.2025 | L11:                                                             |
 | 22.12.2025 | L12:                                                             |

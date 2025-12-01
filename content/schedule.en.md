@@ -14,9 +14,9 @@ Mondays, 16:15 - 18:00, room 328
 | 27.10.2025 | L04: Delegates, Extension Methods, Collections, LINQ             |
 | 03.11.2025 | L05: Nullable, Exceptions, Records, Events                       |
 | 13.11.2025 | L06: Files, Filesystem, Streams, Archives                        |
-| 17.11.2025 | L07:                                                             |
-| 24.11.2025 | L08:                                                             |
-| 01.12.2025 | L09:                                                             |
+| 17.11.2025 | L07: Disposable, Attributes, Reflection, Assembly                |
+| 24.11.2025 | L08: Operators, Documentation, Preprocessor, Threads             |
+| 01.12.2025 | L09: Tasks, Asynchronous Programming, Parallel                   |
 | 08.12.2025 | L10:                                                             |
 | 15.12.2025 | L11:                                                             |
 | 22.12.2025 | L12:                                                             |
