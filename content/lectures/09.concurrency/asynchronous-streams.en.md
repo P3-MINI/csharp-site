@@ -10,7 +10,7 @@ Asynchronous sequences combine two concepts: **iterators** (*yield* statement) w
 ```csharp
 public interface IAsyncEnumerable<out T>
 {
-    IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken = default);
+    IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default);
 }
 
 public interface IAsyncEnumerator<out T> : IAsyncDisposable
@@ -89,6 +89,41 @@ public class Program
 ```
 
 The compiler will similarly generate a state machine corresponding to the asynchronous iterator method.
+
+### Cancellation
+
+Asynchronous iterator methods can support cancellation. You should add a `CancellationToken` parameter to such a method and decorate it with the `EnumeratorCancellation` attribute. This allows the compiler to know which parameter to pass the token to when using the `WithCancellation` method.
+
+```csharp
+public class Program
+{
+    public static async Task Main()
+    {
+        CancellationTokenSource cts = new CancellationTokenSource(2500);
+        try
+        {
+            await foreach (int i in RangeAsync(0, 100, 50).WithCancellation(cts.Token))
+            {
+                Console.WriteLine(i);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Enumeration cancelled");
+        }
+    }
+
+    private static async IAsyncEnumerable<int> RangeAsync(int from, int to, int delay,
+        [EnumeratorCancellation] CancellationToken token = default)
+    {
+        for (int i = from; i < to; i++)
+        {
+            await Task.Delay(delay, token);
+            yield return i;
+        }
+    }
+}
+```
 
 ## LINQ
 

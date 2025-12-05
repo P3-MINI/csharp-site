@@ -5,12 +5,12 @@ weight: 60
 
 # Asynchroniczne sekwencje
 
-Asynchroniczne sekwencje łączą ze sobą dwa koncepty: **iteratatorów** (instrukcja *yield*) z **metodami asynchronicznymi** (*async/await*). Pozwalają one na pisanie metod iterujących, które zwracają kolejne elementy asynchronicznie. Jest to szczególnie **przydatne gdy trzeba czekać na każdy z elementów sekwencji**. (Jeżeli trzeba czekać na sekwencję jako całość, ale nie na pojedyncze elementy, lepiej rozważyć użycie `Task<IEnumerable<T>>`).
+Asynchroniczne sekwencje łączą ze sobą dwa koncepty: **iteratorów** (instrukcja *yield*) z **metodami asynchronicznymi** (*async/await*). Pozwalają one na pisanie metod iterujących, które zwracają kolejne elementy asynchronicznie. Jest to szczególnie **przydatne gdy trzeba czekać na każdy z elementów sekwencji**. (Jeżeli trzeba czekać na sekwencję jako całość, ale nie na pojedyncze elementy, lepiej rozważyć użycie `Task<IEnumerable<T>>`).
 
 ```csharp
 public interface IAsyncEnumerable<out T>
 {
-    IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken = default);
+    IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default);
 }
 
 public interface IAsyncEnumerator<out T> : IAsyncDisposable
@@ -38,7 +38,7 @@ await foreach(var item in asyncSequence)
 ```
 
 > [!NOTE]
-> Żeby przekazać `CancellationToken` do sekwencji można użyć metody roszerzającej `WithCancellation(CancellationToken token)`, np: `await foreach(var item in asyncSequence.WithCancellation(token))`.
+> Żeby przekazać `CancellationToken` do sekwencji można użyć metody rozszerzającej `WithCancellation(CancellationToken token)`, np: `await foreach(var item in asyncSequence.WithCancellation(token))`.
 
 Podobnie jak `foreach`, `async foreach` jest cukierkiem składniowym. Kompilator rozwija tą instrukcję następująco:
 
@@ -89,6 +89,41 @@ public class Program
 ```
 
 Kompilator podobnie wygeneruje nam maszynę stanów odpowiadającą asynchronicznej metodzie iterującej.
+
+### Anulowanie
+
+Asynchroniczne metody iterujące mogą wspierać anulowanie. Należy dodać do takiej metody parametr typu `CancellationToken` i ozdobić go atrybutem `EnumeratorCancellation`. Dzięki temu kompilator będzie wiedział, do którego parametru przekazać token w metodzie `WithCancellation`.
+
+```csharp
+public class Program
+{
+    public static async Task Main()
+    {
+        CancellationTokenSource cts = new CancellationTokenSource(2500);
+        try
+        {
+            await foreach (int i in RangeAsync(0, 100, 50).WithCancellation(cts.Token))
+            {
+                Console.WriteLine(i);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Enumeration cancelled");
+        }
+    }
+    
+    private static async IAsyncEnumerable<int> RangeAsync(int from, int to, int delay, 
+        [EnumeratorCancellation] CancellationToken token = default)
+    {
+        for (int i = from; i < to; i++)
+        {
+            await Task.Delay(delay, token);
+            yield return i;
+        }
+    }
+}
+```
 
 ## LINQ
 
