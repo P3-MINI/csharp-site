@@ -1,13 +1,4 @@
----
-title: "Lab09"
-weight: 10
----
-
-# Laboratory 9: Assembly, Reflection
-
-> [!NOTE]
-> ## Starting code
-> {{< filetree dir="labs/lab09/student" >}}
+# Lab04 - Assemly, Reflection
 
 ## Introduction
 
@@ -87,7 +78,3 @@ The goal of this stage is to recognize all properties in the model marked with `
 - The method should create a model instance (using `Activator.CreateInstance`) and set its flags based on the provided argument array.
 - The method should return an instance of the `ParseResult<T>` class (this class is already prepared in `ParseResult.cs` file), containing the populated model or a collection of parsing errors.
 - Encountering an unknown flag (or an option which doesn't start with `-` or `--`) adds the entry: `"Unknown option: {arg}."` to the collection of errors.
-
-> [!NOTE]
-> ## Example solution
-> {{< filetree dir="labs/lab09/solution" >}}
