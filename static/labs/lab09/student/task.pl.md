@@ -1,13 +1,4 @@
----
-title: "Lab09"
-weight: 10
----
-
-# Laboratorium 9: Assembly, Refleksja
-
-> [!NOTE]
-> ## Kod startowy
-> {{< filetree dir="labs/lab09/student" >}}
+# Lab04 - Assembly, Refleksja
 
 ## Wprowadzenie
 
@@ -87,7 +78,3 @@ Celem tego etapu jest rozpoznanie w modelu wszystkich właściwości oznaczonych
 - Metoda powinna tworzyć instancję modelu (przy pomocy `Activator.CreateInstance`) i ustawiać jego flagi zgodnie z podaną tablicą argumentów.
 - Metoda powinna zwracać obiekt klasy `ParseResult<T>` (klasa jest już gotowa w pliku `ParseResult.cs`), zawierający uzupełniony model lub kolekcję błędów parsowania.
 - Pojawienie się w tablicy `string[] args` nieznanej flagi (lub elementu niezaczynającego się od `-` lub `--`) powoduje dodanie do kolekcji błędów wpisu: `"Unknown option: {arg}."`.
-
-> [!NOTE]
-> ## Przykładowe rozwiązanie
-> {{< filetree dir="labs/lab09/solution" >}}
