@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MappingFiles", "MappingFiles\MappingFiles.csproj", "{0BD1A127-44A5-41B8-8E69-9731757AF204}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedMemory", "SharedMemory\SharedMemory.csproj", "{622A3837-EE10-415B-94C9-14C00E03A2BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0BD1A127-44A5-41B8-8E69-9731757AF204}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD1A127-44A5-41B8-8E69-9731757AF204}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD1A127-44A5-41B8-8E69-9731757AF204}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD1A127-44A5-41B8-8E69-9731757AF204}.Release|Any CPU.Build.0 = Release|Any CPU
+		{622A3837-EE10-415B-94C9-14C00E03A2BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{622A3837-EE10-415B-94C9-14C00E03A2BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{622A3837-EE10-415B-94C9-14C00E03A2BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{622A3837-EE10-415B-94C9-14C00E03A2BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
