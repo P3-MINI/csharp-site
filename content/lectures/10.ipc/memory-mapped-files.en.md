@@ -1,24 +1,24 @@
 ---
-title: "Mapowanie pamięci"
+title: "Memory Mapping"
 weight: 50
 ---
 
-## Mapowanie plików i pamięć dzielona
+## Memory-Mapped Files and Shared Memory
 
-Mapowanie plików (*memory-mapped files*) to mechanizm systemu operacyjnego, który pozwala na mapowanie zawartości pliku bezpośrednio do przestrzeni adresowej procesu. Dzięki temu można odczytywać i modyfikować zawartość pliku tak, jakby był on tablicą w pamięci.
+Memory-mapped files are an operating system mechanism that allows mapping a file's content directly into a process's address space. This allows you to read and modify the file's content as if it were an array in memory.
 
-Główne zastosowania to:
-1. **Wydajny dostęp do dużych plików**: Pliki mapowane w pamięci pozwalają na dostęp do zawartości pliku tak, jakby był on w całości załadowany do pamięci, nawet jeśli jest znacznie większy niż dostępna pamięć RAM. System operacyjny dynamicznie wczytuje i zwalnia odpowiednie fragmenty pliku, gdy są one potrzebne. Dzięki temu można losowo odczytywać i modyfikować ogromne pliki bez konieczności wczytywania ich w całości.
-2. **Komunikacja międzyprocesowa (IPC)**: Umożliwia współdzielenie danych między wieloma procesami poprzez mapowanie tego samego pliku (lub obszaru pamięci) do ich przestrzeni adresowych. Jest to jeden z najszybszych sposobów komunikacji międzyprocesowej.
+The main use cases are:
+1.  **Efficient access to large files**: Memory-mapped files allow access to a file's content as if it were entirely loaded into memory, even if it is much larger than the available RAM. The operating system dynamically loads and unloads the appropriate portions of the file as they are needed. This allows for random reading and modification of huge files without having to load them entirely.
+2.  **Inter-Process Communication (IPC)**: It enables data sharing between multiple processes by mapping the same file (or memory region) into their address spaces. This is one of the fastest methods of inter-process communication.
 
-## Mapowanie plików w C#
+## Memory-Mapped Files in C#
 
-W .NET do pracy z plikami mapowanymi w pamięci służy klasa `MemoryMappedFile` z przestrzeni nazw `System.IO.MemoryMappedFiles`.
+In .NET, the `MemoryMappedFile` class from the `System.IO.MemoryMappedFiles` namespace is used to work with memory-mapped files.
 
-### Zapis i odczyt pliku
+### Writing to and Reading from a File
 
-Żeby pisać lub czytać z pliku należy pobrać z pliku obiekt "widoku" `ViewAccessor`. Pozwala on na odczyt i zapis typów podstawowych, tablic i struktur w określonym fragmencie pliku.
-Poniższy przykład pokazuje, jak stworzyć plik mapowany w pamięci, zapisać do niego dane, a następnie je odczytać.
+To write to or read from a file, you need to get a "view" object, `ViewAccessor`, from the file. It allows reading and writing primitive types, arrays, and structures in a specific portion of the file.
+The following example shows how to create a memory-mapped file, write data to it, and then read it back.
 
 ```csharp
 using System.IO.MemoryMappedFiles;
@@ -44,20 +44,20 @@ using (var accessor = mmf.CreateViewAccessor(0, message.Length * 2, MemoryMapped
 }
 ```
 
-Przy losowym odczycie/zapisie taki sposób pracy z plikiem jest około ~10 razy szybszy w stosunku do strumieni. Sytuacja jest odwrotna przy sekwencyjnym odczycie/zapisie.
+For random reads/writes, this way of working with a file is about ~10 times faster than using streams. The situation is reversed for sequential reads/writes.
 
-## Pamięć dzielona (*Shared Memory*)
+## Shared Memory
 
-Pamięć dzielona to specjalny przypadek użycia plików mapowanych, gdzie celem nie jest praca z plikiem na dysku, ale **bezpośrednia wymiana danych między procesami**. W tym scenariuszu system operacyjny może utworzyć mapowanie, które nie jest powiązane z żadnym fizycznym plikiem.
+Shared memory is a special use case of memory-mapped files where the goal is not to work with a file on disk, but the **direct exchange of data between processes**. In this scenario, the operating system can create a mapping that is not associated with any physical file.
 
-Jest to bardzo wydajna forma IPC, dane nie są kopiowane między procesami – oba procesy operują na tym samym bloku fizycznej pamięci.
+This is a very efficient form of IPC, as data is not copied between processes—both processes operate on the same block of physical memory.
 
-### Przykład komunikacji IPC
+### IPC Communication Example
 
-Nie jest to mechanizm wieloplatformowy. Windows wspiera nazwane mapowania, które tworzą pamięć dzieloną, do której później inne procesy mogą się odwoływać za pomocą wspólnej nazwy. Na Linuxie żeby stworzyć pamięć dzieloną można ją stworzyć jako plik w `/dev/shm`. Jest to tymczasowy system plików zamontowany w pamięci RAM.
+This is not a cross-platform mechanism. Windows supports named mappings that create shared memory, which other processes can later reference using a common name. On Linux, to create shared memory, you can create it as a file in `/dev/shm`. This is a temporary file system mounted in RAM.
 
 {{< tabs >}}
-{{% tab "Linux" %}} 
+{{% tab "Linux" %}}
 ```csharp
 using System.IO.MemoryMappedFiles;
 
@@ -66,7 +66,7 @@ namespace SharedMemory;
 public class Program
 {
     private const string ShmFile = "/dev/shm/shared_memory.shm";
-    private const string MutexName = "Global\\shared_memory_mutex";
+    private const string MutexName = "Global\shared_memory_mutex";
     
     public static void Main(string[] args)
     {
@@ -119,7 +119,7 @@ public class Program
 }
 ```
 {{% /tab %}}
-{{% tab "Windows" %}} 
+{{% tab "Windows" %}}
 ```csharp
 using System.IO.MemoryMappedFiles;
 
@@ -128,7 +128,7 @@ namespace SharedMemory;
 public class Program
 {
     private const string MapName = "SharedMemory";
-    private const string MutexName = "Global\\shared_memory_mutex";
+    private const string MutexName = "Global\shared_memory_mutex";
     
     public static void Main(string[] args)
     {
@@ -183,11 +183,11 @@ public class Program
 {{% /tab %}}
 {{< /tabs >}}
 
-> [!WARNING]
-> ## Synchronizacja
-> Kiedy wiele procesów (lub wątków) ma dostęp do tego samego obszaru pamięci, może być potrzebna **synchronizacja**. Bez niej może dojść do sytuacji wyścigu (*race condition*), gdzie jeden proces próbuje odczytać dane, które są w trakcie modyfikacji przez inny.
-> W powyższym przykładzie użyto klasy `Mutex` do zapewnienia, że w danym momencie tylko jeden proces ma dostęp do współdzielonego obszaru.
+> [!WARNING] 
+> ## Synchronization
+> When multiple processes (or threads) have access to the same memory area, **synchronization** may be necessary. Without it, a race condition can occur, where one process tries to read data that is being modified by another.
+> In the example above, the `Mutex` class is used to ensure that only one process can access the shared area at a time.
 
-> [!INFO]
-> ## Kod źródłowy
+> [!INFO] 
+> ## Source Code
 > {{< filetree dir="lectures/ipc/MappingMemory" >}}
