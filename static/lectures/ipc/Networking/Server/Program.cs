@@ -33,7 +33,6 @@ public static class Program
             try
             {
                 TcpClient client = await listener.AcceptTcpClientAsync(token);
-                Console.WriteLine("New client connected");
                 clients.Add(HandleClient(client, token));
                 clients.RemoveAll(task => task.IsCompleted);
             }
@@ -56,6 +55,7 @@ public static class Program
 
     private static async Task HandleClient(TcpClient client, CancellationToken token = default)
     {
+        Console.WriteLine("New client connected");
         try
         {
             var stream = client.GetStream();
@@ -82,9 +82,22 @@ public static class Program
                 }
             }
         }
+        catch (OperationCanceledException)
+        {
+            // Operation was cancelled, which is expected during shutdown.
+        }
+        catch (IOException)
+        {
+            // Client disconnected abruptly.
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error handling client: {e.Message}");
+        }
         finally
         {
             client.Dispose();
+            Console.WriteLine("Client disconnected");
         }
     }
 }
