@@ -43,7 +43,7 @@ class Program
 Poniższy kod przedstawia klienta, który łączy się z serwerem za pomocą tej samej nazwy łącza. Po nawiązaniu połączenia, klient wysyła linie tekstu, a następnie odczytuje i wyświetla przetworzoną odpowiedź odesłaną przez serwer. Cała komunikacja odbywa się przez jedno łącze, skonfigurowane jako dwukierunkowe. Na systemach uniksowych klasyczne łącza nazwane (FIFO) są jednokierunkowe. Dwukierunkowa komunikacja wymagałaby dwóch osobnych łącz. Implementacja w .NET omija to ograniczenie, wykorzystując gniazda lokalne (*Unix Domain Sockets*), które natywnie wspierają komunikację dwukierunkową.
 
 > [!NOTE]
-> Czytanie danych z łącza jest blokujące. Jeśli łącze jest puste, program będzie czekał, aż po drugiej stronie pojawią się dane do odczytania lub gdy łącze zostanie zamknięte.
+> Czytanie danych z łącza jest blokujące. Jeśli łącze jest puste, program będzie czekał, aż po drugiej stronie pojawią się dane do odczytania lub gdy łącze zostanie zamknięte. Jeśli łącze jest przepełnione, to pisanie może również blokować na dłużej.
 
 ```csharp
 using System.IO.Pipes;

@@ -157,7 +157,7 @@ static string Classify(Point point) => point switch
 
 ## `var` Pattern
 
-Introduces a new variable that can be referenced later. It always matches any value other than `null`.
+Introduces a new variable that can be referenced later. It always matches any value, including `null`.
 
 ```csharp
 static bool IsAcceptable(int count, int absLimit)

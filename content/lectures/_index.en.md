@@ -78,4 +78,13 @@ weight: 10
 - [Asynchronous Programming]({{< ref "09.concurrency/asynchronous-programming" >}})
 - [Parallel]({{< ref "09.concurrency/parallel" >}})
 - [Patterns]({{< ref "05.csharp-features/patterns" >}})
+
+## Lecture 10
+
+- [Patterns]({{< ref "05.csharp-features/patterns" >}})
 - [Formatting]({{< ref "05.csharp-features/formatting" >}})
+- [Pipes]({{< ref "10.ipc/pipes" >}})
+- [Network]({{< ref "10.ipc/network" >}})
+- [TCP]({{< ref "10.ipc/tcp" >}})
+- [Memory mapping]({{< ref "10.ipc/memory-mapped-files" >}})
+- [Serialization]({{< ref "10.ipc/serialization" >}})

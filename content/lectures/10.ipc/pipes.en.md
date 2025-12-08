@@ -43,7 +43,7 @@ class Program
 The following code demonstrates a client that connects to the server using the same pipe name. After establishing a connection, the client sends lines of text, then reads and displays the processed response sent back by the server. All communication occurs over a single pipe, configured as bidirectional. On Unix systems, classic named pipes (FIFO) are unidirectional. Bidirectional communication would require two separate pipes. The .NET implementation bypasses this limitation by using Unix Domain Sockets, which natively support bidirectional communication.
 
 > [!NOTE]
-> Reading data from a pipe is blocking. If the pipe is empty, the program will wait until data appears on the other end to be read or until the pipe is closed.
+> Reading data from a pipe is blocking. If the pipe is empty, the program will wait until data appears on the other end to be read or until the pipe is closed. If the pipe is full, the writing operation may also block for longer.
 
 ```csharp
 using System.IO.Pipes;

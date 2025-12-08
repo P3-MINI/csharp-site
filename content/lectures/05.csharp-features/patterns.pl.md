@@ -157,7 +157,7 @@ static string Classify(Point point) => point switch
 
 ## Wzorzec `var`
 
-Wprowadza nową zmienną, do której można się potem odwoływać, zawsze pasuje do dowolnej wartości różnej od `null`.
+Wprowadza nową zmienną, do której można się potem odwoływać, zawsze pasuje do dowolnej wartości, łącznie z `null`.
 
 ```csharp
 static bool IsAcceptable(int count, int absLimit)
