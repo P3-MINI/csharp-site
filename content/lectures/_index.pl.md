@@ -83,8 +83,16 @@ weight: 10
 ## Wykład 10
 
 - [Formatowanie]({{< ref "05.csharp-features/formatting" >}})
+- [Asynchroniczne sekwencje]({{< ref "09.concurrency/asynchronous-streams" >}})
 - [Łącza]({{< ref "10.ipc/pipes" >}})
 - [Sieć]({{< ref "10.ipc/network" >}})
 - [TCP]({{< ref "10.ipc/tcp" >}})
-- [Mapowanie pamięci]({{< ref "10.ipc/memory-mapped-files" >}})
 - [Serializacja]({{< ref "10.ipc/serialization" >}})
+
+## Wykład 11
+
+- Ważne warsztaty
+
+## Wykład 12
+
+- [Mapowanie pamięci]({{< ref "10.ipc/memory-mapped-files" >}})

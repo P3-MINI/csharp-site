@@ -17,8 +17,8 @@ Poniedziałki, 14:15 - 16:00, sala 328
 | 17.11.2025 | L07: Disposable, Atrybuty, Refleksja, Assembly                   |
 | 24.11.2025 | L08: Operatory, Dokumentacja, Preprocesor, Wzorce, Wątki         |
 | 01.12.2025 | L09: Zadania, Programowanie asynchroniczne, Parallel             |
-| 08.12.2025 | L10:                                                             |
-| 15.12.2025 | L11:                                                             |
+| 08.12.2025 | L10: Format, Asynchr. sekwencje, Łącza, Sieć, TCP, Serializacja  |
+| 15.12.2025 | L11: Ważne warsztaty                                             |
 | 22.12.2025 | L12:                                                             |
 | 12.01.2026 | L13:                                                             |
 | 19.01.2026 | L14:                                                             |

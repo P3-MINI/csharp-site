@@ -83,8 +83,16 @@ weight: 10
 
 - [Patterns]({{< ref "05.csharp-features/patterns" >}})
 - [Formatting]({{< ref "05.csharp-features/formatting" >}})
+- [Asynchronous Sequences]({{< ref "09.concurrency/asynchronous-streams" >}})
 - [Pipes]({{< ref "10.ipc/pipes" >}})
 - [Network]({{< ref "10.ipc/network" >}})
 - [TCP]({{< ref "10.ipc/tcp" >}})
-- [Memory mapping]({{< ref "10.ipc/memory-mapped-files" >}})
 - [Serialization]({{< ref "10.ipc/serialization" >}})
+
+## Lecture 11
+
+- Dean's Hours
+
+## Lecture 12
+
+- [Memory mapping]({{< ref "10.ipc/memory-mapped-files" >}})
