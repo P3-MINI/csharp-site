@@ -117,3 +117,43 @@ W projekcie `Serwer` zaimplementuj następujące fragmenty kodu:
 > [!TIP]
 > **Rozwiązanie**
 > {{< filetree dir="labs/lab12/solution/Pipes" >}}
+
+
+## Mapowanie plików
+
+Celem zadania jest zaimplementowanie prostej biblioteki do odczytu dużych plików CSV. Biblioteka powinna umożliwiać przetwarzanie plików, które są zbyt duże, aby można je było w całości wczytać do pamięci RAM.
+
+### Kod początkowy
+
+> [!NOTE]
+> **Student**
+> {{< filetree dir="labs/lab12/student/MMF" >}}
+
+### Opis zadania
+
+Projekt `BigCSVReader` zawiera abstrakcyjną klasę `BigCsvReader`, która odpowiada za odczytywanie fragmentów dużych plików CSV. W konstruktorze klasa tworzy pomocniczy plik z rozszerzeniem `.offsets`. Jest to binarny plik, w którym kolejno zapisywane są 8-bajtowe wartości reprezentujące przesunięcia poszczególnych wierszy w oryginalnym pliku CSV. Biblioteka obsługuje wyłącznie kodowanie UTF-8.
+
+Celem zadania jest uzupełnienie implementacji klas pochodnych `StreamBigCsvReader` oraz `MmfBigCsvReader`, a następnie porównanie ich wydajności przy użyciu projektu `BigCSVReader.Benchmark`.
+
+ - W `StreamBigCsvReader` należy wykorzystać standardowy mechanizm odczytu pliku z użyciem `FileStream`.
+
+ - W `MmfBigCsvReader` należy zastosować mapowanie pliku do pamięci (*Memory-Mapped Files*).
+
+
+ {{% hint info %}}
+**Materiały pomocnicze:**
+
+- [Microsoft Learn: MemoryMappedFile](https://learn.microsoft.com/en-us/dotnet/api/system.io.memorymappedfiles.memorymappedfile?view=net-9.0)
+- [Microsoft Learn: MemoryMappedViewAccessor](https://learn.microsoft.com/en-us/dotnet/api/system.io.memorymappedfiles.memorymappedviewaccessor?view=net-9.0)
+- [Microsoft Learn: FileStream](https://learn.microsoft.com/en-us/dotnet/api/system.io.filestream?view=net-9.0)
+- [Microsoft Learn: StreamReader](https://learn.microsoft.com/en-us/dotnet/api/system.io.streamreader?view=net-9.0)
+- [Microsoft Learn: BinaryReader](https://learn.microsoft.com/en-us/dotnet/api/system.io.binaryreader?view=net-9.0)
+
+{{% /hint %}}
+
+### Przykładowe rozwiązanie
+
+> [!TIP]
+> **Rozwiązanie**
+> {{< filetree dir="labs/lab12/solution/MMF" >}}
+
