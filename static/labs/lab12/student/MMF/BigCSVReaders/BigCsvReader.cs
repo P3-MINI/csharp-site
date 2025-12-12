@@ -110,7 +110,6 @@ public abstract class BigCsvReader: IDisposable
                 {
                     RowsCnt++;
                     long offset = csvFileReader.Position - (bytesRead - i - 1);
-                    Console.WriteLine($"Row {RowsCnt}: {offset}");
                     writer.Write(offset);
                 }
             }
