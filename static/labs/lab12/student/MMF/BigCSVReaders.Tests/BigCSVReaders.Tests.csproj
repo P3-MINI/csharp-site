@@ -5,6 +5,7 @@
     <IsTestProject>true</IsTestProject>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>BigCSVReader.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BigCSVReader\BigCSVReader.csproj" />
+    <ProjectReference Include="..\BigCSVReaders\BigCSVReaders.csproj" />
   </ItemGroup>
 
   <ItemGroup>

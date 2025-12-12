@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatClient", "ChatClient\Ch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatServer", "ChatServer\ChatServer.csproj", "{2986E0D3-F251-43A0-B1FF-4A44D834E947}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatCommon", "ChatCommon\ChatCommon.csproj", "{0B3CFA76-66F9-42C2-B103-5867D0AC441E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatCommon", "Chat.Common\ChatCommon.csproj", "{0B3CFA76-66F9-42C2-B103-5867D0AC441E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

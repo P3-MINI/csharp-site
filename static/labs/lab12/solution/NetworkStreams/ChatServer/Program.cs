@@ -3,6 +3,8 @@ using System.Net.Sockets;
 using Chat.Common;
 using Chat.Common.MessageHandlers;
 
+namespace ChatServer;
+
 
 class Program
 {
@@ -15,10 +17,10 @@ class Program
         Console.WriteLine($"Server running on port {port} ...");
 
         Console.WriteLine("Waiting for a client...");
-        var client1 = await listener.AcceptTcpClientAsync();
+        using var client1 = await listener.AcceptTcpClientAsync();
 
         Console.WriteLine("Waiting for a second client...");
-        var client2 = await listener.AcceptTcpClientAsync();
+        using var client2 = await listener.AcceptTcpClientAsync();
         Console.WriteLine("Both clients connected - starting forwarding messages.");
 
         await HandleClientsAsync(client1, client2);
@@ -27,8 +29,8 @@ class Program
 
     static async Task HandleClientsAsync(TcpClient client1, TcpClient client2)
     {
-        using var stream1 = client1.GetStream();
-        using var stream2 = client2.GetStream();
+        await using var stream1 = client1.GetStream();
+        await using var stream2 = client2.GetStream();
 
         using var cts = new CancellationTokenSource();
 
@@ -36,9 +38,9 @@ class Program
         using var readerFromClient2 = new MessageReader(stream2);
 
         using var writerToClient1 = new MessageWriter(stream1);
-        using var writerToCLient2 = new MessageWriter(stream2);
+        using var writerToClient2 = new MessageWriter(stream2);
 
-        var t1 = ForwardMessagesAsync(readerFromClient1, writerToCLient2, cts.Token);
+        var t1 = ForwardMessagesAsync(readerFromClient1, writerToClient2, cts.Token);
         var t2 = ForwardMessagesAsync(readerFromClient2, writerToClient1, cts.Token);
 
         var first = await Task.WhenAny(t1, t2);
@@ -51,50 +53,45 @@ class Program
             Time = DateTime.UtcNow,
         };
 
-        if (first == t1)
-        {
-            // client1 finished -> notify client2
-            try { await writerToCLient2.WriteMessage(disconnectNotification, cts.Token); } catch { }
-        }
-        else
-        {
-            // client2 finished -> notify client1
-            try { await writerToClient1.WriteMessage(disconnectNotification, cts.Token); } catch { }
-        }
-
-        // when one side finishes (disconnect or exit), cancel the other
-        cts.Cancel();
+        var remainingClientWriter = first == t1 ? writerToClient2 : writerToClient1;
 
         try
         {
-            await Task.WhenAll(t1, t2);
+            await remainingClientWriter.WriteMessage(disconnectNotification, cts.Token);
         }
-        catch (OperationCanceledException) { }
-        catch (Exception ex)
+        catch (IOException e)
         {
-            Console.WriteLine("Relay error: " + ex.Message);
+            Console.WriteLine($"Error while sending disconnection notification: {e.Message}");
         }
 
-        try { client1.Close(); } catch { }
-        try { client2.Close(); } catch { }
+        if (!cts.IsCancellationRequested)
+            await cts.CancelAsync();
+        
+        await Task.WhenAll(t1, t2);
+        
         Console.WriteLine("Clients disconnected, pair handler finished.");
     }
 
 
     static async Task ForwardMessagesAsync(MessageReader reader, MessageWriter writer, CancellationToken ct)
     {
-        try {
+        try
+        {
             while (!ct.IsCancellationRequested)
             {
                 var msg = await reader.ReadMessage(ct);
-                if (msg == null)    // client disconnected
+                if (msg == null) // client disconnected
                     break;
 
                 Console.WriteLine($"{msg.Sender}: {msg.Content}");
 
                 await writer.WriteMessage(msg, ct);
-            }        
+            }
         }
-        catch (OperationCanceledException) { }  // Ignore exception       }
+        catch (OperationCanceledException) { } // Ignore exception
+        catch (IOException)
+        {
+            Console.WriteLine("Error while communicating with a client.");
+        }
     }
 }

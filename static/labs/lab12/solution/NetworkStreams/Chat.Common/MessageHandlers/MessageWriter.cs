@@ -8,16 +8,13 @@ namespace Chat.Common.MessageHandlers;
 
 public class MessageWriter(Stream stream) : MessageHandler, IDisposable
 {
-    private Stream stream = stream;
-
-
     public async Task WriteMessage(MessageDTO message, CancellationToken ct)
     {
         string json = JsonConvert.SerializeObject(message);
         byte[] payload = Encoding.UTF8.GetBytes(json);
 
         // 4-byte big-endian length prefix
-        var header = new byte[headerLen];
+        var header = new byte[HeaderLen];
         BinaryPrimitives.WriteInt32BigEndian(header, payload.Length);
 
         await stream.WriteAsync(header, ct);

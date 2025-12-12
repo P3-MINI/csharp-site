@@ -7,7 +7,7 @@ class KeyValueClient
 
     public static async Task Main()
     {
-        using var client = new NamedPipeClientStream(".", "kv_pipe", PipeDirection.InOut);
+        await using var client = new NamedPipeClientStream(".", "kv_pipe", PipeDirection.InOut);
 
         Console.WriteLine("Connecting to server...");
 
@@ -23,6 +23,8 @@ class KeyValueClient
         
         Console.WriteLine("Connected!");
 
+        // Stream adapters are optionally disposable
+        // If the server closes the connection StreamWriter dispose method tries to flush it, which throws an exception
         var reader = new StreamReader(client, Encoding.UTF8);
         var writer = new StreamWriter(client, Encoding.UTF8);
 

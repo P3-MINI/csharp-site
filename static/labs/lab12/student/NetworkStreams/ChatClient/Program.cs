@@ -2,14 +2,13 @@
 using Chat.Common;
 using Chat.Common.MessageHandlers;
 
+namespace ChatClient;
 
 class Program
 {
-    static bool serverIsActive = true;
-
-    const string defaultHost = "127.0.0.1";
+    const string defaultHost = "localhost";
     const int defaultPort = 5000;
-    public const int ConnectTimeOutMs = 3000;
+    const int connectTimeoutMs = 3000;
 
     static async Task Main(string[] args)
     {
@@ -18,16 +17,22 @@ class Program
             PrintUsage();
             return;
         }
-
+        
         string host = defaultHost;
         int port = defaultPort;
-        if (args.Length >= 1 && !string.IsNullOrWhiteSpace(args[0])) host = args[0];
-        if (args.Length >= 2)
+        
+        if (args.Length >= 1)
         {
-            if (!int.TryParse(args[1], out port))
+            if (!string.IsNullOrWhiteSpace(args[0]))
+                host = args[0];
+
+            if (args.Length >= 2)
             {
-                Console.WriteLine("Invalid port number. Must be an integer.");
-                return;
+                if (!int.TryParse(args[1], out port))
+                {
+                    Console.WriteLine("Invalid port number. Must be an integer.");
+                    return;
+                }
             }
         }
 
@@ -62,13 +67,11 @@ class Program
         if (client == null)
             return;
 
-        using NetworkStream stream = client!.GetStream();
-        var cts = new CancellationTokenSource();
-
-        Task receiver = Task.Factory.StartNew(
-            () => MessageReceiver(stream, progress, cts.Token),
-            TaskCreationOptions.LongRunning
-        );
+        using NetworkStream stream = client.GetStream();
+        using var cts = new CancellationTokenSource();
+        var ct = cts.Token;
+        
+        Task receiver = MessageReceiver(stream, progress, cts);
 
         using var sender = new MessageWriter(stream);
 
@@ -81,7 +84,7 @@ class Program
             if (msg.Equals("exit", StringComparison.OrdinalIgnoreCase))
                 break;
 
-            if (!serverIsActive) {
+            if (ct.IsCancellationRequested) {
                 Console.WriteLine("Server is down, you can only exit the app by typing exit");
                 continue;
             }
@@ -103,8 +106,10 @@ class Program
     }
 
 
-    static async Task MessageReceiver(NetworkStream stream, IProgress<string> progress, CancellationToken ct)
+    static async Task MessageReceiver(NetworkStream stream, IProgress<string> progress, CancellationTokenSource cts)
     {
+        var ct = cts.Token;
+        
         using var reader = new MessageReader(stream);
 
         try {
@@ -113,7 +118,7 @@ class Program
                 MessageDTO? msg = await reader.ReadMessage(ct);
                 if (msg == null) {
                     progress.Report("[System] Your peer disconnected.");
-                    serverIsActive = false;
+                    cts.Cancel();
                     break;
                 }
 

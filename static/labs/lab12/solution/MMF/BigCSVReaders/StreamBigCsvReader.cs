@@ -11,11 +11,11 @@ public class StreamBigCsvReader : BigCsvReader
         _csvReader = new StreamReader(_csvFileStream);
     }
 
-    private FileStream _offsetsFileStream;
-    private BinaryReader _offsetsReader;
+    private readonly FileStream _offsetsFileStream;
+    private readonly BinaryReader _offsetsReader;
 
-    private FileStream _csvFileStream;
-    private StreamReader _csvReader;
+    private readonly FileStream _csvFileStream;
+    private readonly StreamReader _csvReader;
 
 
     protected override string ReadRow(int row)

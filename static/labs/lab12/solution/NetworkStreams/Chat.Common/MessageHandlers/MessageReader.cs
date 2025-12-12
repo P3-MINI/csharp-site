@@ -11,18 +11,15 @@ public class InvalidMessageReceived(string message) : Exception(message) {}
 
 public class MessageReader(Stream stream) : MessageHandler, IDisposable
 {
-    private Stream stream = stream;
-
-
     public async Task<MessageDTO?> ReadMessage(CancellationToken ct)
     {
-        var headerBuffer = new byte[headerLen];
+        var headerBuffer = new byte[HeaderLen];
 
         int bytesRead = await ReadToBuffer(headerBuffer, ct);
         if (bytesRead == 0) // Disconnection from the server
             return null;
 
-        if (bytesRead < headerLen)
+        if (bytesRead < HeaderLen)
             throw new InvalidMessageReceived($"Invalid header len: {bytesRead}");
 
         Int32 payloadLen = BinaryPrimitives.ReadInt32BigEndian(headerBuffer);

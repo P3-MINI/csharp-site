@@ -5,7 +5,7 @@ public sealed class Program
 {
     static void Main(string[] args)
     {
-        int rowsCnt = 100_000;
+        int rowsCnt = 10;
         int colsCnt = 100;
 
         string path = "benchmark.csv";

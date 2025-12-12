@@ -1,8 +1,11 @@
+using System.IO.MemoryMappedFiles;
+
+
 namespace BigCsvReaders;
 
-public class StreamBigCsvReader : BigCsvReader
+public class MmfBigCsvReader : BigCsvReader
 {
-    public StreamBigCsvReader(string path, char delimiter = ','): base(path, delimiter)
+    public MmfBigCsvReader(string path, char delimiter=','): base(path, delimiter)
     {
         // TODO
     }
@@ -11,12 +14,14 @@ public class StreamBigCsvReader : BigCsvReader
     protected override string ReadRow(int row)
     {
         // TODO
+        throw new NotImplementedException();
     }
 
 
     public override void Dispose()
     {
         // TODO
+
         base.Dispose();
     }
 }

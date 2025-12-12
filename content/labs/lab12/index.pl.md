@@ -33,7 +33,7 @@ Do serializacji i deserializacji wiadomości należy wykorzystać bibliotekę `N
 
 #### ChatClient
 
-W projekcie `ChatClient` zaimplementuj asynchroniczną metodę `Connect`, która próbuje nawiązać połączenie TCP z serwerem. W przypadku braku połączenia w ciągu trzech sekund metoda powinna zwrócić `null`. Do logowania przebiegu operacji wykorzystaj przekazany obiekt progress.
+W projekcie `ChatClient` zaimplementuj asynchroniczną metodę `Connect`, która próbuje nawiązać połączenie TCP z serwerem. W przypadku braku połączenia w ciągu trzech sekund metoda powinna zwrócić `null`. Do logowania przebiegu operacji wykorzystaj przekazany obiekt `progress`.
 
 
 #### ChatServer
@@ -79,18 +79,18 @@ Taki model jest szczególnie przydatny w systemach wymagających dużej wydajno�
 
 ### Opis zadania
 
-Celem zadania jest implementacja prostej bazy danych typu klucz-wartość, która będzie mogła odpowiadać na zapytania z innych procesów działających na tym samym komputerze.
+Celem zadania jest implementacja prostej bazy danych typu klucz-wartość, która będzie mogła odpowiadać na zapytania z innych procesów działających na tym samym komputerze. Dla uproszczenia będziemy obsługiwać jednego klienta na raz.
 
 Przyjmujemy następującą składnię zapytań do serwera:
  - utworzenie nowej pary klucz-wartość lub aktualizacja wartości - `SET <key> <value>`, na co serwer w przypadku powodzenia odpowiada `OK`.
  - pobranie wartości - `GET <key>` na co serwer zwraca żądaną wartość lub `NOT_FOUND`, jeśli podany klucz nie istnieje w bazie.
  - usunięcie pary klucz-wartość - `DELETE <key>`, na co serwer odpowiada `OK` przy powodzeniu lub `NOT_FOUND`, jeśli dany klucz nie był obecny.
- - w przypadku nie prawidłowego zapytania serwer wysyła wiadomość `ERROR <msg>`
+ - w przypadku nieprawidłowego zapytania serwer wysyła wiadomość `ERROR <msg>`
 
  Wszystkie wiadomości kodowane są za pomocą UTF-8 i oddzielane od siebie znakiem nowej linii. Z tego powodu żadna z wiadomości nie może zawierać w sobie tego znaku.
 
 
-#### Client
+#### Klient
 
 W projekcie `Client` zaimplementuj następujące fragmenty kodu:
  - w metodzie `Main` utwórz zmienną `client` typu `NamedPipeClientStream` i połącz się z serwerem. Jeśli łączenie będzie trwało więcej niż trzy sekundy - zakończ program z odpowiednim komunikatem.
@@ -99,8 +99,8 @@ W projekcie `Client` zaimplementuj następujące fragmenty kodu:
 
 #### Serwer
 
-W projekcie `Serwer` zaimplementuj następujące fragmenty kodu:
- - W metodzie `Main` utwórz zmienną `server` typu `NamedPipeServerStream` i połącz się z klientem. Łączenie może zostać przerwane przez `CancellationToken`
+W projekcie `Server` w klasie `KvServer` zaimplementuj następujące fragmenty kodu:
+ - W metodzie `Start` utwórz zmienną `server` typu `NamedPipeServerStream`, połącz się z klientem. Łączenie może zostać przerwane przez `CancellationToken`
  - Zaimplementuj metodę `HandleClientAsync`, która w sposób asynchroniczny odczytuje zapytania od klienta i odpowiada na nie. Uwzględnij możliwość przerwania przez `CancellationToken`. Do uzyskania odpowiedzi wykorzystaj metodę `ProcessCommand`.
 
  {{% hint info %}}

@@ -6,12 +6,12 @@ using Newtonsoft.Json;
 namespace Chat.Common.MessageHandlers;
 
 
-public class MessageWriter(Stream stream) : MessageHandler, IDisposable
+public class InvalidMessageReceived(string message) : Exception(message) {}
+
+
+public class MessageReader(Stream stream) : MessageHandler, IDisposable
 {
-    private Stream stream = stream;
-
-
-    public async Task WriteMessage(MessageDTO message, CancellationToken ct)
+    public async Task<MessageDTO?> ReadMessage(CancellationToken ct)
     {
         // TODO
         throw new NotImplementedException();

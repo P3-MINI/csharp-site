@@ -27,14 +27,14 @@ public abstract class BigCsvReader: IDisposable
 
         CsvFile = path;
         OffsetsFile = Path.ChangeExtension(CsvFile, ".offsets");
-        Delimiter = delimiter;
+        _delimiter = delimiter;
 
         CreateOffsetFile();
     }
     
-    protected string CsvFile;
-    protected string OffsetsFile;
-    protected readonly char Delimiter;
+    protected readonly string CsvFile;
+    protected readonly string OffsetsFile;
+    private readonly char _delimiter;
 
     protected int RowsCnt;
 
@@ -73,7 +73,7 @@ public abstract class BigCsvReader: IDisposable
                     insideQuotes = !insideQuotes;
                 }
             }
-            else if (c == Delimiter && !insideQuotes)
+            else if (c == _delimiter && !insideQuotes)
             {
                 result.Add(current.ToString().Trim());
                 current.Clear();
@@ -100,13 +100,19 @@ public abstract class BigCsvReader: IDisposable
         RowsCnt = 0;
         writer.Write(0L);
         
-        int byteRead;
-        while ((byteRead = csvFileReader.ReadByte()) > 0)
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+        while ((bytesRead = csvFileReader.Read(buffer, 0, buffer.Length)) > 0)
         {
-            if (byteRead == '\n')
+            for (int i = 0; i < bytesRead; i++)
             {
-                RowsCnt++;
-                writer.Write(csvFileReader.Position);
+                if (buffer[i] == '\n')
+                {
+                    RowsCnt++;
+                    long offset = csvFileReader.Position - (bytesRead - i - 1);
+                    Console.WriteLine($"Row {RowsCnt}: {offset}");
+                    writer.Write(offset);
+                }
             }
         }
     }

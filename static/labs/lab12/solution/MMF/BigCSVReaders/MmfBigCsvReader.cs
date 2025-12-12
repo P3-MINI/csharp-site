@@ -17,14 +17,14 @@ public class MmfBigCsvReader : BigCsvReader
         _csvAccessor = _csvMmf.CreateViewAccessor();
     }
 
-    private MemoryMappedFile _offsetsMmf;
-    private MemoryMappedViewAccessor _offsetAccessor;
+    private readonly MemoryMappedFile _offsetsMmf;
+    private readonly MemoryMappedViewAccessor _offsetAccessor;
 
-    private MemoryMappedFile _csvMmf;
-    private MemoryMappedViewAccessor _csvAccessor;
+    private readonly MemoryMappedFile _csvMmf;
+    private readonly MemoryMappedViewAccessor _csvAccessor;
 
-    private long _offsetsFileLen;
-    private long _csvFileLen;
+    private readonly long _offsetsFileLen;
+    private readonly long _csvFileLen;
 
 
     protected override string ReadRow(int row)
