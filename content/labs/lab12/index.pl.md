@@ -22,11 +22,11 @@ Celem zadania jest stworzenie prostej aplikacji konsolowej, umożliwiającej dw�
 
 Projekt `ChatCommon` zawiera wspólny kod wykorzystywany zarówno przez program serwera, jak i klienta. Zawiera klasę `MessageDTO`, która reprezentuje pojedynczą wiadomość przesyłaną w sieci, oraz folder `MessageHandlers` z klasami odpowiedzialnymi za jej obsługę.
 
-Komunikacja między programami odbywa się według następującego protokołu: każda wiadomość poprzedzona jest 32‑bitowym nagłówkiem — liczbą typu int w zapisie big endian. Nagłówek określa długość wiadomości w bajtach. Bezpośrednio po nim przesyłana jest właściwa treść wiadomości w formacie JSON, zakodowana w UTF‑8.
+Komunikacja między programami odbywa się za pomocą TCP według następującego protokołu: każda wiadomość poprzedzona jest 32‑bitowym nagłówkiem — liczbą typu `int` w zapisie big endian. Nagłówek określa długość wiadomości w bajtach. Bezpośrednio po nim przesyłana jest właściwa treść wiadomości w formacie JSON, zakodowana w UTF‑8.
 
 W ramach tego projektu należy uzupełnić implementacje poniższych metod:
 
-- `ReadMessage` z klasy `MessageReader` – w przypadku błędu odczytu należy zgłosić wyjątek `InvalidMessageReceived` z odpowiednim opisem. Jeśli osiągnięty zostanie koniec strumienia, metoda powinna zwrócić `null`.
+- `ReadMessage` z klasy `MessageReader` – w przypadku błędu deserializacji należy zgłosić wyjątek `InvalidMessageReceived` z odpowiednim opisem. Jeśli osiągnięty zostanie koniec strumienia, metoda powinna zwrócić `null`.
 - `WriteMessage` z klasy `MessageWriter`.
 
 Do serializacji i deserializacji wiadomości należy wykorzystać bibliotekę `Newtonsoft.Json`.
