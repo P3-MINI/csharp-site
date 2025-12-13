@@ -51,6 +51,23 @@ W projekcie `ChatServer` zaimplementuj asynchroniczną metodę `ForwardMessagesA
 
 {{% /hint %}}
 
+Program klienta przyjmuje adres IP serwera oraz port jako opcjonalne argumenty z wiersza poleceń. Jako ćwiczenie możesz spróbować połączyć się z serwerem działającym na innym komputerze w sieci lokalnej.
+
+Adres IP komputera możesz sprawdzić za pomocą następujących komend.
+
+{{< tabs >}}
+{{% tab "Linux" %}} 
+  ``` bash
+  ifconfig -a
+  ```
+{{% /tab %}}
+{{% tab "Windows" %}} 
+  ```cmd
+  ipconfig
+  ```
+{{% /tab %}}
+{{< /tabs >}}
+
 ### Przykładowe rozwiązanie
 
 > [!TIP]
