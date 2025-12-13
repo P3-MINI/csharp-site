@@ -16,19 +16,16 @@ public class MessageReader(Stream stream) : MessageHandler, IDisposable
         var headerBuffer = new byte[HeaderLen];
 
         int bytesRead = await ReadToBuffer(headerBuffer, ct);
-        if (bytesRead == 0) // Disconnection from the server
+        if (bytesRead < HeaderLen) // Disconnection from the server
             return null;
-
-        if (bytesRead < HeaderLen)
-            throw new InvalidMessageReceived($"Invalid header len: {bytesRead}");
 
         Int32 payloadLen = BinaryPrimitives.ReadInt32BigEndian(headerBuffer);
 
         var payloadBuffer = new byte[payloadLen];
 
         bytesRead = await ReadToBuffer(payloadBuffer, ct);
-        if (bytesRead < payloadLen)
-            throw new InvalidMessageReceived("Invalid payload len");
+        if (bytesRead < payloadLen) // Disconnection from the server
+            return null;
 
         string json = Encoding.UTF8.GetString(payloadBuffer);
 
