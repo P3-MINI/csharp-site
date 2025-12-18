@@ -15,6 +15,9 @@ The server listens for incoming connections using `TcpListener`. When a connecti
 
 After establishing a connection, both sides communicate using a stream (`NetworkStream`), which is "wrapped" in a `StreamReader` and `StreamWriter` to facilitate text operations.
 
+> [!WARNING]
+> Please note that `StreamReader` and `StreamWriter` internally buffer data. They work best in protocols where messages are text-based and each message is terminated by a newline character. This can lead to issues if the protocol is more complex. In such cases, `BinaryReader` and `BinaryWriter` might be a better choice, as they provide precise control over reading and writing data to the stream, even for text data.
+
 The defined "protocol" is very simple - the client sends text commands (`date`, `time`, `exit`), and the server sends back the appropriate message. In real-world applications, protocols are often more complex and may be based on formats like `JSON` or binary structures.
 
 ```csharp
