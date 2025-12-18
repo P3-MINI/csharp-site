@@ -22,12 +22,13 @@ Celem zadania jest stworzenie prostej aplikacji konsolowej, umożliwiającej dw�
 
 Projekt `ChatCommon` zawiera wspólny kod wykorzystywany zarówno przez program serwera, jak i klienta. Zawiera klasę `MessageDTO`, która reprezentuje pojedynczą wiadomość przesyłaną w sieci, oraz folder `MessageHandlers` z klasami odpowiedzialnymi za jej obsługę.
 
-Komunikacja między programami odbywa się za pomocą TCP według następującego protokołu: każda wiadomość poprzedzona jest 32‑bitowym nagłówkiem — liczbą typu `int` w zapisie big endian. Nagłówek określa długość wiadomości w bajtach. Bezpośrednio po nim przesyłana jest właściwa treść wiadomości w formacie JSON, zakodowana w UTF‑8.
+Komunikacja pomiędzy programami realizowana jest z wykorzystaniem protokołu TCP. Każda wiadomość składa się z 32-bitowego nagłówka będącego liczbą typu `int` w zapisie big endian, który określa długość wiadomości w bajtach. Bezpośrednio po nagłówku przesyłana jest treść wiadomości w formacie JSON, zakodowana w UTF-8. Maksymalny rozmiar pojedynczej wiadomości nie może przekraczać 10 kB.
 
-W ramach tego projektu należy uzupełnić implementacje poniższych metod:
+W ramach projektu należy uzupełnić implementację następujących metod:
 
-- `ReadMessage` z klasy `MessageReader` – w przypadku błędu deserializacji należy zgłosić wyjątek `InvalidMessageReceived` z odpowiednim opisem. Jeśli osiągnięty zostanie koniec strumienia, metoda powinna zwrócić `null`.
-- `WriteMessage` z klasy `MessageWriter`.
+ - `ReadMessage` w klasie `MessageReader` - w przypadku błędu deserializacji metoda powinna zgłosić wyjątek `InvalidMessageException` zawierający odpowiedni opis błędu. Jeśli długość wiadomości przekracza dopuszczalny limit, należy zgłosić `TooLongMessageException`. W sytuacji osiągnięcia końca strumienia metoda powinna zwrócić `null`.
+
+ - `WriteMessage` w klasie `MessageWriter` - przed wysłaniem wiadomości należy zweryfikować jej długość. W przypadku przekroczenia dopuszczalnego limitu metoda powinna zgłosić wyjątek `TooLongMessageException`.
 
 Do serializacji i deserializacji wiadomości należy wykorzystać bibliotekę `Newtonsoft.Json`.
 
@@ -38,7 +39,9 @@ W projekcie `ChatClient` zaimplementuj asynchroniczną metodę `Connect`, która
 
 #### ChatServer
 
-W projekcie `ChatServer` zaimplementuj asynchroniczną metodę `ForwardMessagesAsync`, która aż do zgłoszenia anulowania przez `CancellationToken` odbiera wiadomości od jednego klienta, loguje je na standardowe wyjście, a następnie przekazuje drugiemu klientowi.
+W projekcie `ChatServer` należy zaimplementować asynchroniczną metodę `ForwardMessagesAsync` w pliku `ChatServer.cs`, która - do momentu zgłoszenia anulowania przez `CancellationToken` - odbiera wiadomości od jednego klienta, zapisuje je na standardowe wyjście, a następnie przekazuje drugiemu klientowi.
+
+W tym samym pliku należy również zaimplementować metodę `Run`, która - do momentu zgłoszenia anulowania przez `CancellationToken` - oczekuje na połączenie dwóch klientów i inicjuje wymianę wiadomości pomiędzy nimi. Po zakończeniu konwersacji metoda powinna ponownie rozpocząć oczekiwanie na kolejnych klientów. Do obsługi połączonych klientów należy wykorzystać metodę `HandleClientsAsync`.
 
 
 {{% hint info %}}
@@ -58,7 +61,7 @@ Adres IP komputera możesz sprawdzić za pomocą następujących komend.
 {{< tabs >}}
 {{% tab "Linux" %}} 
   ``` bash
-  ifconfig -a
+  ip a
   ```
 {{% /tab %}}
 {{% tab "Windows" %}} 

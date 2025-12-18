@@ -21,18 +21,15 @@ class Program
         string host = defaultHost;
         int port = defaultPort;
         
-        if (args.Length >= 1)
-        {
-            if (!string.IsNullOrWhiteSpace(args[0]))
-                host = args[0];
+        if (args.Length >= 1 && !string.IsNullOrWhiteSpace(args[0]))
+            host = args[0];
 
-            if (args.Length >= 2)
+        if (args.Length >= 2)
+        {
+            if (!int.TryParse(args[1], out port))
             {
-                if (!int.TryParse(args[1], out port))
-                {
-                    Console.WriteLine("Invalid port number. Must be an integer.");
-                    return;
-                }
+                Console.WriteLine("Invalid port number. Must be an integer.");
+                return;
             }
         }
 
@@ -85,7 +82,7 @@ class Program
                 break;
 
             if (ct.IsCancellationRequested) {
-                Console.WriteLine("Server is down, you can only exit the app by typing exit");
+                progress.Report("Connection is down, you can only exit the app by typing exit");
                 continue;
             }
 
@@ -96,11 +93,26 @@ class Program
                 Time = DateTime.UtcNow
             };
 
-            await sender.WriteMessage(dto, cts.Token);
+            try
+            {
+                await sender.WriteMessage(dto, cts.Token);
+            }
+            catch (TooLongMessageException)
+            {
+                progress.Report($"[ERROR] Message was too long.");
+            }
+            
         }
 
-        cts.Cancel();
-        receiver.Wait();
+        await cts.CancelAsync();
+        try
+        {
+            await receiver.WaitAsync(TimeSpan.FromSeconds(2));
+        }
+        catch (TimeoutException)
+        {
+            progress.Report("[Error]: timeout while waiting for message receiver.");
+        }
 
         progress.Report("Disconnecting");
     }
@@ -125,11 +137,15 @@ class Program
                 Console.WriteLine($"[{msg.Time:u}] {msg.Sender}: {msg.Content}");
             }
         }
-        catch (InvalidMessageReceived invMsg)
+        catch (InvalidMessageException invMsg)
         {
             progress.Report($"[Error]: invalid message received {invMsg.Message}");
         }
-        catch (OperationCanceledException) {}   // Ignore
+        catch (OperationCanceledException)
+        {
+            // Normal shutdown due to cancellation; no further action required.
+            return;
+        }
         catch (Exception e)
         {
             progress.Report($"[Error]: {e.Message}");

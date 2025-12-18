@@ -41,16 +41,7 @@ class KeyValueClient
 
     static async Task<string?> GetResponse(StreamWriter writer, StreamReader reader, string cmd)
     {
-        try
-        {
-            await writer.WriteLineAsync(cmd);
-            await writer.FlushAsync();
-            return await reader.ReadLineAsync();
-        }
-        catch (IOException)
-        {
-            Console.WriteLine("Problem with server communication");
-            return null;
-        }
+        // TODO
+        throw new NotImplementedException();
     }
 }

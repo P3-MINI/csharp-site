@@ -6,9 +6,6 @@ using Newtonsoft.Json;
 namespace Chat.Common.MessageHandlers;
 
 
-public class InvalidMessageReceived(string message) : Exception(message) {}
-
-
 public class MessageReader(Stream stream) : MessageHandler, IDisposable
 {
     public async Task<MessageDTO?> ReadMessage(CancellationToken ct)
@@ -19,7 +16,9 @@ public class MessageReader(Stream stream) : MessageHandler, IDisposable
         if (bytesRead < HeaderLen) // Disconnection from the server
             return null;
 
-        Int32 payloadLen = BinaryPrimitives.ReadInt32BigEndian(headerBuffer);
+        int payloadLen = BinaryPrimitives.ReadInt32BigEndian(headerBuffer);
+        if (payloadLen > MaxMessageLen)
+            throw new TooLongMessageException($"Message is too long: {payloadLen} bytes");
 
         var payloadBuffer = new byte[payloadLen];
 
@@ -31,7 +30,7 @@ public class MessageReader(Stream stream) : MessageHandler, IDisposable
 
         var message = JsonConvert.DeserializeObject<MessageDTO>(json);
         if (message == null)
-            throw new InvalidMessageReceived("Payload cannot be deserialized");
+            throw new InvalidMessageException("Payload cannot be deserialized");
 
         return message;
     }

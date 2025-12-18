@@ -6,9 +6,6 @@ using Newtonsoft.Json;
 namespace Chat.Common.MessageHandlers;
 
 
-public class InvalidMessageReceived(string message) : Exception(message) {}
-
-
 public class MessageReader(Stream stream) : MessageHandler, IDisposable
 {
     public async Task<MessageDTO?> ReadMessage(CancellationToken ct)

@@ -32,7 +32,6 @@ public class MmfBigCsvReader : BigCsvReader
         (long offset, long len) = GetRowOffsetAndLen(row);
         
         var buff = new byte[len];
-        //using var accessor = _csvMmf.CreateViewAccessor(offset, len, MemoryMappedFileAccess.Read);
 
         if (_csvAccessor.ReadArray(offset, buff, 0, buff.Length) < buff.Length)
             throw new IOException("Error while reading csv file");

@@ -7,7 +7,7 @@ class KeyValueServer
         Console.WriteLine("Key-Value Store Server started. (press Ctrl+C to exit)");
         Console.WriteLine("Waiting for client...");
         
-        CancellationTokenSource cts = new();
+        using CancellationTokenSource cts = new();
         
         KvServer server = new("kv_pipe");
 

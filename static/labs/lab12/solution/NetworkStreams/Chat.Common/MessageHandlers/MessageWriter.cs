@@ -13,6 +13,9 @@ public class MessageWriter(Stream stream) : MessageHandler, IDisposable
         string json = JsonConvert.SerializeObject(message);
         byte[] payload = Encoding.UTF8.GetBytes(json);
 
+        if (payload.Length > MaxMessageLen)
+            throw new TooLongMessageException($"Message is too long: {payload.Length} bytes");
+        
         // 4-byte big-endian length prefix
         var header = new byte[HeaderLen];
         BinaryPrimitives.WriteInt32BigEndian(header, payload.Length);

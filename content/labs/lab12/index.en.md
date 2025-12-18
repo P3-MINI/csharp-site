@@ -18,14 +18,18 @@ The goal of the task is to create a simple console application that allows two u
 
 ### Task description
 
+#### ChatCommon
+
 The `ChatCommon` project contains shared code used by both the server and the client applications. It includes the `MessageDTO` class, which represents a single message transmitted over the network, as well as the `MessageHandlers` folder with classes responsible for handling messages.
 
 
-Communication between the programs is carried out over TCP using the following protocol: each message is preceded by a 32-bit header - an `int` value in big-endian format. The header specifies the length of the message in bytes. Immediately after it, the actual message content is transmitted in JSON format, encoded in UTF-8.
+Communication between programs is carried out using the TCP protocol. Each message consists of a 32-bit header, which is an `int` value encoded in big-endian format and specifies the length of the message in bytes. Immediately following the header, the message content is transmitted in JSON format, encoded in UTF-8. The maximum size of a single message must not exceed 10 kB.
 
 As part of this project, the implementations of the following methods must be completed:
- - `ReadMessage` from the `MessageReader` class — in the event of a deserialization error, an `InvalidMessageReceived` exception with an appropriate description should be thrown. If the end of the stream is reached, the method should return `null`.
- - `WriteMessage` from the `MessageWriter` class.
+
+ - `ReadMessage` from the `MessageReader` class - in the event of a deserialization error, an `InvalidMessageReceived` exception with an appropriate description should be thrown. If the message length exceeds the allowed limit, a `TooLongMessageException` should be thrown. If the end of the stream is reached, the method should return `null`.
+
+ - `WriteMessage` in the `MessageWriter` class - before sending a message, its length must be validated. If the allowed limit is exceeded, the method should throw a `TooLongMessageException`.
 
 The `Newtonsoft.Json` library should be used for message serialization and deserialization.
 
@@ -35,8 +39,9 @@ In the `ChatClient` project, implement an asynchronous `Connect` method that att
 
 #### ChatServer
 
-In the `ChatServer` project, implement an asynchronous `ForwardMessagesAsync` method that, until cancellation is requested via a `CancellationToken`, receives messages from one client, logs them to the standard output, and then forwards them to the other client.
+In the `ChatServer` project, an asynchronous method `ForwardMessagesAsync` must be implemented in the `ChatServer.cs` file. Until cancellation is requested via a `CancellationToken`, this method receives messages from one client, writes them to the standard output, and then forwards them to the other client.
 
+In the same file, the `Run` method must also be implemented. Until cancellation is requested via a `CancellationToken`, it waits for two clients to connect and initiates message exchange between them. After the conversation ends, the method should resume waiting for the next clients. The `HandleClientsAsync` method should be used to handle the connected clients.
 
 {{% hint info %}}
 **Useful links:**
@@ -55,7 +60,7 @@ You can check your computer’s IP address using the following commands.
 {{< tabs >}}
 {{% tab "Linux" %}} 
   ``` bash
-  ifconfig -a
+  ip a
   ```
 {{% /tab %}}
 {{% tab "Windows" %}} 
