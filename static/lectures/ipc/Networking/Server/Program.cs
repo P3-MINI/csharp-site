@@ -43,14 +43,7 @@ public static class Program
         }
 
         listener.Stop();
-        try
-        {
-            await Task.WhenAll(clients);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        await Task.WhenAll(clients);
     }
 
     private static async Task HandleClient(TcpClient client, CancellationToken token = default)

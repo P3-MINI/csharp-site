@@ -15,6 +15,9 @@ Serwer nasłuchuje na przychodzące połączenia za pomocą `TcpListener`. Kiedy
 
 Po nawiązaniu połączenia, obie strony komunikują się za pomocą strumienia (`NetworkStream`), który jest "opakowany" w `StreamReader` i `StreamWriter` dla ułatwienia operacji tekstowych.
 
+> [!WARNING]
+> Należy pamiętać, że `StreamReader` i `StreamWriter` wewnętrznie buforują dane. Najlepiej sprawdzają się w protokołach, w których wiadomości są tekstowe i każda z nich jest zakończona znakiem nowej linii. Może to prowadzić do problemów, jeśli protokół jest bardziej złożony. W takich przypadkach lepszym wyborem może być użycie `BinaryReader` i `BinaryWriter`, które dają precyzyjną kontrolę nad odczytem i zapisem danych do strumienia, nawet jeśli są to dane tekstowe.
+
 Zdefiniowany "protokół" jest bardzo prosty - klient wysyła tekstowe komendy (`date`, `time`, `exit`), a serwer odsyła odpowiednią wiadomość. W rzeczywistych aplikacjach protokoły są często bardziej złożone i mogą opierać się na formatach takich jak `JSON` lub na strukturach binarnych.
 
 ```csharp
@@ -63,14 +66,7 @@ public static class Program
         }
 
         listener.Stop();
-        try
-        {
-            await Task.WhenAll(clients);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        await Task.WhenAll(clients);
     }
 
     private static async Task HandleClient(TcpClient client, CancellationToken token = default)

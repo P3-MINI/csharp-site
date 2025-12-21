@@ -1,13 +1,4 @@
----
-title: "Lab11"
-weight: 10
----
-
-# Laboratorium 11: Programowanie równoległe i asynchroniczne
-
-> [!NOTE]
-> ## Kod startowy
-> {{< filetree dir="labs/lab11/student" >}}
+# Lab05 - Programowanie Asynchroniczne i Równoległe
 
 ## Symulacja _[Gry w życie](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)_ – Responsywne UI i Obliczenia Równoległe
 
@@ -131,7 +122,3 @@ Wszystkie zmienne zapisane `specjalną czcionką` są albo parametrami funkcji a
 1. Kliknij `Choose directory...` – pliki powinny pojawiać się na liście pojedynczo (dzięki `Task.Delay` w serwisie).
 2. Kliknij plik na liście – symulacja powinna ruszyć.
 3. Zmień suwak prędkości – symulacja powinna przyspieszyć/zwolnić natychmiast.
-
-> [!NOTE]
-> ## Przykładowe rozwiązanie
-> {{< filetree dir="labs/lab11/solution" >}}

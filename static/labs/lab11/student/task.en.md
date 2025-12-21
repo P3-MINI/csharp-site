@@ -1,13 +1,4 @@
----
-title: "Lab11"
-weight: 10
----
-
-# Lab 11: Parallel and Asynchronous Programming
-
-> [!NOTE]
-> ## Starting code
-> {{< filetree dir="labs/lab11/student" >}}
+# Lab05 - Asynchronous Programming and Parallel Processing
 
 ## Simulation of _[Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)_ – Responsive UI and Parallel Computations
 
@@ -131,7 +122,3 @@ All variables written in `special font` are either function parameters or exist 
 1. Click `Choose directory...` – files should appear on the list one by one (thanks to `Task.Delay` in the service).
 2. Click a file on the list – the simulation should start.
 3. Change the speed slider – the simulation should speed up/slow down immediately.
-
-> [!NOTE]
-> ## Example solution
-> {{< filetree dir="labs/lab11/solution" >}}
