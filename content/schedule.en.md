@@ -19,7 +19,7 @@ Mondays, 16:15 - 18:00, room 328
 | 01.12.2025 | L09: Tasks, Asynchronous Programming, Parallel, Patterns         |
 | 08.12.2025 | L10: Format, Aync. Sequences, Pipes, Network, TCP, Serialization |
 | 15.12.2025 | L11: Dean's Hours                                                |
-| 22.12.2025 | L12:                                                             |
+| 22.12.2025 | L12: Memory Mapping, Unsafe Context                              |
 | 12.01.2026 | L13:                                                             |
 | 19.01.2026 | L14:                                                             |
 | 26.01.2026 | L15:                                                             |

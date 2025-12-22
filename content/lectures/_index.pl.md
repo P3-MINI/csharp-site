@@ -96,3 +96,4 @@ weight: 10
 ## Wykład 12
 
 - [Mapowanie pamięci]({{< ref "10.ipc/memory-mapped-files" >}})
+- [Kontekst niebezpieczny]({{< ref "11.interoperability/unsafe" >}})
