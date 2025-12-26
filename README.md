@@ -3,6 +3,7 @@
 This repository contains the source code for the website of the “Programming 3 – Advanced” course offered by the Faculty of Mathematics and Information Science, Warsaw University of Technology (MiNI PW).
 
 Website URL: https://csharp.mini.pw.edu.pl
+GitHub Pages Mirror: https://p3-mini.github.io/csharp-site
 
 The site is built using [Hugo](https://gohugo.io/), a static site generator. It includes [hugo-book](https://themes.gohugo.io/themes/hugo-book/) theme added as a git submodule. The site is automatically deployed on every push to the master branch.
 
