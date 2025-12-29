@@ -5,9 +5,9 @@ weight: 25
 
 # Projekt
 
-W ramach zaliczenia możemy realizować dowolny projekt. Liczba punktów zależy od jakości i włożonej pracy.
+W ramach zaliczenia można realizować dowolny projekt w C#. Liczba punktów zależy od jakości i włożonej pracy.
 
-Poniżej przykładowe projekty:
+Poniżej proponowane projekty:
 
 ## 1. Raytracer (Raytracing in One Weekend)
 

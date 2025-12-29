@@ -5,7 +5,7 @@ weight: 25
 
 # Project
 
-As part of the course credit, students can implement any project. The number of points depends on quality and effort invested.
+As part of the course credit, students can implement any project in C#. The number of points depends on quality and effort invested.
 
 Below are example projects:
 
