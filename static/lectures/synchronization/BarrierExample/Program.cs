@@ -13,7 +13,7 @@ class Program
             for (int i = 0; i < 5; i++)
             {
                 barrier.SignalAndWait();
-                Console.Write(D6() + " ");
+                Console.Write($"{D6()} ");
                 barrier.SignalAndWait();
             }
         }

@@ -7,8 +7,8 @@ class Program
     private static async Task Main()
     {
         int counter = 0, times = 1_000_000;
-        object locker = new object();
-                
+        var locker = new object();
+
         var sw = Stopwatch.StartNew();
         var increment = Task.Run(() =>
         {

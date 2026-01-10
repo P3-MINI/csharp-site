@@ -9,7 +9,7 @@ public class Queue<T>
 
     private readonly ManualResetEvent _notEmpty;
     private readonly ManualResetEvent _notFull;
-    private readonly object _lock;
+    private readonly Lock _lock;
 
     public Queue(int capacity)
     {
@@ -25,7 +25,7 @@ public class Queue<T>
 
         _notEmpty = new ManualResetEvent(false);
         _notFull = new ManualResetEvent(true);
-        _lock = new object();
+        _lock = new Lock();
     }
 
     public void Enqueue(T item)

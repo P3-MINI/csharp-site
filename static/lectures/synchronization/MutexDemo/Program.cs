@@ -14,18 +14,30 @@ class Program
         {
             for (int i = 0; i < times; i++)
             {
-                mutex.WaitOne(); 
-                counter++; 
-                mutex.ReleaseMutex();
+                mutex.WaitOne();
+                try
+                {
+                    counter++;
+                }
+                finally
+                {
+                    mutex.ReleaseMutex();
+                }
             }
         });
         var decrement = Task.Run(() =>
         {
             for (int i = 0; i < times; i++)
             {
-                mutex.WaitOne(); 
-                counter--; 
-                mutex.ReleaseMutex();
+                mutex.WaitOne();
+                try
+                {
+                    counter--;
+                }
+                finally
+                {
+                    mutex.ReleaseMutex();
+                }
             }
         });
         
