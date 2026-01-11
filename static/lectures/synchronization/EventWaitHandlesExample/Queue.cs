@@ -1,6 +1,6 @@
 namespace EventWaitHandlesExample;
 
-public class Queue<T>
+public class Queue<T> : IDisposable
 {
     private readonly T?[] _array;
     private int _head;
@@ -79,5 +79,12 @@ public class Queue<T>
                 }
             }
         }
+    }
+
+    public void Dispose()
+    {
+        _notEmpty.Dispose();
+        _notFull.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
