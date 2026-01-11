@@ -8,7 +8,7 @@ class Program
 {
     static void Main()
     {
-        var blockingCollection = new BlockingCollection<int>(5);
+        var blockingCollection = new BlockingCollection<int>(boundedCapacity: 5);
 
         Task producer = Task.Run(() =>
         {
