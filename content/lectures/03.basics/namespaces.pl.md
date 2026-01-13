@@ -35,7 +35,7 @@ class classC {}
 
 ## Dyrektywa `using`
 
-Durektywa `using` pozwala na importowanie przestrzeni nazw do bieżącego pliku, dzięki czemu nie trzeba używać pełnej kwalifikacji nazw dla typów w nich zawartych.
+Dyrektywa `using` pozwala na importowanie przestrzeni nazw do bieżącego pliku, dzięki czemu nie trzeba używać pełnej kwalifikacji nazw dla typów w nich zawartych.
 
 ```csharp
 using Outer.Middle.Inner;
