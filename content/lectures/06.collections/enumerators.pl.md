@@ -264,8 +264,14 @@ sequenceDiagram
     participant Odds
     participant Fibonacci
     activate Main
-    Main->>+Odds: MoveNext()
+    Main->>Odds: MoveNext()
     deactivate Main
+    activate Odds
+    Odds->>Fibonacci: MoveNext()
+    deactivate Odds
+    activate Fibonacci
+    Fibonacci->>Odds: 0
+    deactivate Fibonacci
     activate Odds
     Odds->>Fibonacci: MoveNext()
     deactivate Odds
