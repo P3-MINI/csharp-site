@@ -55,7 +55,7 @@ Bind the exported C functions to .NET.
 Create an idiomatic C# object-oriented wrapper that ensures memory and type safety.
 
 1.  **Safety:** The public API must never expose `IntPtr`/`nint` or pointers to the consumer.
-2.  **Resource Ownership:** Implement the `IDisposable` pattern to manage the lifetime of the native scene handles.
+2.  **Resource Ownership:** Implement the `IDisposable` pattern to manage the lifetime of the native handles.
 
 ### Part 4: Demo & Integration [2 Points]
 **File:** `RayTracingDemo/Program.cs`

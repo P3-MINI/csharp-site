@@ -55,7 +55,7 @@ Wykonaj wiązanie wyeksportowanych funkcji C do .NET.
 Stwórz idiomatyczny, obiektowy wrapper w C#, który zapewnia bezpieczeństwo typów i pamięci.
 
 1.  **Bezpieczeństwo:** Publiczne API nigdy nie może eksponować typów `IntPtr`/`nint` ani wskaźników użytkownikowi końcowemu.
-2.  **Własność Zasobów:** Zaimplementuj wzorzec `IDisposable`, aby zarządzać czasem życia natywnych uchwytów sceny.
+2.  **Własność Zasobów:** Zaimplementuj wzorzec `IDisposable`, aby zarządzać czasem życia natywnych uchwytów.
 
 ### Część 4: Demo i integracja [2 Punkty]
 **Plik:** `RayTracingDemo/Program.cs`
