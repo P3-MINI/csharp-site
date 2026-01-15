@@ -1,5 +1,6 @@
 ---
 title: "Projekt"
+bookCollapseSection: true
 weight: 25
 ---
 

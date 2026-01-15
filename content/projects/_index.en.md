@@ -1,5 +1,6 @@
 ---
 title: "Project"
+bookCollapseSection: true
 weight: 25
 ---
 
@@ -29,7 +30,7 @@ Below are example projects:
 
 ## 3. Backup Program
 
-**Description:** Implement the requirements of the SOP project, but use threads, tasks, or asynchronous programming instead of processes.
+**Description:** Implement the requirements of the OPS project, but use threads, tasks, or asynchronous programming instead of processes.
 
 **Points:** approx. 4
 
