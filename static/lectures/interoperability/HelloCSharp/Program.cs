@@ -5,7 +5,7 @@ namespace HelloCSharp;
 public partial class Program
 {
     [LibraryImport("HelloCpp")]
-    private static partial void Hello([MarshalAs(UnmanagedType.U1)]bool val);
+    private static partial void Hello();
     
     private static void Main()
     {
