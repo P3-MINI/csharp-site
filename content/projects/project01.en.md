@@ -7,10 +7,8 @@ weight: 10
 
 **Total Points:** 8
 
-## Starting code
-
 > [!NOTE]
-> **Graphs**
+> ## Starting code
 > {{< filetree dir="projects/project01/student" >}}
 
 ## 1. Overview
