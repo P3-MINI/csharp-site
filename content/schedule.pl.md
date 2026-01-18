@@ -20,9 +20,9 @@ Poniedziałki, 14:15 - 16:00, sala 328
 | 08.12.2025 | L10: Format, Asynchr. sekwencje, Łącza, Sieć, TCP, Serializacja  |
 | 15.12.2025 | L11: Ważne warsztaty                                             |
 | 22.12.2025 | L12: Mapowanie pamięci, Kontekst niebezpieczny                   |
-| 12.01.2026 | L13:                                                             |
-| 19.01.2026 | L14:                                                             |
-| 26.01.2026 | L15:                                                             |
+| 12.01.2026 | L13: P/Invoke, Synchronizacja, Blokowanie wyłączne               |
+| 19.01.2026 | L14: Blokowanie współdzielone, Sygnalizacja, Kolekcje współbieżne, Generatory źródeł |
+| 26.01.2026 | L15: Konsultacje, Prezentacje studentów                          |
 
 ## Laboratoria
 

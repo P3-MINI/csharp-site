@@ -7,10 +7,8 @@ weight: 10
 
 **Suma punktów:** 8
 
-## Kod początkowy
-
 > [!NOTE]
-> **Graphs**
+> ## Kod początkowy
 > {{< filetree dir="projects/project01/student" >}}
 
 ## 1. Przegląd

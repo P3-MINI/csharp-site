@@ -97,3 +97,21 @@ weight: 10
 
 - [Memory Mapping]({{< ref "10.ipc/memory-mapped-files" >}})
 - [Unsafe Context]({{< ref "11.interoperability/unsafe" >}})
+
+## Wykład 13
+
+- [P/Invoke]({{< ref "11.interoperability/pinvoke" >}})
+- [Synchronization]({{< ref "12.synchronization/introduction" >}})
+- [Exclusive Locking]({{< ref "12.synchronization/exclusive-locking" >}})
+
+## Wykład 14
+
+- [Non-exclusive Locking]({{< ref "12.synchronization/non-exclusive-locking" >}})
+- [Signaling]({{< ref "12.synchronization/signaling" >}})
+- [Concurrent Collections]({{< ref "12.synchronization/concurrent-collections" >}})
+- [Source Generators]({{< ref "13.others/source-generators" >}})
+
+## Wykład 15
+
+- Office hours
+- Students' presentations
