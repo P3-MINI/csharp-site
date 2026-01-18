@@ -97,3 +97,21 @@ weight: 10
 
 - [Mapowanie pamięci]({{< ref "10.ipc/memory-mapped-files" >}})
 - [Kontekst niebezpieczny]({{< ref "11.interoperability/unsafe" >}})
+
+## Wykład 13
+
+- [P/Invoke]({{< ref "11.interoperability/pinvoke" >}})
+- [Synchronizacja]({{< ref "12.synchronization/introduction" >}})
+- [Blokowanie wyłączne]({{< ref "12.synchronization/exclusive-locking" >}})
+
+## Wykład 14
+
+- [Blokowanie współdzielone]({{< ref "12.synchronization/non-exclusive-locking" >}})
+- [Sygnalizacja]({{< ref "12.synchronization/signaling" >}})
+- [Kolekcje współbieżne]({{< ref "12.synchronization/concurrent-collections" >}})
+- [Generatory źródeł]({{< ref "13.others/source-generators" >}})
+
+## Wykład 15
+
+- Konsultacje
+- Prezentacje studentów
