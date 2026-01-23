@@ -77,9 +77,9 @@ Fill in the `Main` function in the `PatternGenerationDemo` project to create at 
 
 ### Example results
 `populate`
-![populate](Data/Image1.png)
+![populate](data/Image1.png)
 `enstripen`
-![enstripen](Data/Image2.png)
+![enstripen](data/Image2.png)
 
 ### Example solution
 
