@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36811.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileInteraction", "FileInteraction\FileInteraction.csproj", "{50346E0A-0DA6-4340-BF3F-914ABDEFAC19}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{50346E0A-0DA6-4340-BF3F-914ABDEFAC19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50346E0A-0DA6-4340-BF3F-914ABDEFAC19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50346E0A-0DA6-4340-BF3F-914ABDEFAC19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50346E0A-0DA6-4340-BF3F-914ABDEFAC19}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EDBC7DBE-1B59-4C69-AD59-DFAE9DB99518}
+	EndGlobalSection
+EndGlobal
