@@ -23,7 +23,7 @@ A partially implemented class that imports system functions for handling files c
 
 Check what values the file opening function declares as invalid. Make the `MyFile` class inherit from the correct `SafeHandle` so it matches the invalid values. Make sure you do it in `WindowsFile.cs` if you're on Windows or `UnixFile.cs` if you're on OSX or Linux. Finish the correct implementation for your system. Fill in `Open` and `Read` in the file `MyFile.cs`. You can test the program by running it.
 
-After the workshop you're encouraged to try this task for the other system setup.
+After the workshop you're encouraged to try this task for the other operating system setup.
 
 {{% hint info %}}
 **Useful links:**
@@ -62,9 +62,7 @@ Import the functions shared in `pattern.h` using `LibraryImport` in the `Pattern
 
 The library distributors might not release the full internal data layout for the user. The user might care about only a small part of the structure and not need it whole. Use `Marshall.Copy` in the `GetImage` function (`Pattern.cs`) to extract the dimensions and contents of the `color_t[] values` array hidden under the opaque handle. Utilise the fact that the fields will be laid out sequentially like in `pattern.h` (with offset 0, then offset `sizeof(int)` and `sizeof(int)*2`). The struct `color_t` has the same layout as the `Rgb24` structure. Use the acquired data to create an image with  `Image.LoadPixelData<Rgb24>`.
 
-Fill in the `Main` function in the `PatternGenerationDemo` project to create at least one image each with the functions `pattern_enstripen` and `pattern_populate`.
-
-Uzupełnij funkcję `Main` w projekcie `PatternGenerationDemo` aby tworzyło się co najmniej po jednym obrazie z użyciem fukcji `pattern_enstripen` oraz `pattern_populate`.
+Fill in the `Main` function in the `PatternGenerationDemo` project to create at least one image each with the functions `pattern_enstripen` and `pattern_populate`. 
 
 {{% hint info %}}
 **Useful links:**
@@ -77,6 +75,11 @@ Uzupełnij funkcję `Main` w projekcie `PatternGenerationDemo` aby tworzyło si�
 
 {{% /hint %}}
 
+### Example results
+`populate`
+![populate](Data/Image1.png)
+`enstripen`
+![enstripen](Data/Image2.png)
 
 ### Example solution
 

@@ -23,7 +23,7 @@ W projekcie `FileInteraction` znajdziesz częściowo zaimplementowaną klasę ł
 
 Sprawdź jakie wartości zwracane przez funkcję otwierającą plik powinny być interpretowane jako niewłaściwe. Dokończ implementację części odpowiadającej systemowi którego używasz. Dodaj do klasy `MyFile` w pliku `WindowsFile.cs` lub `UnixFile.cs` dziedziczenie po odpowiedniej klasie z rodziny `SafeHandle` i zaimplementuj potrzebne funkcje. W pliku `MyFile.cs` uzupełnij funkcje `Open` oraz `Read`. Program możesz przetestować uruchamiając go.
 
-Po zakończeniu zajęć zachęcamy do próby wykonania zadania w innym systemie.
+Po zakończeniu zajęć zachęcamy do próby wykonania zadania na innym systemie operacyjnym.
 
 {{% hint info %}}
 **Materiały pomocnicze:**
@@ -33,9 +33,7 @@ Po zakończeniu zajęć zachęcamy do próby wykonania zadania w innym systemie.
 - [POSIX Manual: open](https://www.man7.org/linux/man-pages/man3/open.3p.html)
 - [Microsoft Learn: CreateFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea)
 
-
 {{% /hint %}}
-
 
 ### Przykładowe rozwiązanie
 
@@ -74,6 +72,11 @@ Uzupełnij funkcję `Main` w projekcie `PatternGenerationDemo` aby tworzyło si�
 
 {{% /hint %}}
 
+### Przykładowy rezultat
+`populate`
+![populate](Data/Image1.png)
+`enstripen`
+![enstripen](Data/Image2.png)
 
 ### Przykładowe rozwiązanie
 
