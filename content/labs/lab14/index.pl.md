@@ -74,9 +74,9 @@ Uzupełnij funkcję `Main` w projekcie `PatternGenerationDemo` aby tworzyło si�
 
 ### Przykładowy rezultat
 `populate`
-![populate](Data/Image1.png)
+![populate](data/Image1.png)
 `enstripen`
-![enstripen](Data/Image2.png)
+![enstripen](data/Image2.png)
 
 ### Przykładowe rozwiązanie
 
