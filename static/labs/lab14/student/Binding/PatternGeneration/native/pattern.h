@@ -27,5 +27,5 @@ typedef struct stripe_settings
 LIBRARY pattern_t* pattern_init(int width, int height);
 LIBRARY void pattern_populate(pattern_t* pattern, point_t* points,
                               int point_count);
-LIBRARY void pattern_enstripen(pattern_t* pattern, stripe_settings_t settings);
+LIBRARY void pattern_enstripen(pattern_t* pattern, stripe_settings_t* settings);
 LIBRARY void pattern_destroy(pattern_t* pattern);
