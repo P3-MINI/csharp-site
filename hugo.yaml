@@ -7,7 +7,6 @@ disableKinds:
 
 buildFuture: true
 defaultContentLanguageInSubdir: true
-disqusShortname: "csharp-mini"
 enableGitInfo: true
 
 baseURL: "https://csharp.mini.pw.edu.pl/"
@@ -32,6 +31,7 @@ params:
   BookEditPath: edit/master
   BookCommitPath: commit
   BookDateFormat: '2 January 2006'
+  BookComments: true
 
 markup:
   goldmark:
