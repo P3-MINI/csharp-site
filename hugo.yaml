@@ -13,12 +13,12 @@ baseURL: "https://csharp.mini.pw.edu.pl/"
 
 languages:
   pl:
-    languageName: Polski (Informatyka)
+    label: Polski (Informatyka)
     title: Programowanie 3
     weight: 1
 
   en:
-    languageName: English (Computer Science)
+    label: English (Computer Science)
     title: Programming 3
     weight: 2
 
