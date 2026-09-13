@@ -193,8 +193,7 @@ W praktyce plik `.gitignore` nie zawsze musimy pisać ręcznie. W projektach .NE
 3. Sprawdź stan repozytorium za pomocą komendy `git status`.
 4. Dodaj oba pliki do staging area i sprawdź, jak zmienił się stan plików.
 5. Utwórz pierwszy commit z wiadomością `Initial commit`. 
-6. Połącz lokalne repozytorium z repozytorium utworzonym wcześniej na Githubie. Adres repozytorium możesz znaleźć tutaj:
-![[Adres_repo.png]]
+6. Połącz lokalne repozytorium z repozytorium utworzonym wcześniej na Githubie. Adres repozytorium możesz znaleźć na stronie repozytorium w zakładce Quick Setup, a po spushowaniu czegokolwiek pojawi się w zakładce Code.
 7. Otwórz repozytorium i sprawdź czy pojawiły się w nim pliki.
 8. W pliku `Program.cs` zapisz dowolny fragment kodu np. pętlę wypisującą liczby od 1 do 10. 
 9. Utwórz nowy commit i prześlij zmiany do repozytorium na Githubie. Sprawdź czy plik uległ zmianie.
