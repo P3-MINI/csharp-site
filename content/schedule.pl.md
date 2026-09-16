@@ -6,42 +6,43 @@ title: "Harmonogram"
 
 Poniedziałki, 14:15 - 16:00, sala 328
 
-| Data       | Temat                                                            |
+| **Data**   | **Temat**                                                        |
 |------------|------------------------------------------------------------------|
-| 06.10.2025 | L01: git, Wprowadzenie do .NET i C#, MSBuild                     |
-| 13.10.2025 | L02: Klasy/Struktury/Interfejsy, Dziedziczenie, Właściwości      |
-| 20.10.2025 | L03: Generyki, Krotki, Nullowalność, Enumeratory                 |
-| 27.10.2025 | L04: Delegaty, Metody Rozszerzające, Kolekcje                    |
-| 03.11.2025 | L05: LINQ, Rekordy, Wyjątki                                      |
-| 13.11.2025 | L06: Zdarzenia, Pliki, Strumienie, System plików, archiwa        |
-| 17.11.2025 | L07: Disposable, Atrybuty, Refleksja, Assembly                   |
-| 24.11.2025 | L08: Operatory, Dokumentacja, Preprocesor, Wzorce, Wątki         |
-| 01.12.2025 | L09: Zadania, Programowanie asynchroniczne, Parallel             |
-| 08.12.2025 | L10: Format, Asynchr. sekwencje, Łącza, Sieć, TCP, Serializacja  |
-| 15.12.2025 | L11: Ważne warsztaty                                             |
-| 22.12.2025 | L12: Mapowanie pamięci, Kontekst niebezpieczny                   |
-| 12.01.2026 | L13: P/Invoke, Synchronizacja, Blokowanie wyłączne               |
-| 19.01.2026 | L14: Blokowanie współdzielone, Sygnalizacja, Kolekcje współbieżne, Generatory źródeł |
-| 26.01.2026 | L15: Konsultacje, Prezentacje studentów                          |
+| 05.10.2025 | L01:                                                             |
+| 12.10.2025 | L02:                                                             |
+| 19.10.2025 | L03:                                                             |
+| 26.10.2025 | L04:                                                             |
+| 02.11.2025 | L05:                                                             |
+| 09.11.2025 | L06:                                                             |
+| 16.11.2025 | L07:                                                             |
+| 23.11.2025 | L08:                                                             |
+| 30.11.2025 | L09:                                                             |
+| 07.12.2025 | L10:                                                             |
+| 14.12.2025 | L11:                                                             |
+| 21.12.2025 | L12:                                                             |
+| 11.01.2026 | L13:                                                             |
+| 18.01.2026 | L14:                                                             |
+| 25.01.2026 | L15:                                                             |
 
 ## Laboratoria
 
 Piątki, 16:15 - 18:00
 
-| Data       | Temat                                                            |
-|------------|------------------------------------------------------------------|
-| 03.10.2025 | W1: git, C# Basics                                               |
-| 10.10.2025 | W2: MSBuild, Unit Tests, .NET CLI                                |
-| 17.10.2025 | L1: Classes/Structs/Interfaces, Inheritance, Properties          |
-| 24.10.2025 | W3: Base Class Library, Collections, Generics                    |
-| 31.10.2025 | W4: Enumerable, Lambda Expressions, LINQ, Extension Methods      |
-| 07.11.2025 | L2: Enumerable, Lambda Expressions, LINQ, Extension Methods      |
-| 14.11.2025 | L3: Events, Files, Filesystem, Streams                           |
-| 21.11.2025 | W5: Assembly, Reflection                                         |
-| 28.11.2025 | L4: Assembly, Reflection                                         |
-| 05.12.2025 | W6: Threads, Tasks, async/await, Parallel                        |
-| 12.12.2025 | L5: Threads, Tasks, async/await, Parallel                        |
-| 19.12.2025 | W7: Network Streams, Pipes, Memory-Mapped Files                  |
-| 16.01.2026 | L6: Network Streams, Pipes, Memory-Mapped Files                  |
-| 23.01.2026 | W8: Interoperability, Marshal, Unsafe                            |
-| 30.01.2026 | L7: Synchronization                                              |
+| **Data**   | **Temat**                                                     |
+| ---------- | ------------------------------------------------------------- |
+| 02.10.2025 | W01: git                                                      |
+| 09.10.2025 | W02: msbuild                                                  |
+| 16.10.2025 | W03: C# Podstawy                                              |
+| 23.10.2025 | L01: C# Podstawy                                              |
+| 30.10.2025 | W04: Kolekcje, Generyki                                       |
+| 06.11.2025 | W05: Enumerable, Wyrażenia Lambda, LINQ, Metody Rozszerzające |
+| 20.11.2025 | L02: Enumerable, Wyrażenia Lambda, LINQ, Metody Rozszerzające |
+| 27.11.2025 | W06: Zdarzenia, System Plików, Strumienie                     |
+| 04.12.2025 | L03: Zdarzenia, System Plików, Strumienie                     |
+| 11.12.2025 | W07: Zestawy, Refleksja                                       |
+| 18.12.2025 | L04: Zestawy, Refleksja                                       |
+| 08.01.2026 | W08: Współbieżność                                            |
+| 15.01.2026 | W09: Sieć, Serializacja                                       |
+| 22.01.2026 | L05: Współbieżność, Sieć, Serializacja                        |
+| 29.01.2026 | W10: Współdziałanie                                           |
+

@@ -18,6 +18,8 @@ menu:
 
 ### Laboratory
 
-- Adam Grącikowski
-- Anna Kozłowska
+- Bartosz Kaczorowski
+- Tomasz Herman
 - Piotr Krasowski
+- Maciej Ejduk
+- Aleksander Szydłowski
