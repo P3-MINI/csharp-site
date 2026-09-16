@@ -6,42 +6,42 @@ title: "Schedule"
 
 Mondays, 16:15 - 18:00, room 328
 
-| Date       | Topic                                                            |
+| **Date**   | **Topic**                                                        |
 |------------|------------------------------------------------------------------|
-| 06.10.2025 | L01: git, .NET and C# Introduction, MSBuild                      |
-| 13.10.2025 | L02: Classes/Structs/Interfaces, Inheritance, Properties         |
-| 20.10.2025 | L03: Generics, Enumerators, Tuples                               |
-| 27.10.2025 | L04: Delegates, Extension Methods, Collections, LINQ             |
-| 03.11.2025 | L05: Nullable, Exceptions, Records, Events                       |
-| 13.11.2025 | L06: Files, Filesystem, Streams, Archives                        |
-| 17.11.2025 | L07: Disposable, Attributes, Reflection, Assembly                |
-| 24.11.2025 | L08: Operators, Documentation, Preprocessor, Threads             |
-| 01.12.2025 | L09: Tasks, Asynchronous Programming, Parallel, Patterns         |
-| 08.12.2025 | L10: Format, Aync. Sequences, Pipes, Network, TCP, Serialization |
-| 15.12.2025 | L11: Dean's Hours                                                |
-| 22.12.2025 | L12: Memory Mapping, Unsafe Context                              |
-| 12.01.2026 | L13: P/Invoke, Synchronization, Exclusive Locking                |
-| 19.01.2026 | L14: Non-exclusive Locking, Signaling, Concurrent Collections, Source Generators |
-| 26.01.2026 | L15: Office hours, Students' presentations                       |
+| 05.10.2026 | L01:                                                             |
+| 12.10.2026 | L02:                                                             |
+| 19.10.2026 | L03:                                                             |
+| 26.10.2026 | L04:                                                             |
+| 02.11.2026 | L05:                                                             |
+| 09.11.2026 | L06:                                                             |
+| 16.11.2026 | L07:                                                             |
+| 23.11.2026 | L08:                                                             |
+| 30.11.2026 | L09:                                                             |
+| 07.12.2026 | L10:                                                             |
+| 14.12.2026 | L11:                                                             |
+| 21.12.2026 | L12:                                                             |
+| 11.01.2027 | L13:                                                             |
+| 18.01.2027 | L14:                                                             |
+| 25.01.2027 | L15:                                                             |
 
 ## Laboratories
 
 Fridays, 18:15 - 20:00
 
-| Date       | Topic                                                            |
-|------------|------------------------------------------------------------------|
-| 03.10.2025 | W1: git, C# Basics                                               |
-| 10.10.2025 | W2: MSBuild, Unit Tests, .NET CLI                                |
-| 17.10.2025 | L1: Classes/Structs/Interfaces, Inheritance, Properties          |
-| 24.10.2025 | W3: Base Class Library, Collections, Generics                    |
-| 31.10.2025 | W4: Enumerable, Lambda Expressions, LINQ, Extension Methods      |
-| 07.11.2025 | L2: Enumerable, Lambda Expressions, LINQ, Extension Methods      |
-| 14.11.2025 | L3: Events, Files, Filesystem, Streams                           |
-| 21.11.2025 | W5: Assembly, Reflection                                         |
-| 28.11.2025 | L4: Assembly, Reflection                                         |
-| 05.12.2025 | W6: Threads, Tasks, async/await, Parallel                        |
-| 12.12.2025 | L5: Threads, Tasks, async/await, Parallel                        |
-| 19.12.2025 | W7: Network Streams, Pipes, Memory-Mapped Files                  |
-| 16.01.2026 | L6: Network Streams, Pipes, Memory-Mapped Files                  |
-| 23.01.2026 | W8: Interoperability, Marshal, Unsafe                            |
-| 30.01.2026 | L7: Synchronization                                              |
+| **Date**   | **Topic**                                                    |
+| ---------- | ------------------------------------------------------------ |
+| 02.10.2026 | W01: git                                                     |
+| 09.10.2026 | W02: msbuild                                                 |
+| 16.10.2026 | W03: C# Basics                                               |
+| 23.10.2026 | L01: C# Basics                                               |
+| 30.10.2026 | W04: Collections, Generics                                   |
+| 06.11.2026 | W05: Enumerable, Lambda Expressions, LINQ, Extension Methods |
+| 20.11.2026 | L02: Enumerable, Lambda Expressions, LINQ, Extension Methods |
+| 27.11.2026 | W06: Events, Filesytem, Streams                              |
+| 04.12.2026 | L03: Events, Filesytem, Streams                              |
+| 11.12.2026 | W07: Assembly, Reflection                                    |
+| 18.12.2026 | L04: Assembly, Reflection                                    |
+| 08.01.2027 | W08: Concurrency                                             |
+| 15.01.2027 | W09: Networking, Serialization                               |
+| 22.01.2027 | L05: Concurrency, Networking, Serialization                  |
+| 29.01.2027 | W10: Interoperability                                        |
