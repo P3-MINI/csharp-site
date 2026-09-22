@@ -83,9 +83,39 @@ Oznacza to, że zmiany znajdują się już w **staging area** i zostaną zapisan
 
 
 `git status` warto wykonywać bardzo często, szczególnie przed użyciem `git add` oraz `git commit`. Pozwala to upewnić się, jakie zmiany znajdują się obecnie w repozytorium i które z nich zostaną zapisane w kolejnym commicie.
+
+### Sprawdzanie zmian
+
+`git status` pokazuje, które pliki zostały zmodyfikowane, natomiast `git diff`
+pozwala zobaczyć konkretne różnice w ich zawartości.
+
+Najczęściej używane warianty:
+
+`git diff`
+- pokazuje zmiany, które nie zostały jeszcze dodane do staging area.
+
+`git diff --staged`
+- pokazuje zmiany znajdujące się już w staging area, czyli te, które trafią
+do następnego commita.
+
+`git diff HEAD`
+- pokazuje wszystkie zmiany względem ostatniego commita, zarówno staged,
+jak i unstaged.
+
+`git diff <commit1> <commit2>`
+- porównuje dwa wybrane commity.
+
+Przydatne mogą być również:
+
+`git diff --stat`
+- pokazuje krótkie podsumowanie zmian.
+
+`git diff --name-only`
+- wyświetla tylko nazwy zmienionych plików.
+  
 ## Zdalne repozytoria 
 
-Jeśli chcielibyśmy współpracować z innymi programistami lub utworzyć kopię zapasową w chmurze możemy wykorzystać **Zdalne repozytorium**. Zazwyczaj będzie on na serwisie hostingowym np. GitHubie. 
+Jeśli chcielibyśmy współpracować z innymi programistami lub utworzyć kopię zapasową w chmurze możemy wykorzystać **Zdalne repozytorium**. Zazwyczaj będzie ono na serwisie hostingowym np. GitHubie. 
 
 ### Tworzenie kluczy SSH
 
@@ -125,6 +155,10 @@ git push -u origin main
 ```
 
 Od tego momentu lokalne repozytorium jest połączone ze zdalnym i kolejne zmiany możemy przesyłać za pomocą polecenia `git push`.
+
+### Pobieranie zmian
+
+Podczas pracy nad projektem inni programiści mogą przesłać nowe commity do zdalnego repozytorium. Możemy je pobrać na dwa sposoby - za pomocą `git fetch` lub `git pull`. Komenda `git fetch` pobiera nowe commity i informacje ze zdalnego repozytorium, ale nie zmienia automatycznie naszych lokalnych plików - zmiany pojawiają się w naszym lokalnym repozytorium w folderze `.git`. Dzięki temu możemy najpierw sprawdzić, jakie zmiany pojawiły się w repozytorium. Jeżeli chcemy od razu pobrać zmiany i dołączyć je z naszą lokalną wersją projektu, możemy użyć polecenia `git pull`. Jeżeli lokalnie i zdalnie zmieniono te same fragmenty pliku, podczas `git pull` może wystąpić konflikt, który trzeba będzie ręcznie rozwiązać.
 
 ### Wyświetlanie historii commitów - `git log`
 
@@ -166,6 +200,20 @@ Pierwsza część każdego wiersza to skrócony identyfikator commita, a druga t
 - sprawdzić kolejność commitów,
 - odnaleźć identyfikator wcześniejszej wersji projektu.
 
+### Wskaźnik HEAD i poruszanie się w historii
+
+W poleceniach takich jak `git reset` często pojawia się słowo `HEAD`.
+
+**`HEAD`** to wskaźnik na Twój aktualny commit (miejsce, w którym obecnie "stoisz"). Git pozwala odwoływać się do wcześniejszych commitów za pomocą symboli `~` (tylda) oraz `^`
+(karetka). W prostej, liniowej historii oznaczają one to samo:
+* `HEAD` - obecny commit.
+* `HEAD~1` (lub `HEAD^`) - poprzedni commit (rodzic).
+
+Różnica pojawia się przy cofaniu się o więcej kroków lub przy commitach typu merge (które mają dwóch rodziców):
+* **Tylda (`~`)** oznacza pokolenia w linii prostej. `HEAD~2` to "dziadek" obecnego commita (rodzic pierwszego rodzica).
+* **Karetka (`^`)** pozwala wybrać konkretnego rodzica przy merge'u. `HEAD^1` to gałąź, na której staliśmy podczas łączenia, a `HEAD^2` to gałąź, która została dołączona.
+
+W codziennej pracy do cofania ostatniego commita najczęściej używa się zapisu `HEAD~1`.
 ## Ignorowanie plików za pomocą `.gitignore`
 
 Czasami twój projekt będzie zawierał pliki, które nie powinny być zapisywane w repozytorium. Mogą to być np. pliki binarne i logi generowane przez program lub dane poufne, których nie chcemy udostępniać innym osobom. 
@@ -181,29 +229,30 @@ Plik `.gitignore` jest częścią projektu i powinien zostać zcommittowany tak 
 
 W praktyce `.gitignore` jest jednym z pierwszych plików, które warto przygotować podczas tworzenia nowego repozytorium.
 
->[!warning] Uwaga!
+>[!WARNING]
 >Dodanie pliku do .gitignore zadziała tylko na pliki, których Git jeszcze NIE śledzi. Jeśli zacommitowałeś plik z hasłami, dodanie go do .gitignore nic nie da.
 
 W praktyce plik `.gitignore` nie zawsze musimy pisać ręcznie. W projektach .NET możemy wygenerować gotowy szablon poleceniem `dotnet new gitignore`. Zawiera on typowe reguły dla projektów C#, więc zazwyczaj od razu nadaje się do użycia. 
 
 ## Zadanie 1
 
-1. Utwórz nowe puste repozytorium o nazwie `Task1` na Githubie, a także folder o tej samej nazwie na swoim komputerze.
-2. Utwórz w tym katalogu lokalne repozytorium Git, a następnie utwórz puste pliki `README.md`, oraz `Program.cs`.
-3. Sprawdź stan repozytorium za pomocą komendy `git status`.
-4. Dodaj oba pliki do staging area i sprawdź, jak zmienił się stan plików.
-5. Utwórz pierwszy commit z wiadomością `Initial commit`. 
-6. Połącz lokalne repozytorium z repozytorium utworzonym wcześniej na Githubie. Adres repozytorium możesz znaleźć na stronie repozytorium w zakładce Quick Setup, a po spushowaniu czegokolwiek pojawi się w zakładce Code.
-7. Otwórz repozytorium i sprawdź czy pojawiły się w nim pliki.
-8. W pliku `Program.cs` zapisz dowolny fragment kodu np. pętlę wypisującą liczby od 1 do 10. 
-9. Utwórz nowy commit i prześlij zmiany do repozytorium na Githubie. Sprawdź czy plik uległ zmianie.
-10. Utwórz w projekcie katalog `logs`, a w nim kilka plików np. `application.log` `err.log` `niedotykac.txt`
-11. W głównym katalogu projektu utwórz plik `notes.tmp`
-12. Utwórz plik `.gitignore`. Skonfiguruj go tak, aby Git ignorował katalog `logs`, oraz wszystkie pliki z rozszerzeniem, `.tmp`.
-13. Dodaj plik do staging area i utwórz commit `Add gitignore`.
-14. Zmodyfikuj plik `README.md` i dodaj wszystkie pliki do staging area za pomocą `git add .`, a następnie sprawdź status. Czy ignorowane pliki się tam pojawiają? Utwórz commit i prześlij go na Githuba.
-15. Wyświetl historię wykonanych commitów za pomocą: `git log --oneline`.
-16. Na koniec sprawdź jakie pliki są w repozytorium na Githubie. 
+Utwórz nowy projekt aplikacji konsolowej C# za pomocą polecenia `dotnet new console`.
+
+Rozpocznij śledzenie projektu za pomocą systemu Git oraz utwórz dla niego zdalne repozytorium na GitHubie.
+
+W trakcie wykonywania zadania:
+
+- przygotuj plik `.gitignore` odpowiedni dla projektu .NET; możesz wygenerować go poleceniem `dotnet new gitignore`
+- utwórz pierwszy commit zawierający początkową wersję projektu,
+- zmodyfikuj aplikację tak, aby wyświetlała komunikat powitalny,
+- zapisz tę zmianę jako osobny commit,
+- rozbuduj program o pobieranie wieku użytkownika i wyświetlanie informacji, ile lat będzie miał za 10 lat,
+- zapisz tę funkcjonalność w kolejnym commicie,
+- prześlij historię projektu do repozytorium na GitHubie.
+
+Przed utworzeniem każdego commita sprawdź stan repozytorium oraz zmiany, które mają zostać zapisane. Po zakończeniu pracy wyświetl skróconą historię commitów.
+
+Repozytorium na GitHubie nie powinno zawierać plików generowanych podczas kompilacji projektu, takich jak zawartość katalogów `bin` i `obj`.
 
 ## Branche 
 
@@ -212,11 +261,24 @@ Podczas pracy nad projektem często chcemy rozwijać nową funkcjonalność bez 
 Możemy wyobrazić sobie historię projektu jako pewną "drogę". Utworzenie brancha powoduje powstanie nowej odnogi tej drogi. Od tego momentu na obu gałęziach mogą powstawać niezależne commity. Główna gałąź projektu zazwyczaj nazywa się `main` lub `master`.
 
 Na przykład:
-
-```
-A---B---C  main
-     \
-      D---E  feature
+```mermaid
+---
+config:
+  gitGraph:
+      mainBranchName: 'main'
+---
+gitGraph
+   commit 
+   commit 
+   commit 
+   branch login
+   checkout login 
+   commit 
+   commit 
+   commit 
+   checkout main
+   commit
+   merge login id: "5-cdb67ab"
 ```
 
 Tutaj `feature` został utworzony na podstawie commita B i rozwija się niezależnie od `main`.
@@ -229,12 +291,14 @@ Na nowego brancha możemy się przełączyć za pomocą komendy `git switch <naz
 
 Aby przesłać commita na konkretnego brancha na Githubie korzystamy z `git push -u origin <nazwa_brancha>`. Możemy jednocześnie utworzyć nowego brancha i się na niego przełączyć korzystając z polecenia `git switch -c <nazwa>`.
 
+W starszych tutorialach bardzo często spotkasz polecenie `git checkout`. Może ono służyć zarówno do przełączania branchy, jak i przywracania plików. W tym tutorialu korzystamy z nowszych, bardziej jednoznacznych poleceń: `git switch` do pracy z branchami oraz `git restore` do przywracania plików.
 ### Łączenie gałęzi
 
 Załóżmy, że na gałęzi `login` zakończyliśmy implementację logowania. Jeżeli chcemy, aby ta funkcjonalność znalazła się również na głównej gałęzi `main`, musimy połączyć obie gałęzie. 
 
 Komenda `git merge <nazwa gałęzi>` dołącza zmiany z gałęzi, której nazwę wpisaliśmy do gałęzi na której obecnie się znajdujemy. Na przykład jeśli będąc na gałęzi main wykonamy polecenie `git merge login` to wszystkie zmiany z gałęzi login zostaną dołączone do gałęzi main. Przed scaleniem branchy warto sprawdzić, na której gałęzi obecnie się znajdujemy oraz czy zcommitowaliśmy wszystkie zmiany.
 
+Istnieją także inne sposoby na połączenie gałęzi. **Merge** łączy historie dwóch branchy, zachowując wszystkie wcześniejsze commity. Zaletą jest przechowanie pełnej historii, ale przy dużej liczbie branchy może **Squash merge** łączy zmiany z danego brancha w jeden commit. Dzięki temu historia głównej gałęzi jest prostsza, ale nie widać w niej pojedynczych commitów. **Rebase** przenosi commity z jednego brancha na koniec drugiego. Trzeba jednak pamiętać, że rebase zmienia historię commitów, dlatego należy używać go ostrożnie, szczególnie w przypadku zmian już udostępnionych innym osobom. 
 ### Konflikty 
 
 Jeżeli na dwóch branchach zmieniano różne fragmenty projektu, Git połączy te gałęzie bez problemu. Jednakże w sytuacjach, gdy doszło do zmian tej samej linii kodu lub np. jedna gałąź modyfikuje pewien fragment kodu, a druga go usuwa dochodzi do **konfliktu**.
@@ -269,95 +333,16 @@ Komenda `git merge --abort` przerywa obecny merge i przywraca repozytorium do st
 
 ## Zadanie 2
 
-1. Utwórz nowe puste repozytorium o nazwie `Task2` na GitHubie oraz folder o tej samej nazwie na swoim komputerze.
-2. Utwórz w tym katalogu lokalne repozytorium Git.
-3. Utwórz plik `README.md` o zawartości:
-```md
-# Task2
+Utwórz prostą aplikację konsolową C# za pomocą `dotnet new console`.
+Program powinien początkowo wyświetlać proste menu. Umieść projekt pod kontrolą wersji i prześlij jego początkową wersję na GitHuba. Następnie utwórz osobny branch przeznaczony do dodania nowej funkcjonalności, np. obsługi dodatkowej operacji w menu. Wprowadź na nim potrzebne zmiany i zapisz je w commicie. W międzyczasie zasymuluj pracę innej osoby. Otwórz `Program.cs` bezpośrednio na GitHubie na głównej gałęzi i zmodyfikuj fragment kodu związany z menu lub komunikatem wyświetlanym użytkownikowi. Wróć do lokalnego brancha i również zmodyfikuj ten sam fragment kodu, ale w inny sposób. Następnie zaktualizuj swoją lokalną pracę o zmiany znajdujące się na głównej gałęzi i rozwiąż ewentualny konflikt.
 
-Projekt służący do nauki pracy z branchami w Git.
-```
-4. Utwórz plik `config.txt` o zawartości:
-```text
-Nazwa aplikacji: MiniApp
-Wersja: 1.0
-Język: polski
-Tryb: standardowy
-```
-5. Dodaj oba pliki do staging area i utwórz commit:
-```text
-Initial commit
-```
-6. Połącz lokalne repozytorium z pustym repozytorium utworzonym wcześniej na GitHubie i prześlij pierwszy commit.
-7. Utwórz nową gałąź:
-```text
-feature-description
-```
-i przełącz się na nią.
-8. W pliku `README.md` dopisz:
-```md
-## Opis
+Po zakończeniu:
 
-MiniApp jest przykładową aplikacją wykorzystywaną podczas nauki Gita.
-```
-9. Utwórz commit  o treści:
-```text
-Add project description
-```
- i prześlij go na Githuba na gałąź feature-description. 
-10. Przełącz się na `main` i sprawdź zawartość pliku `README.md`.
-	Czy sekcja dodana na `feature-description` są tutaj widoczne?
-11. Połącz z branchem `main` gałąź `feature-description`.
-12. Sprawdź historię repozytorium poleceniem:
-```bash
-git log --oneline --graph --all
-```
-13. Utwórz nową gałąź:
-```text
-feature-config
-```
-14. Na gałęzi `main` zmień w `config.txt`:
-```text
-Nazwa aplikacji: MiniApp
-```
-na:
-```text
-Nazwa aplikacji: MiniGit
-```
-i utwórz commit:
-```text
-Rename application
-```
-15. Przełącz się na `feature-config` i zmień tę samą linię na:
-```text
-Nazwa aplikacji: GitApp
-```
-16. Utwórz commit:
-```text
-Change application name
-```
-17. Wróć na `main` i spróbuj połączyć z nim gałąź:
-```text
-feature-config
-```
-18. Sprawdź stan repozytorium za pomocą:
-```bash
-git status
-```
-19. Otwórz `config.txt` i znajdź konflikt.
-20. Rozwiąż konflikt tak, aby końcowa linia miała postać:
-```text
-Nazwa aplikacji: MiniGitApp
-```
-21. Dodaj poprawiony plik do staging area i zakończ merge.
-22. Wyświetl historię wszystkich gałęzi:
-```bash
-git log --oneline --graph --all
-```
-23. Prześlij końcową wersję projektu na GitHuba.
-24. Sprawdź na GitHubie, czy pliki `README.md` oraz `config.txt` zawierają wszystkie wykonane zmiany.
-
-## Unfucking the repo
+- upewnij się, że aplikacja zawiera zarówno nową funkcjonalność, jak i potrzebne zmiany z głównej gałęzi,
+- połącz branch z `main`,
+- prześlij końcową wersję projektu na GitHuba,
+- wyświetl historię wszystkich branchy i sprawdź, czy przebieg pracy jest w niej widoczny.
+## Unscrewing the repo
 
 Błędy chodzą po ludziach - nie każda zmiana w projekcie okazuje się dobrym pomysłem. Na szczęście Git udostępnia kilka narzędzi pozwalających naprawić feralne zmiany.
 
@@ -367,19 +352,17 @@ Załóżmy, że zmieniliśmy plik, ale uznaliśmy, że poprzednia wersja była j
 
 ### Przypadkiem zrobiłem git add
 
-Czasami wykonamy `git add .` i dopiero wtedy zauważymy, że nie wszystkie pliki powinny znaleźć się w tym commicie. Możemy usunąć plik ze stageing area bez usuwania zmian w pliku za pomocą `git restore --staged <plik>`
+Czasami wykonamy `git add .` i dopiero wtedy zauważymy, że nie wszystkie pliki powinny znaleźć się w tym commicie. Możemy usunąć plik ze staging area bez usuwania zmian w pliku za pomocą `git restore --staged <plik>`
 
 ### Commit jest dobry, tylko oczywiście zapomniałem jednego pliku
 
-Jeżeli ostatni commit wymaga niewielkiej poprawki, nie zawsze musimy tworzyć commity `fix 1`, `fix 2`, `fix final`, `fix final ostateczny` itp. W przypadku mniejszych błędów takich jak np. literówka we wiadomości commita lub nie dodanie jednego z plików możemy skorzystać z polecenia`git commit --amend`. Należy pamiętać, że to nie edytuje istniejącego commita, a zastępuje go nowym. Nie powinniśmy w ten sposób poprawiać commitów, które zostały już wypchnięte i z których korzystają inne osoby.
-
+Jeżeli ostatni commit wymaga niewielkiej poprawki, nie zawsze musimy tworzyć commity `fix 1`, `fix 2`, `fix final`, `fix final ostateczny` itp. W przypadku mniejszych błędów takich jak np. literówka we wiadomości commita lub niedodanie jednego z plików możemy skorzystać z polecenia`git commit --amend`. Należy pamiętać, że to nie edytuje istniejącego commita, a zastępuje go nowym. Nie powinniśmy w ten sposób poprawiać commitów, które zostały już wypchnięte i z których korzystają inne osoby.
 ### Commit był za wcześnie 
 
 Jeśli nie chcieliśmy jeszcze robić commita, ale nasz kod jest dobry, jednak brakuje jeszcze kawałka kodu możemy za pomocą polecenia `git reset --soft HEAD~1` cofnąć ostatni commit, pozostawiając jego zmiany w staging area.
+### Zepsułem niescommitowane zmiany
 
-### Zepsułem wszystko
-
-Jeśli nasz kod do niczego się nie nadaje i chcemy się cofnąć do poprzedniego commita możemy skorzystać z komendy `git reset --hard HEAD`. Polecenie to usuwa lokalne zmiany w śledzonych plikach oraz zmiany znajdujące się w staging area. Pliki `untracked` nie zostaną przez tę komendę usunięte. 
+Jeśli nasz kod do niczego się nie nadaje i chcemy się cofnąć do poprzedniego commita możemy skorzystać z komendy `git reset --hard HEAD`. Polecenie to usuwa lokalne zmiany w śledzonych plikach oraz zmiany znajdujące się w staging area. Pliki `untracked` nie zostaną przez tę komendę usunięte. Jeśli chcemy całkowicie usunąć ostatni lokalny commit możemy skorzystać z `git reset --hard HEAD~1`.
 
 ### Wypchnąłem coś złego i ktoś zdążył to już pobrać.
 
@@ -394,48 +377,32 @@ Jeżeli `C` zawiera błąd, polecenie `git revert C` utworzy nowy commit `D`, kt
 
 ## Zadanie 3.
 
-Utwórz nowe repozytorium `Task3` i połącz je z pustym repozytorium na GitHubie.
+Utwórz prosty projekt C# oraz historię składającą się z kilku commitów. Następnie celowo doprowadź repozytorium do kolejnych problematycznych sytuacji.
+Twoim zadaniem jest rozwiązanie każdej z nich:
 
-Utwórz plik `notes.txt` o zawartości:
+**Sytuacja A - zepsuty plik**
+Wprowadziłeś wiele nieudanych zmian w `Program.cs` i chcesz całkowicie z nich zrezygnować. Zmiany nie zostały jeszcze zapisane w commicie.
 
-```
-Pierwsza wersja pliku.
-```
+Przywróć ostatnią poprawną wersję pliku.
 
-Dodaj go do repozytorium i utwórz commit `Initial commit`.
+**Sytuacja B - zły plik w staging area**
+Przygotowując następny commit, dodałeś do staging area plik, który nie powinien się w nim znaleźć. Sam plik oraz jego zawartość mają jednak pozostać na komputerze.
 
-Następnie wykonuj po kolei poniższe sytuacje.
+Popraw zawartość staging area.
 
-1. Zmień zawartość `notes.txt` na:
-```
-Ta zmiana była fatalnym pomysłem.
-```
-Nie twórz commita. Przywróć poprzednią wersję pliku.
-2. Utwórz pliki:
-```
-important.txt
-temporary.txt
-```
-Dodaj oba do staging area, ale następnie usuń `temporary.txt` ze staging area **bez usuwania samego pliku ani jego zawartości**.
-3. Dodaj `important.txt` do repozytorium i utwórz commit:
-```
-Ad imortant file
-```
-Popraw literówkę w wiadomości ostatniego commita tak, aby brzmiała:
-```
-Add important file
-```
-4. Zmień `notes.txt` i utwórz nowy commit. Następnie cofnij ten commit w taki sposób, aby wykonane zmiany pozostały w staging area.
-5. Utwórz ponownie commit z tymi zmianami.
-6. Zmodyfikuj kilka śledzonych plików, ale nie twórz commita. Przywróć całe repozytorium do stanu ostatniego commita.
-7. Prześlij aktualną historię na GitHuba.
-8. Utwórz kolejny commit zmieniający `notes.txt` i również prześlij go na GitHuba.
-9. Załóż, że commit z poprzedniego punktu zawiera poważny błąd i został już pobrany przez innych członków zespołu. Cofnij jego zmiany **bez usuwania go z historii repozytorium**.
-10. Prześlij wynik na GitHuba i wyświetl historię:
+**Sytuacja C - niekompletny commit**
+Utworzyłeś commit zawierający nową funkcjonalność, ale po chwili zauważyłeś, że jeden potrzebny plik nie został do niego dodany.
 
-```
-git log --oneline
-```
+Popraw ostatni commit bez tworzenia dodatkowego commita typu `fix`.
+
+**Sytuacja D - commit wykonany za wcześnie**
+Zmiany są poprawne, ale nie powinny być jeszcze zapisane jako commit. Cofnij ostatni commit, zachowując jego zawartość do dalszej pracy.
+
+**Sytuacja E - błędna zmiana na GitHubie**
+
+Błędny commit został już przesłany do zdalnego repozytorium. Załóż, że inni członkowie zespołu mogli go pobrać.
+
+Odwróć jego działanie w sposób, który nie usuwa istniejącego commita z historii.
 
 Materiały dodatkowe:
 https://www.youtube.com/watch?v=8JJ101D3knE
