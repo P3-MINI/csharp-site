@@ -410,15 +410,17 @@ Czasami wykonamy `git add .` i dopiero wtedy zauważymy, że nie wszystkie pliki
 
 Jeżeli ostatni commit wymaga niewielkiej poprawki, nie zawsze musimy tworzyć commity `fix 1`, `fix 2`, `fix final`, `fix final ostateczny` itp. W przypadku mniejszych błędów takich jak np. literówka we wiadomości commita lub niedodanie jednego z plików możemy skorzystać z polecenia`git commit --amend`. Należy pamiętać, że to nie edytuje istniejącego commita, a zastępuje go nowym. Nie powinniśmy w ten sposób poprawiać commitów, które zostały już wypchnięte i z których korzystają inne osoby.
 
-### `git reset`
+### Cofanie się w czasie
 
-Polecenie `git reset` pozwala wycofać aktualnego brancha do wskazanego commita. W zależności od wybranego trybu Git może zachować lub usunąć zmiany w staging area oraz katalogu roboczym.
+Polecenie `git reset` służy do cofania wskaźnika `HEAD` do wcześniejszego commita. To, co stanie się z wprowadzonymi od tamtej pory zmianami w kodzie, zależy od użytej flagi:
 
-- `git reset --soft <commit>` - przesuwa branch, ale pozostawia zmiany w staging area,
-- `git reset <commit>` / `git reset --mixed <commit>` - pozostawia zmiany w plikach, ale usuwa je ze staging area,
-- `git reset --hard <commit>` - przesuwa branch i usuwa zmiany w śledzonych plikach.
+* **`git reset --soft <commit>`** – cofa historię, ale zachowuje wszystkie zmiany i od razu umieszcza je w **staging area**. Przydatne, gdy np. zrobiliśmy commita za wcześnie i
+chcemy tylko dołożyć do niego kolejne pliki.
+* **`git reset --mixed <commit>`** (lub brak flagi) – cofa historię, zachowuje zmiany na dysku, ale wyciąga je ze staging area (wracają do stanu **modified**).
+* **`git reset --hard <commit>`** – cofa historię i **bezpowrotnie usuwa** wszystkie zmodyfikowane śledzone pliki. Twój folder z projektem staje się dokładną kopią wskazanego commita.
 
-Szczególnie przy `--hard` należy zachować ostrożność, ponieważ można w ten sposób bezpowrotnie utracić niezapisane zmiany.
+> [!WARNING]
+> Flaga `--hard` trwale usuwa niezapisany kod. Pliki typu `untracked` nie są jednak przez nią usuwane.
 
 ### Commit był za wcześnie 
 

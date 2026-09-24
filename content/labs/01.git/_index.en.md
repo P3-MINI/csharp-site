@@ -720,20 +720,16 @@ Remember that this does not edit the existing commit. Instead, Git replaces it w
 
 We should therefore avoid using `git commit --amend` on commits that have already been pushed and are being used by other people.
 
-### `git reset`
+### Going back in time
 
-The `git reset` command allows us to move the current branch back to a selected commit.
+The `git reset` command is used to move the `HEAD` pointer back to an earlier commit. What happens to the changes made since that commit depends on the flag we use:
 
-Depending on the selected mode, Git may preserve or remove changes from the staging area and the working directory.
+- `**git reset --soft <commit>**` – moves the history back, but keeps all changes and immediately places them in the **staging area**. This is useful when, for example, we created a commit too early and only want to add a few more files to it.
+- `**git reset --mixed <commit>**` (or with no flag) – moves the history back and keeps the changes on disk, but removes them from the staging area, so they return to the **modified** state.
+- `**git reset --hard <commit>**` – moves the history back and **permanently removes** all changes in tracked files. Your project folder becomes an exact copy of the selected commit.
 
-- `git reset --soft <commit>` - moves the branch but leaves the changes in the staging area,
-    
-- `git reset <commit>` / `git reset --mixed <commit>` - leaves the changes in the working files but removes them from the staging area,
-    
-- `git reset --hard <commit>` - moves the branch and removes changes from tracked files.
-    
-
-Particular care should be taken when using `--hard`, because uncommitted changes can be permanently lost.
+> [!WARNING]  
+> The `--hard` flag permanently removes uncommitted code. However, `untracked` files are not deleted by it.
 
 ### I committed too early
 
