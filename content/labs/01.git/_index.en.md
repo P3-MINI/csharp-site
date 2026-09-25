@@ -724,9 +724,9 @@ We should therefore avoid using `git commit --amend` on commits that have alread
 
 The `git reset` command is used to move the `HEAD` pointer back to an earlier commit. What happens to the changes made since that commit depends on the flag we use:
 
-- `**git reset --soft <commit>**` – moves the history back, but keeps all changes and immediately places them in the **staging area**. This is useful when, for example, we created a commit too early and only want to add a few more files to it.
-- `**git reset --mixed <commit>**` (or with no flag) – moves the history back and keeps the changes on disk, but removes them from the staging area, so they return to the **modified** state.
-- `**git reset --hard <commit>**` – moves the history back and **permanently removes** all changes in tracked files. Your project folder becomes an exact copy of the selected commit.
+- **`git reset --soft <commit>`** – moves the history back, but keeps all changes and immediately places them in the **staging area**. This is useful when, for example, we created a commit too early and only want to add a few more files to it.
+- **`git reset --mixed <commit>`** (or with no flag) – moves the history back and keeps the changes on disk, but removes them from the staging area, so they return to the **modified** state.
+- **`git reset --hard <commit>`** – moves the history back and **permanently removes** all changes in tracked files. Your project folder becomes an exact copy of the selected commit.
 
 > [!WARNING]  
 > The `--hard` flag permanently removes uncommitted code. However, `untracked` files are not deleted by it.
