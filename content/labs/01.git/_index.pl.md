@@ -50,7 +50,7 @@ Pliki naszego projektu mogą znajdować się w jednym z czterech głównych stan
 - `committed`
 
 Nowo utworzony plik, który nie został dodany do repozytorium, znajduje się w stanie `untracked`. Oznacza to, że Git widzi plik w katalogu projektu, ale jeszcze go nie śledzi.
-Po zmodyfikowaniu plików w katalogu roboczym pliki przechodzą do stanu `modified`. Staging area to poczekalnia. Aby zasygnalizować sztywnemu Gitowi, które konkretnie zmiany chcemy zawrzeć w najbliższym commicie, używamy `git add <nazwa pliku>`. Plik wówczas zmieni swój stan na `staged`. Po dodaniu wszystkich plików możemy utworzyć commita w repozytorium za pomocą komendy `git commit -m <nazwa commita>`. Wówczas pliki zostaną zatwierdzone w commicie. Jeśli chcemy przesłać lokalne commity do zdalnego repozytorium możemy skorzystać z komendy `git push`. 
+Po zmodyfikowaniu plików w katalogu roboczym pliki przechodzą do stanu `modified`. Staging area to poczekalnia. Aby zasygnalizować sztywnemu Gitowi, które konkretnie zmiany chcemy zawrzeć w najbliższym commicie, używamy `git add <nazwa pliku>`. Plik wówczas zmieni swój stan na `staged`. Po dodaniu wszystkich plików możemy utworzyć commita w repozytorium za pomocą komendy `git commit -m <wiadomość commita>`. Wówczas pliki zostaną zatwierdzone w commicie. Jeśli chcemy przesłać lokalne commity do zdalnego repozytorium możemy skorzystać z komendy `git push`. 
 
 ### Sprawdzanie stanu repozytorium
 
@@ -162,7 +162,7 @@ Od tego momentu lokalne repozytorium jest połączone ze zdalnym i kolejne zmian
 Podczas pracy w zespole inni programiści będą przesyłać swoje zmiany do zdalnego repozytorium. Aby zaktualizować swój lokalny projekt, możesz użyć jednego z dwóch poleceń:
 
 - `git fetch` - jedynie pobiera informacje o nowych commitach z serwera, ale nie modyfikuje Twoich plików roboczych. To bezpieczne rozwiązanie, gdy chcesz tylko "rozejrzeć się" i sprawdzić (np. za pomocą git log), nad czym pracowali inni, bez integrowania ich kodu ze swoim.
-- `git pull` - to najczęściej używane polecenie o pobierania zmian. Działa jak połączenie `git fetch` oraz `git merge` - od razu pobiera zmiany i próbuje scalić je z Twoimi lokalnymi plikami.
+- `git pull` - to najczęściej używane polecenie do pobierania zmian. Działa jak połączenie `git fetch` oraz `git merge` - od razu pobiera zmiany i próbuje scalić je z Twoimi lokalnymi plikami.
 
 Należy pamiętać, że jeśli ktoś inny zmodyfikował ten sam fragment kodu co Ty, podczas wykonywania `git pull` może pojawić się konflikt, który trzeba będzie rozwiązać ręcznie.
 
@@ -343,7 +343,10 @@ Załóżmy, że na gałęzi `login` zakończyliśmy implementację logowania. Je
 
 Komenda `git merge <nazwa gałęzi>` dołącza zmiany z gałęzi, której nazwę wpisaliśmy do gałęzi na której obecnie się znajdujemy. Na przykład jeśli będąc na gałęzi main wykonamy polecenie `git merge login` to wszystkie zmiany z gałęzi login zostaną dołączone do gałęzi main. Przed scaleniem branchy warto sprawdzić, na której gałęzi obecnie się znajdujemy oraz czy zcommitowaliśmy wszystkie zmiany.
 
-Istnieją także inne sposoby na połączenie gałęzi. **Merge** łączy historie dwóch branchy, zachowując wszystkie wcześniejsze commity. Zaletą jest przechowanie pełnej historii, ale przy dużej liczbie branchy może **Squash merge** łączy zmiany z danego brancha w jeden commit. Dzięki temu historia głównej gałęzi jest prostsza, ale nie widać w niej pojedynczych commitów. **Rebase** przenosi commity z jednego brancha na koniec drugiego. Trzeba jednak pamiętać, że rebase zmienia historię commitów, dlatego należy używać go ostrożnie, szczególnie w przypadku zmian już udostępnionych innym osobom. 
+Istnieją także inne sposoby na połączenie gałęzi. 
+**Merge** łączy historie dwóch branchy, zachowując wszystkie wcześniejsze commity. Zaletą jest przechowanie pełnej historii, ale przy dużej liczbie branchy może prowadzić do powstania mniej czytelnej i bardziej skomplikowanej historii commitów. 
+**Squash merge** łączy zmiany z danego brancha w jeden commit. Dzięki temu historia głównej gałęzi jest prostsza, ale nie widać w niej pojedynczych commitów. 
+**Rebase** przenosi commity z jednego brancha na koniec drugiego. Trzeba jednak pamiętać, że rebase zmienia historię commitów, dlatego należy używać go ostrożnie, szczególnie w przypadku zmian już udostępnionych innym osobom. 
 
 ### Konflikty 
 
@@ -380,9 +383,9 @@ Umieść projekt pod kontolą wersji i prześlij nego początkową wersję na Gi
 
 Następnie wykonaj poniższe kroki, aby przećwiczyć pracę z gałęziami i rozwiązywanie konfliktów:
 
-1. Utwórz nowy branch (np. `feature menu`) i od razu się na niego przełącz.
+1. Utwórz nowy branch (np. `feature-menu`) i od razu się na niego przełącz.
 2. Zmodyfikuj plik `Program.cs`, dodając nową funkcjonalność (np. obsługę dodatkowej operacji w menu). Zapisz zmiany w commicie na tym branchu.
-3. Zasymuluj pracę innej oosby: wejdź na stronę swojego repozytorium na GitHubie, upewnij się, że jesteś na głównej gałęzi (`main`), otwórz plik `Program.cs` i edytuj go bezpośrednio przez przeglądarkę. Zmodyfikuj stary fragment kodu (np. komunikat powitalny w menu) i zatwierdź zmiany (Commit changes).
+3. Zasymuluj pracę innej osoby: wejdź na stronę swojego repozytorium na GitHubie, upewnij się, że jesteś na głównej gałęzi (`main`), otwórz plik `Program.cs` i edytuj go bezpośrednio przez przeglądarkę. Zmodyfikuj stary fragment kodu (np. komunikat powitalny w menu) i zatwierdź zmiany (Commit changes).
 4. Wróć do lokalnego repozytorium na komputerze. Cały czas będąc na swoim nowym branchu, zmodyfikuj *ten sam* fragment kodu, który zmieniałeś przed chwilą na GitHubie, ale wpisz tam zupełnie inną treść. Zapisz to jako kolejny commit.
 5. Teraz chcesz zaktualizować swoją pracę. Pamiętaj, że lokalne repozytorium nie wie jeszcze o zmianach na GitHubie! Pobierz najnowsze zmiany ze zdalnego repozytorium (użyj `git pull` na gałęzi `main`).
 6. Będąc z powrotem na swoim pobocznym branchu, spróbuj dołączyć do niego zaktualizowaną gałąź `main`.
@@ -408,7 +411,7 @@ Czasami wykonamy `git add .` i dopiero wtedy zauważymy, że nie wszystkie pliki
 
 ### Commit jest dobry, tylko oczywiście zapomniałem jednego pliku
 
-Jeżeli ostatni commit wymaga niewielkiej poprawki, nie zawsze musimy tworzyć commity `fix 1`, `fix 2`, `fix final`, `fix final ostateczny` itp. W przypadku mniejszych błędów takich jak np. literówka we wiadomości commita lub niedodanie jednego z plików możemy skorzystać z polecenia`git commit --amend`. Należy pamiętać, że to nie edytuje istniejącego commita, a zastępuje go nowym. Nie powinniśmy w ten sposób poprawiać commitów, które zostały już wypchnięte i z których korzystają inne osoby.
+Jeżeli ostatni commit wymaga niewielkiej poprawki, nie zawsze musimy tworzyć commity `fix 1`, `fix 2`, `fix final`, `fix final ostateczny` itp. W przypadku mniejszych błędów takich jak np. literówka we wiadomości commita lub niedodanie jednego z plików możemy skorzystać z polecenia `git commit --amend`. Należy pamiętać, że to nie edytuje istniejącego commita, a zastępuje go nowym. Nie powinniśmy w ten sposób poprawiać commitów, które zostały już wypchnięte i z których korzystają inne osoby.
 
 ### Cofanie się w czasie
 
