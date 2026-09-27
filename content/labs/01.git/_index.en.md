@@ -431,6 +431,12 @@ In practice, `.gitignore` is one of the first files worth preparing when creatin
 > **Warning**
 > 
 > Adding a file to `.gitignore` only affects files that Git is not already tracking. If you have already committed a file containing passwords, adding it to `.gitignore` will not remove it from the repository history.
+> 
+> To remove a tracked file from the repository without deleting it from the disk, use:
+> 
+> ```bash
+> git rm --cached <file>
+> ```
 
 In practice, we do not always have to create `.gitignore` manually. In .NET projects, we can generate a ready-made template using:
 

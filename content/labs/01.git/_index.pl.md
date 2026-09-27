@@ -271,6 +271,12 @@ W praktyce `.gitignore` jest jednym z pierwszych plików, które warto przygotow
 
 >[!WARNING]
 >Dodanie pliku do .gitignore zadziała tylko na pliki, których Git jeszcze NIE śledzi. Jeśli zacommitowałeś plik z hasłami, dodanie go do .gitignore nic nie da.
+>
+>Aby usunąć śledzony plik z repozytorium bez usuwania go z dysku, użyj:
+>
+>```bash
+>git rm --cached <plik>
+>```
 
 W praktyce plik `.gitignore` nie zawsze musimy pisać ręcznie. W projektach .NET możemy wygenerować gotowy szablon poleceniem `dotnet new gitignore`. Zawiera on typowe reguły dla projektów C#, więc zazwyczaj od razu nadaje się do użycia. 
 
