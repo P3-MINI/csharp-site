@@ -428,7 +428,7 @@ The `.gitignore` file is part of the project and should be committed just like t
 
 In practice, `.gitignore` is one of the first files worth preparing when creating a new repository.
 
-> **Warning**
+> [!WARNING]
 > 
 > Adding a file to `.gitignore` only affects files that Git is not already tracking. If you have already committed a file containing passwords, adding it to `.gitignore` will not remove it from the repository history.
 > 
