@@ -46,42 +46,68 @@ async Task Download()
 ```
 Metoda nie zwraca bezpośrednio wyniku, ale Task reprezentujący wykonywaną operację.
 
-Jeżeli metoda zwraca wynik:
+Jeżeli metoda zwraca wynik to definiujemy ją tak:
 ```
 async Task<string> DownloadData()
 {
     return await DownloadDataFromTheInternet();
 }
 ```
-zwraca Task<string>. Dopiero użycie await pozwala otrzymać właściwy wynik typu string.
+Sama metoda zwraca obiekt typu Task\<string\>. Dopiero użycie await pozwala otrzymać właściwy wynik typu string.
 ```
 string data = await DownloadData();
 ```
 `async` samo w sobie nie powoduje uruchomienia nowego wątku. Określa, że metoda może wykonywać operacje asynchroniczne i może zostać zawieszona w miejscach oznaczonych słowem `await`.
 
 ### Task Parallel Library (TPL)
-Jest to biblioteka ułatwiająca programowanie współbieżne. Wprowadza klasę Task, która symbolizuje pewne zadanie, które ma być wykonane asynchronicznie. Zadanie definiujemy poprzez przekazanie naszej funkcji do metody Task.Run(). Po wywołaniu jest ono przekazywane do wykonania, nie blokując wątku wywołującego. Wynik działania danego Taska możemy odczytać po jego wykonaniu, zwykle przy użyciu słowa kluczowego await.
+Jest to biblioteka zapewniająca mechanizmy tworzenia programów współbieżnych i równoległych. Jednym z najważniejszych jej elementów jest klasa Task, która reprezentuje *operację wykonywaną asynchronicznie*. Obiekt Task pozwala nam śledzić stan operacji, oczekiwać na jej zakończenie oraz w przypadku Task<T> uzyskać zwrócony przez nią wynik.
+
+Istnieje wiele sposobów tworzenia i uruchamiania zadań. Jednym z nich jest metoda ```Task.Run()```. Służy ona przede wszystkim do zlecania wykonania synchronicznej, ale kosztownej obliczeniowo operacji.
 ```
-public int CalculateResult()
-{ ... }
-static void Main(string[] args)
+Task<int> task = Task.Run(CalculateResults);
+```
+Wywołanie Task.Run() zwraca obiekt Task<int> reprezentujący rozpoczętą operację. Wykonanie operacji odbywa się na wątku z puli wątków, dzięki czemu wątek wywołujący może w tym czasie wykonywać inne zadania.
+
+Na zakończenie operacji możemy zaczekać za pomocą await.
+```
+int result = await task;
+```
+Jeżeli zadanie nie zostało jeszcze wykonane, to await wstrzyma wykonanie metody bez blokowania wątku. Po zakończeniu zadania wykonywanie metody zostanie wznowione.
+
+Task.Run() nie jest jednak jedynym sposobem tworzenia obiektów Task. W szczególności operacje wejścia/wyjścia, takie jak komunikacja sieciowa lub odczyt plików, mogą same udostępniać asynchroniczne metody zwracające Task lub Task<T>, bez konieczności przenoszenia ich wykonania do osobnego wątku.
+
+Przykład użycia:
+
+```
+static int CalculateResults()
 {
-    Task task = Task.Run(CalculateResults);
-    
+    // czasochłonne obliczenia
+    return result;
+}
+```
+Jeżeli `CalculateResults()` jest kosztownym obliczeniem:
+
+```
+static async Task Main(string[] args)
+{
+    Task<int> task = Task.Run(CalculateResults);
+
     // Wykonujemy inne operacje
-    
-    // W pewnym momencie możemy spróbować pobrać rezultat kalkulacji
+
+    // W pewnym momencie możemy pobrać rezultat kalkulacji
     int result = await task;
 }
 ```
-Jeżeli w momencie próby pobrania rezultatu Task nie zakończył jeszcze działania, wątek zostanie zawieszony, zgodnie ze zwykłym działaniem słowa kluczowego await.\
-Częstą praktyką przy uruchamianiu Tasków jest używanie **funkcji lambda** jako argumentów Task.Run(), pozwala to na przekazanie lokalnych zmiennych jako argumentów.
+
+`Task.Run` uruchamia obliczenie na wątku z puli wątków, a `await task` pozwala później zaczekać na jego zakończenie i pobrać wynik.
+
+Częstą praktyką przy uruchamianiu Tasków jest używanie **funkcji lambda** jako argumentu Task.Run(), pozwala to na przekazanie lokalnych zmiennych jako argumentów.
 ```
 Task task = Task.Run(() => CalculateResults(localVariable1, localVariable2));
 ```
 
 ### Parallel
-Zbiór funkcji pozwalających na zrównoleglanie operacji. Używane się ich głównie w celu optymalizacji, pozwalają na pełniejsze wykożystanie potencjału procesora poprzez jednoczelne wykonywanie wielu mniejszych części zadania.\
+Klasa zawierająca zbiór funkcji pozwalających na zrównoleglanie operacji. Używane się ich głównie w celu poprawienia wydajności, pozwalają na pełniejsze wykożystanie potencjału procesora poprzez jednoczelne wykonywanie wielu mniejszych części zadania.\
 **Parallel.For**     - służy do zrównoleglania tradycyjnych pętli for opartych na indeksach. 
 ```
 int[] dane = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
