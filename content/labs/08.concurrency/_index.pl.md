@@ -7,22 +7,57 @@ Disclaimer: to wciąż work in progress, brakuje jeszcze faktycznego zadania, a 
 
 # Współbieżność
 
-Do tej pory wszystkie pisane przez nas programy charakteryzowały się jednowątkowością. Kolejne zaprogramowane przez nas zadania były realizowane jedno po drugim. Taki sprosób wykonywania kodu jest wystarczający w większości prostych przypadków, jednak ma on swoje limity. Programowanie współbieżne jest paradygmatem programowania, który pozwala komputerowi realizować wiele zadań jednocześnie, wykorzystując wielowątkową naturę procesorów. Współbieżność może być używana w celu optymalizacji, by rozdzielić zadania pomiędzy wieloma rdzeniami procesora lub w celu zapewnienia równoległego fukcjonowania kilku elementów programu.
+Do tej pory wszystkie pisane przez nas programy charakteryzowały się jednowątkowością. Kolejne instrukcje programu były wykonywane sekwencyjnie, jedna po drugiej. Taki sposób wykonywania kodu jest wystarczający w większości prostych przypadków, jednak w bardziej złożonych programach może prowadzić do nieefektywnego wykorzystania dostępnych zasobów.
+
+**Programowanie współbieżne** jest podejściem, które pozwala programowi obsługiwać wiele zadań w tym samym czasie, przeplatając ich wykonywanie. Zadania te nie muszą być wykonywane dokładnie w tej samej chwili, faktyczne jednoczesne wykonywanie zależy między innymi od liczby dostępnych rdzeni procesora. Współbieżność pozwala więc organizować pracę programu tak, aby wiele niezależnych zadań mogło robić postęp niezależnie od siebie.
+
+Współbieżność może być realizowana między innymi za pomocą **wielu wątków**. Jeżeli dostępnych jest kilka rdzeni procesora, poszczególne zadania mogą być dodatkowo wykonywane **równolegle**, czyli faktycznie w tym samym czasie.
 
 ## Przydatne funcje, klasy i słowa kluczowe
 
 ### async, await
-Para słów kluczowych pozwalających na wykonywanie czasochłonnych zadań, bez zawieszania wątku programu. Nie pozwalają one na wykonanie dwóch zadań jednocześnie, ale dbają o to, by w trakcie oczekiwania na realizację czasochłonnego procesu wątek nie był zatrzymany. Wyobraźmy sobie program, który musi pobrać dane z serwera http. Taka operacja może zająć znaczącą z punktu widzenia komputera ilość czasu. Konieczne jest zawarcie połączenia z serwerem, oraz oczekiwanie na pakiety zwrotne. Operacje te są obciążone opóźnieniem niezależnym od komputera użytkownika. W takim przypadku wykożystać możemy słowo kluczowe await. Powoduje ono zwolnienie wątku aż do czasu wykonania zadania po nim określonego.\
-```await DownloadDataFromTheInternet();```\
-Tak oznaczone wywołanie funkcji spowoduje zwolnienie wątku do czasu jej wykonania. Dopiero potem realizowane będą dalsze linie kodu.\
-Słowo kluczowe **async** umieszcza się przed deklaracjami funcji zawierającymi instrukcje używające **await**.
+
+Para słów kluczowych wykorzystywanych do tworzenia metod asynchronicznych, które pozwalają wykonywać czasochłonne operacje bez blokowania wątku podczas oczekiwania na ich zakończenie.
+Asynchroniczność nie oznacza, że program może wykonywać tylko jedno zadanie naraz. Możemy na przykład rozpocząć kilka operacji asynchronicznych, a następnie oczekiwać na ich zakończenie za pomocą `Task.WhenAll`. Dzięki temu operacje mogą być realizowane współbieżnie.
+
+Wyobraźmy sobie program, który musi pobrać dane z serwera HTTP. Taka operacja może zająć znaczącą ilość czasu, ponieważ konieczne jest nawiązanie połączenia z serwerem oraz oczekiwanie na przesłanie danych. Część tego czasu wynika z opóźnień sieciowych, na które komputer użytkownika nie ma bezpośredniego wpływu.
+
+W takim przypadku możemy wykorzystać słowo kluczowe `await`.
+
 ```
-async AFunctionUsingAwait()
+await DownloadDataFromTheInternet();
+```
+
+`await` powoduje oczekiwanie na zakończenie wskazanego zadania. Jeżeli zadanie nie jest jeszcze zakończone, metoda asynchroniczna zostaje w tym miejscu zawieszona, a wątek może kontynuować pracę, zostać wykorzystany do wykonania innych zadań. Gdy oczekiwane zadanie zostanie zakończone, wykonanie metody zostanie wznowione od miejsca, w którym użyto `await`.
+
+Jeżeli oczekiwane zadanie zwraca wynik, `await` pozwala również pobrać ten wynik.
+
+```
+string data = await DownloadDataFromTheInternet();
+```
+
+Słowo kluczowe `async` umieszcza się przed deklaracją metody, która wykorzystuje `await`. Metoda oznaczona async zwraca zazwyczaj Task lub Task<T>. Task oznacza operację asynchroniczną, która nie zwraca wartości, natomiast Task<T> oznacza operację, której wynikiem będzie wartość typu T.
+
+```
+async Task Download()
 {
-    ...
-    await SomeFunction();
+    string data = await DownloadDataFromTheInternet();
 }
 ```
+Metoda nie zwraca bezpośrednio wyniku, ale Task reprezentujący wykonywaną operację.
+
+Jeżeli metoda zwraca wynik:
+```
+async Task<string> DownloadData()
+{
+    return await DownloadDataFromTheInternet();
+}
+```
+zwraca Task<string>. Dopiero użycie await pozwala otrzymać właściwy wynik typu string.
+```
+string data = await DownloadData();
+```
+`async` samo w sobie nie powoduje uruchomienia nowego wątku. Określa, że metoda może wykonywać operacje asynchroniczne i może zostać zawieszona w miejscach oznaczonych słowem `await`.
 
 ### Task Parallel Library (TPL)
 Jest to biblioteka ułatwiająca programowanie współbieżne. Wprowadza klasę Task, która symbolizuje pewne zadanie, które ma być wykonane asynchronicznie. Zadanie definiujemy poprzez przekazanie naszej funkcji do metody Task.Run(). Po wywołaniu jest ono przekazywane do wykonania, nie blokując wątku wywołującego. Wynik działania danego Taska możemy odczytać po jego wykonaniu, zwykle przy użyciu słowa kluczowego await.
