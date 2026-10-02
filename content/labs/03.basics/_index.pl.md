@@ -1,6 +1,6 @@
 ---
-title: "C# basics"
+title: "Podstawy C#"
 weight: 30
 ---
 
-## C# basics
+## Podstawy C#
