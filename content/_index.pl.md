@@ -18,8 +18,8 @@ menu:
 
 ### Laboratorium
 
-- Adam Grącikowski
+- Bartosz Kaczorowski
 - Tomasz Herman
 - Piotr Krasowski
-- Anna Kozłowska
-- Piotr Nieciecki
+- Maciej Ejduk
+- Aleksander Szydłowski
