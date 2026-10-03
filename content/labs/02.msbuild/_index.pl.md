@@ -115,7 +115,7 @@ dotnet sln add <ProjectName>.App
 
 Jeżeli kod jednego projektu będzie korzystał z klas znajdujących się w innym projekcie, musimy ręcznie zdefiniować taką zależność. 
 
-Aby dodać referencję pomiędzy tymi projektami można skorzystać z:
+Aby dodać referencję do innego projektu można skorzystać z:
 
 ```bash
 dotnet add <Project> reference <ReferencedProject>
