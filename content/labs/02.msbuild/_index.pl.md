@@ -353,7 +353,7 @@ dotnet sln add GeometryTools.Tests
 dotnet add GeometryTools.Tests reference GeometryTools.Lib
 ```
 
-Zwróć uwagę, że zależność istnieje **od projektu testowego do biblioteki**. Biblioteka nie powinna wiedzieć o istnieniu swoich testów.
+Zwróć uwagę, że to **projekt testowy zależy od biblioteki**, a nigdy odwrotnie. Biblioteka nie powinna wiedzieć o istnieniu swoich testów.
 
 ### Pierwszy test
 
