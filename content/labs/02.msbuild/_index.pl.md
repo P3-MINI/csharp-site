@@ -250,7 +250,7 @@ Skorzystaliśmy już z **Itemów** przy dodawaniu referencji do projektu:
 </Target>
 ```
 
-Uruchomienie `BuildApplication` spowoduje najpierw wykonanie targetu `Prepare`. Aby uruchomić target możemy skorzystać z komendy `dotnet msbuild -target:BuildApplication`.
+Uruchomienie `BuildApplication` spowoduje najpierw wykonanie **Targetu** `Prepare`. Aby uruchomić target możemy skorzystać z komendy `dotnet msbuild -target:BuildApplication`.
 
 ### Tasks
 
