@@ -311,9 +311,9 @@ Na przykład możemy ustawić różne wartości property w zależności od konfi
 
 ### NuGet
 
-Podczas tworzenia aplikacji często korzystamy z bibliotek napisanych przez innych programistów. Zamiast dodawać ich kod ręcznie do naszego projektu, możemy skorzystać z **NuGet** - menedżera pakietów dla platformy .NET.
+Podczas tworzenia oprogramowania rzadko piszemy wszystko od zera. W codziennej pracy programiści często korzystają z gotowych bibliotek rozwiązujących powszechne problemy - takich jak parsowanie plików JSON, logowanie błędów czy komunikacja z bazą danych.
 
-Pakiet NuGet może zawierać bibliotekę oraz informacje potrzebne do jej poprawnego wykorzystania w projekcie.
+Do zarządzania tymi zewnętrznymi zależnościami służy **NuGet** - oficjalny menedżer pakietów dla platformy .NET. W centralnym repozytorium [nuget.org](https://www.nuget.org/) znajdują się dziesiątki tysięcy gotowych, darmowych pakietów (np. Newtonsoft.Json, Serilog, czy EntityFramework), które możemy w kilka sekund dołączyć do naszego projektu.
 
 Pakiet możemy dodać do projektu za pomocą:
 ```bash
