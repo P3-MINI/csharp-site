@@ -289,7 +289,7 @@ lub
 dotnet build -c Debug
 ```
 
-Aktualnie używana konfiguracja jest dostępna w MSBuild jako property:
+Aktualnie używana konfiguracja jest dostępna w MSBuild jako **Property**:
 
 ```xml
 $(Configuration)
