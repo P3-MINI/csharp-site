@@ -213,7 +213,7 @@ Przykładowo:
 
 Do wartości property możemy odwołać się za pomocą `$(NazwaProperty)`.
 
-Properties spotkaliśmy już wcześniej w pliku `.csproj`. Na przykład:
+**Properties** spotkaliśmy już wcześniej w pliku `.csproj`. Na przykład:
 
 ```xml
 <PropertyGroup>
