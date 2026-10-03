@@ -400,6 +400,7 @@ Dobry test jednostkowy jest pisany według prostego schematu **Arrange-Act-Asser
 Do sprawdzania wyniku testu służą **asercje**. Przykładowo:
 ```csharp
 Assert.AreEqual(expected, actual);
+Assert.AreEqual(expected, actual, delta); // for float comparisons
 Assert.IsTrue(condition);
 Assert.IsFalse(condition);
 Assert.IsNull(value);
