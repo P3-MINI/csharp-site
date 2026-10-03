@@ -433,7 +433,7 @@ Dobry test jednostkowy powinien być:
 - powtarzalny - wielokrotne uruchomienie testu dla tych samych warunków powinno zawsze dawać ten sam rezultat,
 - prosty - test powinien jasno pokazywać dane wejściowe, wykonywaną operację oraz oczekiwany wynik.
 
-Test jednostkowy nie powinien również powielać logiki testowanej metody. Jeśli na przykład sprawdzamy metodę obliczającą pole prostokąta, nie powinniśmy w teście implementować drugiego algorytmu robiącego dokładnie to samo.
+Test jednostkowy nie powinien również powielać logiki testowanej metody. Jeśli na przykład sprawdzamy metodę obliczającą pole prostokąta, nie powinniśmy powielać tej samej logiki w teście.
 
 Czasami najpierw zaczyna się od pisania testów jednostkowych, czyli definiowania zachowań funkcji, a dopiero później pisze się implementację testowanych metod, aż do przejścia wszystkich testów. Takie podejście nazywamy _Test Driven Development (TDD)_.
 
