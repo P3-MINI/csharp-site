@@ -239,7 +239,7 @@ Skorzystaliśmy już z **Itemów** przy dodawaniu referencji do projektu:
 ```
 ### Targets
 
-**Target** opisuje konkretny etap procesu wykonywanego przez MSBuild. Projekt może zawierać wiele targetów, z których każdy odpowiada za określone zadanie. Targety mogą także zależeć od innych targetów:
+**Target** opisuje konkretny etap procesu wykonywanego przez MSBuild. Projekt może zawierać wiele takich **Targetów**, z których każdy odpowiada za określone zadanie. **Targety** mogą również deklarować zależności między sobą:
 ```xml
 <Target Name="Prepare">
     <Message Text="Preparing..." />
