@@ -380,7 +380,7 @@ public sealed class RectangleUtilsTests
         double result = RectangleUtils.CalculateArea(width, height);
 
 		//Assert
-        Assert.AreEqual(20, result);
+        Assert.AreEqual(20, result, 1e-7);
     }
 }
 ```
