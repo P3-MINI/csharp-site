@@ -3,7 +3,7 @@ title: "MSBuild"
 weight: 20
 ---
 
-## Laboratorium 2: MSBuild, .NET CLI i testy jednostkowe
+## Tutorial 2: MSBuild, .NET CLI i testy jednostkowe
 
 Podczas tworzenia większych aplikacji rzadko pracujemy z pojedynczym plikiem źródłowym. Większe aplikacje mogą się składać z kilku projektów, takich jak biblioteki, aplikacje wykonywalne oraz projekty zawierające testy. Potrzebujemy więc narzędzi, które pozwolą nam zarządzać strukturą projektu oraz procesem budowania.
 
