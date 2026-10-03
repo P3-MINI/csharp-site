@@ -77,7 +77,7 @@ dotnet build GeometryTools.Lib
 
 ### Dodawanie projektu do Solucji
 
-Utworzenie projektu obok pliku solucji nie powoduje automatycznego dodania go do solucji. 
+Utworzenie projektu w tym samym katalogu, co plik rozwiązania, nie powoduje automatycznego dodania go do solucji. 
 
 Projekt trzeba dodać osobno za pomocą komendy:
 
