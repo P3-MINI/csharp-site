@@ -435,7 +435,7 @@ Dobry test jednostkowy powinien być:
 
 Test jednostkowy nie powinien również powielać logiki testowanej metody. Jeśli na przykład sprawdzamy metodę obliczającą pole prostokąta, nie powinniśmy powielać tej samej logiki w teście.
 
-Czasami najpierw zaczyna się od pisania testów jednostkowych, czyli definiowania zachowań funkcji, a dopiero później pisze się implementację testowanych metod, aż do przejścia wszystkich testów. Takie podejście nazywamy _Test Driven Development (TDD)_.
+Czasami pracę nad kodem zaczyna się od pisania testów jednostkowych, czyli definiowania zachowań funkcji, a dopiero później pisze się implementację testowanych metod, aż do przejścia wszystkich testów. Takie podejście nazywamy _Test Driven Development (TDD)_.
 
 ## Zadanie 2 - Testowanie konwertera temperatur
 
