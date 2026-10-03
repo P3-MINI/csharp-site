@@ -157,7 +157,7 @@ W tym zadaniu utworzysz aplikację `TemperatureConverter`, która będzie się s
 
 Wykonaj w tym celu następujące kroki:
 - Utwórz solucję `TemperatureConverter` oraz oba projekty i dodaj je do solucji.
-- Dodaj odpowiednią referencję między projektami, tak aby aplikacja konsolowa mogła korzystać z biblioteki.
+- Dodaj odpowiednią referencję do projektu, tak aby aplikacja konsolowa mogła korzystać z biblioteki.
 - W bibliotece utwórz klasę `TemperatureUtils` zawierającą publiczną metodę `public static double CelsiusToFahrenheit(double temperature)`, która przelicza temperaturę według wzoru: `F = C * 9/5 + 32`.
 - W aplikacji konsolowej wykorzystaj metodę z biblioteki do przeliczenia kilku przykładowych temperatur, np. `-20`, `0`, `20` i `100`.
 - Zbuduj całą solucję, a następnie uruchom aplikację konsolową.
