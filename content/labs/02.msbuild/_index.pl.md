@@ -197,7 +197,7 @@ Polecenia wykonywane za pomocą .NET CLI często modyfikują właśnie plik `.cs
 
 Za odczytanie pliku `.csproj` i zbudowanie projektu odpowiada **MSBuild**. W praktyce oznacza to, że polecenie `dotnet build` uruchamia MSBuild, który analizuje plik projektu, uwzględnia jego zależności i wykonuje odpowiednie kroki potrzebne do zbudowania aplikacji. 
 
-Plik projektu MSBuild może zawierać kilka rodzajów elementów. Najważniejsze z nich to **properties**, **items**, **targets** oraz **tasks**. 
+Plik projektu MSBuild może zawierać kilka rodzajów elementów. Najważniejsze z nich to **Properties**, **Items**, **Targets** oraz **Tasks**. 
 
 ### Properties
 
