@@ -262,7 +262,7 @@ Sam **Target** określa jedynie **etap procesu**. Konkretne czynności wykonywan
 </Target>
 ```
 
-W tym przypadku `Prepare` jest targetem, natomiast `MakeDir` i `Message` będą Taskami. 
+W tym przypadku `Prepare` jest targetem, natomiast `MakeDir` i `Message` będą **Taskami**. 
 Oto kilka najpopularniejszych Tasków MSBuild:
 ```xml
 <Message />   <!-- wypisanie komunikatu -->
