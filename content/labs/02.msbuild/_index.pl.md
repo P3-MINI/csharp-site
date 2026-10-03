@@ -254,7 +254,7 @@ Uruchomienie `BuildApplication` spowoduje najpierw wykonanie **Targetu** `Prepar
 
 ### Tasks
 
-Sam target określa jedynie **etap procesu**. Konkretne czynności wykonywane podczas tego etapu nazywane są **Taskami**. Przykładowo, jeśli chcemy utworzyć katalog i wyświetlić informację o zakończeniu tej operacji możemy zrobić to w następujący sposób:
+Sam **Target** określa jedynie **etap procesu**. Konkretne czynności wykonywane podczas tego etapu nazywane są **Taskami**. Przykładowo, jeśli chcemy utworzyć katalog i wyświetlić informację o zakończeniu tej operacji możemy zrobić to w następujący sposób:
 ```xml
 <Target Name="Prepare">
     <MakeDir Directories="build" />
