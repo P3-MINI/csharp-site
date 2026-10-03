@@ -226,7 +226,7 @@ Do wartości property możemy odwołać się za pomocą `$(NazwaProperty)`.
 
 **Items** służą do reprezentowania zbiorów elementów wykorzystywanych podczas budowania. Najczęściej są to na przykład pliki lub zależności projektu.
 
-Do zbioru itemów odwołujemy się za pomocą:
+Do zbioru **Items** odwołujemy się za pomocą:
 ```
 @(NazwaItemu)
 ```
