@@ -331,7 +331,7 @@ gitGraph
    commit id: "C"
 ```
 
-Tutaj branch `feature` został utworzony na podstawie commita B i rozwija się niezależnie od `main`.
+Tutaj branch `login` został utworzony na podstawie commita B i rozwija się niezależnie od `main`.
 
 Za pomocą komendy `git branch` możemy wyświetlić listę wszystkich lokalnych gałęzi. Przy gałęzi, na której obecnie jesteśmy wyświetli się `*`.
 
