@@ -17,7 +17,7 @@ W narzędziach .NET korzystamy między innymi z:
 
 Większa aplikacja .NET może składać się z kilku oddzielnych projektów. Każdy projekt możemy potraktować jako pojedynczy element większej aplikacji. Jeden projekt może odpowiadać na przykład za logikę programu, a drugi za testy jednostkowe. Każdy z tych projektów posiada własny plik `.csproj`, który opisuje między innymi sposób budowania projektu oraz jego zależności.
 
-Do pogrupowania projektów, należących do jednej aplikacji, służy **solucja**. Solucja określa, które projekty są ze sobą logicznie związane, ale samo nie definiuje zależności pomiędzy ich kodem. 
+Do pogrupowania projektów należących do jednej aplikacji służy **solucja**. Solucja określa, które projekty są ze sobą logicznie powiązane, ale sama nie definiuje zależności pomiędzy nimi. 
 ## .NET CLI
 
 Podczas pracy z .NET nie jesteśmy ograniczeni do przycisków dostępnych w Visual Studio czy Riderze. Czasem nawet pracujemy na serwerze, który nie ma zainstalowanego środowiska graficznego. Z tego powodu musisz wiedzieć, jak wykonać te operacje bezpośrednio z terminala. 
