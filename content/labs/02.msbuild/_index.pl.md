@@ -231,7 +231,7 @@ Do zbioru **Items** odwołujemy się za pomocą:
 @(NazwaItemu)
 ```
 
-Skorzystaliśmy już z itemów przy dodawaniu referencji pomiędzy projektami:
+Skorzystaliśmy już z **Itemów** przy dodawaniu referencji do projektu:
 ```xml
   <ItemGroup>
     <ProjectReference Include="..\GeometryTools.Lib\GeometryTools.Lib.csproj" />
