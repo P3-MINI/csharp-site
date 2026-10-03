@@ -201,7 +201,7 @@ Plik projektu MSBuild może zawierać kilka rodzajów elementów. Najważniejsze
 
 ### Properties
 
-**Properties** przechowują pojedyncze wartości wykorzystywane podczas procesu budowania. Grupujemy je zazwyczaj wewnątrz elementu `PropertyGroup`. 
+**Properties** przechowują pojedyncze wartości wykorzystywane podczas procesu budowania. Grupujemy je wewnątrz elementu `PropertyGroup`. 
 
 Przykładowo:
 
