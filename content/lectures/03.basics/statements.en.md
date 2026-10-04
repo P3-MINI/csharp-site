@@ -11,7 +11,7 @@ The `if`, `for`, `while`, and `do while` statements look identical to those in C
 
 Unlike in C++, the `switch` statement in C# does not allow control to fall through from one `case` block to the next implicitly. However, you can attach multiple `case` labels to a single block.
 
-In addition to matching constants, the `switch` statement can use pattern matching for any pattern. More on patterns later.
+In addition to matching constants, the `switch` statement can use pattern matching for any pattern. You can find a full list of them in the [Patterns]({{< ref "/lectures/05.csharp-features/patterns" >}}) lecture.
 
 Additionally, after the pattern, we can provide an additional condition that will be considered after the pattern is checked.
 
