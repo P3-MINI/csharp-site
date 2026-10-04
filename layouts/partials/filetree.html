@@ -1,6 +1,6 @@
 {{- $path := .path -}}
 <ul>
-  {{- range (readDir (printf "static%s" $path)) -}}
+  {{- range (readDir (printf "static/%s" $path)) -}}
     <li>
       {{- if .IsDir -}}
         <strong>{{ .Name }}/</strong>
