@@ -1,12 +1,13 @@
 {{- $path := .path -}}
-<ul>
+{{- $maxDepth := .maxDepth -}}
+<ul{{ if le $maxDepth 0 }} style="display: none;"{{ end }}>
   {{- range (readDir (printf "static/%s" $path)) -}}
     <li>
       {{- if .IsDir -}}
         <strong>{{ .Name }}/</strong>
         {{- with . -}}
           {{- $subpath := (printf "%s/%s" $path .Name) -}}
-          {{- partial "filetree.html" (dict "path" $subpath) -}}
+          {{- partial "filetree.html" (dict "path" $subpath "maxDepth" (sub $maxDepth 1)) -}}
         {{- end -}}
       {{- else -}}
         <a href="{{ (printf "%s/%s" $path .Name) | relURL }}">{{ .Name }}</a>
