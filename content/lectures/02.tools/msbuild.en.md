@@ -335,6 +335,7 @@ Properties control the entire build flow. Some of them, which are changed most f
 * **`LangVersion`**: The language version; it can also be set independently of `TargetFramework`.
 * **`CodeAnalysisTreatWarningsAsErrors`**: Causes all compiler warnings to be treated as errors.
 * **`NoWarn`**: A list of warning codes (e.g., 'CS1591') that the compiler should ignore.
+* **`RollForward`**: Controls how the application chooses the runtime version when the exact target framework version is not found (e.g., `LatestMajor` allows it to run on newer major versions).
 
 More complete list of properties can be found in the [documentation](https://learn.microsoft.com/dotnet/core/project-sdk/msbuild-props).
 
