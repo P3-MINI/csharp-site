@@ -516,7 +516,7 @@ gitGraph
    commit id: "C"
 ```
 
-Here, the `feature` branch was created from commit B and develops independently from `main`.
+Here, the `login` branch was created from commit B and develops independently from `main`.
 
 Using:
 
