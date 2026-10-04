@@ -84,7 +84,7 @@ string cardName = cardNumber switch
 
 ## The `foreach` statement
 
-Similar to C++, in C# we have a *range for loop*, but with a slightly different syntax. It can be used on anything that is **iterable**. For example, all built-in collections, arrays, and strings are iterable. We will discuss what makes something iterable later.
+Similar to C++, in C# we have a *range for loop*, but with a slightly different syntax. It can be used on anything that is **iterable**. For example, all built-in collections, arrays, and strings are iterable. We will discuss what makes something iterable later when talking about [enumerators](../06.collections/enumerators).
 
 ```csharp
 int[] array = new int[] {0, 1, 2, 3, 4};
