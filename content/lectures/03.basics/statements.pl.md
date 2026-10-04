@@ -11,7 +11,7 @@ Instrukcje `if`, `for`, `while` i `do while` wyglądają identycznie jak w C++. 
 
 W przeciwieństwie do C++, instrukcja switch w C# nie pozwala na niejawne przejście kontroli z jednego bloku `case` do następnego. Można natomiast przyczepić wiele etykiet `case` do jednego bloku.
 
-Poza dopasowaniem do stałych, instrukcja `switch` może używać dopasowywania do dowolnego wzorca. Więcej o wzorcach później.
+Poza dopasowaniem do stałych, instrukcja `switch` może używać dopasowywania do dowolnego wzorca. Pełną listę wzorców znajdziesz w wykładzie [Wzorce]({{< ref "/lectures/05.csharp-features/patterns" >}}).
 
 Dodatkowo po wzorcu możemy podać dodatkowy warunek który będzie rozważany dodatkowo po sprawdzeniu wzorca.
 
@@ -84,7 +84,7 @@ string cardName = cardNumber switch
 
 ## Instrukcja `foreach`
 
-Podobnie jak w C++ mamy w c# *range for loopa*, ma trochę inną składnię. Można go używać na wszystkim co jest **iterowalne**. Iterowalne są np. wszystkie kolekcje wbudowane, tablice i stringi. Czym jest iterowalność powiemy sobie później.
+Podobnie jak w C++ mamy w c# *range for loopa*, ma trochę inną składnię. Można go używać na wszystkim co jest **iterowalne**. Iterowalne są np. wszystkie kolekcje wbudowane, tablice i stringi. Czym jest iterowalność powiemy sobie później przy okazji omawiania [enumeratorów]({{< ref "/lectures/06.collections/enumerators" >}}).
 
 ```csharp
 int[] array = new int[] {0, 1, 2, 3, 4};

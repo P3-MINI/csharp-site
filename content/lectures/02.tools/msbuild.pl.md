@@ -335,6 +335,7 @@ Właściwości sterują całym przepływem budowania. Kilka z nich, które najcz
 *   **`LangVersion`**: Wersję języka, można też ustawić niezależnie od `TargetFramework`.
 *   **`CodeAnalysisTreatWarningsAsErrors`**: Powoduje, że wszystkie ostrzeżenia kompilatora są traktowane jako błędy.
 *   **`NoWarn`**: Lista kodów ostrzeżeń (np. 'CS1591'), które kompilator ma ignorować.
+*   **`RollForward`**: Określa w jaki sposób aplikacja wybiera wersję środowiska uruchomieniowego, jeśli docelowa wersja nie zostanie znaleziona (np. `LatestMajor` pozwala na uruchomienie na nowszych wersjach głównych).
 
 Dokładniejszą listę właściwości można znaleźć w [dokumentacji](https://learn.microsoft.com/dotnet/core/project-sdk/msbuild-props).
 
