@@ -30,8 +30,9 @@ async function downloadTreeAsZip(event, containerId, basePath, zipFileName) {
     const searchPath = basePath.startsWith('/') ? basePath : '/' + basePath;
 
     let pathInZip = '';
-    if (urlPath.startsWith(searchPath)) {
-      pathInZip = urlPath.substring(searchPath.length).replace(/^\//, '');
+    const matchIndex = urlPath.indexOf(searchPath);
+    if (matchIndex !== -1) {
+      pathInZip = urlPath.substring(matchIndex + searchPath.length).replace(/^\//, '');
     } else {
       console.warn('Skipping URL not within basePath:', urlPath, 'Base path:', searchPath);
       continue; // Skip to the next link
