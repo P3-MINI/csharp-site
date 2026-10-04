@@ -84,7 +84,7 @@ string cardName = cardNumber switch
 
 ## Instrukcja `foreach`
 
-Podobnie jak w C++ mamy w c# *range for loopa*, ma trochę inną składnię. Można go używać na wszystkim co jest **iterowalne**. Iterowalne są np. wszystkie kolekcje wbudowane, tablice i stringi. Czym jest iterowalność powiemy sobie później przy okazji omawiania [enumeratorów](../06.collections/enumerators).
+Podobnie jak w C++ mamy w c# *range for loopa*, ma trochę inną składnię. Można go używać na wszystkim co jest **iterowalne**. Iterowalne są np. wszystkie kolekcje wbudowane, tablice i stringi. Czym jest iterowalność powiemy sobie później przy okazji omawiania [enumeratorów]({{< ref "/lectures/06.collections/enumerators" >}}).
 
 ```csharp
 int[] array = new int[] {0, 1, 2, 3, 4};
