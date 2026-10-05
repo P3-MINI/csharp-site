@@ -107,35 +107,35 @@ if (flag)
 
 W odróżnieniu od C++ nie istnieją konwersje między `bool` a typami liczbowymi.
 
-### Porównywanie równości
+### Operatory porównania
 
-Dla typów bezpośrednich metoda `Equals` **domyślnie** sprawdza czy obiekty są identyczne pole po polu.
+Dla typów bezpośrednich operacja porównania **domyślnie** sprawdza czy obiekty są identyczne pole po polu.
 
 ```csharp
 Point p1 = new Point {X = 5, Y = 3};
 Point p2 = p1; p2.X = 0;
 Point p3 = new Point {X = -1, Y = 1};
 Point p4 = new Point {X = -1, Y = 1};
-Console.WriteLine(p1.Equals(p2)); // false
-Console.WriteLine(p3.Equals(p4)); // true
+Console.WriteLine(p1 == p2); // false
+Console.WriteLine(p3 == p4); // true
 
 public struct Point { public float X, Y; }
 ```
 
-Dla typów referencyjnych metoda `Equals` **domyślnie** sprawdza czy referencje wskazują na ten sam obiekt.
+Dla typów referencyjnych operacja porównania **domyślnie** sprawdza czy referencje wskazują na ten sam obiekt.
 
 ```csharp
 Person p1 = new Person {Name = "Alice", Age = 30};
 Person p2 = new Person {Name = "Alice", Age = 30};
 Person p3 = new Person {Name = "Bob", Age = 25};
 Person p4 = p3; p4.Age = 26;
-Console.WriteLine(p1.Equals(p2)); // false
-Console.WriteLine(p3.Equals(p4)); // true
+Console.WriteLine(p1 == p2); // false
+Console.WriteLine(p3 == p4); // true
 
 public class Person { public string Name; public int Age; }
 ```
 
-> Metodę `Equals` można nadpisać. Z kolei operatory porównania (jak `==`) mogą być przeciążane tak, żeby zwracały dowolny typ. W praktyce nie ma to zbyt wiele sensu.
+> Operatory porównania mogą być nadpisane, tak, żeby zwracały dowolny typ. W praktyce nie ma to zbyt wiele sensu.
 
 ### Operacje skrócone (*Short-Circuiting*)
 

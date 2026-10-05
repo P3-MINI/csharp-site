@@ -107,35 +107,35 @@ if (flag)
 
 Unlike in C++, there are no conversions between `bool` and numeric types.
 
-### Equality Comparison
+### Comparison Operators
 
-For value types, the `Equals` method **by default** checks if the objects are identical field by field.
+For value types, the comparison operation **by default** checks if the objects are identical field by field.
 
 ```csharp
 Point p1 = new Point {X = 5, Y = 3};
 Point p2 = p1; p2.X = 0;
 Point p3 = new Point {X = -1, Y = 1};
 Point p4 = new Point {X = -1, Y = 1};
-Console.WriteLine(p1.Equals(p2)); // false
-Console.WriteLine(p3.Equals(p4)); // true
+Console.WriteLine(p1 == p2); // false
+Console.WriteLine(p3 == p4); // true
 
 public struct Point { public float X, Y; }
 ```
 
-For reference types, the `Equals` method **by default** checks if the references point to the same object.
+For reference types, the comparison operation **by default** checks if the references point to the same object.
 
 ```csharp
 Person p1 = new Person {Name = "Alice", Age = 30};
 Person p2 = new Person {Name = "Alice", Age = 30};
 Person p3 = new Person {Name = "Bob", Age = 25};
 Person p4 = p3; p4.Age = 26;
-Console.WriteLine(p1.Equals(p2)); // false
-Console.WriteLine(p3.Equals(p4)); // true
+Console.WriteLine(p1 == p2); // false
+Console.WriteLine(p3 == p4); // true
 
 public class Person { public string Name; public int Age; }
 ```
 
-> The `Equals` method can be overridden. Comparison operators (like `==`) can also be overloaded to return any type. In practice, this doesn't make much sense.
+> Comparison operators can be overloaded to return any type. In practice, this doesn't make much sense.
 
 ### Short-Circuiting Operations
 
