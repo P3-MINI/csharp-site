@@ -109,17 +109,14 @@ W odróżnieniu od C++ nie istnieją konwersje między `bool` a typami liczbowym
 
 ### Operatory porównania
 
-Dla typów bezpośrednich operacja porównania **domyślnie** sprawdza czy obiekty są identyczne pole po polu.
+Dla typów bezpośrednich operacja porównania **zazwyczaj** sprawdza czy wartości są identyczne.
 
 ```csharp
-Point p1 = new Point {X = 5, Y = 3};
-Point p2 = p1; p2.X = 0;
-Point p3 = new Point {X = -1, Y = 1};
-Point p4 = new Point {X = -1, Y = 1};
-Console.WriteLine(p1 == p2); // false
-Console.WriteLine(p3 == p4); // true
-
-public struct Point { public float X, Y; }
+int a = 5;
+int b = 5;
+int c = 10;
+Console.WriteLine(a == b); // true
+Console.WriteLine(a == c); // false
 ```
 
 Dla typów referencyjnych operacja porównania **domyślnie** sprawdza czy referencje wskazują na ten sam obiekt.
