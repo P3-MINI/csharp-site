@@ -81,7 +81,7 @@ catch (OverflowException ex)
 The `decimal` type should be used for financial and monetary operations where rounding errors are unacceptable.
 
 - `decimal` is a **base-10 floating-point type**. Unlike `float` and `double` (base-2), `decimal` accurately represents decimal fractions (e.g., 0.1, 0.2).
-- In memory, it is stored as a 96-bit integer mantissa, a sign bit, and a 31-bit exponent (a power of 10 that specifies the position of the decimal point).
+- Of the 128 bits, 1 bit represents the sign of the value, 96 bits represent the value itself (mantissa), and 8 bits represent the power of 10 to divide the 96-bit value by (from 0 to 28). The remaining bits are unused.
 
 Conversions between `decimal` and `float`/`double` must always be explicit.
 

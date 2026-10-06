@@ -81,7 +81,7 @@ catch (OverflowException ex)
 Typu `decimal` należy używać do operacji finansowych i monetarnych, gdzie błędy zaokrągleń są niedopuszczalne.
 
 - `decimal` to **typ zmiennoprzecinkowy o podstawie 10**. W przeciwieństwie do `float` i `double` (podstawa 2), `decimal` dokładnie reprezentuje ułamki dziesiętne (np. 0.1, 0.2).
-- W pamięci jest przechowywany jako 96-bitowa mantysa (liczby całkowitej), bit znaku i 31 bitów wykładnika (potęgi 10, określającej pozycję przecinka).
+- Ze 128 bitów, 1 bit reprezentuje znak, 96 bitów reprezentuje samą wartość (mantysę), a 8 bitów reprezentuje potęgę liczby 10, przez którą dzielona jest ta 96-bitowa wartość (od 0 do 28). Pozostałe bity są niewykorzystane.
 
 Konwersje między `decimal` a `float`/`double` zawsze muszą być jawne.
 
