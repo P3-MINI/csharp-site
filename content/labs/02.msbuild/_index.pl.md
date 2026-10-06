@@ -182,7 +182,7 @@ Przykładowy plik projektu aplikacji konsolowej może wyglądać następująco:
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -218,7 +218,7 @@ Do wartości property możemy odwołać się za pomocą `$(NazwaProperty)`.
 ```xml
 <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
 </PropertyGroup>
 ```
 
