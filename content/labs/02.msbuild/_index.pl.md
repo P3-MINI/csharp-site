@@ -8,6 +8,7 @@ weight: 20
 Podczas tworzenia większych aplikacji rzadko pracujemy z pojedynczym plikiem źródłowym. Większe aplikacje mogą się składać z kilku projektów, takich jak biblioteki, aplikacje wykonywalne oraz projekty zawierające testy. Potrzebujemy więc narzędzi, które pozwolą nam zarządzać strukturą projektu oraz procesem budowania.
 
 W narzędziach .NET korzystamy między innymi z:
+
 - .NET CLI - narzędzie umożliwiające tworzenie, budowanie, uruchamianie i testowanie projektów
 - MSBuild - system odpowiedzialny za proces budowania projektów
 - solucja (rozwiązanie) - plik grupujący powiązane ze sobą projekty
@@ -93,7 +94,7 @@ dotnet sln list
 
 Wówczas na liście powinien pojawić się:
 
-```
+```text
 <LibraryName>.Lib
 ```
 
@@ -182,7 +183,7 @@ Przykładowy plik projektu aplikacji konsolowej może wyglądać następująco:
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -218,7 +219,7 @@ Do wartości property możemy odwołać się za pomocą `$(NazwaProperty)`.
 ```xml
 <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
 </PropertyGroup>
 ```
 
@@ -227,7 +228,7 @@ Do wartości property możemy odwołać się za pomocą `$(NazwaProperty)`.
 **Items** służą do reprezentowania zbiorów elementów wykorzystywanych podczas budowania. Najczęściej są to na przykład pliki lub zależności projektu.
 
 Do zbioru **Items** odwołujemy się za pomocą:
-```
+```text
 @(NazwaItemu)
 ```
 
@@ -339,6 +340,7 @@ W .NET możemy korzystać z kilku frameworków do tworzenia testów jednostkowyc
 - MSTest
 - NUnit
 - xUnit
+
 W tym laboratorium będziemy korzystać z **MSTest.**
 
 Projekt testowy jest budowany podobnie jak zwykła biblioteka. Powstały w ten sposób projekt jest później wejściem dla *test runnera*, który wyszukuje w takiej bibliotece metody oznaczone atrybutem `[TestMethod]` i je uruchamia.
@@ -453,5 +455,5 @@ Rozszerz solucję `TemperatureConverter` z poprzedniego zadania o projekt zawier
 - Celowo zmień implementację `CelsiusToFahrenheit`, tak aby była niepoprawna, i sprawdź wynik ponownego uruchomienia testów.
 - Przywróć poprawną implementację i upewnij się, że wszystkie testy ponownie przechodzą.
 
->[!Warning]
->Rozwiąż to zadanie zarówno z poziomu terminala, korzystając z .NET CLI, jak i również w wybranym IDE, Takim jak Visual Studio lub Rider.
+> [!Warning]
+> Rozwiąż to zadanie zarówno z poziomu terminala, korzystając z .NET CLI, jak i również w wybranym IDE, Takim jak Visual Studio lub Rider.

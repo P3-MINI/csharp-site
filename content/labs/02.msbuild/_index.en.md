@@ -7,13 +7,9 @@ weight: 20
 When developing larger applications, we rarely work with a single source file. Larger applications may consist of several projects, such as libraries, executable applications, and projects containing tests. Therefore, we need tools that allow us to manage the project structure and the build process.
 
 In .NET, we use, among others:
-
 - .NET CLI - a tool that allows us to create, build, run, and test projects
-    
 - MSBuild - the system responsible for the project build process
-    
 - solution - a file that groups related projects
-    
 - NuGet - the package manager for .NET
     
 
@@ -29,7 +25,7 @@ When working with .NET, we are not limited to the actions available in Visual St
 
 This is what the **.NET CLI** is used for. You can display the list of available commands using `dotnet --help`. Help for individual commands can be displayed using:
 
-```
+```bash
 dotnet <command> --help
 ```
 
@@ -41,7 +37,7 @@ In the following parts of the lab, we will use the .NET CLI, among other things,
 
 A new solution can be created using:
 
-```
+```bash
 dotnet new sln -n <SolutionName>
 ```
 
@@ -51,7 +47,7 @@ The `dotnet new` command creates a new element based on one of the templates ava
 
 One of the project types available in .NET is a **library**. Unlike a console application, it is not intended to be run independently. It contains code that can be used by other projects. A library can be created as follows:
 
-```
+```bash
 dotnet new classlib -n <LibraryName>.Lib
 ```
 
@@ -69,7 +65,7 @@ The library project created earlier contains the default `Class1.cs` file. It is
 
 For example, we can create a class responsible for basic rectangle operations:
 
-```
+```csharp
 namespace GeometryTools.Lib; 
 
 public static class RectangleUtils 
@@ -85,7 +81,7 @@ Elements that should be accessible from other projects must be exposed appropria
 
 You can check whether the library compiles correctly using:
 
-```
+```bash
 dotnet build GeometryTools.Lib
 ```
 
@@ -95,19 +91,19 @@ Creating a project in the same directory as the solution file does not automatic
 
 The project must be added separately using:
 
-```
+```bash
 dotnet sln add <LibraryName>.Lib
 ```
 
 You can then check the contents of the solution:
 
-```
+```bash
 dotnet sln list
 ```
 
 The following should then appear in the list:
 
-```
+```text
 <LibraryName>.Lib
 ```
 
@@ -115,13 +111,13 @@ The following should then appear in the list:
 
 To create a console application, you can use:
 
-```
+```bash
 dotnet new console -n <ProjectName>.App
 ```
 
 Remember to add it to the solution:
 
-```
+```bash
 dotnet sln add <ProjectName>.App
 ```
 
@@ -131,7 +127,7 @@ If the code of one project uses classes located in another project, we need to e
 
 To add a reference to another project, you can use:
 
-```
+```bash
 dotnet add <Project> reference <ReferencedProject>
 ```
 
@@ -143,20 +139,20 @@ After adding the reference, we can use public classes from the library in the co
 
 For example, if the library uses the `GeometryTools.Lib` namespace, we can import it at the beginning of our application:
 
-```
+```csharp
 using GeometryTools.Lib;
 ```
 
 We can then use methods provided by the library:
 
-```
+```csharp
 double area = RectangleUtils.CalculateArea(5,4);
 Console.WriteLine(area);
 ```
 
 The application can then be run using:
 
-```
+```bash
 dotnet run --project GeometryTools.App
 ```
 
@@ -173,17 +169,12 @@ In this task, you will create a `TemperatureConverter` application consisting of
 Complete the following steps:
 
 - Create the `TemperatureConverter` solution and both projects, and add them to the solution.
-    
 - Add the appropriate project reference so that the console application can use the library.
-    
 - In the library, create a `TemperatureUtils` class containing the public method `public static double CelsiusToFahrenheit(double temperature)`, which converts the temperature according to the formula: `F = C * 9/5 + 32`.
-    
 - In the console application, use the library method to convert several example temperatures, such as `-20`, `0`, `20`, and `100`.
-    
 - Build the entire solution and then run the console application.
-    
 
-> [!Warning]  
+> [!Warning]
 > Complete this task both from the terminal using the .NET CLI and in an IDE of your choice, such as Visual Studio or Rider.
 
 ## MSBuild and `.csproj` Files
@@ -194,7 +185,7 @@ Each .NET project has its own `.csproj` file. It is an XML file containing a des
 
 An example project file for a console application may look as follows:
 
-```
+```xml
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
@@ -203,7 +194,7 @@ An example project file for a console application may look as follows:
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -225,7 +216,7 @@ An MSBuild project file can contain several types of elements. The most importan
 
 For example:
 
-```
+```xml
 <PropertyGroup>
     <ApplicationName>GeometryTools</ApplicationName>
 </PropertyGroup>
@@ -235,10 +226,10 @@ A property value can be referenced using `$(PropertyName)`.
 
 We have already encountered **Properties** in the `.csproj` file. For example:
 
-```
+```xml
 <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
 </PropertyGroup>
 ```
 
@@ -248,13 +239,13 @@ We have already encountered **Properties** in the `.csproj` file. For example:
 
 A collection of **Items** can be referenced using:
 
-```
+```text
 @(ItemName)
 ```
 
 We have already used **Items** when adding a project reference:
 
-```
+```xml
 <ItemGroup>
     <ProjectReference Include="..\GeometryTools.Lib\GeometryTools.Lib.csproj" />
 </ItemGroup>
@@ -264,7 +255,7 @@ We have already used **Items** when adding a project reference:
 
 A **Target** describes a specific stage of a process performed by MSBuild. A project may contain many such **Targets**, each responsible for a specific task. **Targets** may also declare dependencies between one another:
 
-```
+```xml
 <Target Name="Prepare">
     <Message Text="Preparing..." />
 </Target>
@@ -276,7 +267,7 @@ A **Target** describes a specific stage of a process performed by MSBuild. A pro
 
 Running `BuildApplication` will first execute the `Prepare` **Target**. To run a target, you can use:
 
-```
+```bash
 dotnet msbuild -target:BuildApplication
 ```
 
@@ -286,7 +277,7 @@ A **Target** itself only defines a **stage of the process**. The specific operat
 
 For example, if we want to create a directory and display a message after completing the operation, we can do the following:
 
-```
+```xml
 <Target Name="Prepare">
     <MakeDir Directories="build" />
     <Message Text="Build directory prepared" />
@@ -297,7 +288,7 @@ In this case, `Prepare` is a target, while `MakeDir` and `Message` are **Tasks**
 
 Here are some of the most common MSBuild **Tasks**:
 
-```
+```xml
 <Message />   <!-- displays a message -->
 <MakeDir />   <!-- creates a directory -->
 <Copy />      <!-- copies files -->
@@ -314,19 +305,19 @@ A .NET project can be built using different configurations. The most commonly us
 
 A project can be built using a selected configuration with:
 
-```
+```bash
 dotnet build -c Release
 ```
 
 or:
 
-```
+```bash
 dotnet build -c Debug
 ```
 
 The currently selected configuration is available in MSBuild as a **Property**:
 
-```
+```text
 $(Configuration)
 ```
 
@@ -334,7 +325,7 @@ The `Condition` attribute allows us to specify when a given MSBuild element shou
 
 For example, we can define different property values depending on the configuration:
 
-```
+```xml
 <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <BuildType>Development</BuildType>
 </PropertyGroup>
@@ -352,13 +343,13 @@ When developing software, we rarely write everything from scratch. In everyday w
 
 A package can be added to a project using:
 
-```
+```bash
 dotnet add <Project> package <PackageName>
 ```
 
 After adding the package, an entry similar to the following will appear in the `.csproj` file:
 
-```
+```xml
 <ItemGroup>
     <PackageReference Include="<PackageName>" Version="<PackageVersion>" />
 </ItemGroup>
@@ -375,11 +366,8 @@ A unit test checks a small part of an application, most commonly a single method
 In .NET, we can use several frameworks for writing unit tests, including:
 
 - MSTest
-    
 - NUnit
-    
 - xUnit
-    
 
 In this lab, we will use **MSTest**.
 
@@ -389,7 +377,7 @@ A test project is built similarly to a regular library. The resulting project is
 
 We will add a third project to the existing `GeometryTools` solution, add it to the solution, and create a reference using the following commands:
 
-```
+```bash
 dotnet new mstest -n GeometryTools.Tests
 dotnet sln add GeometryTools.Tests
 dotnet add GeometryTools.Tests reference GeometryTools.Lib
@@ -403,7 +391,7 @@ In the newly created project, you will find an example test class. In MSTest, a 
 
 We can create a test for the `CalculateArea` method written earlier:
 
-```
+```csharp
 using GeometryTools.Lib;
 
 namespace GeometryTools.Tests;
@@ -429,7 +417,7 @@ public sealed class RectangleUtilsTests
 
 The test can be run using:
 
-```
+```bash
 dotnet test
 ```
 
@@ -440,17 +428,14 @@ If the expected value matches the result returned by the method, the test will b
 A good unit test follows the simple **Arrange-Act-Assert (AAA)** pattern:
 
 1. Arrange: Prepare the conditions and input data.
-    
 2. Act: Call the method being tested.
-    
 3. Assert: Check whether the result matches the expected value.
-    
 
 ### Assertions
 
 **Assertions** are used to check the result of a test. For example:
 
-```
+```csharp
 Assert.AreEqual(expected, actual);
 Assert.AreEqual(expected, actual, delta); // for float comparisons
 Assert.IsTrue(condition);
@@ -465,13 +450,13 @@ It is worth testing not only typical cases but also **edge cases**, such as `0`,
 
 A test name should describe the tested case as precisely as possible. One popular convention is:
 
-```
+```text
 MethodName_Scenario_ExpectedResult
 ```
 
 For example:
 
-```
+```text
 CalculateArea_ValidDimensions_ReturnsCorrectArea
 CalculateArea_OneSideIsZero_ReturnsZero
 ```
@@ -483,13 +468,9 @@ This makes it easy to determine which case failed simply by looking at the outpu
 A good unit test should be:
 
 - fast - a project may contain thousands of tests, so they should execute as quickly as possible,
-    
 - independent - one test should not depend on the result of another test,
-    
 - repeatable - running the test multiple times under the same conditions should always produce the same result,
-    
 - simple - the test should clearly show the input data, the operation being performed, and the expected result.
-    
 
 A unit test should also not duplicate the logic of the method being tested. For example, if we are testing a method that calculates the area of a rectangle, we should not duplicate the same logic in the test.
 
@@ -500,27 +481,16 @@ Sometimes development begins by writing unit tests first, defining the expected 
 Extend the `TemperatureConverter` solution from the previous task by adding a project containing unit tests.
 
 - Create a `TemperatureConverter.Tests` project using `MSTest` and add it to the solution.
-    
 - Add the appropriate reference so that the test project can use `TemperatureConverter.Lib`.
-    
 - Create a `TemperatureUtilsTests` class.
-    
 - Write tests for the `CelsiusToFahrenheit` method using several characteristic temperatures.
-    
 - Check, among other things, whether:
-    
-    - `0°C` gives `32°F`,
-        
-    - `100°C` gives `212°F`,
-        
-    - `-40°C` gives `-40°F`.
-        
+  - `0°C` gives `32°F`,
+  - `100°C` gives `212°F`,
+  - `-40°C` gives `-40°F`.
 - Run all tests using `dotnet test`.
-    
 - Intentionally modify the implementation of `CelsiusToFahrenheit` so that it is incorrect, and check the result after running the tests again.
-    
 - Restore the correct implementation and make sure that all tests pass again.
-    
 
-> [!Warning]  
+> [!Warning]
 > Complete this task both from the terminal using the .NET CLI and in an IDE of your choice, such as Visual Studio or Rider.
