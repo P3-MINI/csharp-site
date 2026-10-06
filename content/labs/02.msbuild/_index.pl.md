@@ -93,7 +93,7 @@ dotnet sln list
 
 Wówczas na liście powinien pojawić się:
 
-```
+```text
 <LibraryName>.Lib
 ```
 
@@ -227,7 +227,7 @@ Do wartości property możemy odwołać się za pomocą `$(NazwaProperty)`.
 **Items** służą do reprezentowania zbiorów elementów wykorzystywanych podczas budowania. Najczęściej są to na przykład pliki lub zależności projektu.
 
 Do zbioru **Items** odwołujemy się za pomocą:
-```
+```text
 @(NazwaItemu)
 ```
 
