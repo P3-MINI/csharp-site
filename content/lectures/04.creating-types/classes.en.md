@@ -185,6 +185,8 @@ class ShopItem
 }
 ```
 
+> The implicit `value` keyword used in the `set` accessor represents the value that is being assigned to the property.
+
 Both `get` and `set` are optional. If `get` and `set` bodies are omitted, the compiler will automatically generate a corresponding field. This is the most common use case of properties.
 
 ```csharp
@@ -192,6 +194,19 @@ class ShopItem
 {
     public decimal Price { get; set; } = 0.0m; // auto-generated properties can be initialized here
     public string Name { get; set ;}
+}
+```
+
+Since C# 14, you can use the `field` keyword to access the compiler-generated backing field directly, without having to declare it manually:
+
+```csharp
+class ShopItem
+{
+    public decimal Price
+    {
+        get => field; 
+        set => field = Math.Max(value, 0); 
+    }
 }
 ```
 

@@ -185,6 +185,8 @@ class ShopItem
 }
 ```
 
+> Niejawne słowo kluczowe `value` używane w akcesorze `set` reprezentuje wartość, która jest przypisywana do właściwości.
+
 Zarówno `get`, jak i `set` są opcjonalne. Jeśli ciała `get` i `set` zostaną pominięte, kompilator automatycznie wygeneruje odpowiednie pole. Jest to najczęstszy przypadek użycia właściwości.
 
 ```csharp
@@ -192,6 +194,19 @@ class ShopItem
 {
     public decimal Price { get; set; } = 0.0m; // automatycznie generowane właściwości mogą być tutaj inicjalizowane
     public string Name { get; set ;}
+}
+```
+
+Od wersji C# 14 możesz użyć słowa kluczowego `field`, aby uzyskać bezpośredni dostęp do wygenerowanego przez kompilator ukrytego pola (backing field), bez konieczności jego ręcznego deklarowania:
+
+```csharp
+class ShopItem
+{
+    public decimal Price
+    {
+        get => field; 
+        set => field = Math.Max(value, 0); 
+    }
 }
 ```
 

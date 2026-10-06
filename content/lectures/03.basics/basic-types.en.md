@@ -81,7 +81,7 @@ catch (OverflowException ex)
 The `decimal` type should be used for financial and monetary operations where rounding errors are unacceptable.
 
 - `decimal` is a **base-10 floating-point type**. Unlike `float` and `double` (base-2), `decimal` accurately represents decimal fractions (e.g., 0.1, 0.2).
-- In memory, it is stored as a 96-bit integer mantissa, a sign bit, and a 31-bit exponent (a power of 10 that specifies the position of the decimal point).
+- Of the 128 bits, 1 bit represents the sign of the value, 96 bits represent the value itself (mantissa), and 8 bits represent the power of 10 to divide the 96-bit value by (from 0 to 28). The remaining bits are unused.
 
 Conversions between `decimal` and `float`/`double` must always be explicit.
 
@@ -109,17 +109,14 @@ Unlike in C++, there are no conversions between `bool` and numeric types.
 
 ### Comparison Operators
 
-For value types, the comparison operation **by default** checks if the objects are identical field by field.
+For value types, the comparison operation **typically** checks if the values are identical.
 
 ```csharp
-Point p1 = new Point {X = 5, Y = 3};
-Point p2 = p1; p2.X = 0;
-Point p3 = new Point {X = -1, Y = 1};
-Point p4 = new Point {X = -1, Y = 1};
-Console.WriteLine(p1 == p2); // false
-Console.WriteLine(p3 == p4); // true
-
-public struct Point { public float X, Y; }
+int a = 5;
+int b = 5;
+int c = 10;
+Console.WriteLine(a == b); // true
+Console.WriteLine(a == c); // false
 ```
 
 For reference types, the comparison operation **by default** checks if the references point to the same object.

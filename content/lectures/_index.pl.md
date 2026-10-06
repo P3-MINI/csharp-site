@@ -9,11 +9,11 @@ weight: 10
 - [Wstęp]({{< ref "01.introduction" >}})
 - [MSBuild]({{< ref "02.tools/msbuild" >}})
 - [System typów]({{< ref "03.basics/types" >}})
+- [Typy podstawowe]({{< ref "03.basics/basic-types" >}})
+- [String]({{< ref "03.basics/string" >}})
 
 ## Wykład 02
 
-- [Typy podstawowe]({{< ref "03.basics/basic-types" >}})
-- [String]({{< ref "03.basics/string" >}})
 - [Tablice]({{< ref "03.basics/arrays" >}})
 - [Object]({{< ref "03.basics/object" >}})
 - [Instrukcje]({{< ref "03.basics/statements" >}})
