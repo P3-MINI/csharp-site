@@ -7,13 +7,9 @@ weight: 20
 When developing larger applications, we rarely work with a single source file. Larger applications may consist of several projects, such as libraries, executable applications, and projects containing tests. Therefore, we need tools that allow us to manage the project structure and the build process.
 
 In .NET, we use, among others:
-
 - .NET CLI - a tool that allows us to create, build, run, and test projects
-    
 - MSBuild - the system responsible for the project build process
-    
 - solution - a file that groups related projects
-    
 - NuGet - the package manager for .NET
     
 
@@ -173,17 +169,12 @@ In this task, you will create a `TemperatureConverter` application consisting of
 Complete the following steps:
 
 - Create the `TemperatureConverter` solution and both projects, and add them to the solution.
-    
 - Add the appropriate project reference so that the console application can use the library.
-    
 - In the library, create a `TemperatureUtils` class containing the public method `public static double CelsiusToFahrenheit(double temperature)`, which converts the temperature according to the formula: `F = C * 9/5 + 32`.
-    
 - In the console application, use the library method to convert several example temperatures, such as `-20`, `0`, `20`, and `100`.
-    
 - Build the entire solution and then run the console application.
-    
 
-> [!Warning]  
+> [!Warning]
 > Complete this task both from the terminal using the .NET CLI and in an IDE of your choice, such as Visual Studio or Rider.
 
 ## MSBuild and `.csproj` Files
@@ -375,11 +366,8 @@ A unit test checks a small part of an application, most commonly a single method
 In .NET, we can use several frameworks for writing unit tests, including:
 
 - MSTest
-    
 - NUnit
-    
 - xUnit
-    
 
 In this lab, we will use **MSTest**.
 
@@ -440,11 +428,8 @@ If the expected value matches the result returned by the method, the test will b
 A good unit test follows the simple **Arrange-Act-Assert (AAA)** pattern:
 
 1. Arrange: Prepare the conditions and input data.
-    
 2. Act: Call the method being tested.
-    
 3. Assert: Check whether the result matches the expected value.
-    
 
 ### Assertions
 
@@ -483,13 +468,9 @@ This makes it easy to determine which case failed simply by looking at the outpu
 A good unit test should be:
 
 - fast - a project may contain thousands of tests, so they should execute as quickly as possible,
-    
 - independent - one test should not depend on the result of another test,
-    
 - repeatable - running the test multiple times under the same conditions should always produce the same result,
-    
 - simple - the test should clearly show the input data, the operation being performed, and the expected result.
-    
 
 A unit test should also not duplicate the logic of the method being tested. For example, if we are testing a method that calculates the area of a rectangle, we should not duplicate the same logic in the test.
 
@@ -500,27 +481,16 @@ Sometimes development begins by writing unit tests first, defining the expected 
 Extend the `TemperatureConverter` solution from the previous task by adding a project containing unit tests.
 
 - Create a `TemperatureConverter.Tests` project using `MSTest` and add it to the solution.
-    
 - Add the appropriate reference so that the test project can use `TemperatureConverter.Lib`.
-    
 - Create a `TemperatureUtilsTests` class.
-    
 - Write tests for the `CelsiusToFahrenheit` method using several characteristic temperatures.
-    
 - Check, among other things, whether:
-    
-    - `0°C` gives `32°F`,
-        
-    - `100°C` gives `212°F`,
-        
-    - `-40°C` gives `-40°F`.
-        
+  - `0°C` gives `32°F`,
+  - `100°C` gives `212°F`,
+  - `-40°C` gives `-40°F`.
 - Run all tests using `dotnet test`.
-    
 - Intentionally modify the implementation of `CelsiusToFahrenheit` so that it is incorrect, and check the result after running the tests again.
-    
 - Restore the correct implementation and make sure that all tests pass again.
-    
 
-> [!Warning]  
+> [!Warning]
 > Complete this task both from the terminal using the .NET CLI and in an IDE of your choice, such as Visual Studio or Rider.

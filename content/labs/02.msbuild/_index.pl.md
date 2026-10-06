@@ -8,6 +8,7 @@ weight: 20
 Podczas tworzenia większych aplikacji rzadko pracujemy z pojedynczym plikiem źródłowym. Większe aplikacje mogą się składać z kilku projektów, takich jak biblioteki, aplikacje wykonywalne oraz projekty zawierające testy. Potrzebujemy więc narzędzi, które pozwolą nam zarządzać strukturą projektu oraz procesem budowania.
 
 W narzędziach .NET korzystamy między innymi z:
+
 - .NET CLI - narzędzie umożliwiające tworzenie, budowanie, uruchamianie i testowanie projektów
 - MSBuild - system odpowiedzialny za proces budowania projektów
 - solucja (rozwiązanie) - plik grupujący powiązane ze sobą projekty
@@ -339,6 +340,7 @@ W .NET możemy korzystać z kilku frameworków do tworzenia testów jednostkowyc
 - MSTest
 - NUnit
 - xUnit
+
 W tym laboratorium będziemy korzystać z **MSTest.**
 
 Projekt testowy jest budowany podobnie jak zwykła biblioteka. Powstały w ten sposób projekt jest później wejściem dla *test runnera*, który wyszukuje w takiej bibliotece metody oznaczone atrybutem `[TestMethod]` i je uruchamia.
@@ -453,5 +455,5 @@ Rozszerz solucję `TemperatureConverter` z poprzedniego zadania o projekt zawier
 - Celowo zmień implementację `CelsiusToFahrenheit`, tak aby była niepoprawna, i sprawdź wynik ponownego uruchomienia testów.
 - Przywróć poprawną implementację i upewnij się, że wszystkie testy ponownie przechodzą.
 
->[!Warning]
->Rozwiąż to zadanie zarówno z poziomu terminala, korzystając z .NET CLI, jak i również w wybranym IDE, Takim jak Visual Studio lub Rider.
+> [!Warning]
+> Rozwiąż to zadanie zarówno z poziomu terminala, korzystając z .NET CLI, jak i również w wybranym IDE, Takim jak Visual Studio lub Rider.
