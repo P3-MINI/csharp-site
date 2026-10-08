@@ -453,6 +453,100 @@ Aby wygenerować obraz, uruchom program, przekierowując standardowe wyjście do
 dotnet run > image.ppm
 ```
 
+### Etap 4: Materiały i rekursja
+
+W tym etapie dodamy obsługę materiałów, które zdefiniują zachowanie promieni po uderzeniu w obiekt. Zaimplementujemy również system wielokrotnych odbić przy użyciu rekurencji.
+
+#### Klasy abstrakcyjne
+
+Z klasy abstrakcyjnej nie można bezpośrednio utworzyć instancji. Służy ona jako definicja bazowa dla klas pochodnych. Może zawierać deklaracje metod abstrakcyjnych (pozbawionych implementacji, wymagających zdefiniowania w klasie pochodnej) oraz metod wirtualnych (posiadających domyślną implementację, którą opcjonalnie można nadpisać).
+
+#### Przekazywanie parametrów przez referencję
+
+Przekazywanie argumentów przez referencję pozwala uniknąć kopiowania struktur w pamięci podczas wywołań metod. W C# służą do tego trzy słowa kluczowe:
+- `out` – argument wyjściowy. Przekazywana zmienna nie musi być zainicjalizowana przed wywołaniem, jednak jej inicjalizacja wewnątrz metody przed zakończeniem wykonania jest wymagana przez kompilator.
+- `ref` – dwukierunkowa referencja. Zmienna musi zostać zainicjowana przed przekazaniem do metody.
+- `in` – referencja tylko do odczytu. Gwarantuje brak modyfikacji argumentu wewnątrz metody.
+
+W pliku `Material.cs` zdefiniuj abstrakcyjną klasę `Material`:
+1. Zadeklaruj metodę abstrakcyjną `Scatter`: `public abstract bool Scatter(in Ray rIn, ref HitInfo hitInfo, out Vector3 attenuation, out Ray scattered);`. Przyjmuje ona promień wejściowy (`rIn`) oraz informacje o trafieniu (`hitInfo`). Przez argumenty wyjściowe zwraca wektor tłumienia koloru (`attenuation`) oraz promień odbity (`scattered`), a jako wynik działania (typ `bool`) zwraca informację, czy promień uległ odbiciu.
+2. Zadeklaruj metodę wirtualną `Emit()` zwracającą domyślnie wektor `new Vector3(0, 0, 0)`.
+
+```csharp
+namespace Raytracing;
+
+public abstract class Material
+{
+    public abstract bool Scatter(in Ray rIn, ref HitInfo hitInfo, out Vector3 attenuation, out Ray scattered);
+    
+    public virtual Vector3 Emit() => new Vector3(0, 0, 0);
+}
+```
+
+#### EmissiveMaterial
+
+W pliku `EmissiveMaterial.cs` utwórz klasę `EmissiveMaterial` dziedziczącą po `Material`. Reprezentuje ona materiał emitujący własne światło. Zdefiniuj w niej:
+- Właściwość `Vector3 Color` inicjalizowaną przez konstruktor.
+- Metodę `Scatter`, która zwraca `false` (wskazując brak dalszego odbicia promienia) oraz przypisuje domyślne wartości do zmiennych wyjściowych `out`.
+- Metodę `Emit()` zwracającą właściwość `Color`.
+
+#### Powiązanie materiałów z geometrią sceny
+
+Zaktualizuj struktury odpowiedzialne za przechowywanie danych o kolizjach tak, aby umożliwiały odczyt właściwości trafionego materiału:
+1. W pliku `HitInfo.cs` dodaj do struktury pole `public Material Mat;`.
+2. W klasach `Sphere` i `Plane` dodaj właściwość `public Material Mat { get; set; }` i przypisz jej wartość z konstruktora.
+3. W metodach `Hit` dla obu kształtów dodaj instrukcję przypisującą materiał do zwracanej struktury wyjściowej (np. `hitInfo.Mat = Mat;`).
+
+#### Rekurencyjne wyliczanie koloru
+
+W klasie `Camera` dodaj właściwość `public int MaxDepth { get; set; } = 50;`. Określa ona dopuszczalny limit wywołań rekurencyjnych. Zabezpiecza to program przed zawieszeniem (np. w sytuacji, gdy promień odbija się w nieskończoność między dwoma lustrami).
+
+Wewnętrzną pętlę w metodzie `Render` zmodyfikuj tak, aby używała rekurencyjnej metody `RayColor`:
+
+```csharp
+image[i, j] = RayColor(ray, MaxDepth, world);
+```
+
+Zaimplementuj metodę `RayColor`. Jeżeli zmienna określająca pozostałą głębokość rekurencji (`depth`) wyniesie 0 lub mniej, przerwij obliczenia i zwróć czarny kolor. 
+
+W przeciwnym wypadku sprawdzane jest przecięcie promienia ze sceną (`world.Hit`). Jeżeli promień nie uderzy w żaden obiekt, zwracany jest czarny kolor. W przypadku trafienia w obiekt następuje obliczenie koloru:
+1. W pierwszej kolejności z materiału (jeżeli pole `Mat` nie jest równe `null`) pobierana jest wartość emitowanego przez niego światła (`Emit()`).
+2. Następnie wywoływana jest funkcja `Scatter` w celu sprawdzenia, czy dany materiał emituje promień wtórny.
+3. Jeżeli tak, funkcja zwraca sumę wyemitowanego koloru z punktu pierwszego oraz koloru uzyskanego dla promienia odbitego (poprzez wywołanie rekurencyjne `RayColor` na promieniu `scattered` ze zmniejszoną wartością `depth`, przemnożonego przez `attenuation`).
+4. Jeżeli `Scatter` zwróci `false` (np. przy `EmissiveMaterial`), funkcja kończy rekurencję i zwraca wyłącznie wartość koloru wyemitowanego pobraną w punkcie 1.
+
+```csharp
+private Vector3 RayColor(Ray ray, int depth, IHittable world)
+{
+    if (depth <= 0) return new Vector3(0, 0, 0);
+
+    if (world.Hit(ray, 0.001f, float.PositiveInfinity, out HitInfo hitInfo))
+    {
+        Vector3 emitted = hitInfo.Mat != null ? hitInfo.Mat.Emit() : new Vector3(0, 0, 0);
+
+        if (hitInfo.Mat != null && hitInfo.Mat.Scatter(in ray, ref hitInfo, out Vector3 attenuation, out Ray scattered))
+            return emitted + attenuation * RayColor(scattered, depth - 1, world);
+        
+        return emitted;
+    }
+    
+    return new Vector3(0, 0, 0); 
+}
+```
+
+> [!NOTE]
+> Wartość `tMin` w wywołaniu funkcji `Hit` została ustawiona na `0.001f` w celu uniknięcia błędu precyzji zmiennoprzecinkowej. Zabezpiecza to przed sytuacją, w której wtórny promień wskutek zaokrągleń uderza bezpośrednio w tę samą powierzchnię, z której został wyemitowany (zjawisko *shadow acne*).
+
+#### Weryfikacja etapu czwartego
+
+W pliku `Program.cs` zmodyfikuj inicjalizację obiektów sceny. Utwórz czerwoną sferę, białą płaszczyznę oraz błękitną sferę o promieniu 1000 otaczającą scenę, emitującą światło (tzw. skysphere), po czym wyrenderuj obraz.
+
+```csharp
+world.Add(new Sphere(new Vector3(0, 0, 0), 1000.0f, new EmissiveMaterial(new Vector3(0.5f, 0.7f, 1.0f))));
+world.Add(new Sphere(new Vector3(0, 0, -1), 0.5f, new EmissiveMaterial(new Vector3(1, 0, 0)))); 
+world.Add(new Plane(new Vector3(0, -0.5f, 0), new Vector3(0, 1, 0), new EmissiveMaterial(new Vector3(1, 1, 1))));
+```
+
 ## Przykładowe zadania
 
 Wykonaj przykładowe zadanie z poprzedniego roku. Jeżeli jesteś w stanie je wykonać w przeciągu 90 minut, oznacza to, że jesteś dobrze przygotowany do zajęć.
