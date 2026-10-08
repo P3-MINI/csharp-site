@@ -125,6 +125,92 @@ W ramach tego zadania stworzysz prostą aplikację do śledzenia promieni. Zadan
 
 Śledzenie promieni (ang. *ray tracing*) to technika generowania obrazów. W metodzie tej rzucamy promienie od obserwatora (kamery) przez każdy piksel rzutni w głąb sceny. Następnie algorytm sprawdza, z jakimi obiektami przecina się dany promień i na tej podstawie oblicza kolor piksela.
 
+### Etap 1: Reprezentacja kolorów i generowanie obrazu
+
+Naszą pracę zaczniemy od zdefiniowania dwóch typów: struktury opisującej wektor (użyjemy go również do reprezentacji punktów i koloru) oraz klasy reprezentującej obraz.
+
+#### Struktura Vector3
+
+Użyjemy struktury agregującej trzy liczby, której poszczególne składniki (X, Y, Z) mogą odpowiadać kanałom RGB (Red, Green, Blue) lub współrzędnym w przestrzeni. Utwórz plik `Vector3.cs` i zdefiniuj:
+
+1. Publiczne właściwości `X`, `Y`, `Z` typu `float`.
+2. Publiczny konstruktor przyjmujący trzy wartości, przypisujący je do właściwości.
+3. Nadpisaną metodę `ToString()`, zwracającą składniki wektora oddzielone spacją (np. `"1.5 0.2 0.8"`).
+
+#### Klasa Image i format PPM
+
+Obraz traktujemy jako dwuwymiarową tablicę pikseli. Utwórz klasę `Image` (plik `Image.cs`). Klasa powinna zawierać:
+- Publiczne właściwości tylko do odczytu `Width` i `Height` typu `int`.
+- Prywatną tablicę dwuwymiarową `Vector3[,] Pixels`.
+- Konstruktor przyjmujący szerokość i wysokość, który na ich podstawie zainicjalizuje dwuwymiarową tablicę.
+- Indeksator (odpowiednik przeciążonego `operatora[]` z C++), który pozwala na odwoływanie się do obiektu tak jak do tablicy. Posłuży on do wygodnego odczytywania i zapisywania pikseli (np. `image[x, y] = color`):
+
+```csharp
+public Vector3 this[int x, int y]
+{
+    get => Pixels[x, y];
+    set => Pixels[x, y] = value;
+}
+```
+
+Aby wyeksportować wygenerowany obraz, wykorzystamy prosty, tekstowy format **PPM**. Nie będziemy implementować osobnej metody zapisującej obraz do pliku. Zamiast tego zaimplementujemy proces generowania zawartości PPM wewnątrz nadpisanej metody `ToString()`. Wywołanie `Console.WriteLine(image)` wypisze obraz w formie tekstowej na standardowe wyjście, które przekierujemy do pliku.
+
+Struktura formatu PPM wygląda następująco:
+1. Magiczny ciąg znaków `P3` (zbieżność z nazwą przedmiotu Programowanie 3 przypadkowa).
+2. Szerokość i wysokość obrazka (oddzielone spacją).
+3. Maksymalna wartość dla koloru (w naszym przypadku `255`).
+4. Całkowitoliczbowe wartości R, G, B pikseli (od lewego górnego rogu). Ich ułożenie w wierszach jest dowolne, ważne jedynie, aby wartości były oddzielone białymi znakami.
+
+Poniżej znajduje się przykładowy plik dla obrazka o wymiarach 3x2 (trzy kolumny, dwa wiersze):
+
+```text
+P3
+3 2
+255
+255   0   0     0 255   0     0   0 255
+255 255   0   255 255 255     0   0   0
+```
+
+Twoim zadaniem jest zaimplementowanie metody `ToString()`. Dodaj do tworzonego tekstu odpowiedni nagłówek, a następnie – za pomocą zagnieżdżonych pętli – przeiteruj po wszystkich pikselach na obrazie. Składowe każdego wektora (`float`) zmapuj na format RGB (zakres `[0, 255]`). Upewnij się, że wartości nie wykraczają poza ten przedział, np. używając `Math.Clamp`.
+
+Ponieważ będziemy generować ciąg tekstowy dla milionów wartości, użycie konkatenacji stringów (operator `+`) w pętli byłoby bardzo niewydajne z uwagi na ciągłą alokację nowych obiektów. Do optymalnego zbudowania wyniku wykorzystaj klasę `StringBuilder` (zdefiniowaną w przestrzeni nazw `System.Text`).
+
+#### Generowanie pierwszego obrazka
+
+W pliku `Program.cs` utwórz instancję obrazu o rozdzielczości 1920x1080. Wygeneruj dowolny wzór (na przykład gradient) wypełniając nim piksele, a następnie wypisz obraz na standardowe wyjście. Możesz wykorzystać poniższy przykładowy fragment kodu:
+
+```csharp
+namespace Raytracing;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Image image = new Image(1920, 1080);
+        
+        for (int i = 0; i < image.Width; i++)
+        {
+            for (int j = 0; j < image.Height; j++)
+            {
+                float r = (float) i / image.Width;
+                float g = (float) j / image.Height;
+                float b = MathF.Sin(2 * MathF.PI * ((float) i * j / image.Width / image.Height));
+                
+                image[i, j] = new Vector3(r, g, b);
+            }
+        }
+        
+        Console.WriteLine(image);
+    }
+}
+```
+
+Aby zapisać obrazek, przekieruj standardowe wyjście do pliku. Uruchom program poleceniem:
+
+```bash
+dotnet run > image.ppm
+```
+
 ## Przykładowe zadania
 
 Wykonaj przykładowe zadanie z poprzedniego roku. Jeżeli jesteś w stanie je wykonać w przeciągu 90 minut, oznacza to, że jesteś dobrze przygotowany do zajęć.
