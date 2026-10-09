@@ -547,6 +547,59 @@ world.Add(new Sphere(new Vector3(0, 0, -1), 0.5f, new EmissiveMaterial(new Vecto
 world.Add(new Plane(new Vector3(0, -0.5f, 0), new Vector3(0, 1, 0), new EmissiveMaterial(new Vector3(1, 1, 1))));
 ```
 
+### Etap 5: Materiał dyfuzyjny i wygładzanie krawędzi
+
+W tym etapie zaimplementujemy materiał rozpraszający światło oraz wygładzanie krawędzi (antyaliasing) z użyciem wielokrotnego próbkowania.
+
+#### Generowanie losowych wektorów
+
+Działanie materiału rozpraszającego polega na odbijaniu uderzającego w niego promienia w losowym kierunku, dlatego struktura `Vector3` wymaga rozbudowy o generator losowych wektorów. Zastosujemy wbudowaną właściwość `System.Random.Shared`, która zapewnia współdzieloną, bezpieczną w kontekście wielowątkowości instancję generatora liczb pseudolosowych.
+
+W pliku `Vector3.cs` zaimplementuj trzy nowe metody:
+
+1. `NearZero()`: Metoda sprawdzająca, czy wektor jest bliski zera we wszystkich wymiarach. Wektor jest bliski zera, gdy wartość bezwzględna każdego z jego trzech wymiarów jest mniejsza niż z góry określony próg (np. `1e-8f`). Będzie to przydatne do eliminacji błędów matematycznych przy wyliczaniu wektora rozproszenia.
+2. `RandomInUnitSphere()`: Metoda implementująca próbkowanie z odrzucaniem (rejection sampling). W nieskończonej pętli losuj współrzędne wektora w przedziale `[-1, 1)`. Jeżeli kwadrat długości tego wektora jest mniejszy niż 1 (co oznacza, że wyznaczony punkt znajduje się wewnątrz jednostkowej kuli), przerwij pętlę i zwróć ten wektor. Do losowania wartości bazowych wykorzystaj metodę `System.Random.Shared.NextDouble()`, która zwraca wartość zmiennoprzecinkową w przedziale `[0, 1)`.
+3. `RandomUnitVector()`: Metoda zwracająca jednostkowy wektor kierunkowy. Wynikiem działania powinno być bezpośrednie zwrócenie znormalizowanego wektora pobranego z metody `RandomInUnitSphere()`.
+
+#### Lambertian
+
+W pliku `Lambertian.cs` utwórz klasę `Lambertian` dziedziczącą po `Material`. Modeluje ona idealnie matową powierzchnię, która po uderzeniu rozprasza padające światło w różnych kierunkach ze zmienną intensywnością (zależną od kąta). 
+
+Fizycznie, w celu symulacji światła rozproszonego, materiał powinien wygenerować wiele odbitych promieni w różnych kierunkach dla każdego uderzenia. Rozgałęzianie promieni na każdym kroku spowodowałoby jednak wykładniczy wzrost wykonywanych obliczeń (eksplozję promieni). Aby tego uniknąć, śledzenie promieni (path tracing) stosuje model stochastyczny – w miejscu uderzenia metoda `Scatter` generuje zaledwie **jeden** promień odbity, za to w losowym kierunku. Brakujące rozproszone światło uśredni się samoistnie z upływem czasu na skutek wystrzelenia ogromnej puli promieni bazowych startujących z kamery dla jednego piksela (metoda Monte Carlo).
+
+W klasie `Lambertian` zdefiniuj:
+- Właściwość `Vector3 Albedo` (określającą współczynnik odbicia, czyli bazowy kolor materiału), inicjalizowaną przez konstruktor.
+- Nadpisaną metodę `Scatter`. Wyznacza ona kierunek rozproszenia promienia (`scatterDirection`). Zgodnie z prawem Lamberta, światło rozprasza się z najwyższym prawdopodobieństwem w kierunku prostopadłym do powierzchni. Symuluje się to wyznaczając nowy wektor kierunku będący sumą wektora normalnego powierzchni i losowego wektora jednostkowego (z metody `RandomUnitVector()`).
+- Zabezpiecz wyliczony kierunek przy pomocy metody `NearZero()`. Jeżeli wylosowany wektor będzie idealnie przeciwny do wektora normalnego (ich suma jest bliska zeru), kierunek rozproszenia awaryjnie powinien przyjąć wartość wektora normalnego.
+- Zwróć promień wtórny oraz przypisz wartość z `Albedo` do zmiennej `attenuation`. Metoda powinna ostatecznie zwrócić `true`.
+
+#### Antyaliasing
+
+Obecnie przez środek każdego piksela rzutni przepuszczany jest dokładnie jeden promień. Ponieważ promień stanowi punktowy wycinek, trafia on w geometrię zawsze zero-jedynkowo. Przy ograniczonej rozdzielczości ekranu skutkuje to ostrym, schodkowym podziałem na krawędziach nachodzących na siebie kształtów (zjawisko aliasingu). Aby to zniwelować, wysyła się wiele promieni lekko przesuniętych losowo w granicach pojedynczego piksela. Ostateczny kolor piksela stanowi uśredniony wynik kolorów zebranych przez wszystkie wystrzelone próbki.
+
+W klasie `Camera` dodaj właściwość `public int SamplesPerPixel { get; set; } = 100;`. Określa ona liczbę promieni wysyłanych dla pojedynczego piksela ekranu.
+
+Zmodyfikuj zawartość wewnętrznej pętli w metodzie `Render`. Zastąp pojedyncze wywołanie `RayColor` pętlą akumulującą kolor. W każdej iteracji:
+1. Wylosuj przesunięcie punktu na siatce piksela w osi X oraz Y (zmienne `offsetX` i `offsetY` z przedziału `[-0.5, 0.5)`).
+2. Oblicz pozycję wirtualnego punktu rzutni dla aktualnej iteracji próbkowania, dodając wylosowane przesunięcia do standardowych współrzędnych `i` oraz `j` przed wymnożeniem ich przez wektory kroku `_pixelDu` i `_pixelDv`.
+3. Skonstruuj promień wychodzący z pozycji kamery przechodzący przez wylosowany punkt i dodaj wynik wywołania `RayColor` do wektora sumy (akumulatora koloru).
+
+Po wykonaniu nowej pętli dla wszystkich próbek, podziel wektor skumulowanego koloru przez ustaloną liczbę `SamplesPerPixel` i przypisz go docelowo do tablicy pikseli obrazu.
+
+#### Efekt końcowy
+
+W pliku `Program.cs` zmodyfikuj kod dodający obiekty do sceny. Utwórz trzy sfery z materiałem `Lambertian` o różnych kolorach obok siebie oraz płaszczyznę w kolorze zielonym. Pozostaw instancję sfery z materiałem `EmissiveMaterial` otaczającą scenę, służącą jako tło/niebo.
+
+```csharp
+world.Add(new Sphere(new Vector3(0, 0, 0), 1000.0f, new EmissiveMaterial(new Vector3(0.5f, 0.7f, 1.0f))));
+world.Add(new Sphere(new Vector3(0, 0, -1), 0.5f, new Lambertian(new Vector3(1, 0, 0)))); 
+world.Add(new Sphere(new Vector3(-1.1f, 0, -1), 0.5f, new Lambertian(new Vector3(0, 0, 1)))); 
+world.Add(new Sphere(new Vector3(1.1f, 0, -1), 0.5f, new Lambertian(new Vector3(1, 1, 0)))); 
+world.Add(new Plane(new Vector3(0, -0.5f, 0), new Vector3(0, 1, 0), new Lambertian(new Vector3(0.2f, 0.8f, 0.2f))));
+```
+
+Wyrenderuj ostateczny obraz za pomocą polecenia `dotnet run > image.ppm`.
+
 ## Przykładowe zadania
 
 Wykonaj przykładowe zadanie z poprzedniego roku. Jeżeli jesteś w stanie je wykonać w przeciągu 90 minut, oznacza to, że jesteś dobrze przygotowany do zajęć.
