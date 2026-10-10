@@ -7,7 +7,7 @@ weight: 30
 
 Zakres tego laboratorium obejmuje podstawy języka C# (składnia, system typów, typy podstawowe, tablice, parametry) oraz tworzenie własnych typów (klasy, struktury, interfejsy, dziedziczenie, typy wyliczeniowe). 
 
-Jako że znasz już język C++, wiele konstrukcji w C# wyda Ci się znajomych. Przed rozpoczęciem zadania, omówimy najważniejsze różnice i zagadnienia.
+Jako że znasz już język C++, wiele konstrukcji w C# wyda Ci się znajomych. Przed rozpoczęciem zadania, omówimy najważniejsze różnice i zagadnienia. Przede wszystkim w C# nie rozdzielamy deklaracji od implementacji (brak podziału na pliki nagłówkowe `.h` i źródłowe `.cpp`) – cały kod klas i struktur definiuje się bezpośrednio w plikach `.cs`.
 
 ### Przestrzenie nazw
 
@@ -176,7 +176,7 @@ Ponieważ będziemy generować ciąg tekstowy dla milionów wartości, użycie k
 
 W metodzie `Main` pliku `Program.cs`:
 1. Utwórz instancję obrazu `Image` o rozdzielczości np. 1920x1080.
-2. W zagnieżdżonej pętli wypełnij piksele dowolnym wzorem (np. gradientem, gdzie składowa czerwona {{< katex >}}R = i / \text{Width}{{< /katex >}}, zielona {{< katex >}}G = j / \text{Height}{{< /katex >}}, a niebieska to stała lub funkcja sinus).
+2. W zagnieżdżonej pętli wypełnij piksele dowolnym wzorem (np. gradientem, gdzie składowa czerwona to `r = (float)i / image.Width`, zielona to `g = (float)j / image.Height`, a niebieska to stała lub funkcja sinus).
 3. Wypisz obiekt obrazu do konsoli za pomocą `Console.WriteLine(image)`.
 
 Aby zapisać obrazek, przekieruj standardowe wyjście do pliku. Uruchom program poleceniem:
@@ -189,18 +189,18 @@ dotnet run > image.ppm
 
 W tym etapie rozbudujemy strukturę `Vector3` oraz stworzymy mechanizm wirtualnej kamery i strukturę promienia (`Ray`).
 
-#### Rozbudowa wektora i przeciążanie operatorów
+> [!IMPORTANT]
+> #### Przeciążanie operatorów w C#
+> 
+> Zanim stworzymy kamerę, nasza struktura `Vector3` wymaga matematycznej rozbudowy. W C# operatory matematyczne przeciąża się, definiując publiczne, **statyczne** metody z użyciem słowa kluczowego `operator`. Poniżej znajduje się przykład przeciążenia operatora dodawania dwóch wektorów z wykorzystaniem notacji strzałkowej:
+> ```csharp
+> public static Vector3 operator +(Vector3 u, Vector3 v) => new Vector3(u.X + v.X, u.Y + v.Y, u.Z + v.Z);
+> ```
 
-Zanim stworzymy kamerę, nasza struktura `Vector3` wymaga matematycznej rozbudowy. W C# operatory matematyczne można przeciążać, definiując statyczne metody z użyciem słowa kluczowego `operator`. 
-
-Poniżej znajduje się przykład przeciążenia operatora dodawania dwóch wektorów z wykorzystaniem notacji strzałkowej:
-
-```csharp
-public static Vector3 operator +(Vector3 u, Vector3 v) => new Vector3(u.X + v.X, u.Y + v.Y, u.Z + v.Z);
-```
+#### Rozbudowa struktury Vector3
 
 W pliku `Vector3.cs` zaimplementuj:
-1. Przeciążenia operatorów: unarnego `-` (odwrócenie wektora), dodawania `+` i odejmowania `-` dwóch wektorów, mnożenia `*` i dzielenia `/` wektora przez skalar (`float`), a także mnożenia dwóch wektorów przez siebie `*` (mnożącego odpowiadające sobie składowe: {{< katex >}}u.X \cdot v.X, u.Y \cdot v.Y, u.Z \cdot v.Z{{< /katex >}}).
+1. Przeciążenia operatorów: unarnego `-` (odwrócenie wektora), dodawania `+` i odejmowania `-` dwóch wektorów, mnożenia `*` i dzielenia `/` wektora przez skalar (`float`), a także mnożenia dwóch wektorów przez siebie `*` (mnożącego odpowiadające sobie składowe: `u.X * v.X`, `u.Y * v.Y`, `u.Z * v.Z`).
 2. Metody `LengthSquared()` (zwracającą kwadrat długości wektora) oraz `Length()` (obliczającą długość wektora). Do wyciągnięcia pierwiastka kwadratowego użyj statycznej klasy `MathF`, która zawiera metody (np. `MathF.Sqrt()`) zoptymalizowane dla liczb typu `float`.
 3. Statyczną metodę `Dot()` do obliczania iloczynu skalarnego.
 4. Statyczną metodę `Cross()` do obliczania iloczynu wektorowego.
@@ -248,17 +248,19 @@ Utwórz plik `Camera.cs` definiujący kamerę:
 3. Dodaj bezparametrowy konstruktor, który jednorazowo wywoła metodę `Recalculate()` do inicjalizacji obiektu.
 
 Zaimplementuj prywatną metodę `Recalculate()`, wyznaczającą geometrię rzutni:
-1. **Wymiary obrazu:** Oblicz wysokość `_height = (int)(ImageWidth / AspectRatio)` (zabezpiecz przed wartością mniejszą niż 1).
-2. **Fizyczny rozmiar rzutni:** Przelicz kąt `Fov` na radiany ({{< katex >}}\theta = \text{Fov} \cdot \pi / 180{{< /katex >}}) i wyznacz {{< katex >}}h = \tan(\theta / 2){{< /katex >}}. Odległość od obserwatora do rzutni to długość wektora {{< katex >}}(\text{Position} - \text{Target}){{< /katex >}}. Wysokość rzutni wynosi {{< katex >}}2 \cdot h \cdot \text{odległość}{{< /katex >}}, a szerokość to {{< katex >}}\text{wysokość} \cdot (\text{ImageWidth} / \text{\_height}){{< /katex >}}.
-3. **Baza wektorów kamery (`front`, `right`, `up`):** 
-   - Wektor kierunku patrzenia: {{< katex >}}w = \text{Normalize}(\text{Position} - \text{Target}){{< /katex >}} (zwrócony przeciwnie do kierunku patrzenia zgodnie z układem prawoskrętnym).
-   - Wektor w prawo (`right`): {{< katex >}}u = \text{Normalize}(\text{Cross}(\text{Vector3}(0, 1, 0), w)){{< /katex >}}.
-   - Wektor w górę (`up`): {{< katex >}}v = \text{Cross}(w, u){{< /katex >}}.
+1. **Wymiary obrazu:** Oblicz wysokość w pikselach: `_height = (int)(ImageWidth / AspectRatio)`.
+2. **Fizyczny rozmiar rzutni:** Przelicz kąt pola widzenia na radiany `theta = Fov * MathF.PI / 180.0f` oraz `h = MathF.Tan(theta / 2.0f)`. Odległość do rzutni to długość wektora `d = (Position - Target).Length()`. Wymiary wirtualnego ekranu wynoszą:
+   - Wysokość: `viewportHeight = 2.0f * h * d`
+   - Szerokość: `viewportWidth = viewportHeight * AspectRatio`
+3. **Baza wektorów kamery (`front`, `right`, `up`):**
+   - Wektor kierunku: `w = (Position - Target).Normalize()` (zwrócony przeciwnie do celu w układzie prawoskrętnym).
+   - Wektor w prawo: `u = Vector3.Cross(new Vector3(0, 1, 0), w).Normalize()`.
+   - Wektor w górę: `v = Vector3.Cross(w, u)`.
 4. **Wektory kroków piksela:**
-   - Rozpiętość pozioma rzutni wynosi {{< katex >}}\text{viewportU} = \text{szerokość} \cdot u{{< /katex >}}.
-   - Rozpiętość pionowa wynosi {{< katex >}}\text{viewportV} = \text{wysokość} \cdot (-v){{< /katex >}} (skierowana w dół, ponieważ wiersze obrazu liczymy od góry do dołu).
-   - Wektory kroku pojedynczego piksela: {{< katex >}}\text{\_pixelDu} = \text{viewportU} / \text{ImageWidth}{{< /katex >}} oraz {{< katex >}}\text{\_pixelDv} = \text{viewportV} / \text{\_height}{{< /katex >}}.
-5. **Środek pierwszego piksela (`_viewportCorner`):** Wyznacz lewy górny róg rzutni: {{< katex >}}\text{Position} - (\text{odległość} \cdot w) - \text{viewportU} / 2 - \text{viewportV} / 2{{< /katex >}}, a następnie przesuń go na środek pierwszego piksela dodając {{< katex >}}0.5 \cdot (\text{\_pixelDu} + \text{\_pixelDv}){{< /katex >}}.
+   - Rozpiętość pozioma rzutni: `viewportU = viewportWidth * u`.
+   - Rozpiętość pionowa rzutni: `viewportV = viewportHeight * -v` (skierowana w dół, zgodnie z numeracją wierszy).
+   - Wektory kroku pojedynczego piksela: `_pixelDu = viewportU / ImageWidth` oraz `_pixelDv = viewportV / _height`.
+5. **Środek pierwszego piksela (`_viewportCorner`):** Wyznacz lewy górny róg rzutni: `Position - (d * w) - viewportU / 2.0f - viewportV / 2.0f`, a następnie przesuń go na środek pierwszego piksela, dodając `0.5f * (_pixelDu + _pixelDv)`.
 
 ### Etap 3: Przecinanie promieni z obiektami
 
@@ -266,7 +268,7 @@ W tym etapie zaimplementujemy wykrywanie przecięć promieni z geometrią na sce
 
 #### Informacje o przecięciu (HitInfo)
 
-Gdy promień przecina obiekt, musimy zebrać kilka informacji: pozycję uderzenia, wektor normalny powierzchni w miejscu trafienia oraz wartość parametru `T` promienia, dla której nastąpiło trafienie. Informacje te będą nam przydatne później przy obliczaniu koloru promienia.
+Gdy promień przecina obiekt, musimy zebrać kilka informacji: pozycję uderzenia, wektor normalny powierzchni w miejscu trafienia oraz wartość parametru {{< katex >}}t{{< /katex >}} promienia, dla której nastąpiło trafienie. Informacje te będą nam przydatne później przy obliczaniu koloru promienia.
 
 Utwórz plik `HitInfo.cs` ze strukturą przechowującą wynik uderzenia:
 1. Zdefiniuj pola publiczne: `Vector3 Position`, `Vector3 Normal`, `float T` oraz `bool FrontFace`.
@@ -275,11 +277,17 @@ Utwórz plik `HitInfo.cs` ze strukturą przechowującą wynik uderzenia:
    - Jeżeli wynik jest ujemny, promień uderza z zewnątrz (`FrontFace = true`), a `Normal` przyjmuje wartość `outwardNormal`.
    - W przeciwnym razie promień trafia od wewnątrz (`FrontFace = false`), a `Normal` należy odwrócić (`-outwardNormal`).
 
-#### Interfejs IHittable i modyfikator "out"
+> [!IMPORTANT]
+> #### Interfejsy w C#
+> 
+> Interfejsy to abstrakcyjne typy definiujące kontrakt, czyli zbiór metod i właściwości, które klasa musi zaimplementować. Nie posiadają one własnego stanu (pól) ani implementacji. W naszym programie każdy obiekt, w który może uderzyć promień, będzie implementował wspólny interfejs, co pozwoli na polimorficzną obsługę różnych kształtów na scenie.
 
-Interfejsy to abstrakcyjne typy definiujące kontrakt, czyli zbiór metod i właściwości, które klasa musi zaimplementować. Nie posiadają one własnego stanu (pól) ani implementacji. W naszym programie każdy obiekt, w który może uderzyć promień, będzie implementował wspólny interfejs, co pozwoli na polimorficzną obsługę różnych kształtów na scenie.
+> [!IMPORTANT]
+> #### Modyfikator "out"
+> 
+> Jednym ze sposobów na zwrócenie wielu wartości z metody w C# jest użycie słowa kluczowego `out`. Wymusza ono zainicjowanie przekazanej w ten sposób zmiennej przed opuszczeniem metody (np. metoda sprawdzająca trafienie promienia może zwrócić jako wynik `bool`, a przez argument zwrócić wygenerowaną strukturę `HitInfo`).
 
-Jednym ze sposobów na zwrócenie wielu wartości z metody w C# jest użycie słowa kluczowego `out`. Wymusza ono zainicjowanie przekazanej w ten sposób zmiennej przed opuszczeniem metody (np. metoda sprawdzająca trafienie promienia może zwrócić jako wynik `bool`, a przez argument zwrócić wygenerowaną strukturę `HitInfo`).
+#### Interfejs IHittable
 
 Utwórz plik `IHittable.cs` z definicją interfejsu (w C# nazwy interfejsów zwyczajowo zaczynamy od dużej litery `I`), deklarującego metodę:
 
@@ -287,7 +295,7 @@ Utwórz plik `IHittable.cs` z definicją interfejsu (w C# nazwy interfejsów zwy
 bool Hit(Ray ray, float tMin, float tMax, out HitInfo hitInfo);
 ```
 
-> [!NOTE]
+> [!TIP]
 > W C# wszystkie składowe zadeklarowane wewnątrz interfejsu są domyślnie publiczne (`public`), dlatego nie wymagają jawnego modyfikatora dostępu w deklaracji.
 
 #### Implementacja IHittable (Sphere i Plane)
@@ -298,26 +306,26 @@ Utwórz definicję klasy sfery (plik `Sphere.cs`):
 - Utwórz klasę `Sphere` implementującą interfejs `IHittable` (`class Sphere : IHittable`) i definiującą właściwości `Vector3 Center` oraz `float Radius`.
 - Zdefiniuj konstruktor inicjalizujący podane wartości.
 - Zaimplementuj metodę `Hit`:
-  1. Wyznacz wektor od środka kuli do początku promienia: {{< katex >}}oc = \text{ray.Origin} - \text{Center}{{< /katex >}}.
+  1. Wyznacz wektor od środka kuli do początku promienia: `oc = ray.Origin - Center`.
   2. Wyznacz współczynniki równania kwadratowego:
-     - {{< katex >}}a = \|\text{ray.Direction}\|^2{{< /katex >}}
-     - {{< katex >}}halfB = oc \cdot \text{ray.Direction}{{< /katex >}}
-     - {{< katex >}}c = \|oc\|^2 - \text{Radius}^2{{< /katex >}}
-  3. Oblicz wyróżnik równania: {{< katex >}}\Delta = halfB^2 - a \cdot c{{< /katex >}}. Jeśli {{< katex >}}\Delta < 0{{< /katex >}}, brak przecięcia – zwróć `false`.
-  4. Znajdź najmniejszy pierwiastek w przedziale {{< katex >}}[tMin, tMax]{{< /katex >}}. Sprawdź najpierw {{< katex >}}(-halfB - \sqrt{\Delta}) / a{{< /katex >}}. Jeśli nie mieści się w zakresie, sprawdź {{< katex >}}(-halfB + \sqrt{\Delta}) / a{{< /katex >}}. Jeśli żaden nie pasuje, zwróć `false`.
-  5. Wypełnij `hitInfo`: parametr `T = root`, punkt uderzenia `Position = ray.At(root)`, wyznacz wektor normalny {{< katex >}}(\text{Position} - \text{Center}) / \text{Radius}{{< /katex >}} i przekaż do `SetFaceNormal(ray, outwardNormal)`. Zwróć `true`.
+     - `a = ray.Direction.LengthSquared()`
+     - `halfB = Vector3.Dot(oc, ray.Direction)`
+     - `c = oc.LengthSquared() - Radius * Radius`
+  3. Oblicz deltę równania: `delta = halfB * halfB - a * c`. Jeśli `delta < 0`, brak przecięcia – zwróć `false`.
+  4. Znajdź mniejszy pierwiastek leżący w przedziale `[tMin, tMax]`. Jeśli żaden z pierwiastków nie mieści się w zadanym zakresie, zwróć `false`.
+  5. Wypełnij `hitInfo`: parametr `T = root`, punkt uderzenia `Position = ray.At(root)`, wyznacz wektor normalny `(Position - Center) / Radius` i przekaż do `SetFaceNormal(ray, outwardNormal)`. Zwróć `true`.
   ([Więcej szczegółów matematycznych znajdziesz w książce](https://raytracing.github.io/books/RayTracingInOneWeekend.html#addingasphere/ray-sphereintersection)).
 
 Utwórz klasę `Plane` (plik `Plane.cs`) implementującą interfejs `IHittable`, reprezentującą płaszczyznę.
 - Dodaj właściwości `Vector3 Point` oraz `Vector3 Normal`. Matematycznie płaszczyzna opisana jest za pomocą dowolnego leżącego na niej punktu (właściwość `Point`) oraz wektora do niej prostopadłego (właściwość `Normal`). W konstruktorze zadbaj, by przypisywany wektor normalny został znormalizowany.
-- Zaimplementuj metodę `Hit`. Punkt {{< katex >}}P{{< /katex >}} leży na płaszczyźnie, gdy spełnia równanie {{< katex >}}(P - \text{Point}) \cdot \text{Normal} = 0{{< /katex >}}. Podstawiając równanie promienia {{< katex >}}P(t) = \text{Origin} + t \cdot \text{Direction}{{< /katex >}} i wyznaczając parametr {{< katex >}}t{{< /katex >}}, otrzymujemy:
-  {{< katex >}}t = \frac{(\text{Point} - \text{Origin}) \cdot \text{Normal}}{\text{Direction} \cdot \text{Normal}}{{< /katex >}}
+- Zaimplementuj metodę `Hit`. Punkt {{< katex >}}P{{< /katex >}} leży na płaszczyźnie, gdy spełnia równanie {{< katex >}}(P - P_0) \cdot n = 0{{< /katex >}}. Podstawiając równanie promienia {{< katex >}}P(t) = A + t \cdot b{{< /katex >}} i wyznaczając parametr {{< katex >}}t{{< /katex >}}, otrzymujemy:
+  {{< katex >}}t = \frac{(P_0 - A) \cdot n}{b \cdot n}{{< /katex >}}
   
   W metodzie `Hit`:
-  1. Oblicz mianownik powyższego ułamka: {{< katex >}}denom = \text{Normal} \cdot \text{ray.Direction}{{< /katex >}}.
-  2. Jeśli wartość bezwzględna mianownika jest bliska zeru ({{< katex >}}|denom| < 10^{-6}{{< /katex >}}), promień jest równoległy do płaszczyzny (brak punktu przecięcia) – zwróć `false`.
-  3. W przeciwnym razie oblicz wartość parametru {{< katex >}}t{{< /katex >}} ze wzoru.
-  4. Jeśli parametr {{< katex >}}t{{< /katex >}} mieści się w przedziale {{< katex >}}(tMin, tMax){{< /katex >}}, uzupełnij strukturę `hitInfo` (parametr `T = t`, punkt przecięcia `Position = ray.At(t)`, wektor normalny przez `SetFaceNormal(ray, Normal)`) i zwróć `true`. W przeciwnym razie zwróć `false`.
+  1. Oblicz mianownik powyższego ułamka: `denom = Vector3.Dot(Normal, ray.Direction)`.
+  2. Jeśli wartość bezwzględna mianownika jest bliska zeru (`MathF.Abs(denom) < 1e-6f`), promień jest równoległy do płaszczyzny – zwróć `false`.
+  3. W przeciwnym razie oblicz wartość parametru: `t = Vector3.Dot(Point - ray.Origin, Normal) / denom`.
+  4. Jeśli parametr `t` mieści się w przedziale `(tMin, tMax)`, uzupełnij strukturę `hitInfo` (parametr `T = t`, punkt przecięcia `Position = ray.At(t)`, wektor normalny przez `SetFaceNormal(ray, Normal)`) i zwróć `true`. W przeciwnym razie zwróć `false`.
 
 #### Scena
 
@@ -340,8 +348,8 @@ W klasie `Camera` dodaj metodę `Render`, zwracającą gotowy `Image`, a przyjmu
 Jeśli promień trafi w obiekt, ustaw kolor piksela na czerwony (`[1, 0, 0]`). W przeciwnym razie ustaw kolor na czarny (`[0, 0, 0]`).
 
 W metodzie `Main` pliku `Program.cs`:
-1. Utwórz obiekt `Scene` i dodaj sferę w punkcie {{< katex >}}(0, 0, -1){{< /katex >}} o promieniu 0.5 oraz płaszczyznę w punkcie {{< katex >}}(0, -0.5, 0){{< /katex >}} z wektorem normalnym {{< katex >}}(0, 1, 0){{< /katex >}}.
-2. Skonfiguruj kamerę: `Position` na {{< katex >}}(0, 0, 1){{< /katex >}} oraz `Target` na {{< katex >}}(0, 0, -1){{< /katex >}}.
+1. Utwórz obiekt `Scene` i dodaj sferę w punkcie `(0, 0, -1)` o promieniu `0.5` oraz płaszczyznę w punkcie `(0, -0.5, 0)` z wektorem normalnym `(0, 1, 0)`.
+2. Skonfiguruj kamerę: `Position` na `(0, 0, 1)` oraz `Target` na `(0, 0, -1)`.
 3. Wywołaj `cam.Render(world)` i wypisz wynik do konsoli za pomocą `Console.Write(image)`.
 
 Aby wygenerować obraz, uruchom program, przekierowując standardowe wyjście do pliku:
@@ -354,16 +362,20 @@ dotnet run > image.ppm
 
 W tym etapie dodamy obsługę materiałów, które zdefiniują zachowanie promieni po uderzeniu w obiekt. Zaimplementujemy również system wielokrotnych odbić przy użyciu rekurencji.
 
-#### Klasy abstrakcyjne
+> [!IMPORTANT]
+> #### Klasy abstrakcyjne
+> 
+> Z klasy abstrakcyjnej nie można bezpośrednio utworzyć instancji. Służy ona jako definicja bazowa dla klas pochodnych. Może zawierać deklaracje metod abstrakcyjnych (odpowiednik funkcji czysto wirtualnych z C++, np. `virtual void Method() = 0;`), które nie posiadają implementacji i wymagają zdefiniowania w klasie pochodnej, oraz metod wirtualnych (posiadających domyślną implementację, którą opcjonalnie można nadpisać).
 
-Z klasy abstrakcyjnej nie można bezpośrednio utworzyć instancji. Służy ona jako definicja bazowa dla klas pochodnych. Może zawierać deklaracje metod abstrakcyjnych (odpowiednik funkcji czysto wirtualnych z C++, np. `virtual void Method() = 0;`), które nie posiadają implementacji i wymagają zdefiniowania w klasie pochodnej, oraz metod wirtualnych (posiadających domyślną implementację, którą opcjonalnie można nadpisać).
+> [!IMPORTANT]
+> #### Przekazywanie parametrów przez referencję
+> 
+> Przekazywanie argumentów przez referencję pozwala uniknąć kopiowania struktur w pamięci podczas wywołań metod. W C# służą do tego trzy słowa kluczowe:
+> - `out` – argument wyjściowy. Przekazywana zmienna nie musi być zainicjalizowana przed wywołaniem, jednak jej inicjalizacja wewnątrz metody przed zakończeniem wykonania jest wymagana przez kompilator.
+> - `ref` – dwukierunkowa referencja. Zmienna musi zostać zainicjowana przed przekazaniem do metody.
+> - `in` – referencja tylko do odczytu. Gwarantuje brak modyfikacji argumentu wewnątrz metody.
 
-#### Przekazywanie parametrów przez referencję
-
-Przekazywanie argumentów przez referencję pozwala uniknąć kopiowania struktur w pamięci podczas wywołań metod. W C# służą do tego trzy słowa kluczowe:
-- `out` – argument wyjściowy. Przekazywana zmienna nie musi być zainicjalizowana przed wywołaniem, jednak jej inicjalizacja wewnątrz metody przed zakończeniem wykonania jest wymagana przez kompilator.
-- `ref` – dwukierunkowa referencja. Zmienna musi zostać zainicjowana przed przekazaniem do metody.
-- `in` – referencja tylko do odczytu. Gwarantuje brak modyfikacji argumentu wewnątrz metody.
+#### Klasa Material
 
 W pliku `Material.cs` zdefiniuj abstrakcyjną klasę `Material`:
 - Zadeklaruj metodę abstrakcyjną: `public abstract bool Scatter(in Ray rIn, ref HitInfo hitInfo, out Vector3 attenuation, out Ray scattered);`. Przyjmuje ona promień wejściowy (`rIn`) oraz informacje o trafieniu (`hitInfo`). Przez argumenty wyjściowe zwraca wektor tłumienia koloru (`attenuation`) oraz promień odbity (`scattered`), a jako wynik działania (typ `bool`) zwraca informację, czy promień uległ odbiciu.
