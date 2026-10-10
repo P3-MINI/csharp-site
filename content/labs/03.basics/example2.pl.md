@@ -1,7 +1,13 @@
 ---
+<<<<<<< HEAD
 title: "Example Task"
 weight: 10
 bookHidden: "true"
+=======
+title: "Lab03"
+weight: 10
+bookCollapseSection: true
+>>>>>>> 02c54df (correct files (I think))
 ---
 
 # Laboratorium 3 - Przykładowe - Klasy/Struktury, Dziedzicznie, Właściwości, Modyfikatory dostępu

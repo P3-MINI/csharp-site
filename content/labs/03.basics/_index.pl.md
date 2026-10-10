@@ -185,7 +185,11 @@ dotnet run > image.ppm
 
 > [!NOTE]
 > #### Etap 1
+<<<<<<< HEAD
 > ![Stage 1 Render]({{< relurl "/labs/w03.basics/Raytracer.01/image.jpg" >}})
+=======
+> ![Stage 1 Render](/labs/w03.basics/Raytracer.01/image.jpg)
+>>>>>>> 02c54df (correct files (I think))
 > {{< filetree dir="labs/w03.basics/Raytracer.01" >}}
 
 ### Etap 2: Kamera i Promienie
@@ -366,7 +370,11 @@ dotnet run > image.ppm
 
 > [!NOTE]
 > #### Etap 3
+<<<<<<< HEAD
 > ![Stage 3 Render]({{< relurl "/labs/w03.basics/Raytracer.03/image.jpg" >}})
+=======
+> ![Stage 3 Render](/labs/w03.basics/Raytracer.03/image.jpg)
+>>>>>>> 02c54df (correct files (I think))
 > {{< filetree dir="labs/w03.basics/Raytracer.03" >}}
 
 ### Etap 4: Materiały i rekursja
@@ -438,7 +446,11 @@ world.Add(new Plane(new Vector3(0, -0.5f, 0), new Vector3(0, 1, 0), new Emissive
 
 > [!NOTE]
 > #### Etap 4
+<<<<<<< HEAD
 > ![Stage 4 Render]({{< relurl "/labs/w03.basics/Raytracer.04/image.jpg" >}})
+=======
+> ![Stage 4 Render](/labs/w03.basics/Raytracer.04/image.jpg)
+>>>>>>> 02c54df (correct files (I think))
 > {{< filetree dir="labs/w03.basics/Raytracer.04" >}}
 
 ### Etap 5: Materiał matowy i wygładzanie krawędzi
@@ -496,7 +508,11 @@ Wyrenderuj ostateczny obraz za pomocą polecenia `dotnet run > image.ppm`.
 
 > [!NOTE]
 > #### Etap 5
+<<<<<<< HEAD
 > ![Stage 5 Render]({{< relurl "/labs/w03.basics/Raytracer.05/image.jpg" >}})
+=======
+> ![Stage 5 Render](/labs/w03.basics/Raytracer.05/image.jpg)
+>>>>>>> 02c54df (correct files (I think))
 > {{< filetree dir="labs/w03.basics/Raytracer.05" >}}
 
 > [!NOTE]
