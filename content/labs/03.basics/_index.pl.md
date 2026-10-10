@@ -180,6 +180,13 @@ Aby zapisać obrazek, przekieruj standardowe wyjście do pliku. Uruchom program 
 dotnet run > image.ppm
 ```
 
+> [!WARNING]
+> Wygenerowane pliki obrazów w formacie PPM zajmują dużo miejsca na dysku (nawet kilkadziesiąt megabajtów) i nie powinny trafiać do repozytorium. Pamiętaj, aby dodać wzorzec `*.ppm` do pliku `.gitignore`.
+
+> [!NOTE]
+> #### Etap 1
+> {{< filetree dir="labs/w03.basics/Raytracer.01" >}}
+
 ### Etap 2: Kamera i Promienie
 
 W tym etapie rozbudujemy strukturę `Vector3` oraz stworzymy mechanizm wirtualnej kamery i strukturę promienia (`Ray`).
@@ -256,6 +263,10 @@ Zaimplementuj prywatną metodę `Recalculate()`, wyznaczającą geometrię rzutn
    - Rozpiętość pionowa rzutni: `viewportV = viewportHeight * -v` (skierowana w dół, zgodnie z numeracją wierszy w obrazie).
    - Wektory kroku pojedynczego piksela: `_pixelDu = viewportU / ImageWidth` oraz `_pixelDv = viewportV / _imageHeight`.
 5. **Środek pierwszego piksela:** Wyznacz lewy górny róg rzutni: `_viewportCorner = Position - (d * w) - viewportU / 2.0f - viewportV / 2.0f`, a następnie przesuń go na środek pierwszego piksela, dodając `0.5f * (_pixelDu + _pixelDv)`.
+
+> [!NOTE]
+> #### Etap 2
+> {{< filetree dir="labs/w03.basics/Raytracer.02" >}}
 
 ### Etap 3: Przecinanie promieni z obiektami
 
@@ -352,6 +363,10 @@ Aby wygenerować obraz, uruchom program, przekierowując standardowe wyjście do
 dotnet run > image.ppm
 ```
 
+> [!NOTE]
+> #### Etap 3
+> {{< filetree dir="labs/w03.basics/Raytracer.03" >}}
+
 ### Etap 4: Materiały i rekursja
 
 W tym etapie dodamy obsługę materiałów, które będą definiować zachowanie promieni po trafieniu w obiekt.
@@ -419,6 +434,10 @@ world.Add(new Sphere(new Vector3(0, 0, -1), 0.5f, new EmissiveMaterial(new Vecto
 world.Add(new Plane(new Vector3(0, -0.5f, 0), new Vector3(0, 1, 0), new EmissiveMaterial(new Vector3(1, 1, 1))));
 ```
 
+> [!NOTE]
+> #### Etap 4
+> {{< filetree dir="labs/w03.basics/Raytracer.04" >}}
+
 ### Etap 5: Materiał matowy i wygładzanie krawędzi
 
 W tym etapie zaimplementujemy matowy materiał rozpraszający światło oraz wygładzanie krawędzi (antyaliasing).
@@ -471,6 +490,10 @@ world.Add(new Plane(new Vector3(0, -0.5f, 0), new Vector3(0, 1, 0), new Lamberti
 ```
 
 Wyrenderuj ostateczny obraz za pomocą polecenia `dotnet run > image.ppm`.
+
+> [!NOTE]
+> #### Etap 5
+> {{< filetree dir="labs/w03.basics/Raytracer.05" >}}
 
 > [!NOTE]
 > **Korekcja gamma:** Wypisane wartości kolorów znajdują się w przestrzeni liniowej. Ponieważ monitory komputerowe stosują nieliniową charakterystykę jasności (gamma), wyrenderowany obraz może wydawać się ciemniejszy w partiach cieniowych. Aby uzyskać prawidłowe odwzorowanie tonalne (tzw. przestrzeń *sRGB* / gamma ok. 2.2), przed zapisem wartości do pliku podnosi się każdą składową koloru do potęgi `1 / gamma` (np. w najprostszym przybliżeniu dla gamma = 2 jest to po prostu pierwiastek kwadratowy: `MathF.Sqrt(color)`).
