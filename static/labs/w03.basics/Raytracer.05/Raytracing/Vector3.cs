@@ -43,7 +43,7 @@ public struct Vector3
     public bool NearZero()
     {
         float s = 1e-8f;
-        return (Math.Abs(X) < s) && (Math.Abs(Y) < s) && (Math.Abs(Z) < s);
+        return (MathF.Abs(X) < s) && (MathF.Abs(Y) < s) && (MathF.Abs(Z) < s);
     }
 
     public static Vector3 RandomInUnitSphere()
@@ -54,12 +54,20 @@ public struct Vector3
                 (float)Random.Shared.NextDouble() * 2 - 1,
                 (float)Random.Shared.NextDouble() * 2 - 1,
                 (float)Random.Shared.NextDouble() * 2 - 1);
-            if (p.LengthSquared() >= 1) continue;
-            return p;
+            if (p.LengthSquared() < 1)
+                return p;
         }
     }
 
-    public static Vector3 RandomUnitVector() => RandomInUnitSphere().Normalize();
+    public static Vector3 RandomUnitVector()
+    {
+        while (true)
+        {
+            Vector3 p = RandomInUnitSphere();
+            if (!p.NearZero())
+                return p.Normalize();
+        }
+    }
 
     public override string ToString() => $"{X} {Y} {Z}";
 }
