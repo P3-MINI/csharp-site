@@ -148,15 +148,7 @@ Obraz traktujemy jako dwuwymiarową tablicę pikseli. Utwórz klasę `Image` (pl
 - Publiczne właściwości tylko do odczytu `Width` i `Height` typu `int`.
 - Prywatną tablicę dwuwymiarową `Vector3[,] Pixels`.
 - Konstruktor przyjmujący szerokość i wysokość, który na ich podstawie zainicjalizuje dwuwymiarową tablicę.
-- Indeksator (odpowiednik przeciążonego `operatora[]` z C++), który pozwala na odwoływanie się do obiektu tak jak do tablicy. Posłuży on do wygodnego odczytywania i zapisywania pikseli (np. `image[x, y] = color`):
-
-```csharp
-public Vector3 this[int x, int y]
-{
-    get => Pixels[x, y];
-    set => Pixels[x, y] = value;
-}
-```
+- Dwuwymiarowy indeksator (`public Vector3 this[int x, int y]`), stanowiący odpowiednik przeciążonego `operatora[]` z C++. W akcesorze `get` powinien zwrócić piksel z tablicy `Pixels[x, y]`, a w akcesorze `set` przypisać do niego przekazaną wartość (`value`). Posłuży on do wygodnego odczytywania i modyfikowania pikseli (np. `image[x, y] = color`).
 
 Aby wyeksportować wygenerowany obraz, wykorzystamy prosty, tekstowy format **PPM**. Nie będziemy implementować osobnej metody zapisującej obraz do pliku. Zamiast tego zaimplementujemy proces generowania zawartości PPM wewnątrz nadpisanej metody `ToString()`. Wywołanie `Console.WriteLine(image)` wypisze obraz w formie tekstowej na standardowe wyjście, które przekierujemy do pliku.
 
@@ -182,33 +174,10 @@ Ponieważ będziemy generować ciąg tekstowy dla milionów wartości, użycie k
 
 #### Generowanie pierwszego obrazka
 
-W pliku `Program.cs` utwórz instancję obrazu o rozdzielczości 1920x1080. Wygeneruj dowolny wzór (na przykład gradient) wypełniając nim piksele, a następnie wypisz obraz na standardowe wyjście. Możesz wykorzystać poniższy przykładowy fragment kodu:
-
-```csharp
-namespace Raytracing;
-
-class Program
-{
-    static void Main(string[] args)
-    {
-        Image image = new Image(1920, 1080);
-        
-        for (int i = 0; i < image.Width; i++)
-        {
-            for (int j = 0; j < image.Height; j++)
-            {
-                float r = (float) i / image.Width;
-                float g = (float) j / image.Height;
-                float b = MathF.Sin(2 * MathF.PI * ((float) i * j / image.Width / image.Height));
-                
-                image[i, j] = new Vector3(r, g, b);
-            }
-        }
-        
-        Console.WriteLine(image);
-    }
-}
-```
+W metodzie `Main` pliku `Program.cs`:
+1. Utwórz instancję obrazu `Image` o rozdzielczości np. 1920x1080.
+2. W zagnieżdżonej pętli wypełnij piksele dowolnym wzorem (np. gradientem, gdzie składowa czerwona {{< katex >}}R = i / \text{Width}{{< /katex >}}, zielona {{< katex >}}G = j / \text{Height}{{< /katex >}}, a niebieska to stała lub funkcja sinus).
+3. Wypisz obiekt obrazu do konsoli za pomocą `Console.WriteLine(image)`.
 
 Aby zapisać obrazek, przekieruj standardowe wyjście do pliku. Uruchom program poleceniem:
 
@@ -231,7 +200,7 @@ public static Vector3 operator +(Vector3 u, Vector3 v) => new Vector3(u.X + v.X,
 ```
 
 W pliku `Vector3.cs` zaimplementuj:
-1. Przeciążenia operatorów: unarnego `-` (odwrócenie wektora), dodawania `+` i odejmowania `-` dwóch wektorów oraz mnożenia `*` i dzielenia `/` wektora przez skalar (liczbę `float`).
+1. Przeciążenia operatorów: unarnego `-` (odwrócenie wektora), dodawania `+` i odejmowania `-` dwóch wektorów, mnożenia `*` i dzielenia `/` wektora przez skalar (`float`), a także mnożenia dwóch wektorów przez siebie `*` (mnożącego odpowiadające sobie składowe: {{< katex >}}u.X \cdot v.X, u.Y \cdot v.Y, u.Z \cdot v.Z{{< /katex >}}).
 2. Metody `LengthSquared()` (zwracającą kwadrat długości wektora) oraz `Length()` (obliczającą długość wektora). Do wyciągnięcia pierwiastka kwadratowego użyj statycznej klasy `MathF`, która zawiera metody (np. `MathF.Sqrt()`) zoptymalizowane dla liczb typu `float`.
 3. Statyczną metodę `Dot()` do obliczania iloczynu skalarnego.
 4. Statyczną metodę `Cross()` do obliczania iloczynu wektorowego.
@@ -278,40 +247,18 @@ Utwórz plik `Camera.cs` definiujący kamerę:
 2. Zadeklaruj prywatne pola przechowujące wyliczone parametry rzutni oraz kamery: `int _height`, `Vector3 _pixelDu`, `Vector3 _pixelDv` oraz `Vector3 _viewportCorner`.
 3. Dodaj bezparametrowy konstruktor, który jednorazowo wywoła metodę `Recalculate()` do inicjalizacji obiektu.
 
-Logika metody `Recalculate()` wylicza pozycję rzutni i wektory nawigujące po jej powierzchni. Najpierw, na podstawie pozycji kamery i pozycji rzutni (właściwość Target), wyznaczana jest baza ortonormalna (wektory `u`, `v`, `w` określające kierunki osi lokalnych kamery). Następnie za pomocą kąta widzenia i proporcji obrazu ustalany jest fizyczny rozmiar wirtualnego ekranu. Finalnie wyliczamy współrzędne lewego górnego rogu rzutni (`_viewportCorner`) oraz wektory kroku między poszczególnymi pikselami w pionie i poziomie (`_pixelDu`, `_pixelDv`), tak żeby później łatwo można było po nich iterować.
-
-> [!NOTE]
-> Poniżej znajdziesz gotową implementację metody przygotowującej rzutnię. Możesz umieścić ją bezpośrednio w swojej klasie.
-
-```csharp
-private void Recalculate()
-{
-    _height = (int)(ImageWidth / AspectRatio);
-    if (_height < 1) 
-    {
-        _height = 1;
-    }
-
-    float theta = Fov * (MathF.PI / 180.0f);
-    float h = MathF.Tan(theta / 2.0f);
-    float distanceToViewport = (Position - Target).Length();
-    float viewportHeight = 2.0f * h * distanceToViewport;
-    float viewportWidth = viewportHeight * ((float)ImageWidth / _height);
-
-    Vector3 w = (Position - Target).Normalize();
-    Vector3 u = Vector3.Cross(new Vector3(0, 1, 0), w).Normalize();
-    Vector3 v = Vector3.Cross(w, u);
-
-    Vector3 viewportU = viewportWidth * u;
-    Vector3 viewportV = viewportHeight * -v;
-
-    _pixelDu = viewportU / ImageWidth;
-    _pixelDv = viewportV / _height;
-
-    Vector3 viewportUpperLeft = Position - (distanceToViewport * w) - viewportU / 2.0f - viewportV / 2.0f;
-    _viewportCorner = viewportUpperLeft + 0.5f * (_pixelDu + _pixelDv);
-}
-```
+Zaimplementuj prywatną metodę `Recalculate()`, wyznaczającą geometrię rzutni:
+1. **Wymiary obrazu:** Oblicz wysokość `_height = (int)(ImageWidth / AspectRatio)` (zabezpiecz przed wartością mniejszą niż 1).
+2. **Fizyczny rozmiar rzutni:** Przelicz kąt `Fov` na radiany ({{< katex >}}\theta = \text{Fov} \cdot \pi / 180{{< /katex >}}) i wyznacz {{< katex >}}h = \tan(\theta / 2){{< /katex >}}. Odległość od obserwatora do rzutni to długość wektora {{< katex >}}(\text{Position} - \text{Target}){{< /katex >}}. Wysokość rzutni wynosi {{< katex >}}2 \cdot h \cdot \text{odległość}{{< /katex >}}, a szerokość to {{< katex >}}\text{wysokość} \cdot (\text{ImageWidth} / \text{\_height}){{< /katex >}}.
+3. **Baza wektorów kamery (`front`, `right`, `up`):** 
+   - Wektor kierunku patrzenia: {{< katex >}}w = \text{Normalize}(\text{Position} - \text{Target}){{< /katex >}} (zwrócony przeciwnie do kierunku patrzenia zgodnie z układem prawoskrętnym).
+   - Wektor w prawo (`right`): {{< katex >}}u = \text{Normalize}(\text{Cross}(\text{Vector3}(0, 1, 0), w)){{< /katex >}}.
+   - Wektor w górę (`up`): {{< katex >}}v = \text{Cross}(w, u){{< /katex >}}.
+4. **Wektory kroków piksela:**
+   - Rozpiętość pozioma rzutni wynosi {{< katex >}}\text{viewportU} = \text{szerokość} \cdot u{{< /katex >}}.
+   - Rozpiętość pionowa wynosi {{< katex >}}\text{viewportV} = \text{wysokość} \cdot (-v){{< /katex >}} (skierowana w dół, ponieważ wiersze obrazu liczymy od góry do dołu).
+   - Wektory kroku pojedynczego piksela: {{< katex >}}\text{\_pixelDu} = \text{viewportU} / \text{ImageWidth}{{< /katex >}} oraz {{< katex >}}\text{\_pixelDv} = \text{viewportV} / \text{\_height}{{< /katex >}}.
+5. **Środek pierwszego piksela (`_viewportCorner`):** Wyznacz lewy górny róg rzutni: {{< katex >}}\text{Position} - (\text{odległość} \cdot w) - \text{viewportU} / 2 - \text{viewportV} / 2{{< /katex >}}, a następnie przesuń go na środek pierwszego piksela dodając {{< katex >}}0.5 \cdot (\text{\_pixelDu} + \text{\_pixelDv}){{< /katex >}}.
 
 ### Etap 3: Przecinanie promieni z obiektami
 
@@ -323,15 +270,10 @@ Gdy promień przecina obiekt, musimy zebrać kilka informacji: pozycję uderzeni
 
 Utwórz plik `HitInfo.cs` ze strukturą przechowującą wynik uderzenia:
 1. Zdefiniuj pola publiczne: `Vector3 Position`, `Vector3 Normal`, `float T` oraz `bool FrontFace`.
-2. Zdefiniuj metodę `SetFaceNormal(Ray r, Vector3 outwardNormal)`. Do poprawnego obliczania oświetlenia potrzebujemy, aby wektor normalny w miejscu trafienia był zawsze skierowany w stronę przeciwną do nadlatującego promienia. Metoda ta powinna sprawdzić – na podstawie iloczynu skalarnego kierunku promienia i wektora normalnego powierzchni – czy promień uderza w obiekt z zewnątrz (iloczyn ujemny). Jeżeli uderza od wewnątrz, zapisany wektor normalny musi zostać odwrócony.
-
-```csharp
-public void SetFaceNormal(Ray r, Vector3 outwardNormal)
-{
-    FrontFace = Vector3.Dot(r.Direction, outwardNormal) < 0;
-    Normal = FrontFace ? outwardNormal : -outwardNormal;
-}
-```
+2. Zdefiniuj metodę `SetFaceNormal(Ray r, Vector3 outwardNormal)`. Do poprawnego oświetlenia wektor normalny musi być skierowany przeciwnie do promienia:
+   - Sprawdź iloczyn skalarny kierunku promienia i wektora `outwardNormal`.
+   - Jeżeli wynik jest ujemny, promień uderza z zewnątrz (`FrontFace = true`), a `Normal` przyjmuje wartość `outwardNormal`.
+   - W przeciwnym razie promień trafia od wewnątrz (`FrontFace = false`), a `Normal` należy odwrócić (`-outwardNormal`).
 
 #### Interfejs IHittable i modyfikator "out"
 
@@ -339,16 +281,14 @@ Interfejsy to abstrakcyjne typy definiujące kontrakt, czyli zbiór metod i wła
 
 Jednym ze sposobów na zwrócenie wielu wartości z metody w C# jest użycie słowa kluczowego `out`. Wymusza ono zainicjowanie przekazanej w ten sposób zmiennej przed opuszczeniem metody (np. metoda sprawdzająca trafienie promienia może zwrócić jako wynik `bool`, a przez argument zwrócić wygenerowaną strukturę `HitInfo`).
 
-Utwórz plik `IHittable.cs` z definicją interfejsu (w C# nazwy interfejsów zwyczajowo zaczynamy od dużej litery `I`):
+Utwórz plik `IHittable.cs` z definicją interfejsu (w C# nazwy interfejsów zwyczajowo zaczynamy od dużej litery `I`), deklarującego metodę:
 
 ```csharp
-namespace Raytracing;
-
-public interface IHittable
-{
-    bool Hit(Ray ray, float tMin, float tMax, out HitInfo hitInfo);
-}
+bool Hit(Ray ray, float tMin, float tMax, out HitInfo hitInfo);
 ```
+
+> [!NOTE]
+> W C# wszystkie składowe zadeklarowane wewnątrz interfejsu są domyślnie publiczne (`public`), dlatego nie wymagają jawnego modyfikatora dostępu w deklaracji.
 
 #### Implementacja IHittable (Sphere i Plane)
 
@@ -357,62 +297,27 @@ Każdy obiekt na naszej scenie (włącznie z samą sceną) będzie implementowa�
 Utwórz definicję klasy sfery (plik `Sphere.cs`):
 - Utwórz klasę `Sphere` implementującą interfejs `IHittable` (`class Sphere : IHittable`) i definiującą właściwości `Vector3 Center` oraz `float Radius`.
 - Zdefiniuj konstruktor inicjalizujący podane wartości.
-- Zaimplementuj metodę `Hit`. Możesz posłużyć się gotowym kodem, wyznaczającym pierwiastki równania kwadratowego dla punktu przecięcia promienia ze sferą ([więcej informacji znajdziesz w książce](https://raytracing.github.io/books/RayTracingInOneWeekend.html#addingasphere/ray-sphereintersection)):
-
-```csharp
-public bool Hit(Ray ray, float tMin, float tMax, out HitInfo hitInfo)
-{
-    hitInfo = new HitInfo();
-    Vector3 oc = ray.Origin - Center;
-    float a = ray.Direction.LengthSquared();
-    float halfB = Vector3.Dot(oc, ray.Direction);
-    float c = oc.LengthSquared() - Radius * Radius;
-
-    float discriminant = halfB * halfB - a * c;
-    if (discriminant < 0) return false;
-    
-    float sqrtd = MathF.Sqrt(discriminant);
-    float root = (-halfB - sqrtd) / a;
-    
-    if (root < tMin || tMax < root)
-    {
-        root = (-halfB + sqrtd) / a;
-        if (root < tMin || tMax < root) return false;
-    }
-
-    hitInfo.T = root;
-    hitInfo.Position = ray.At(hitInfo.T);
-    Vector3 outwardNormal = (hitInfo.Position - Center) / Radius;
-    hitInfo.SetFaceNormal(ray, outwardNormal);
-    
-    return true;
-}
-```
+- Zaimplementuj metodę `Hit`:
+  1. Wyznacz wektor od środka kuli do początku promienia: {{< katex >}}oc = \text{ray.Origin} - \text{Center}{{< /katex >}}.
+  2. Wyznacz współczynniki równania kwadratowego:
+     - {{< katex >}}a = \|\text{ray.Direction}\|^2{{< /katex >}}
+     - {{< katex >}}halfB = oc \cdot \text{ray.Direction}{{< /katex >}}
+     - {{< katex >}}c = \|oc\|^2 - \text{Radius}^2{{< /katex >}}
+  3. Oblicz wyróżnik równania: {{< katex >}}\Delta = halfB^2 - a \cdot c{{< /katex >}}. Jeśli {{< katex >}}\Delta < 0{{< /katex >}}, brak przecięcia – zwróć `false`.
+  4. Znajdź najmniejszy pierwiastek w przedziale {{< katex >}}[tMin, tMax]{{< /katex >}}. Sprawdź najpierw {{< katex >}}(-halfB - \sqrt{\Delta}) / a{{< /katex >}}. Jeśli nie mieści się w zakresie, sprawdź {{< katex >}}(-halfB + \sqrt{\Delta}) / a{{< /katex >}}. Jeśli żaden nie pasuje, zwróć `false`.
+  5. Wypełnij `hitInfo`: parametr `T = root`, punkt uderzenia `Position = ray.At(root)`, wyznacz wektor normalny {{< katex >}}(\text{Position} - \text{Center}) / \text{Radius}{{< /katex >}} i przekaż do `SetFaceNormal(ray, outwardNormal)`. Zwróć `true`.
+  ([Więcej szczegółów matematycznych znajdziesz w książce](https://raytracing.github.io/books/RayTracingInOneWeekend.html#addingasphere/ray-sphereintersection)).
 
 Utwórz klasę `Plane` (plik `Plane.cs`) implementującą interfejs `IHittable`, reprezentującą płaszczyznę.
 - Dodaj właściwości `Vector3 Point` oraz `Vector3 Normal`. Matematycznie płaszczyzna opisana jest za pomocą dowolnego leżącego na niej punktu (właściwość `Point`) oraz wektora do niej prostopadłego (właściwość `Normal`). W konstruktorze zadbaj, by przypisywany wektor normalny został znormalizowany.
-- Zaimplementuj metodę `Hit`. Z matematycznego punktu widzenia, punkt `P` leży na płaszczyźnie, jeżeli iloczyn skalarny wektora `(P - Point)` oraz wektora normalnego płaszczyzny wynosi zero. Podstawiając do tego równanie promienia `P(t) = Origin + t * Direction`, możemy wyznaczyć parametr `t`. Jeżeli mianownik we wzorze na `t` (iloczyn skalarny kierunku promienia i normalnej płaszczyzny) jest bliski zeru, oznacza to, że promień jest równoległy do płaszczyzny. Poniżej znajduje się implementacja tej logiki:
-
-```csharp
-public bool Hit(Ray ray, float tMin, float tMax, out HitInfo hitInfo)
-{
-    hitInfo = new HitInfo();
-    float denom = Vector3.Dot(Normal, ray.Direction);
-    
-    if (MathF.Abs(denom) > 1e-6f)
-    {
-        float t = Vector3.Dot(Point - ray.Origin, Normal) / denom;
-        if (t > tMin && t < tMax)
-        {
-            hitInfo.T = t;
-            hitInfo.Position = ray.At(t);
-            hitInfo.SetFaceNormal(ray, Normal);
-            return true;
-        }
-    }
-    return false;
-}
-```
+- Zaimplementuj metodę `Hit`. Punkt {{< katex >}}P{{< /katex >}} leży na płaszczyźnie, gdy spełnia równanie {{< katex >}}(P - \text{Point}) \cdot \text{Normal} = 0{{< /katex >}}. Podstawiając równanie promienia {{< katex >}}P(t) = \text{Origin} + t \cdot \text{Direction}{{< /katex >}} i wyznaczając parametr {{< katex >}}t{{< /katex >}}, otrzymujemy:
+  {{< katex >}}t = \frac{(\text{Point} - \text{Origin}) \cdot \text{Normal}}{\text{Direction} \cdot \text{Normal}}{{< /katex >}}
+  
+  W metodzie `Hit`:
+  1. Oblicz mianownik powyższego ułamka: {{< katex >}}denom = \text{Normal} \cdot \text{ray.Direction}{{< /katex >}}.
+  2. Jeśli wartość bezwzględna mianownika jest bliska zeru ({{< katex >}}|denom| < 10^{-6}{{< /katex >}}), promień jest równoległy do płaszczyzny (brak punktu przecięcia) – zwróć `false`.
+  3. W przeciwnym razie oblicz wartość parametru {{< katex >}}t{{< /katex >}} ze wzoru.
+  4. Jeśli parametr {{< katex >}}t{{< /katex >}} mieści się w przedziale {{< katex >}}(tMin, tMax){{< /katex >}}, uzupełnij strukturę `hitInfo` (parametr `T = t`, punkt przecięcia `Position = ray.At(t)`, wektor normalny przez `SetFaceNormal(ray, Normal)`) i zwróć `true`. W przeciwnym razie zwróć `false`.
 
 #### Scena
 
@@ -434,30 +339,10 @@ W klasie `Camera` dodaj metodę `Render`, zwracającą gotowy `Image`, a przyjmu
 
 Jeśli promień trafi w obiekt, ustaw kolor piksela na czerwony (`[1, 0, 0]`). W przeciwnym razie ustaw kolor na czarny (`[0, 0, 0]`).
 
-Na koniec utwórz instancję sceny oraz kamery w pliku `Program.cs`, wywołaj metodę `Render` i wypisz wynik do konsoli. Gotowy kod znajduje się poniżej:
-
-```csharp
-using System;
-
-namespace Raytracing;
-
-class Program
-{
-    static void Main(string[] args)
-    {
-        Scene world = new Scene();
-        world.Add(new Sphere(new Vector3(0, 0, -1), 0.5f));
-        world.Add(new Plane(new Vector3(0, -0.5f, 0), new Vector3(0, 1, 0)));
-
-        Camera cam = new Camera();
-        cam.Position = new Vector3(0, 0, 1);
-        cam.Target = new Vector3(0, 0, -1);
-
-        Image image = cam.Render(world);
-        Console.Write(image.ToString());
-    }
-}
-```
+W metodzie `Main` pliku `Program.cs`:
+1. Utwórz obiekt `Scene` i dodaj sferę w punkcie {{< katex >}}(0, 0, -1){{< /katex >}} o promieniu 0.5 oraz płaszczyznę w punkcie {{< katex >}}(0, -0.5, 0){{< /katex >}} z wektorem normalnym {{< katex >}}(0, 1, 0){{< /katex >}}.
+2. Skonfiguruj kamerę: `Position` na {{< katex >}}(0, 0, 1){{< /katex >}} oraz `Target` na {{< katex >}}(0, 0, -1){{< /katex >}}.
+3. Wywołaj `cam.Render(world)` i wypisz wynik do konsoli za pomocą `Console.Write(image)`.
 
 Aby wygenerować obraz, uruchom program, przekierowując standardowe wyjście do pliku:
 
@@ -471,7 +356,7 @@ W tym etapie dodamy obsługę materiałów, które zdefiniują zachowanie promie
 
 #### Klasy abstrakcyjne
 
-Z klasy abstrakcyjnej nie można bezpośrednio utworzyć instancji. Służy ona jako definicja bazowa dla klas pochodnych. Może zawierać deklaracje metod abstrakcyjnych (pozbawionych implementacji, wymagających zdefiniowania w klasie pochodnej) oraz metod wirtualnych (posiadających domyślną implementację, którą opcjonalnie można nadpisać).
+Z klasy abstrakcyjnej nie można bezpośrednio utworzyć instancji. Służy ona jako definicja bazowa dla klas pochodnych. Może zawierać deklaracje metod abstrakcyjnych (odpowiednik funkcji czysto wirtualnych z C++, np. `virtual void Method() = 0;`), które nie posiadają implementacji i wymagają zdefiniowania w klasie pochodnej, oraz metod wirtualnych (posiadających domyślną implementację, którą opcjonalnie można nadpisać).
 
 #### Przekazywanie parametrów przez referencję
 
@@ -481,19 +366,8 @@ Przekazywanie argumentów przez referencję pozwala uniknąć kopiowania struktu
 - `in` – referencja tylko do odczytu. Gwarantuje brak modyfikacji argumentu wewnątrz metody.
 
 W pliku `Material.cs` zdefiniuj abstrakcyjną klasę `Material`:
-1. Zadeklaruj metodę abstrakcyjną `Scatter`: `public abstract bool Scatter(in Ray rIn, ref HitInfo hitInfo, out Vector3 attenuation, out Ray scattered);`. Przyjmuje ona promień wejściowy (`rIn`) oraz informacje o trafieniu (`hitInfo`). Przez argumenty wyjściowe zwraca wektor tłumienia koloru (`attenuation`) oraz promień odbity (`scattered`), a jako wynik działania (typ `bool`) zwraca informację, czy promień uległ odbiciu.
-2. Zadeklaruj metodę wirtualną `Emit()` zwracającą domyślnie wektor `new Vector3(0, 0, 0)`.
-
-```csharp
-namespace Raytracing;
-
-public abstract class Material
-{
-    public abstract bool Scatter(in Ray rIn, ref HitInfo hitInfo, out Vector3 attenuation, out Ray scattered);
-    
-    public virtual Vector3 Emit() => new Vector3(0, 0, 0);
-}
-```
+- Zadeklaruj metodę abstrakcyjną: `public abstract bool Scatter(in Ray rIn, ref HitInfo hitInfo, out Vector3 attenuation, out Ray scattered);`. Przyjmuje ona promień wejściowy (`rIn`) oraz informacje o trafieniu (`hitInfo`). Przez argumenty wyjściowe zwraca wektor tłumienia koloru (`attenuation`) oraz promień odbity (`scattered`), a jako wynik działania (typ `bool`) zwraca informację, czy promień uległ odbiciu.
+- Zadeklaruj metodę wirtualną `Emit()` zwracającą domyślnie wektor zerowy (`new Vector3(0, 0, 0)`).
 
 #### EmissiveMaterial
 
@@ -519,32 +393,12 @@ Wewnętrzną pętlę w metodzie `Render` zmodyfikuj tak, aby używała rekurency
 image[i, j] = RayColor(ray, MaxDepth, world);
 ```
 
-Zaimplementuj metodę `RayColor`. Jeżeli zmienna określająca pozostałą głębokość rekurencji (`depth`) wyniesie 0 lub mniej, przerwij obliczenia i zwróć czarny kolor. 
-
-W przeciwnym wypadku sprawdzane jest przecięcie promienia ze sceną (`world.Hit`). Jeżeli promień nie uderzy w żaden obiekt, zwracany jest czarny kolor. W przypadku trafienia w obiekt następuje obliczenie koloru:
-1. W pierwszej kolejności z materiału (jeżeli pole `Mat` nie jest równe `null`) pobierana jest wartość emitowanego przez niego światła (`Emit()`).
-2. Następnie wywoływana jest funkcja `Scatter` w celu sprawdzenia, czy dany materiał emituje promień wtórny.
-3. Jeżeli tak, funkcja zwraca sumę wyemitowanego koloru z punktu pierwszego oraz koloru uzyskanego dla promienia odbitego (poprzez wywołanie rekurencyjne `RayColor` na promieniu `scattered` ze zmniejszoną wartością `depth`, przemnożonego przez `attenuation`).
-4. Jeżeli `Scatter` zwróci `false` (np. przy `EmissiveMaterial`), funkcja kończy rekurencję i zwraca wyłącznie wartość koloru wyemitowanego pobraną w punkcie 1.
-
-```csharp
-private Vector3 RayColor(Ray ray, int depth, IHittable world)
-{
-    if (depth <= 0) return new Vector3(0, 0, 0);
-
-    if (world.Hit(ray, 0.001f, float.PositiveInfinity, out HitInfo hitInfo))
-    {
-        Vector3 emitted = hitInfo.Mat != null ? hitInfo.Mat.Emit() : new Vector3(0, 0, 0);
-
-        if (hitInfo.Mat != null && hitInfo.Mat.Scatter(in ray, ref hitInfo, out Vector3 attenuation, out Ray scattered))
-            return emitted + attenuation * RayColor(scattered, depth - 1, world);
-        
-        return emitted;
-    }
-    
-    return new Vector3(0, 0, 0); 
-}
-```
+Zaimplementuj prywatną metodę `RayColor(Ray ray, int depth, IHittable world)`:
+1. Warunek stopu: jeśli limit głębokości został wyczerpany (`depth <= 0`), przerwij rekurencję i zwróć kolor czarny `[0, 0, 0]`.
+2. Sprawdź trafienie w obiekty sceny za pomocą `world.Hit(ray, 0.001f, float.PositiveInfinity, out HitInfo hitInfo)`. Jeśli brak kolizji, zwróć kolor czarny.
+3. Pobierz światło emitowane przez materiał trafionego obiektu (`hitInfo.Mat.Emit()`).
+4. Wywołaj metodę `Scatter(...)`. Jeżeli materiał rozprasza promień (`true`), zwróć sumę światła emitowanego oraz rekurencyjnego wywołania `RayColor(scattered, depth - 1, world)` pomnożonego przez `attenuation`.
+5. W przeciwnym razie (brak odbicia) zwróć wyłącznie kolor wyemitowany.
 
 > [!NOTE]
 > Wartość `tMin` w wywołaniu funkcji `Hit` została ustawiona na `0.001f` w celu uniknięcia błędu precyzji zmiennoprzecinkowej. Zabezpiecza to przed sytuacją, w której wtórny promień wskutek zaokrągleń uderza bezpośrednio w tę samą powierzchnię, z której został wyemitowany (zjawisko *shadow acne*).
