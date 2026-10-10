@@ -185,6 +185,7 @@ dotnet run > image.ppm
 
 > [!NOTE]
 > #### Etap 1
+> ![Stage 1 Render](/labs/w03.basics/Raytracer.01/image.jpg)
 > {{< filetree dir="labs/w03.basics/Raytracer.01" >}}
 
 ### Etap 2: Kamera i Promienie
@@ -203,7 +204,7 @@ W tym etapie rozbudujemy strukturę `Vector3` oraz stworzymy mechanizm wirtualne
 
 W pliku `Vector3.cs` zaimplementuj:
 1. Przeciążenia operatorów: unarnego `-` (odwrócenie wektora), dodawania `+` i odejmowania `-` dwóch wektorów, mnożenia `*` i dzielenia `/` wektora przez skalar (`float`), a także mnożenia dwóch wektorów przez siebie `*` (mnożącego odpowiadające sobie składowe: `u.X * v.X`, `u.Y * v.Y`, `u.Z * v.Z`).
-2. Metody `LengthSquared()` (zwracającą kwadrat długości wektora) oraz `Length()` (obliczającą długość wektora). Pierwiastkek kwadratowy znajdziesz w statycznej klasie `MathF`, która zawiera funkcje matematyczne (np. `MathF.Sqrt()` `MathF.Tan()`) dla liczb typu `float`.
+2. Metody `LengthSquared()` (zwracającą kwadrat długości wektora) oraz `Length()` (obliczającą długość wektora). Pierwiastek kwadratowy znajdziesz w statycznej klasie `MathF`, która zawiera funkcje matematyczne (np. `MathF.Sqrt()`, `MathF.Tan()`) dla liczb typu `float`.
 3. Statyczną metodę `Dot()` do obliczania iloczynu skalarnego.
 4. Statyczną metodę `Cross()` do obliczania iloczynu wektorowego.
 5. Metodę `Normalize()`, która znormalizuje wektor.
@@ -251,8 +252,8 @@ Utwórz plik `Camera.cs` definiujący kamerę:
 
 Zaimplementuj prywatną metodę `Recalculate()`, wyznaczającą geometrię rzutni:
 1. **Wymiary obrazu:** Oblicz wysokość w pikselach: `_imageHeight = (int)(ImageWidth / AspectRatio)`.
-2. **Fizyczny rozmiar rzutni:** Przelicz kąt pola widzenia na radiany `theta = Fov * MathF.PI / 180.0f` oraz połowę wysokości rzutni `h = MathF.Tan(theta / 2.0f)`. Odległość do rzutni to `d = (Position - Target).Length()`. Wymiary wirtualnego ekranu wynoszą:
-   - Wysokość: `viewportHeight = 2.0f * h * d`
+2. **Fizyczny rozmiar rzutni:** Przelicz kąt pola widzenia na radiany `theta = Fov * MathF.PI / 180.0f` oraz połowę wysokości rzutni `h = MathF.Tan(theta / 2.0f)`. Odległość do rzutni to `distanceToViewport = (Position - Target).Length()`. Wymiary wirtualnego ekranu wynoszą:
+   - Wysokość: `viewportHeight = 2.0f * h * distanceToViewport`
    - Szerokość: `viewportWidth = viewportHeight * AspectRatio`
 3. **Ortonormalna baza wektorów kamery (`front`, `right`, `up`):**
    - Wektor kierunku: `w = (Position - Target).Normalize()` (zwrócony przeciwnie do celu w układzie prawoskrętnym).
@@ -262,7 +263,7 @@ Zaimplementuj prywatną metodę `Recalculate()`, wyznaczającą geometrię rzutn
    - Rozpiętość pozioma rzutni: `viewportU = viewportWidth * u`.
    - Rozpiętość pionowa rzutni: `viewportV = viewportHeight * -v` (skierowana w dół, zgodnie z numeracją wierszy w obrazie).
    - Wektory kroku pojedynczego piksela: `_pixelDu = viewportU / ImageWidth` oraz `_pixelDv = viewportV / _imageHeight`.
-5. **Środek pierwszego piksela:** Wyznacz lewy górny róg rzutni: `_viewportCorner = Position - (d * w) - viewportU / 2.0f - viewportV / 2.0f`, a następnie przesuń go na środek pierwszego piksela, dodając `0.5f * (_pixelDu + _pixelDv)`.
+5. **Środek pierwszego piksela:** Wyznacz lewy górny róg rzutni: `_viewportCorner = Position - (distanceToViewport * w) - viewportU / 2.0f - viewportV / 2.0f`, a następnie przesuń go na środek pierwszego piksela, dodając `0.5f * (_pixelDu + _pixelDv)`.
 
 > [!NOTE]
 > #### Etap 2
@@ -317,8 +318,8 @@ Utwórz klasę `Sphere` (plik `Sphere.cs`) implementującą interfejs `IHittable
      - `a = ray.Direction.LengthSquared()`
      - `halfB = Vector3.Dot(oc, ray.Direction)`
      - `c = oc.LengthSquared() - Radius * Radius`
-  3. Oblicz zredukowaną deltę równania: `delta = halfB * halfB - a * c`. Jeśli `delta < 0`, brak przecięcia – zwróć `false`.
-  4. Znajdź mniejszy pierwiastek `(-halfB ± MathF.Sqrt(delta)) / a` leżący w przedziale `[tMin, tMax]`. Jeśli żaden z pierwiastków nie mieści się w zadanym zakresie, zwróć `false`.
+  3. Oblicz zredukowaną deltę równania: `discriminant = halfB * halfB - a * c`. Jeśli `discriminant < 0`, brak przecięcia – zwróć `false`.
+  4. Znajdź mniejszy pierwiastek `(-halfB ± MathF.Sqrt(discriminant)) / a` leżący w przedziale `[tMin, tMax]`. Jeśli żaden z pierwiastków nie mieści się w zadanym zakresie, zwróć `false`.
   5. Wypełnij `hitInfo`: parametr `T = root`, punkt uderzenia `Position = ray.At(root)`, wyznacz wektor normalny `(Position - Center) / Radius` i przekaż do `SetFaceNormal(ray, outwardNormal)`. Zwróć `true`.
   ([Więcej szczegółów matematycznych znajdziesz w książce](https://raytracing.github.io/books/RayTracingInOneWeekend.html#addingasphere/ray-sphereintersection)).
 
@@ -365,6 +366,7 @@ dotnet run > image.ppm
 
 > [!NOTE]
 > #### Etap 3
+> ![Stage 3 Render](/labs/w03.basics/Raytracer.03/image.jpg)
 > {{< filetree dir="labs/w03.basics/Raytracer.03" >}}
 
 ### Etap 4: Materiały i rekursja
@@ -436,6 +438,7 @@ world.Add(new Plane(new Vector3(0, -0.5f, 0), new Vector3(0, 1, 0), new Emissive
 
 > [!NOTE]
 > #### Etap 4
+> ![Stage 4 Render](/labs/w03.basics/Raytracer.04/image.jpg)
 > {{< filetree dir="labs/w03.basics/Raytracer.04" >}}
 
 ### Etap 5: Materiał matowy i wygładzanie krawędzi
@@ -493,6 +496,7 @@ Wyrenderuj ostateczny obraz za pomocą polecenia `dotnet run > image.ppm`.
 
 > [!NOTE]
 > #### Etap 5
+> ![Stage 5 Render](/labs/w03.basics/Raytracer.05/image.jpg)
 > {{< filetree dir="labs/w03.basics/Raytracer.05" >}}
 
 > [!NOTE]

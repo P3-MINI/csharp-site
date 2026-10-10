@@ -6,19 +6,19 @@ public class Image
 {
     public int Width { get; }
     public int Height { get; }
-    private Vector3[] Pixels { get; }
+    private Vector3[,] Pixels;
 
     public Vector3 this[int x, int y]
     {
-        get => Pixels[y * Width + x];
-        set => Pixels[y * Width + x] = value;
+        get => Pixels[x, y];
+        set => Pixels[x, y] = value;
     }
     
     public Image(int width, int height)
     {
         Width = width;
         Height = height;
-        Pixels = new Vector3[width * height];
+        Pixels = new Vector3[width, height];
     }
 
     public override string ToString()
@@ -27,11 +27,11 @@ public class Image
         result.AppendLine("P3");
         result.AppendLine($"{Width} {Height}");
         result.AppendLine("255");
-        for (int i = 0; i < Height; i++)
+        for (int j = 0; j < Height; j++)
         {
-            for (int j = 0; j < Width; j++)
+            for (int i = 0; i < Width; i++)
             {
-                var color = this[j, i];
+                var color = this[i, j];
                 int r = Math.Clamp((int)(color.X * 255.99), 0, 255);
                 int g = Math.Clamp((int)(color.Y * 255.99), 0, 255);
                 int b = Math.Clamp((int)(color.Z * 255.99), 0, 255);

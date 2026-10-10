@@ -38,7 +38,7 @@ public class Camera
         set { _fov = value; Recalculate(); } 
     }
 
-    private int _height;
+    private int _imageHeight;
     private Vector3 _viewportCorner;
     private Vector3 _pixelDu;
     private Vector3 _pixelDv;
@@ -50,17 +50,17 @@ public class Camera
 
     private void Recalculate()
     {
-        _height = (int)(_imageWidth / _aspectRatio);
-        if (_height < 1) 
+        _imageHeight = (int)(_imageWidth / _aspectRatio);
+        if (_imageHeight < 1) 
         {
-            _height = 1;
+            _imageHeight = 1;
         }
 
         float theta = _fov * (MathF.PI / 180.0f);
         float h = MathF.Tan(theta / 2.0f);
         float distanceToViewport = (Position - Target).Length();
         float viewportHeight = 2.0f * h * distanceToViewport;
-        float viewportWidth = viewportHeight * ((float)_imageWidth / _height);
+        float viewportWidth = viewportHeight * AspectRatio;
 
         Vector3 w = (Position - Target).Normalize();
         Vector3 u = Vector3.Cross(new Vector3(0, 1, 0), w).Normalize();
@@ -70,7 +70,7 @@ public class Camera
         Vector3 viewportV = viewportHeight * -v;
 
         _pixelDu = viewportU / _imageWidth;
-        _pixelDv = viewportV / _height;
+        _pixelDv = viewportV / _imageHeight;
 
         Vector3 viewportUpperLeft = Position - (distanceToViewport * w) - viewportU / 2.0f - viewportV / 2.0f;
         _viewportCorner = viewportUpperLeft + 0.5f * (_pixelDu + _pixelDv);
@@ -81,9 +81,9 @@ public class Camera
 
     public Image Render(IHittable world)
     {
-        Image image = new Image(_imageWidth, _height);
+        Image image = new Image(_imageWidth, _imageHeight);
 
-        for (int j = 0; j < _height; j++)
+        for (int j = 0; j < _imageHeight; j++)
         {
             for (int i = 0; i < _imageWidth; i++)
             {
