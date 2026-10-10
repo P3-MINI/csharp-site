@@ -600,6 +600,16 @@ world.Add(new Plane(new Vector3(0, -0.5f, 0), new Vector3(0, 1, 0), new Lamberti
 
 Wyrenderuj ostateczny obraz za pomocą polecenia `dotnet run > image.ppm`.
 
+### Kierunki dalszego rozwoju
+
+Napisana w ramach tutoriala aplikacja to dobra podstawa do dalszej rozbudowy. Poniżej zebraliśmy najważniejsze mechanizmy, które warto dodać w kolejnych krokach, aby rozwinąć projekt:
+
+- **Zaawansowane materiały (Metal, Szkło):** Obecnie światło rozprasza się losowo (matowo). Aby uzyskać efekt lustra, należy zaimplementować klasę wyliczającą wektor idealnego odbicia (kąt padania równy kątowi odbicia). Materiały przezroczyste (szkło, woda) wymagają z kolei dodania obsługi załamania światła (prawa Snella) i zależności odbicia od kąta patrzenia (tzw. aproksymacji Schlicka).
+- **Obsługa trójkątów i ładowanie modeli 3D:** Większość grafiki 3D opiera się na trójkątach, a nie sferach. Dodanie kodu wyliczającego przecięcie promienia z trójkątem pozwala na ładowanie gotowych siatek wyeksportowanych m.in. z Blendera w powszechnych formatach tekstowych (np. OBJ).
+- **Zapis do zewnętrznych formatów obrazu:** Użyty format PPM jest łatwy we wdrożeniu, ale mało optymalny przy zapisie na dysk. W projektach .NET do obsługi obrazów PNG czy JPEG standardowo podłącza się zewnętrzne biblioteki, np. *ImageSharp* lub *SkiaSharp* (odpowiedniki biblioteki *stb_image* znanej z C/C++). 
+- **Optymalizacja za pomocą BVH:** Przy tysiącach obiektów na scenie, sprawdzanie kolizji promienia z każdym elementem powoduje drastyczne spowolnienie. Struktura BVH (*Bounding Volume Hierarchy*) organizuje geometrię w drzewo brył otaczających. Jeżeli promień nie trafia w nadrzędną bryłę zbiorczą, algorytm natychmiast odrzuca całą zawartą w niej podgrupę obiektów, co w ogromnym stopniu przyspiesza renderowanie.
+- **Obsługa tekstur:** System wspiera na razie tylko jednolite barwy materiałów. Nałożenie na obiekt tekstury polega na przypisaniu do geometrii współrzędnych określających ułożenie obrazka (UV), a następnie odczytywaniu właściwych pikseli z zewnętrznego pliku w momencie trafienia promienia w powierzchnię.
+
 ## Przykładowe zadania
 
 Wykonaj przykładowe zadanie z poprzedniego roku. Jeżeli jesteś w stanie je wykonać w przeciągu 90 minut, oznacza to, że jesteś dobrze przygotowany do zajęć.
