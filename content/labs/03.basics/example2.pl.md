@@ -1,7 +1,7 @@
 ---
-title: "Lab03"
+title: "Example Task"
 weight: 10
-bookCollapseSection: true
+bookHidden: "true"
 ---
 
 # Laboratorium 3 - Przykładowe - Klasy/Struktury, Dziedzicznie, Właściwości, Modyfikatory dostępu
