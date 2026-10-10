@@ -32,6 +32,11 @@ W C++ różnica między `class` a `struct` sprowadza się jedynie do domyślnej 
 - **Klasy (`class`) to typy referencyjne.** Są alokowane na stercie, a ich cyklem życia zarządza Garbage Collector. Zmienna przechowująca klasę przechowuje referencję do obiektu. Klasy są przeznaczone dla złożonych obiektów, które posiadają swoją tożsamość, wymagają dłuższego cyklu życia lub korzystają z dziedziczenia.
 - **Struktury (`struct`) to typy bezpośrednie.** Są alokowane na stosie lub osadzone bezpośrednio wewnątrz innych obiektów. Przypisanie struktury do innej zmiennej lub przekazanie jej jako argument do metody domyślnie tworzy jej pełną kopię. Struktury stosuje się do małych typów danych (zazwyczaj do ok. 16 bajtów).
 
+> [!NOTE]
+> W naszym projekcie śledzenia promieni:
+> - **Strukturami (`struct`)** będą małe typy matematyczne podlegające ciągłemu przetwarzaniu: `Vector3`, `Ray` oraz `HitInfo`. Dzięki alokacji na stosie unikamy obciążania Garbage Collectora.
+> - **Klasami (`class`)** będą elementy posiadające tożsamość, stan złożony lub korzystające z polimorfizmu: `Image`, `Camera`, kształty geometryczne (`Sphere`, `Plane`) oraz materiały (`Material`).
+
 ### Właściwości (Properties)
 
 Enkapsulacja jest jednym z założeń programowania obiektowego. Aby ukryć pola klasy, często tworzy się metody dostępowe, tzw. gettery i settery (np. `float GetX()`, `void SetX(float v)`). C# wspiera koncepcję enkapsulacji poprzez **Właściwości** (Properties). Z zewnątrz używasz ich jak zwykłych zmiennych, ale pod spodem kompilator sam generuje ukryte metody odczytu i zapisu:
@@ -269,7 +274,7 @@ public class Camera
 ```
 
 Utwórz plik `Camera.cs` definiujący kamerę:
-1. Zdefiniuj właściwości i powiąż je z prywatnymi polami o przypisanych wartościach domyślnych: `float AspectRatio` (`16.0f / 9.0f`), `int ImageWidth` (`1280`), `Vector3 Position` (`new Vector3(0,0,0)`), `Vector3 Target` (`new Vector3(0,0,-1)`) oraz `float Fov` (`90.0f`). Każdy akcesor `set` w wymienionych właściwościach musi wywoływać metodę `Recalculate()`.
+1. Zdefiniuj właściwości i powiąż je z prywatnymi polami o przypisanych wartościach domyślnych: `float AspectRatio` (`16.0f / 9.0f`), `int ImageWidth` (`1280`), `Vector3 Position` (`new Vector3(0,0,0)`), `Vector3 Target` (`new Vector3(0,0,-1)`) oraz `float Fov` (`90.0f`). Właściwość `Target` określa punkt w przestrzeni, w którym znajduje się środek rzutni kamery. Każdy akcesor `set` w wymienionych właściwościach musi wywoływać metodę `Recalculate()`.
 2. Zadeklaruj prywatne pola przechowujące wyliczone parametry rzutni oraz kamery: `int _height`, `Vector3 _pixelDu`, `Vector3 _pixelDv` oraz `Vector3 _viewportCorner`.
 3. Dodaj bezparametrowy konstruktor, który jednorazowo wywoła metodę `Recalculate()` do inicjalizacji obiektu.
 
@@ -420,7 +425,14 @@ Utwórz klasę `Scene`, implementującą interfejs `IHittable`. Zdefiniuj w niej
 
 #### Złożenie całości w jedną aplikację
 
-W klasie `Camera` dodaj metodę `Render`, zwracającą gotowy `Image`, a przyjmującą jako argument naszą scenę (`IHittable world`). Wewnątrz zagnieżdżonej pętli iterującej po pikselach obrazu, oblicz pozycję danego piksela na wirtualnej rzutni. Skonstruuj promień wychodzący z pozycji kamery i skierowany w wyliczony piksel, a następnie wykonaj metodę `Hit` na świecie. Jeśli promień w cokolwiek uderzy, ustaw jego kolor na czerwony (`[1, 0, 0]`). W przeciwnym razie ustaw kolor na czarny (`[0, 0, 0]`).
+W klasie `Camera` dodaj metodę `Render`, zwracającą gotowy `Image`, a przyjmującą jako argument naszą scenę (`IHittable world`). Wewnątrz zagnieżdżonej pętli iterującej po pikselach obrazu (`i` po szerokości, `j` po wysokości):
+1. Oblicz pozycję środka bieżącego piksela na wirtualnej rzutni:
+   `Vector3 pixelCenter = _viewportCorner + (i * _pixelDu) + (j * _pixelDv);`
+2. Wyznacz kierunek promienia jako wektor od pozycji obserwatora do punktu na rzutni:
+   `Vector3 rayDirection = pixelCenter - Position;`
+3. Skonstruuj promień `Ray(Position, rayDirection)` i przetestuj trafienie w obiekty sceny (`world.Hit(...)`).
+
+Jeśli promień trafi w obiekt, ustaw kolor piksela na czerwony (`[1, 0, 0]`). W przeciwnym razie ustaw kolor na czarny (`[0, 0, 0]`).
 
 Na koniec utwórz instancję sceny oraz kamery w pliku `Program.cs`, wywołaj metodę `Render` i wypisz wynik do konsoli. Gotowy kod znajduje się poniżej:
 
@@ -599,6 +611,9 @@ world.Add(new Plane(new Vector3(0, -0.5f, 0), new Vector3(0, 1, 0), new Lamberti
 ```
 
 Wyrenderuj ostateczny obraz za pomocą polecenia `dotnet run > image.ppm`.
+
+> [!NOTE]
+> **Korekcja gamma:** Wypisane wartości kolorów znajdują się w przestrzeni liniowej. Ponieważ monitory komputerowe stosują nieliniową charakterystykę jasności (gamma), wyrenderowany obraz może wydawać się ciemniejszy w partiach cieniowych. Aby uzyskać prawidłowe odwzorowanie tonalne (tzw. przestrzeń *sRGB* / gamma ok. 2.2), przed zapisem wartości do pliku podnosi się każdą składową koloru do potęgi `1 / gamma` (np. w najprostszym przybliżeniu dla gamma = 2 jest to po prostu pierwiastek kwadratowy: `MathF.Sqrt(color)`).
 
 ### Kierunki dalszego rozwoju
 
