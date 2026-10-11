@@ -41,7 +41,7 @@ Należy zaimplementować następujące metody zrównoleglania obliczeń:
 Poprawnie wygenerowany fraktal powinien wyglądać następująco:
 
 <div style="text-align: center;">
-  <img src="/labs/lab10/mandelbrotset.png" width="400px" alt="mandelbrotset.png" />
+  <img src="{{< relurl "/labs/lab10/mandelbrotset.png" >}}" width="400px" alt="mandelbrotset.png" />
 </div>
 
 {{% hint warning %}}

@@ -9,7 +9,7 @@ weight: 30
 
 Poniższy diagram przedstawia typy sieciowe w bibliotece systemowej wraz z warstwami sieci, które im odpowiadają.
 
-![Network Architecture](/lectures/NetworkArchitecture.svg)
+![Network Architecture]({{< relurl "/lectures/NetworkArchitecture.svg" >}})
 
 ### Warstwa transportu
 
