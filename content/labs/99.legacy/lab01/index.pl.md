@@ -18,7 +18,7 @@ Akcje wykonywane w Gicie, takie jak commity, są powiązane z Twoją tożsamośc
 
 W Visual Studio przejdź do `Git -> Settings` i wprowadź dane.
 
-![Credentials](/labs/lab01/img/credentials-ui.png)
+![Credentials]({{< relurl "/labs/lab01/img/credentials-ui.png" >}})
 
 ### Repozytorium
 
@@ -32,7 +32,7 @@ Initialized empty Git repository in <path>/.git/
 ```
 
 W Visual Studio przejdź do `Git -> Create Git Repository`. W oknie dialogowym `Create a Git repository` wybierz opcję `Local only` i potwierdź przyciskiem `Create`.
-![Init](/labs/lab01/img/git-repository-init-ui.png)
+![Init]({{< relurl "/labs/lab01/img/git-repository-init-ui.png" >}})
 
 > **Zadanie 0** Rozpakuj pliki znajdujące się w [task1-2.zip](/labs/lab01/task1-2.zip) i skonfiguruj nowe repozytorium.
 
@@ -69,7 +69,7 @@ W Visual Studio otwórz `View -> Git Changes`. Zobaczysz tam listę wszystkich z
 - Możesz też przygotować wszystkie pliki na raz: klikając `+` obok sekcji `Changes`, a cofnąć wszystko `--`.
 - Po zakończeniu stagingu wpisz wiadomość do commita i kliknij `Commit Staged`.
 
-![Staging](/labs/lab01/img/staging.png)
+![Staging]({{< relurl "/labs/lab01/img/staging.png" >}})
 
 > **Zadanie 1:** Alice przygotowała początkową wersję swojego projektu renderera 3D.
 Zanim zacznie rozwijać kolejne funkcje, chce upewnić się, że repozytorium jest poprawnie skonfigurowane.
@@ -111,7 +111,7 @@ W Visual Studio otwórz `Git -> Manage Branches`.
 - Aby przełączyć się na nową gałąź, kliknij prawym przyciskiem i wybierz `Checkout`.
 - Aby usunąć gałąź, najpierw przełącz się na inną; dopiero wtedy kliknij prawym i wybierz `Delete`.
 
-![Branching](/labs/lab01/img/branches.png)
+![Branching]({{< relurl "/labs/lab01/img/branches.png" >}})
 
 Gałęzie są podstawą pracy zespołowej --- każda osoba może pracować nad swoją izolowaną kopią kodu i dopiero po upewnieniu się, że wszystko działa poprawnie, wprowadzić zmiany do gałęzi `main`. O tym więcej w kolejnych sekcjach.
 
@@ -125,11 +125,11 @@ W Visual Studio otwórz `View -> Git Changes`.
 - Aby odłożyć zmiany do schowka (stash), kliknij strzałkę w dół obok przycisku `Commit All` i wybierz `Stash All`.
 - Aby przywrócić zapisany stash, kliknij prawym przyciskiem wybrany wpis na liście `Stashes` i wybierz jedną z opcji w sekcji `Apply` (`Apply` lub `Pop`).
 
-![Stash UI](/labs/lab01/img/stash-ui.png)
+![Stash UI]({{< relurl "/labs/lab01/img/stash-ui.png" >}})
 
 Jeśli spróbujesz przełączyć gałąź bez wcześniejszego commitowania lub odłożenia zmian do stash, Visual Studio wyświetli okienko dialogowe z pytaniem, jak chcesz je obsłużyć.
 
-![Stash popup](/labs/lab01/img/stash-popup.png)
+![Stash popup]({{< relurl "/labs/lab01/img/stash-popup.png" >}})
 
 ### Scalanie (Merging)
 
@@ -167,7 +167,7 @@ W Visual Studio otwórz `Git -> Manage Branches`. Aby scalić zmiany z gałęzi 
 1. Najpierw przełącz się na gałąź `dest`.
 2. Kliknij prawym przyciskiem na gałąź `src` i wybierz `Merge 'src' into 'dest'`.
 
-![Merge](/labs/lab01/img/merge.png)
+![Merge]({{< relurl "/labs/lab01/img/merge.png" >}})
 
 Scalania mogą być żmudne, jeśli pojawią się konflikty (więcej o nich w następnej sekcji), ale w ogólnym przypadku wszystko, czego potrzeba, to polecenie [`git merge`](https://git-scm.com/docs/git-merge).
 
@@ -224,7 +224,7 @@ W Visual Studio otwórz `Git -> Manage Remotes...`.
 - Aby dodać nowe, kliknij `Add`, wpisz nazwę i adres URL (na razie wpisz ten sam adres w polach `Fetch` i `Push`).
 - Możesz też usunąć remote przyciskiem `Remove` lub edytować szczegóły przyciskiem `Edit`.
 
-![Remotes](/labs/lab01/img/remotes.png)
+![Remotes]({{< relurl "/labs/lab01/img/remotes.png" >}})
 
 ### Pobieranie i ściąganie zmian (Fetching and pulling)
 Ponieważ repozytoria zdalne są niezależne od Twojej lokalnej kopii, w międzyczasie mogą zajść w nich zmiany --- np. ktoś doda nową gałąź, zrobi kilka commitów albo usunie pliki. W takiej sytuacji Twoje lokalne repozytorium może być w tyle względem zdalnego. Aby pobrać informacje o tych zmianach, użyj polecenia [`git fetch <remote>`](https://git-scm.com/docs/git-fetch).
@@ -237,7 +237,7 @@ W Visual Studio otwórz `View -> Git Changes`.
 	- druga (ciągła strzałka w dół): pull -- pobiera i scala zmiany.
 - Pod nazwą gałęzi widzisz też informację, ile nowych commitów (względem gałęzi śledzonej) jest dostępnych do pobrania.
 
-![Fetch pull](/labs/lab01/img/fetchpull.png)
+![Fetch pull]({{< relurl "/labs/lab01/img/fetchpull.png" >}})
 
 ### Wysyłanie zmian (Pushing)
 Kiedy chcesz udostępnić swój kod, musisz wypchnąć (push) go do odpowiedniej gałęzi w repozytorium zdalnym poprzez [`git push <remote> <branch>`](https://git-scm.com/docs/git-push). Przy pierwszym wysyłaniu zmian Git może poprosić Cię o ustawienie tzw. gałęzi śledzącej (upstream branch). Określa ona, z którą gałęzią zdalną Twoja lokalna gałąź będzie się domyślnie synchronizować. Więcej o gałęziach zdalnych przeczytasz [tutaj](https://git-scm.com/book/en/v2/Git-Branching-Remote-Branches).
@@ -246,7 +246,7 @@ W Visual Studio otwórz `View -> Git Changes`.
 - Trzecia ikona obok nazwy gałęzi (ciągła strzałka w górę) służy do push -- wysyła lokalne zmiany do gałęzi śledzonej (upstream).
 - Pod nazwą gałęzi wyświetlana jest również liczba commitów, które zostaną wysłane (względem gałęzi zdalnej).
 
-![Push](/labs/lab01/img/push.png)
+![Push]({{< relurl "/labs/lab01/img/push.png" >}})
 
 Są dwa przypadki, w których wysłanie (push) zmian jest niemożliwe:
 1. Brak uprawnień do zapisu w danej gałęzi (to zabezpieczenie, dzięki temu przypadkowo nie zepsujesz ważnych części kodu).
@@ -281,7 +281,7 @@ W Visual Studio, jeśli po wykonaniu pull wystąpią konflikty:
 - poniżej zobaczysz podgląd wynikowego kodu (`Result`).
 Po rozwiązaniu wszystkich konfliktów kliknij `Accept Merge`, aby zakończyć scalanie.
 
-![conflict](/labs/lab01/img/conflict.png)
+![conflict]({{< relurl "/labs/lab01/img/conflict.png" >}})
 
 > **_Zadanie 3:_** Alice i Bob tworzą aplikację To-Do (pobierz pliki projektu: [`task3.zip`](/labs/lab01/task3.zip)). Komunikacja między nimi zawiodła przez co równolegle dodali wiadomość powitalną. Alice zacommitowała wiadomość powitalną do gałęzi `master`, podczas gdy Bob utworzył osobną gałąź `bob/feature/welcome-message` z nowym commitem. Połącz gałąź Boba z gałęzią `master` i rozwiąż konflikt tak, aby ostateczna wiadomość powitalna brzmiała: `"Welcome to Alice and Bob's To-Do App!"`.
 
@@ -305,19 +305,19 @@ Date:   Thu Sep 25 23:49:30 2025 +0200
 
 W Visual Studio możesz zobaczyć historię commitów, przechodząc do `View -> Git Repository`:
 
-![Git repository](/labs/lab01/img/view-git-repository.png)
+![Git repository]({{< relurl "/labs/lab01/img/view-git-repository.png" >}})
 
 Możesz kliknąć dowolny ze swoich commitów:
 
-![Branch commits](/labs/lab01/img/branch-commits.png)
+![Branch commits]({{< relurl "/labs/lab01/img/branch-commits.png" >}})
 
 i zobaczyć wynik `git diff`:
 
-![Git diff](/labs/lab01/img/git-diff.png)
+![Git diff]({{< relurl "/labs/lab01/img/git-diff.png" >}})
 
 Pełny hash commita można uzyskać, klikając trzy kropki w panelu commitów:
 
-![Commit hash](/labs/lab01/img/commit-hash.png)
+![Commit hash]({{< relurl "/labs/lab01/img/commit-hash.png" >}})
 
 Wcześniej używaliśmy [`git checkout`](https://git-scm.com/docs/git-checkout) do przełączania gałęzi (obecnie dostępne jest również `git switch`), ale `git checkout` ma więcej zastosowań: możesz nim przejść do konkretnego commita, podając jego hash. W ogólności polecenie `git checkout` zmienia wskaźnik `HEAD`. 
 **Working tree**, czyli bieżąca wersja Twoich plików zawsze odzwierciedla commit, na który wskazuje `HEAD`. `HEAD` może znajdować się w dwóch stanach:
@@ -335,7 +335,7 @@ $ git commit -m "WIP"
 
 W Visual Studio możesz zrobić commit WIP w panelu Git Changes (`View -> Git Changes`):
 
-![Git commit](/labs/lab01/img/commit-all-wip.png)
+![Git commit]({{< relurl "/labs/lab01/img/commit-all-wip.png" >}})
 
 Taki commit można potem łatwo usunąć przy pomocy `git reset`, co zostanie pokazane później. Jeśli nie zależy Ci na nieśledzonych plikach lub katalogach, które blokują wykonanie `git checkout`, zamiast commita WIP lub schowka możesz wykorzystać opcję `--force` (`-f`).
 
@@ -375,11 +375,11 @@ HEAD detached at aa5a3e2
 
 W Visual Studio checkout wykonasz przez `View -> Git Repository`, wybierając gałąź lub commit, klikając prawym przyciskiem i wybierając `Checkout`.
 
-![Git checkout commit](/labs/lab01/img/git-checkout-commit.png)
+![Git checkout commit]({{< relurl "/labs/lab01/img/git-checkout-commit.png" >}})
 
 Jeśli nie przeniesiono zmian do schowka (stash) nie nie wykonano WIP-commitu, pojawi się okno dialogowe, które poinformuje o potencjalncych konfliktach:
 
-![Checkout dialog](/labs/lab01/img/checkout-dialog.png)
+![Checkout dialog]({{< relurl "/labs/lab01/img/checkout-dialog.png" >}})
 
 Opcja `Discard changes` odpowiada `--force`, `Stash the changes` wywołuje `git stash`, a `Bring the changes` pozostawia zmiany dostępne w commicie, do którego przechodzisz (potencjalne konflikty trzeba rozwiązać ręcznie).
 
@@ -391,7 +391,7 @@ $ git checkout master
 
 W Visual Studio: `View -> Git Repository`, kliknij prawym przyciskiem na gałąź i wybierz `Checkout`:
 
-![Checkout master](/labs/lab01/img/checkout-master.png)
+![Checkout master]({{< relurl "/labs/lab01/img/checkout-master.png" >}})
 
 Wyobraź sobie, że po przejściu do commita chcesz wprowadzić drobne zmiany i je zacommitować, np. dodać pomiary czasu do testów wydajności. Co się stanie, jeśli HEAD jest w stanie detached i utworzysz nowe commity?  Załóżmy, że znajdujesz się na commicie `B` w stanie detached oraz tworzysz commity `E` i `F`, co przedstawia pnoiższy graf.
 
@@ -422,7 +422,7 @@ $ git branch <new-branch-name>
 
 W Visual Studio: `View -> Git Repository`, kliknij prawym przyciskiem na detached commit i wybierz `New branch...`:
 
-![New branch from commit](/labs/lab01/img/new-branch-from-commit.png)
+![New branch from commit]({{< relurl "/labs/lab01/img/new-branch-from-commit.png" >}})
 
 Zaleca się przeczytanie [tej sekcji w dokumentacji](https://git-scm.com/docs/git-checkout#_detached_head).
 
@@ -448,7 +448,7 @@ $ git reset --soft HEAD^ # equivalent of git reset --soft HEAD~1
 
 W Visual Studio możesz zresetować zmiany w panelu `Git Repository`:
 
-![Git reset](/labs/lab01/img/git-reset.png)
+![Git reset]({{< relurl "/labs/lab01/img/git-reset.png" >}})
 
 Wyobraź sobie, że podczas pobierania zmian z repozytorium napotykasz konflikty. Jeśli chcesz wrócić do stanu sprzed wykonania `git pull`, możesz użyć `git reset --hard` (synonim: `git reset --hard HEAD`).
 
@@ -469,12 +469,12 @@ $ git cherry-pick feature~2 # apply the bug-fix commit that resides on your feat
 
 W Visual Studio przejdź na gałąź, na którą chcesz zastosować commit (np. `master`):
 
-![Checkout master](/labs/lab01/img/checkout-master.png)
+![Checkout master]({{< relurl "/labs/lab01/img/checkout-master.png" >}})
 
 Nastepnie wybierz gałąź, która zawiera commit do cherry-pick, klikając jej nazwę raz. Teraz wybierz commit, klikając go prawym przyciskiem myszy i 
 wybierz opcję `Cherry pick`:
 
-![Cherry pick](/labs/lab01/img/cherry-pick.png)
+![Cherry pick]({{< relurl "/labs/lab01/img/cherry-pick.png" >}})
 
 Więcej przykładów znajdziesz w [dokumentacji](https://git-scm.com/docs/git-cherry-pick#_examples).
 
@@ -537,7 +537,7 @@ W Visual Studio:
 2. Przejdź na gałąź `feature`.
 3. Kliknij prawym przyciskiem na gałąź `master` i wybierz `Merge 'master' into 'feature'`.
 
-![Merge master into feature](/labs/lab01/img/merge-update-feature.png)
+![Merge master into feature]({{< relurl "/labs/lab01/img/merge-update-feature.png" >}})
 
 Otrzymany graf będzie wyglądał następująco:
 
@@ -593,7 +593,7 @@ Zwróć uwagę, że kolejność `master` i `feature` różni się od merge. Wyni
 
 W Visual Studio użyj opcji `Rebase 'master' onto 'feature'`:
 
-![Rebase feature onto master](/labs/lab01/img/rebase-feature-onto-master.png)
+![Rebase feature onto master]({{< relurl "/labs/lab01/img/rebase-feature-onto-master.png" >}})
 
 Niestety, liniowa historia commitów ma swoją cenę:
 
@@ -608,15 +608,15 @@ Podczas uruchamiania `git rebase` proces zatrzymuje się na commitach konfliktow
 
 W Visual Studio, jeśli pojawią się konflikty po rebase, zobaczysz komunikat ostrzegawczy. Kliknij hiperłącze `Resolve the conflicts`, aby przejść do panelu `Git Changes`:
 
-![Resolve the conflicts](/labs/lab01/img/resolve-the-conflicts-hyperlink.png)
+![Resolve the conflicts]({{< relurl "/labs/lab01/img/resolve-the-conflicts-hyperlink.png" >}})
 
 Panel pokaże pliki w konflikcie w sekcji `Unmerged Changes`:
 
-![Rebase conflicts](/labs/lab01/img/rebase-conflicts.png)
+![Rebase conflicts]({{< relurl "/labs/lab01/img/rebase-conflicts.png" >}})
 
 Podwójne kliknięcie na plik otworzy merge resolver. Po rozwiązaniu konfliktów pliki zostaną przeniesione do sekcji `Staged Changes`, a przycisk `Continue` stanie się aktywny — jego kliknięcie działa tak samo jak `git rebase --continue`:
 
-![Rebase continue](/labs/lab01/img/rebase-continue.png)
+![Rebase continue]({{< relurl "/labs/lab01/img/rebase-continue.png" >}})
 
 Poza aktualizowaniem gałęzi, `git rebase` pozwala również modyfikować historię commitów, co czyni go bardzo użytecznym narzędziem. Aby to zrobić, wywołaj rebase w trybie interaktywnym:
 

@@ -1,0 +1,9 @@
+{{/*
+  Returns rendered string from template and context.
+  Usage: partial "docs/string-template" (dict "Template" "param={{ . }}" "Context" "Input")
+*/}}
+{{- $key := dict "Template" .Template "Path" .Context.Path "Hash" (and .Context.GitInfo .Context.GitInfo.Hash) "Page" (and .Context.Page .Context.Page.Path) -}}
+{{- $checksum := $key | encoding.Jsonify | crypto.SHA1 | printf "book-%s" -}}
+{{- $template := resources.FromString $checksum .Template -}}
+{{- $template = $template | resources.ExecuteAsTemplate $checksum .Context -}}
+{{- return $template.Content -}}

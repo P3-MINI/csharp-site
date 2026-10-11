@@ -385,7 +385,7 @@ Komenda `git merge --abort` przerywa obecny merge i przywraca repozytorium do st
 ## Zadanie 2
 
 Utwórz prostą aplikację konsolową C# za pomocą polecenia `dotnet new console`. Program powinien początkowo wyświetlać proste menu. 
-Umieść projekt pod kontolą wersji i prześlij jego początkową wersję na GitHuba.
+Umieść projekt pod kontrolą wersji i prześlij jego początkową wersję na GitHuba.
 
 Następnie wykonaj poniższe kroki, aby przećwiczyć pracę z gałęziami i rozwiązywanie konfliktów:
 

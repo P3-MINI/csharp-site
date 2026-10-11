@@ -9,7 +9,7 @@ weight: 30
 
 The diagram below illustrates the network types in the system library along with the corresponding network layers.
 
-![Network Architecture](/lectures/NetworkArchitecture.svg)
+![Network Architecture]({{< relurl "/lectures/NetworkArchitecture.svg" >}})
 
 ### Transport Layer
 

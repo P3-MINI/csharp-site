@@ -18,7 +18,7 @@ Git actions such as commits are associated with your identity. This is especiall
 
 In Visual Studio navigate to `Git -> Settings` and enter the credentials.
 
-![Credentials](/labs/lab01/img/credentials-ui.png)
+![Credentials]({{< relurl "/labs/lab01/img/credentials-ui.png" >}})
 
 ### Repository
 
@@ -32,7 +32,7 @@ Initialized empty Git repository in <path>/.git/
 ```
 In Visual Studio navigate to `Git -> Create Git Repository`. In the `Create a Git repository` dialog window choose `Local only` and confirm with `Create`.
 
-![Init](/labs/lab01/img/git-repository-init-ui.png)
+![Init]({{< relurl "/labs/lab01/img/git-repository-init-ui.png" >}})
 
 > **Task 0:** Unzip the files found in [`task1-2.zip`](/labs/lab01/task1-2.zip).
 
@@ -65,7 +65,7 @@ In Visual Studio, open `View -> Git Changes`. You will see a list of all changed
 - You can stage all files at once by clicking the `+` icon next to `Changes`, or unstage all with the corresponding `--` icon. 
 - Once you are done staging, enter a commit message and click the `Commit Staged` button.
 
-![Staging](/labs/lab01/img/staging.png)
+![Staging]({{< relurl "/labs/lab01/img/staging.png" >}})
 
 > **Task 1:** Alice has set up an initial version of her 3D renderer project. Before continuing development, she wants to ensure the repository is set up properly. 
 >
@@ -104,7 +104,7 @@ In Visual Studio, open `Git -> Manage Branches`.
 - To switch to the new branch, right‑click it and choose `Checkout`.
 - To delete a branch, you must switch to another branch first; then right‑click the branch you want to remove and choose `Delete`.
 
-![Branching](/labs/lab01/img/branches.png)
+![Branching]({{< relurl "/labs/lab01/img/branches.png" >}})
 
 Branching is also the backbone in collaborative projects, where each developer can work on an isolated copy of the code, and introduce those changes to the `main` branch after making sure it works as intended (more on that in later sections).
 
@@ -118,11 +118,11 @@ In Visual Studio, open View → Git Changes.
 - To stash your changes, click the dropdown arrow next to the Commit All button and choose Stash All.
 - To bring back a stash, right‑click the desired entry in the Stashes list and choose one of the options under Apply (either Apply or Pop).
 
-![Stash UI](/labs/lab01/img/stash-ui.png)
+![Stash UI]({{< relurl "/labs/lab01/img/stash-ui.png" >}})
 
 If you try to switch branches without committing or stashing your changes, Visual Studio will display a popup asking how you want to handle them.
 
-![Stash popup](/labs/lab01/img/stash-popup.png)
+![Stash popup]({{< relurl "/labs/lab01/img/stash-popup.png" >}})
 
 ### Merging
 Suppose you have just implemented a new feature on a `dev` branch, tested it and want to introduce the changes back to `main`. To make it happen, you may want to **merge** both branches, that is integrate `dev` commits into `main` history.
@@ -157,7 +157,7 @@ $ git merge dev
 
 In Visual Studio, open `Git -> Manage Branches`. To merge changes from branch `src` into branch `dest`, first check out branch `dest`. Then, right‑click on branch `src` and choose `Merge 'src' into 'dest'`.
 
-![Merge](/labs/lab01/img/merge.png)
+![Merge]({{< relurl "/labs/lab01/img/merge.png" >}})
 
 Merges can get very tedious if you run into conflicts (more on that in the next section), but in general all you need is [`git merge`](https://git-scm.com/docs/git-merge).
 
@@ -210,7 +210,7 @@ In Visual Studio, open `Git -> Manage Remotes...`.
 - To add a new one, click `Add` and type in the name as well as the URL (for now type in the same URL for both `Fetch` and `Push`). 
 - You can remove a remote with the `Remove` button, or edit details with `Edit`.
 
-![Remotes](/labs/lab01/img/remotes.png)
+![Remotes]({{< relurl "/labs/lab01/img/remotes.png" >}})
 
 ### Fetching and pulling
 Since remote repositories are separate from your local copies, any data within them can change in the meantime and cause your local repository to be behind. Someone might have added a new branch, made several commits or deleted a bunch of files. To get that new data, you can run [`git fetch <remote>`](https://git-scm.com/docs/git-fetch). This **will not update the code**, only Git-specific objects and references. If you want to actually incorporate the changes, you need to use [`git pull <remote>`](https://git-scm.com/docs/git-pull).
@@ -221,7 +221,7 @@ In Visual Studio, open `View -> Git Changes`.
     - the second icon (a solid downward arrow) pulls and merges the data. 
 - You can see how many new commits (relative to the upstream branch) are available to pull, displayed under the branch name.
 
-![Fetch pull](/labs/lab01/img/fetchpull.png)
+![Fetch pull]({{< relurl "/labs/lab01/img/fetchpull.png" >}})
 
 ### Pushing
 When you want to share your code, you have to push it to the corresponding branch on the remote repository with [`git push <remote> <branch>`](https://git-scm.com/docs/git-push). When you push for the first time, Git may ask you to set an upstream branch - this just tells Git which remote branch your local branch should sync with by default. You can read more about remote branches [here](https://git-scm.com/book/en/v2/Git-Branching-Remote-Branches).
@@ -230,7 +230,7 @@ In Visual Studio, open `View -> Git Changes`.
 - The third icon next to the branch name (a solid upward arrow) pushes the local changes to the upstream branch. 
 - You can also see how many new commits (relative to the upstream branch) will be pushed, displayed under the branch name.
 
-![Push](/labs/lab01/img/push.png)
+![Push]({{< relurl "/labs/lab01/img/push.png" >}})
 
 There are two cases in which you will not be able to push your changes:
 1. You do not have permissions to write to the branch (a safeguard to prevent you from accidentally breaking important sections of code).
@@ -258,7 +258,7 @@ In Visual Studio, once you pull changes and there are conflicts:
 - you can see the `Result` preview underneath.
 After all conflicts are resolved, click `Accept Merge` to finish.
 
-![conflict](/labs/lab01/img/conflict.png)
+![conflict]({{< relurl "/labs/lab01/img/conflict.png" >}})
 
 > **_Task 3:_** Alice and Bob are building a To-Do application (download the project files: [`task3.zip`](/labs/lab01/task3.zip)). Communication between them failed and they wanted to add a welcome message simultaneously. Alice committed the welcome message to the `master` branch, while Bob created a separate branch `bob/feature/welcome-message` with the new message commit. Merge the Bob's branch with the master branch and resolve the conflict so that the final welcome message is `"Welcome to Alice and Bob's To-Do App!"`.
 
@@ -282,19 +282,19 @@ Date:   Thu Sep 25 23:49:30 2025 +0200
 
 In Visual Studio you can see the commit history by navigating to `View -> Git Repository`:
 
-![Git repository](/labs/lab01/img/view-git-repository.png)
+![Git repository]({{< relurl "/labs/lab01/img/view-git-repository.png" >}})
 
 You can click on any of your commits
 
-![Branch commits](/labs/lab01/img/branch-commits.png)
+![Branch commits]({{< relurl "/labs/lab01/img/branch-commits.png" >}})
 
 and see the `git diff` result:
 
-![Git diff](/labs/lab01/img/git-diff.png)
+![Git diff]({{< relurl "/labs/lab01/img/git-diff.png" >}})
 
 You can get the full commit hash using the 3 dots in the commit panel:
 
-![Commit hash](/labs/lab01/img/commit-hash.png)
+![Commit hash]({{< relurl "/labs/lab01/img/commit-hash.png" >}})
 
 Previously we used [`git checkout`](https://git-scm.com/docs/git-checkout) to switch branches  (today, `git switch` is recommended for branch switching). But `git checkout` can do more: you can also check out a specific commit by providing its hash. In general, this command changes what the `HEAD` pointer refers to.  
 The *working tree* --- the current version of your files --- always reflects the commit that `HEAD` points to. `HEAD` can be in one of two states:
@@ -310,7 +310,7 @@ $ git commit -m "WIP"
 
 In Visual Studio use the `Git Changes` panel (`View -> Git Changes`) to make a WIP commit: 
 
-![Git commit](/labs/lab01/img/commit-all-wip.png)
+![Git commit]({{< relurl "/labs/lab01/img/commit-all-wip.png" >}})
 
 This commit can be easily removed with `git reset`, we will see how to do so later. Now we can use the commit hash in order to checkout to it. If you don't care about the untracked files or directories that prevent you from checking out and want to throw them away, instead of creating WIP/stashing you may use `--force` (`-f`) option.
 
@@ -350,11 +350,11 @@ HEAD detached at aa5a3e2
 
 You can checkout using Visual Studio UI by navigating to the `View -> Git Repository`, choosing a branch, right clicking on the desired commit and choosing the `Checkout` option:
 
-![Git checkout commit](/labs/lab01/img/git-checkout-commit.png)
+![Git checkout commit]({{< relurl "/labs/lab01/img/git-checkout-commit.png" >}})
 
 If you didn't stash or WIP-commit your changes, a dialog will be shown:
 
-![Checkout dialog](/labs/lab01/img/checkout-dialog.png)
+![Checkout dialog]({{< relurl "/labs/lab01/img/checkout-dialog.png" >}})
 
 The discard option is equivalent to the aforementioned `--force`, the stash option will invoke `git stash` command and the bring changes option will leave the changes available on the commit you are checking out to (if the changes are conflicting you have to resolve the conflicts).
 
@@ -366,7 +366,7 @@ $ git checkout master
 
 In Visual Studio, navigate to `View -> Git Repository`, right click on the desired branch and choose `Checkout` option:
 
-![Checkout master](/labs/lab01/img/checkout-master.png)
+![Checkout master]({{< relurl "/labs/lab01/img/checkout-master.png" >}})
 
 Imagine that after checking out to some commit you want to do some minor changes and save them, e.g. add some timers to your code for benchmarking. You may wonder what would happen if you created new commits when the `HEAD` is in detached state. Let's assume that you checked out to commit `B` and created commits `E` and `F`, the situation is depicted below: 
 
@@ -397,7 +397,7 @@ $ git branch <new-branch-name>
 
 In Visual Studio navigate to `View -> Git Repository`, right click on the detached commit and use the `New branch...` option:
 
-![New branch from commit](/labs/lab01/img/new-branch-from-commit.png)
+![New branch from commit]({{< relurl "/labs/lab01/img/new-branch-from-commit.png" >}})
 
 It's recommended to read [this section in the docs](https://git-scm.com/docs/git-checkout#_detached_head).
 
@@ -422,7 +422,7 @@ The `git reset` might work in one of 3 modes:
 
 In Visual Studio you can use `Git Repository` panel to reset the changes:
 
-![Git reset](/labs/lab01/img/git-reset.png)
+![Git reset]({{< relurl "/labs/lab01/img/git-reset.png" >}})
 
 Imagine that you pull some changes and encounter merge conflicts. If you want to come back to the state before pulling you can use `git reset --hard` which is a synonym for 
 `git reset --hard HEAD`.
@@ -444,11 +444,11 @@ $ git cherry-pick feature~2 # apply the bug-fix commit that resides on your feat
 
 In Visual Studio checkout to the branch you want to apply the commit on (e.g. `master`)
 
-![Checkout master](/labs/lab01/img/checkout-master.png)
+![Checkout master]({{< relurl "/labs/lab01/img/checkout-master.png" >}})
 
 Now you can select the branch that contains the commit you want to cherry pick by clicking its name once. Then choose the commit, right click on it and select the `Cherry pick` option:
 
-![Cherry pick](/labs/lab01/img/cherry-pick.png)
+![Cherry pick]({{< relurl "/labs/lab01/img/cherry-pick.png" >}})
 
 For more examples see [the docs](https://git-scm.com/docs/git-cherry-pick#_examples).
 
@@ -513,7 +513,7 @@ $ git merge feature master # feature <- master
 
 In Visual Studio navigate to `View -> Git Repository`, checkout to the `feature` branch, right click on the master branch and choose `Merge 'master' into 'feature'`:
 
-![Merge master into feature](/labs/lab01/img/merge-update-feature.png)
+![Merge master into feature]({{< relurl "/labs/lab01/img/merge-update-feature.png" >}})
 
 The resulting graph will look like this:
 
@@ -571,7 +571,7 @@ $ git rebase master feature # master <- feature
 
 In Visual Studio use the `Rebase 'master' onto 'feature` option: 
 
-![Rebase feature onto master](/labs/lab01/img/rebase-feature-onto-master.png)
+![Rebase feature onto master]({{< relurl "/labs/lab01/img/rebase-feature-onto-master.png" >}})
 
 Note that the order of `master` and `feature` differs from the merge command. This is because in a merge you bring `master` *into* `feature`, whereas in a rebase you place `feature` onto `master`. If you wish to rebase onto a commit that is not the tip of a branch, you can specify that commit instead of the branch name.
 
@@ -585,15 +585,15 @@ When you run the `git rebase` command the rebase will stop on the commits that a
 
 In Visual Studio if the conflicts are encountered after rebase, you will see the warning message. You can click the `Resolve the conflicts` hyperlink to navigate to the `Git Changes` panel:
 
-![Resolve the conflicts](/labs/lab01/img/resolve-the-conflicts-hyperlink.png)
+![Resolve the conflicts]({{< relurl "/labs/lab01/img/resolve-the-conflicts-hyperlink.png" >}})
 
 The panel shows the conflicting files in the `Unmerged Changes` section: 
 
-![Rebase conflicts](/labs/lab01/img/rebase-conflicts.png)
+![Rebase conflicts]({{< relurl "/labs/lab01/img/rebase-conflicts.png" >}})
 
 Double clicking on the file will open the merge resolver. After resolving the conflicts, the conflicting files will be moved to the `Staged Changes` section and the `Continue` button will become clickable, clicking it has the same result as doing `git rebase --continue`:
 
-![Rebase continue](/labs/lab01/img/rebase-continue.png)
+![Rebase continue]({{< relurl "/labs/lab01/img/rebase-continue.png" >}})
 
 Apart from the scenario described above, `git rebase` might be also used to modify your commits history which makes it a powerful tool. To achieve this, call the rebase with `-i` argument to enter the *interactive rebase* mode:
 
