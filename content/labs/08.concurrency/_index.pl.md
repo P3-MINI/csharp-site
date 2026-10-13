@@ -3,8 +3,6 @@ title: "Współbieżność"
 weight: 80
 ---
 
-Disclaimer: to wciąż work in progress, brakuje jeszcze faktycznego zadania, a opisy funkcji mogą się zmienić.
-
 # Współbieżność
 
 Do tej pory wszystkie pisane przez nas programy charakteryzowały się jednowątkowością. Kolejne instrukcje programu były wykonywane sekwencyjnie, jedna po drugiej. Taki sposób wykonywania kodu jest wystarczający w większości prostych przypadków, jednak w bardziej złożonych programach może prowadzić do nieefektywnego wykorzystania dostępnych zasobów.
@@ -213,7 +211,7 @@ Poprawnie wygenerowany fraktal powinien wyglądać następująco:
 > **Rozwiązanie**
 > {{< filetree dir="labs/lab10/solution/FractalsGenerator" >}}
 
-## Magazyn i kurierzy
+## RayTracer
 
 {{% hint info %}}
 **Czym jest programowanie równoległe?**
@@ -226,8 +224,19 @@ Zamiast przetwarzać dane sekwencyjnie w jednym wątku, rozdzielamy pracę na wi
 
 ### Opis zadania
 
-Zadanie ma na celu zademonstrowanie konieczności wykorzystania synchronizacji w sytuacji, gdy wiele wątków korzysta ze wspólnych zasobów.
-Kod startowy pozwala na uruchomienie prostego symulatora, pokazującego magazyn oraz rozwożących paczki kurierów. Każdy kurier po dotarciu do magazynu podejmuje próbę
-odebrania towaru, jeśli ilość towaru jest większa od 0, to odbiera on paczkę i przechodzi do dostawy. W takiej formie program może prowadzić do sytuacji, gdy 
-ilość paczek spadnie poniżej 0. Należy uzupełnić plik DeliveryMan.cs o potrzebne instrukcje Lock, które zapobiegną powstawianiu takich sytuacji.
-Uwaga: Nie należy edytować klasy Warehouse.
+Zadanie polega na przekształceniu synchronicznego programu do ray tracingu w aplikację asynchroniczną, która nie blokuje interfejsu graficznego podczas renderowania.
+Należy przenieść renderowanie do zadania działającego w tle, wykorzystując Task.Run(), a następnie zastosować async i await do asynchronicznego oczekiwania na zakończenie obliczeń. W trakcie renderowania należy raportować postęp za pomocą IProgress.
+
+1. Uruchom aplikację w wersji synchronicznej i zaobserwuj, jak interfejs graficzny zachowuje się podczas renderowania. Zwróć uwagę na brak responsywności okna i brak możliwości bieżącej aktualizacji elementów interfejsu.
+
+2. Zmodyfikuj obsługę przycisku renderowania, aby operacja renderowania była wykonywana w tle przy użyciu Task.Run().
+
+3. Zastosuj modyfikatory async i await, aby umożliwić asynchroniczne oczekiwanie na zakończenie renderowania bez blokowania wątku interfejsu graficznego.
+
+4. Dodaj raportowanie postępu za pomocą IProgress
+
+### Przykładowe rozwiązanie
+
+> [!TIP]
+> **Rozwiązanie**
+> {{< filetree dir="labs/lab10/solution/RayTracer" >}}
