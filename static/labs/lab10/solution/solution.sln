@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36203.30
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11925.98 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FractalsGenerator", "FractalsGenerator\FractalsGenerator.csproj", "{2E133564-FEC0-4B1B-BE0E-7A27ED0FC1C9}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightScanner.Common", "FlightScanner.Common\FlightScanner.Common.csproj", "{14FCB6B6-16B1-4630-A333-DF44D5CB404A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightScanner.Client", "FlightScanner.Client\FlightScanner.Client.csproj", "{947C2D6A-644A-43DB-BA96-5ECD6DF56E2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracer", "RayTracer\RayTracer.csproj", "{9BBC7CC6-1E06-5CDC-54DA-FCA1D110D98F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{947C2D6A-644A-43DB-BA96-5ECD6DF56E2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{947C2D6A-644A-43DB-BA96-5ECD6DF56E2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{947C2D6A-644A-43DB-BA96-5ECD6DF56E2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BBC7CC6-1E06-5CDC-54DA-FCA1D110D98F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BBC7CC6-1E06-5CDC-54DA-FCA1D110D98F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BBC7CC6-1E06-5CDC-54DA-FCA1D110D98F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BBC7CC6-1E06-5CDC-54DA-FCA1D110D98F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
