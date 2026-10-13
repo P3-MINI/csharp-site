@@ -1,0 +1,45 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:WarehouseDelivery.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="WarehouseDelivery.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="RayTracer">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,10">
+            <Button x:Name="RenderButton"
+                    Content="Render"
+                    Click="RenderButton_Click"
+                    HorizontalAlignment="Left"/>
+
+            <ProgressBar x:Name="RenderProgress"
+                         Minimum="0"
+                         Maximum="100"
+                         Value="0"
+                         Height="18"/>
+
+            <TextBlock x:Name="ProgressText"
+                       Text="Rendering: 0%"
+                       FontSize="12"/>
+        </StackPanel>
+
+        <Border BorderBrush="Gray"
+                BorderThickness="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <Image x:Name="RenderImage"
+                   Stretch="Uniform"/>
+        </Border>
+    </DockPanel>
+
+</Window>
