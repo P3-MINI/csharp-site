@@ -71,13 +71,13 @@ Przeszukiwanie w głąb (DFS) to algorytm do przechodzenia lub przeszukiwania st
   * Metoda może używać metody pomocniczej, na przykład `DepthFirstSearchRecursive(int vertex, bool[] visited, IVertexVisitor visitor)`.
     * Użyj tablicy `bool[] visited`, aby oznaczać i pomijać już odwiedzone wierzchołki.
 
-* **2.1. Interfejs `IVertexVisitor`**
+* **2.2. Interfejs `IVertexVisitor`**
   * Zdefiniuj publiczny interfejs `IVertexVisitor`.
   * Interfejs ten powinien deklarować następujące metody:
     * `void PreVisit(int vertex);`
     * `void PostVisit(int vertex);`
 
-* **2.2. `PathFinderVisitor` (3 punkty)**
+* **2.3. `PathFinderVisitor` (3 punkty)**
   * Stwórz publiczną klasę `PathFinderVisitor` implementującą interfejs `IVertexVisitor`.
   * Powinna mieć publiczny konstruktor `PathFinderVisitor(int target)`.
   * Powinna mieć następujące właściwości:
