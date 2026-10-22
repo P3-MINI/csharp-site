@@ -10,7 +10,7 @@ weight: 20
 2. [Workshop: msbuild](02.msbuild)
 3. [Workshop: C# basics](03.basics)
 4. **Lab: C# basics**
-5. [Workshop: collections, generics](04.collections-generics)
+5. [Workshop: Generics, enumerable, collections](04.collections-generics)
 6. [Workshop: lambda expressions, IEnumerable, LINQ, extension methods](05.lambdas-enumerable-linq-extensions)
 7. **Lab: lambda expressions, IEnumerable, LINQ, extension methods**
 8. [Workshop: events, filesystem, streams](06.events-filesystem-streams)
