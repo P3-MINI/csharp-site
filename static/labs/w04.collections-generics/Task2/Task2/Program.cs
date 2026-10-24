@@ -7,22 +7,16 @@ namespace Task2;
 public class Program {
     public static void Main() {
         var t0 = new DateTime(2026, 10, 10, 10, 0, 0);
-
         var log = new SensorLog();
-        log.Add(new Reading("tmp", 20.5, t0));
-        log.Add(new Reading("tmp", 21.0, t0.AddMinutes(1)));
-        log.Add(new Reading("tmp", 19.0, t0.AddMinutes(2)));
-        log.Add(new Reading("hum", 50.0, t0.AddMinutes(3)));
-        log.Add(new Reading("hum", 55.0, t0.AddMinutes(4)));
-        log.Add(new Reading("pres", 150.0, t0.AddMinutes(5)));
+        log.LoadFromCsv("..\\..\\..\\readings.csv");
 
         // =============================================================
 
         Console.WriteLine("--- T1 ---");
-        Console.WriteLine("Expected:\r\n  tmp=20,5\r\n  tmp=21\r\n  hum=50\r\n  hum=55");
+        Console.WriteLine("Expected:\r\n  hum=50\r\n  tmp=12,5\r\n  tmp=15\r\n  hum=48,5\r\n  hum=45");
         Console.WriteLine("Received:");
 
-        foreach (var r in T1.InRange(log.All, 20.0, 60.0)) {
+        foreach (var r in T1.InRange(log.All, 10, 50.0)) {
             Console.WriteLine($"  {r.Sensor}={r.Value}");
         }
         Console.WriteLine();
@@ -44,26 +38,51 @@ public class Program {
         // =============================================================
 
         Console.WriteLine("--- T3 ---");
-        Console.WriteLine("Expected:\r\n  hum 50\r\n  hum 55\r\n  pres 150\r\n  tmp 19\r\n  tmp 20,5\r\n  tmp 21");
+        Console.WriteLine("Expected:\r\n  hum=55,00@00:31\r\n  hum=55,00@00:58\r\n  hum=52,00@01:26\r\n  hum=50,00@00:07\r\n  hum=48,50@01:53\r\n  hum=45,00@02:22");
         Console.WriteLine("Received:");
 
         var sorted = new List<Reading>(log.All);
         sorted.Sort(new ReadingBySensorThenValue());
         foreach (var r in sorted) {
-            Console.WriteLine($"  {r.Sensor} {r.Value}");
+            if (r.Sensor != "hum") { continue; }
+            Console.WriteLine($"  {r.Sensor}={r.Value:F2}@{r.At:HH:mm}");
         }
         Console.WriteLine();
 
         // =============================================================
 
         Console.WriteLine("--- T4 ---");
-        Console.WriteLine("Expected:\r\n  distinct sensors: tmp, hum, pres\r\n  tmp: count=3, avg=20,17\r\n  hum: count=2, avg=52,50\r\n  pres: count=1, avg=150,00");
+        Console.WriteLine("Expected:");
+        Console.WriteLine(
+            "  HighestValue:     900\r\n  LowestTemp:       -5,5\r\n  MostReadings:     tmp\r\n  TotalDuration:    03:27:40\r\n" +
+            "  UniqueSensors:    co2, hum, pres, tmp\r\n  AverageReadings:\r\n    co2  660,00\r\n    hum  50,92\r\n    pres 104,23\r\n    tmp  2,54\r\n" +
+            "  LargestGaps:\r\n    co2  34min 7s\r\n    hum  29min 4s\r\n    pres 47min 14s\r\n    tmp  27min 56s\r\n  SignChanges:\r\n    tmp: 2,50@02:28:44 -> -3,00@02:48:26"
+        );
         Console.WriteLine("Received:");
 
-        var (counts, sensors, averages) = T4.Summarize(log.All);
-        Console.WriteLine($"  distinct sensors: {string.Join(", ", sensors)}");
-        foreach (var (sensor, n) in counts) {
-            Console.WriteLine($"  {sensor}: count={n}, avg={averages[sensor]:F2}");
+        var data = T4.Summarize(log.All);
+
+
+        Console.WriteLine($"  HighestValue:     {data.HighestValue}");
+        Console.WriteLine($"  LowestTemp:       {data.LowestTemp}");
+        Console.WriteLine($"  MostReadings:     {data.MostReadings}");
+        Console.WriteLine($"  TotalDuration:    {data.TotalDuration}");
+        Console.WriteLine($"  UniqueSensors:    {string.Join(", ", data.UniqueSensors)}");
+        Console.WriteLine("  AverageReadings:");
+        foreach (var (sensor, avg) in data.AverageReadings) {
+            Console.WriteLine($"    {sensor,-4} {avg:F2}");
+        }
+        Console.WriteLine("  LargestGaps:");
+        foreach (var (sensor, gap) in data.LargestGaps) {
+            Console.WriteLine($"    {sensor,-4} {gap.Minutes}min {gap.Seconds}s");
+        }
+        Console.WriteLine("  SignChanges:");
+        if (data.SignChanges.Count == 0) {
+            Console.WriteLine("    (none)");
+        } else {
+            foreach (var (prev, next) in data.SignChanges) {
+                Console.WriteLine($"    {prev.Sensor}: {prev.Value:F2}@{prev.At:HH:mm:ss} -> {next.Value:F2}@{next.At:HH:mm:ss}");
+            }
         }
         Console.WriteLine();
 
