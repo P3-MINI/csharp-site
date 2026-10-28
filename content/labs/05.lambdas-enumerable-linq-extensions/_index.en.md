@@ -201,8 +201,8 @@ The task consists of 5 stages. The stages are defined in the files:
     - `FindSinRoot` - for the function `f(x) = sin(x)`. Pass the exact derivative and the starting point `x0 = 2`.
     Pass the `sin` and `cos` functions by reference to the methods: `Math.Sin` and `Math.Cos`.
 
-{{% /details %}}
 {{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/Task1" >}}
+{{% /details %}}
 
 {{% details "TASK 2" false %}}
 The task consists of 5 stages. The stages are defined in the files:
@@ -291,8 +291,8 @@ The task consists of 5 stages. The stages are defined in the files:
     - `FindQuadraticRoot`: `f(x) = 2x^2 + 3x + 1`, keep all parameters of Halley's method at default value. 
     - `FindLinearRoot`: `f(x) = log(x)`, specify the exact first derivative, but not the second. Use `2` as a starting point (`x0`). Keep the default epsilon value. Pass the functions as a references to `double.Log` and `double.ReciprocalEstimate` methods.
 
-{{% /details %}}
 {{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/Task2" >}}
+{{% /details %}}
 
 ## LINQ
 **LINQ** (Language-Integrated Query) is a set of extension methods on `IEnumerable<T>` (and `IQueryable<T>`) that let you perform various SQL-like operations on collections. It has two equivalent syntaxes - the method syntax and the query syntax - that compile to the same code.
@@ -521,9 +521,9 @@ Modify only the `Program.cs` file.
 4. Determine the 5 items with the highest total number of ordered units.
 
 5. For each person, determine the total amount they spent in the store (taking into account the discount available to people with a loyalty card). List the customers in alphabetical order by surname, then first name.
-   
+
+{{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/Task3" >}} 
 {{% /details %}}
-{{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/Task3" >}}
 
 {{% details "TASK 4" false %}}
 A database is provided with three tables: `database.Movies`, `database.Users`, `database.Ratings`. Exact information about available columns can be found by inspecting the `Movie`, `User`, and `RatingEntry` classes.
@@ -542,10 +542,11 @@ Modify only the `Program.cs` file.
 
 5. Sort (descending) the movies by the average rating of votes. Take into account only movies that have received at least 100 votes The result should contain just the first 20 movies.
 
-{{% /details %}}
 {{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/Task4" >}}
+{{% /details %}}
 
-> [!IMPORTANT]
-> # Additonal materials for workshop
-> Materials: {{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/Lab" >}}
-> Solution: {{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/LabSolution" >}}
+
+{{% details "**Additonal materials for workshop**" false %}}
+Materials: {{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/Lab" >}}
+Solution: {{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/LabSolution" >}}
+{{% /details %}}
