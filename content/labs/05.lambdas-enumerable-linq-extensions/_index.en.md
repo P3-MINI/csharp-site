@@ -126,10 +126,7 @@ public static class EnumerableExtensions {
 }
 if (list.IsEmpty) { ... }
 ```
-## Read more
-- [Delegates (C# Programming Guide)](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/)
-- [Lambda expressions and anonymous functions](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)
-- [Extension members (C# Programming Guide)](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods)
+
 > [!IMPORTANT]
 > ## Delegates, lambdas and extension methods example tasks
 {{% details "TASK 1" false %}}
@@ -293,6 +290,11 @@ The task consists of 5 stages. The stages are defined in the files:
 
 {{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/Task2" >}}
 {{% /details %}}
+
+## Read more
+- [Delegates (C# Programming Guide)](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/)
+- [Lambda expressions and anonymous functions](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)
+- [Extension members (C# Programming Guide)](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods)
 
 ## LINQ
 **LINQ** (Language-Integrated Query) is a set of extension methods on `IEnumerable<T>` (and `IQueryable<T>`) that let you perform various SQL-like operations on collections. It has two equivalent syntaxes - the method syntax and the query syntax - that compile to the same code.
@@ -492,10 +494,6 @@ This part is why we bring back ranges int this tutorial. As we learned, LINQ als
 
 Bottom line is, that LINQ works on `IEnumerable<T>` interface and enumerators, so it will always create a much bigger overhead compared to more direct methods. If your source is one of the aforementioned types and you're slicing once without further transformation, use ranges.
 
-## Read more
-- [Indices and ranges](https://learn.microsoft.com/en-us/dotnet/csharp/tutorials/ranges-indexes)
-- [Language Integrated Query (LINQ)](https://learn.microsoft.com/en-us/dotnet/csharp/linq/)
-
 > [!IMPORTANT]
 > ## LINQ example tasks
 {{% details "TASK 3" false %}}
@@ -545,6 +543,9 @@ Modify only the `Program.cs` file.
 {{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/Task4" >}}
 {{% /details %}}
 
+## Read more
+- [Indices and ranges](https://learn.microsoft.com/en-us/dotnet/csharp/tutorials/ranges-indexes)
+- [Language Integrated Query (LINQ)](https://learn.microsoft.com/en-us/dotnet/csharp/linq/)
 
 {{% details "**Additonal materials for workshop**" false %}}
 Materials: {{< filetree dir="labs/w05.lambdas-enumerable-linq-extensions/Lab" >}}
