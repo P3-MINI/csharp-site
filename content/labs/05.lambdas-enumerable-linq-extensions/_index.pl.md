@@ -1,5 +1,5 @@
 ---
-title: "Wyrażenia lambda, IEnumerable, LINQ, metody rozszerzające"
+title: "Wyrażenia lambda, metody rozszerzające, LINQ"
 weight: 50
 ---
 
