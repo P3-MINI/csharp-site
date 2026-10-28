@@ -28,7 +28,7 @@ In modern C# you rarely need to declare a custom delegate type, because the buil
 | `int Comparison<in T>` | `Comparison<int> cmp = ((a, b) => a.CompareTo(b));` |
 
 ### Multicast delegates
-Delegates can be combined with `+` and removed with `-`. When you invoke a multicast delegate, all wrapped methods run in order.
+Delegates can be combined with `+=` and removed with `-=`. When you invoke a multicast delegate, all wrapped methods run in order.
 ```csharp
 Action log = () => Console.WriteLine("one");
 log += () => Console.WriteLine("two");
@@ -101,7 +101,7 @@ An extension method:
 > If the type has an instance method with the same name and compatible signature, the compiler will choose the instance method.
 
 > [!IMPORTANT]
-> You can extend the interfaces as well as classes. `Where`, `Select` and other LINQ methods that you will learn in this tutorial are all extension methods on IEnumerable<T>:
+> You can extend interfaces as well as classes. `Where`, `Select` and other LINQ methods that you will learn in this tutorial are all extension methods on `IEnumerable<T>`:
 ```csharp
 public static IEnumerable<T> Where<T>(this IEnumerable<T> source, Func<T, bool> predicate) { ... }
 public static IEnumerable<TResult> Select<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector) { ... }
@@ -111,14 +111,14 @@ public static IEnumerable<TResult> Select<T, TResult>(this IEnumerable<T> source
 Since C# 14 you can add extension properties, static extension members, and extension operators. For example:
 
 ```csharp
-// extension methods before
+// extension method (before)
 public static class EnumerableExtensions {
     public static bool IsEmpty<T>(this IEnumerable<T> source) => !source.Any();
 }
 if (list.IsEmpty()) { ... }
 ```
 ```csharp
-// extension property now
+// extension property (now)
 public static class EnumerableExtensions {
     extension<T>(IEnumerable<T> source) {
         public bool IsEmpty => !source.Any();
@@ -173,23 +173,24 @@ The task consists of 5 stages. The stages are defined in the files:
 
 4. FactoryMethods.cs
    
-    Write a `static` function `RandomValueFunctionFactory` that returns an anonymous function
+    Write a static function `RandomValueFunctionFactory` that returns an anonymous function
     returning a (pseudo)random double value from the range given by the parameters:
     `double min` and `double max`.
 
-    Write a `static` function `RandomPointFunctionFactory` that returns an anonymous function
+    Write a static function `RandomPointFunctionFactory` that returns an anonymous function
     returning a (pseudo)random vector of two double values (as a tuple) from the range given by the parameters: `double xMin`, `double xMax`, `double yMin`, `double yMax`. Use the previously defined method.
 
     Write a static function `MonteCarloPiEstimation` returning an approximation of the number π (of type `double`).
     Use the previously defined method. The method should take the number of samples (points) used for the approximation of type `int` (with a default value of 1024).
-    - Monte Carlo method: https://en.wikipedia.org/wiki/Monte_Carlo_method
+    - Monte Carlo method: <https://en.wikipedia.org/wiki/Monte_Carlo_method>
     - Hint: Generate random points in a rectangle containing (a sector of) the unit circle and check whether they are inside (the sector of) the unit circle. Calculate the ratio of points inside (the sector of) the circle to the total number of points to estimate the value of π.
+  
 5. Numerics.cs
    
     Declare a delegate named `Function` that takes a parameter x of type `double` and returns a value of type `double`. Implement a `static` method `NewtonRootFinding` that takes a function f of type `Function`, a derivative function df of type `Function` (with a default value of `null`), a starting point `x0` (with a default value of 0), and a precision `eps` (with a default value of 1e-6). The method should return the computed root of the equation using Newton's method. If the derivative function `df` is `null` in the parameter, initialize it at the beginning of the method using the approximation:
 
         (f(x + eps) - f(x - eps)) / (2 * eps).
-    - Newton's method: https://en.wikipedia.org/wiki/Newton%27s_method
+    - Newton's method: <https://en.wikipedia.org/wiki/Newton%27s_method>
 
     Then write three parameterless methods returning the roots of functions
     using Newton's method:
@@ -219,9 +220,9 @@ The task consists of 5 stages. The stages are defined in the files:
 
 2. Benchmarking.cs
 
-    Implement a method `CreateBenchmark`, that creates a benchmarking wrapper around a given Action to measure and report the average execution time over a specified number of iterations.
+    Implement a method `CreateBenchmark`, that creates a benchmarking wrapper around a given `Action` to measure and report the average execution time over a specified number of iterations.
     This method takes the following parameters:
-    - an Action delegate `action`
+    - an `Action` delegate `action`
     - a string representing the name of the benchmark `name`
     - and an optional parameter `times` (default set to 1000)
 
@@ -297,7 +298,7 @@ The task consists of 5 stages. The stages are defined in the files:
 - [Extension members (C# Programming Guide)](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods)
 
 ## LINQ
-**LINQ** (Language-Integrated Query) is a set of extension methods on `IEnumerable<T>` (and `IQueryable<T>`) that let you perform various SQL-like operations on collections. It has two equivalent syntaxes - the method syntax and the query syntax - that compile to the same code.
+**LINQ** (Language-Integrated Query) is a set of extension methods on `IEnumerable<T>` (and `IQueryable<T>`) that let you perform various SQL-like operations on collections. It has two equivalent syntaxes - the *method syntax* and the *query syntax* - that compile to the same code.
 
 > [!NOTE]
 > `IQueryable<T>` is the same set of extension methods as `IEnumerable<T>`, but instead of building a delegate pipeline, they build an expression tree. When working with [ORM](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) frameworks such as [Entity Framework](https://en.wikipedia.org/wiki/Entity_Framework), the expression tree is translated into [SQL](https://en.wikipedia.org/wiki/SQL) and run directly on the database. We will not be working on database during this workshop, but it may become useful during your future courses.
@@ -371,7 +372,7 @@ and ends with either `select` or `group` clause.
 | `join y in other on k1 equals k2`   | `.Join(other, x => k1, y => k2, ...)`
 
 #### `let` clause
-The `let` clause binds an intermediate value to a name inside the query, so you can reuse it without recomputing. 
+The `let` clause binds an intermediate value to an identifier inside the query, so you can reuse it without recomputing. 
 ```csharp
 var queryResult = from x in source	
                   let y = x.prop + 1
@@ -437,7 +438,6 @@ PLINQ is most useful for CPU-bound work on large in-memory collections (for I/O-
 - `AsUnordered()` - cancels `AsOrdered()`,
 - `ForAll(Action<T>)` - invokes the delegate for each element **on the worker thread** that produced that element.
 
-
 ## Ranges
 > [!NOTE]
 > Slicing and indexing should be already known to you well. They were explained during the [lecture about arrays](https://csharp.mini.pw.edu.pl/en/lectures/03.basics/arrays/).
@@ -453,7 +453,7 @@ Index second = 1;
 Index last = ^1;     
 Index secondLast = ^2;
 ```
-There is also a helper method `Index.GetOffset(int length)` that converts an `Index` to a concrete zero-based offset given a collection length:
+There is also a helper method `Index.GetOffset(int length)` that converts an `Index` to a concrete nuemrical zero-based offset given a collection length:
 ```csharp
 Index i = ^1;
 Console.WriteLine(i.GetOffset(5)); // 4, because ^1 = 5-1 = 4
@@ -486,6 +486,7 @@ So, for custom types, you either need to create an indexer accepting `Range` (`t
 
 ### Ranges vs LINQ
 This part is why we bring back ranges int this tutorial. As we learned, LINQ also offers slicing capabilities for aforementioned types, but with certain trade-offs:
+
 | Task | LINQ | Ranges | Comparison |
 |---|---|---|---|
 | Slice the first 5 elements of an `int[]` | `arr.Take(5).ToArray()` | `arr[..5]` | LINQ allocates an enumerator, a delegate closure and the output array; ranges allocate only the result array. |
@@ -506,7 +507,7 @@ For almost every query, you should create a new anonymous class that contains on
 
 In the `Database.cs` file, there are classes representing the tables in the database (`Customer`, `LoyaltyCard`, `Product`, `Order`, `OrderProduct`), while the `Database` class contains the data lists representing the aforementioned tables.
 
-**Note**: a single order can contain several products; in that case there are several rows in the `OrderProducts` table with the id of that order.
+**Note**: a single order can contain several products - in that case there are several rows in the `OrderProducts` table with the id of that order.
 
 Modify only the `Program.cs` file.
 
@@ -526,7 +527,7 @@ Modify only the `Program.cs` file.
 {{% details "TASK 4" false %}}
 A database is provided with three tables: `database.Movies`, `database.Users`, `database.Ratings`. Exact information about available columns can be found by inspecting the `Movie`, `User`, and `RatingEntry` classes.
 
-In the `User`s table, the `Age` field is not an age itself, but rather a bottom age-range identifier, e.g. 1 means the range 1-18. Each movie has a unique id number `MovieID`, each user has a unique id number in `UserID`. Both tables (`Movies`, `Users`) are connected through ratings: a single vote on a movie is cast by one user on one movie.
+In the `User`s table, the `Age` field is not an age itself, but rather a bottom age-range identifier (e.g. 1 means the range 1-18). Each movie has a unique id number `MovieID`, each user has a unique id number in `UserID`. Both tables (`Movies`, `Users`) are connected through ratings: a single vote on a movie is cast by one user on one movie.
 
 Modify only the `Program.cs` file.
 
