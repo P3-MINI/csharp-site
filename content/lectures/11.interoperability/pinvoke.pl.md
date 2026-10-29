@@ -395,3 +395,24 @@ public static partial class NativeString
 > **C++** {{< filetree dir="lectures/interoperability/SafeHandleCpp" >}}
 > 
 > **C#** {{< filetree dir="lectures/interoperability/SafeHandleCSharp" >}}
+
+## Obsługa błędów (`SetLastError`)
+
+Funkcje natywne często zgłaszają błędy przez kod błędu przechowywany osobno dla każdego wątku: `errno` na *Uniksie* lub `GetLastError()` na Windowsie. Samo środowisko uruchomieniowe może między wywołaniem funkcji natywnej a naszym kodem wywołać funkcje systemowe i nadpisać tę wartość. Dlatego przy `SetLastError = true` kod marshallingu zapamiętuje kod błędu zaraz po wywołaniu, a my odczytujemy go metodą `Marshal.GetLastPInvokeError()` (.NET 6; starsza `Marshal.GetLastWin32Error()` mimo swojej nazwy robi to samo). `Marshal.GetPInvokeErrorMessage` (.NET 7) zwraca odpowiadający mu komunikat systemowy.
+
+```csharp
+using System.Runtime.InteropServices;
+
+if (Libc.chdir("/nonexistent") != 0)
+{
+    int error = Marshal.GetLastPInvokeError();
+    Console.WriteLine($"Error {error}: {Marshal.GetPInvokeErrorMessage(error)}");
+    // Error 2: No such file or directory
+}
+
+public static partial class Libc
+{
+    [LibraryImport("libc", StringMarshalling = StringMarshalling.Utf8, SetLastError = true)]
+    public static partial int chdir(string path);
+}
+```
