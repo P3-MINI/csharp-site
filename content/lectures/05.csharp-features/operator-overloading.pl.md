@@ -4,11 +4,11 @@ title: "Przeciążanie operatorów"
 
 # Przeciążanie operatorów
 
-C# wspiera przeciążanie operatorów. Operatory pozwalają na bardziej zwięzły zapis operacji. Nie powinno się ich nadużywać - stosujemy głównie wtedy, gdy jest to intuicyjne i nie budzi wątpliwości, np. dla własnych typów numerycznych. Operator powinien robić to, czego byśmy się spodziewali.
+C# wspiera przeciążanie operatorów. Operatory pozwalają na bardziej zwięzły zapis operacji. Nie powinno się ich nadużywać - stosujemy je głównie wtedy, gdy jest to intuicyjne i nie budzi wątpliwości, np. dla własnych typów numerycznych. Operator powinien robić to, czego byśmy się spodziewali.
 
 ## Przykład
 
-Operatory są definiowane jako publiczne, statyczne składowe typu. Nazwą metody musi być symbol operacji poprzedzony słówkiem kluczowym `operator`. W zależności od operacji metoda przyjmuje jeden lub dwa parametry.
+Operatory są definiowane jako publiczne, statyczne składowe typu. Nazwą metody musi być symbol operacji poprzedzony słowem kluczowym `operator`. W zależności od operacji metoda przyjmuje jeden lub dwa parametry.
 
 ```csharp
 public struct Complex
@@ -55,7 +55,7 @@ public struct Complex
         return !(a == b);
     }
     
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is Complex complex && complex == this;
     }
@@ -67,14 +67,14 @@ public struct Complex
 }
 ```
 
-- Niektóre operatory muszą być implementowane parami: `==` i `!=`, `<` i `>`, `<=` i `>=`
-- Operatory złożonego przypisania (np. `+=`, `/=`) są niejawnie przeciążone przez przeciążenie odpowiadających im operatorów niezłożonych. Od C# 14 będzie można je jawnie definiować.
-- Podczas przeciążania operatora `==` trzeba też nadpisać metody `Equals` i `GetHashCode`, w przeciwnym wypadku kompilator rzuci ostrzeżenie.
+- Niektóre operatory muszą być implementowane parami: `==` i `!=`, `<` i `>`, `<=` i `>=`, `true` i `false`
+- Operatory złożonego przypisania (np. `+=`, `/=`) są niejawnie przeciążone przez przeciążenie odpowiadających im operatorów niezłożonych. Od C# 14 można je także definiować jawnie.
+- Podczas przeciążania operatora `==` należy też nadpisać metody `Equals` i `GetHashCode`, w przeciwnym wypadku kompilator zgłosi ostrzeżenie.
 - Warto też implementować interfejsy `IEquatable<T>` i `IComparable<T>`. W .NET 7 (C# 11) i nowszych, przy przeciążaniu operatorów arytmetycznych, warto rozważyć implementację interfejsów generycznych, np. `IAdditionOperators<TSelf, TOther, TResult>`, `IMultiplyOperators<TSelf, TOther, TResult>`, itp. Dzięki temu będziemy mogli potem ograniczać typ generyczny, a także jest to forma dokumentacji kodu.
 
 ## Dziedziczenie operatorów
 
-Operatory zdefiniowane w klasach nie podlegają dziedziczeniu, ale operatory zdefiniowane w interfejsach jako `static abstract` lub `static virtual` już tak.
+Operatory są składowymi statycznymi, więc nie są polimorficzne: nie mogą być wirtualne ani nadpisywane, a operator jest wybierany w czasie kompilacji na podstawie statycznych typów operandów (operator zadeklarowany w klasie bazowej działa także dla obiektów klas pochodnych). Od C# 11 operatory można deklarować w interfejsach jako `static abstract` lub `static virtual` - typy implementujące muszą (a w przypadku `static virtual` mogą) dostarczyć własną implementację, a operatora można używać poprzez parametr generyczny ograniczony tym interfejsem.
 
 ```csharp
 public interface IIncrementable<TSelf> where TSelf : IIncrementable<TSelf>
@@ -85,7 +85,7 @@ public interface IIncrementable<TSelf> where TSelf : IIncrementable<TSelf>
 
 ## Definiowanie konwersji
 
-Można definiować własne konwersje dla typu, zarówno jawne jak i niejawne.
+Można definiować własne konwersje dla typu, zarówno jawne, jak i niejawne.
 - **Niejawne (`implicit`)** konwersje powinny być zawsze bezpieczne, nie powodować utraty informacji i nie rzucać wyjątków.
 - **Jawne (`explicit`)** konwersje mogą się nie powieść (np. rzucając wyjątek) lub mogą powodować utratę informacji - powinny wymagać od programisty świadomej decyzji (użycia rzutowania).
 
