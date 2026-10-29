@@ -116,7 +116,7 @@ Przydatne mogą być również:
   
 ## Zdalne repozytoria 
 
-Jeśli chcielibyśmy współpracować z innymi programistami lub utworzyć kopię zapasową w chmurze możemy wykorzystać **zdalne repozytorium**. Zazwyczaj będzie ono na serwisie hostingowym np. GitHubie. 
+Jeśli chcielibyśmy współpracować z innymi programistami lub utworzyć kopię zapasową w chmurze, możemy wykorzystać **zdalne repozytorium**. Zazwyczaj będzie ono na serwisie hostingowym np. GitHubie. 
 
 ### Tworzenie kluczy SSH
 
@@ -339,7 +339,7 @@ Jeżeli chcemy rozpocząć pracę nad nową funkcjonalnością, możemy utworzy�
 
 Na nowego brancha możemy się przełączyć za pomocą komendy `git switch <nazwa>`.  
 
-Aby przesłać commita na konkretnego brancha na GitHubie korzystamy z `git push -u origin <nazwa_brancha>`. Możemy jednocześnie utworzyć nowego brancha i się na niego przełączyć korzystając z polecenia `git switch -c <nazwa>`.
+Aby przesłać commita na konkretnego brancha na GitHubie, korzystamy z `git push -u origin <nazwa_brancha>`. Możemy jednocześnie utworzyć nowego brancha i się na niego przełączyć, korzystając z polecenia `git switch -c <nazwa>`.
 
 W starszych tutorialach bardzo często spotkasz polecenie `git checkout`. Może ono służyć zarówno do przełączania branchy, jak i przywracania plików. W tym tutorialu korzystamy z nowszych, bardziej jednoznacznych poleceń: `git switch` do pracy z branchami oraz `git restore` do przywracania plików.
 
