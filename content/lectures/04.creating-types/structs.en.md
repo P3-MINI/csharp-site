@@ -54,12 +54,35 @@ Individual methods can also be marked as `readonly`, which prevents them from mo
 
 ## `ref` structs
 
-Structs with the `ref` keyword can only be allocated on the stack. Any construct that would force such a variable to be placed on the heap results in a compilation error. Among other things, you cannot create arrays of such structs, they cannot be fields of classes or non-`ref` structs, they cannot be used inside iterators, asynchronous methods, or lambdas, and they cannot implement interfaces.
+Structs with the `ref` keyword can only be allocated on the stack. Any construct that would force such a variable to be placed on the heap results in a compilation error. Among other things, you cannot create arrays of such structs, they cannot be fields of classes or non-`ref` structs, they cannot be boxed (converted to `object` or to an interface type), captured by lambdas or local functions, or used as generic type arguments (unless the type parameter is declared with `allows ref struct`, C# 13). Since C# 13, they can implement interfaces and can be used as local variables in iterators and asynchronous methods, as long as their value does not have to be preserved across a `yield return` or an `await`.
 
 ```csharp
 public ref struct Point
 {
     public float X { get; set; }
     public float Y { get; set; }
+}
+```
+
+A `ref struct` implementing an interface cannot be converted to the interface type, as that would require boxing. To use it through the interface, we need a generic type parameter with the `allows ref struct` anti-constraint (C# 13). It informs the compiler that `T` may be a `ref struct`, so the generic code has to obey the same restrictions (e.g., it cannot box the value or store it in a field of a class):
+
+```csharp
+var point = new Point { X = 3, Y = 4 };
+Console.WriteLine(Describe(point)); // (3, 4)
+// IDescribable d = point;          // Compilation error: would require boxing
+
+static string Describe<T>(T value) where T : IDescribable, allows ref struct
+    => value.Describe();
+
+public interface IDescribable
+{
+    string Describe();
+}
+
+public ref struct Point : IDescribable
+{
+    public float X { get; set; }
+    public float Y { get; set; }
+    public string Describe() => $"({X}, {Y})";
 }
 ```
