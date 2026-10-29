@@ -5,9 +5,9 @@ weight: 90
 
 # Parametry
 
-Parametry są przekazywane przez wartość, zasady dla typów bezpośrednich i referencyjnych zostały opisane w [Types System]({{< ref "../03.basics/types#przekazywanie-parametrów-do-metod" >}}).
+Parametry są przekazywane przez wartość, zasady dla typów bezpośrednich i referencyjnych zostały opisane w [System typów]({{< ref "../03.basics/types#przekazywanie-parametrów-do-metod" >}}).
 
-| Modyfikator | przekazanie *przez* | Przypisanie niewątpliwe   | Uwagi            |
+| Modyfikator | Przekazanie *przez* | Przypisanie niewątpliwe   | Uwagi            |
 |-------------|---------------------|---------------------------|------------------|
 | (żaden)     | wartość             | przed wywołaniem          |                  |
 | `ref`       | referencję          | przed wywołaniem          |                  |
@@ -18,23 +18,23 @@ Ponadto można przekazywać parametry **przez referencję** na trzy różne spos
 
 ## Przekazywanie przez referencję (`ref`)
 
-Przekazanie parametru przy użyciu `ref` pozwala w metodzie odczyt i zapis do przekazanej zmiennej. Przekazanie typu referencyjnego przez referencję pozwala na zmianę referencji poza metodą.
+Przekazanie parametru przy użyciu `ref` pozwala metodzie odczytywać i zapisywać przekazaną zmienną. Przekazanie typu referencyjnego przez referencję pozwala zmienić w metodzie samą referencję (zmiana jest widoczna poza metodą).
 
 ```csharp
 int x = 8;
 Foo(ref x);
-Console.WriteLine(x);
+Console.WriteLine(x); // outputs 9
 
 static void Foo(ref int p)
 {
     p = p + 1;
-    Console.WriteLine(p);
+    Console.WriteLine(p); // outputs 9
 }
 ```
 
 ## Parametry wyjściowe (`out`)
 
-Modyfikator `out`, w zasadzie działa podobnie, z tą różnicą, że zmienna wymaga przypisania w metodzie, a przed wywołaniem metody może pozostać niezainicjalizowana. Jest to jeden ze sposobów na zwrócenie z metody więcej niż jednej wartości. Ponadto jeżeli nie jesteśmy zainteresowani jedną z wartości wyjściowych, możemy ją odrzucić używając nazwy `_`.
+Modyfikator `out` działa podobnie, z tą różnicą, że zmienna wymaga przypisania w metodzie, a przed wywołaniem metody może pozostać niezainicjalizowana. Jest to jeden ze sposobów na zwrócenie z metody więcej niż jednej wartości. Ponadto, jeżeli nie jesteśmy zainteresowani jedną z wartości wyjściowych, możemy ją odrzucić, używając symbolu `_`.
 
 ```csharp
 string[] firstNames; string lastName;
@@ -57,27 +57,32 @@ static void GetFirstAndLastNames(string name,
 
 ## Parametry wejściowe (`in`)
 
-Modyfikator `in`, również działa podobnie, tutaj różnica polega na tym, że przekazany parametr staje się w ciele metody tylko do odczytu.
+Modyfikator `in` również działa podobnie; tutaj różnica polega na tym, że przekazany parametr staje się w ciele metody tylko do odczytu.
 
 ```csharp
-Matrix4 A = Matrix.CreateRotationX(90.0f);
-Matrix4 B = Matrix.CreateRotationY(45.0f);
+using System.Numerics;
+
+Matrix4x4 A = Matrix4x4.CreateRotationX(MathF.PI / 2);
+Matrix4x4 B = Matrix4x4.CreateRotationY(MathF.PI / 4);
 Multiply(in A, in B, out var result);
 Console.WriteLine(result);
 
-static void Multiply(in Matrix4 a,
-                     in Matrix4 b,
-                     out Matrix4 result)
+static void Multiply(in Matrix4x4 a,
+                     in Matrix4x4 b,
+                     out Matrix4x4 result)
 {
-    /**/
+    // a = Matrix4x4.Identity; // Compilation error: 'a' is read-only
+    result = a * b;
 }
 ```
 
 ## Zmienna liczba parametrów (`params`)
 
-Słówko kluczowe `params` pozwala przekazać zmienną liczbę parametrów do metody. Może zostać użyte tylko do ostatniego parametru tylko w postaci tablicy jednowymiarowej. Kompilator sam niejawnie tworzy z podanych parametrów w miejscu `params` tablicę.
+Słowo kluczowe `params` pozwala przekazać do metody zmienną liczbę argumentów. Może zostać użyte tylko przy ostatnim parametrze. Tradycyjnie jego typem jest tablica jednowymiarowa (od C# 13 dozwolone są również inne typy kolekcji); kompilator sam niejawnie tworzy tablicę z argumentów podanych w miejscu parametru `params`.
 
 ```csharp
+using System.Text;
+
 var s1 = Concat("The", "Quick", "Brown", "Fox");
 var s2 = Concat("Jumps", "Over", "The", "Lazy", "Dog");
 Console.WriteLine(Concat(s1, s2));
@@ -94,12 +99,12 @@ static string Concat(string str, params string[] strings)
 
 ## Opcjonalne parametry, nazwane argumenty
 
-Parametry w C# mogą mieć wartość domyślną. Wartość domyślna musi być stała w czasie kompilacji. Wszystkie parametry domyślne muszą być zdefiniowane po parametrach wymaganych. Jeżeli jest potrzeba pominięcia niektórych opcjonalnych parametrów, można wybrać którym z nich chcemy nadać wartość używając argumentów nazwanych.
+Parametry w C# mogą mieć wartość domyślną. Wartość domyślna musi być stała w czasie kompilacji. Wszystkie parametry domyślne muszą być zdefiniowane po parametrach wymaganych. Jeżeli jest potrzeba pominięcia niektórych opcjonalnych parametrów, można wskazać, którym z nich chcemy nadać wartość, używając argumentów nazwanych.
 
 ```csharp
-public void ExampleMethod(int required,
-                          string optionalstr = "default",
-                          int optionalint = 10) {}
+void ExampleMethod(int required,
+                   string optionalstr = "default",
+                   int optionalint = 10) {}
 ExampleMethod(3, "parameter", 7);
 ExampleMethod(3, "parameter");
 ExampleMethod(3);

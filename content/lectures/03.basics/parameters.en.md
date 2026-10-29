@@ -60,24 +60,29 @@ static void GetFirstAndLastNames(string name,
 The `in` modifier also works similarly; the difference here is that the passed parameter becomes read-only within the method body.
 
 ```csharp
-Matrix4 A = Matrix.CreateRotationX(90.0f);
-Matrix4 B = Matrix.CreateRotationY(45.0f);
+using System.Numerics;
+
+Matrix4x4 A = Matrix4x4.CreateRotationX(MathF.PI / 2);
+Matrix4x4 B = Matrix4x4.CreateRotationY(MathF.PI / 4);
 Multiply(in A, in B, out var result);
 Console.WriteLine(result);
 
-static void Multiply(in Matrix4 a,
-                     in Matrix4 b,
-                     out Matrix4 result)
+static void Multiply(in Matrix4x4 a,
+                     in Matrix4x4 b,
+                     out Matrix4x4 result)
 {
-    /**/
+    // a = Matrix4x4.Identity; // Compilation error: 'a' is read-only
+    result = a * b;
 }
 ```
 
 ## Variable Number of Parameters (`params`)
 
-The `params` keyword allows a variable number of arguments to be passed to a method. It can only be used for the last parameter and must be a single-dimensional array. The compiler implicitly creates an array from the arguments provided for the `params` parameter.
+The `params` keyword allows a variable number of arguments to be passed to a method. It can only be used for the last parameter. Traditionally, its type is a single-dimensional array (since C# 13, other collection types are allowed as well); the compiler implicitly creates an array from the arguments provided for the `params` parameter.
 
 ```csharp
+using System.Text;
+
 var s1 = Concat("The", "Quick", "Brown", "Fox");
 var s2 = Concat("Jumps", "Over", "The", "Lazy", "Dog");
 Console.WriteLine(Concat(s1, s2));
@@ -97,9 +102,9 @@ static string Concat(string str, params string[] strings)
 Parameters in C# can have default values. The default value must be a compile-time constant. All default parameters must be defined after any required parameters. If there is a need to omit some optional parameters, you can specify which ones you want to assign a value to by using named arguments.
 
 ```csharp
-public void ExampleMethod(int required,
-                          string optionalstr = "default",
-                          int optionalint = 10) {}
+void ExampleMethod(int required,
+                   string optionalstr = "default",
+                   int optionalint = 10) {}
 ExampleMethod(3, "parameter", 7);
 ExampleMethod(3, "parameter");
 ExampleMethod(3);
