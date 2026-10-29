@@ -63,6 +63,36 @@ public class Downloader(int concurrency)
 ## ReaderWriterLock(Slim)
 
 `ReaderWriterLock(Slim)` is a primitive optimized for scenarios where read operations are significantly more frequent than write operations. It supports two locking modes. Any number of threads can be in read mode simultaneously (`EnterReadLock` / `ExitReadLock`). Only one thread can be in write mode (`EnterWriteLock` / `ExitWriteLock`). When a thread is in write mode, no other thread can read or write.
+> [!NOTE]
+> There is also a third mode - the *upgradeable read lock* (`EnterUpgradeableReadLock` / `ExitUpgradeableReadLock`). Only one thread at a time can hold it (concurrently with ordinary readers), and it can be upgraded to a write lock without being released, e.g., to check a condition and write only when needed. An ordinary read lock cannot be upgraded. By default, `ReaderWriterLockSlim` does not support recursion (`LockRecursionPolicy.NoRecursion`) - entering the lock again by the same thread throws `LockRecursionException`.
+>
+> ```csharp
+> public class Cache<TKey, TValue> where TKey : notnull
+> {
+>     private readonly Dictionary<TKey, TValue> _items = new();
+>     private readonly ReaderWriterLockSlim _lock = new();
+>
+>     public TValue GetOrAdd(TKey key, Func<TKey, TValue> factory)
+>     {
+>         _lock.EnterUpgradeableReadLock();
+>         try
+>         {
+>             if (_items.TryGetValue(key, out var value))
+>                 return value;
+>
+>             _lock.EnterWriteLock(); // Upgrade to a write lock
+>             try
+>             {
+>                 value = factory(key);
+>                 _items[key] = value;
+>                 return value;
+>             }
+>             finally { _lock.ExitWriteLock(); }
+>         }
+>         finally { _lock.ExitUpgradeableReadLock(); }
+>     }
+> }
+> ```
 
 It is most commonly used with shared data structures, application configurations, or for implementing a cache. In simple cases, a standard `lock` is usually sufficient.
 

@@ -63,6 +63,36 @@ public class Downloader(int concurrency)
 ## ReaderWriterLock(Slim)
 
 `ReaderWriterLock(Slim)` to prymityw zoptymalizowany pod scenariusze, w których operacje odczytu są znacznie częstsze niż operacje zapisu. Wspiera dwa tryby blokowania. Dowolna liczba wątków może być w trybie odczytu jednocześnie (`EnterReadLock` / `ExitReadLock`). Tylko jeden wątek może być w trybie zapisu (`EnterWriteLock` / `ExitWriteLock`). Gdy wątek jest w trybie zapisu, żaden inny wątek nie może czytać ani pisać.
+> [!NOTE]
+> Istnieje też trzeci tryb - *upgradeable read lock* (`EnterUpgradeableReadLock` / `ExitUpgradeableReadLock`), czyli blokada odczytu z możliwością podniesienia. W danej chwili może ją posiadać tylko jeden wątek (równolegle ze zwykłymi czytelnikami) i można ją podnieść do blokady zapisu bez zwalniania, np. aby sprawdzić warunek i pisać tylko wtedy, gdy to konieczne. Zwykłej blokady odczytu nie można podnieść. Domyślnie `ReaderWriterLockSlim` nie obsługuje rekurencji (`LockRecursionPolicy.NoRecursion`) - ponowne wejście do blokady przez ten sam wątek rzuca `LockRecursionException`.
+>
+> ```csharp
+> public class Cache<TKey, TValue> where TKey : notnull
+> {
+>     private readonly Dictionary<TKey, TValue> _items = new();
+>     private readonly ReaderWriterLockSlim _lock = new();
+>
+>     public TValue GetOrAdd(TKey key, Func<TKey, TValue> factory)
+>     {
+>         _lock.EnterUpgradeableReadLock();
+>         try
+>         {
+>             if (_items.TryGetValue(key, out var value))
+>                 return value;
+>
+>             _lock.EnterWriteLock(); // Upgrade to a write lock
+>             try
+>             {
+>                 value = factory(key);
+>                 _items[key] = value;
+>                 return value;
+>             }
+>             finally { _lock.ExitWriteLock(); }
+>         }
+>         finally { _lock.ExitUpgradeableReadLock(); }
+>     }
+> }
+> ```
 
 Najczęściej używa się przy współdzielonych strukturach danych, konfiguracji aplikacji, do implementacji pamięci podręcznej. Wszędzie tam gdzie odczyty są częste, a zapisy bardzo rzadkie. W prostych przypadkach zwykły `lock` jest zazwyczaj wystarczający.
 

@@ -169,3 +169,22 @@ This is a condition variable mechanism (associated with `lock`).
 *   `Monitor.PulseAll(obj)`: Wakes up all waiting threads.
 
 This is a lower-level mechanism than `EventWaitHandle` and requires being inside a `lock` block. Typically, using `EventWaitHandle` is sufficient and simpler.
+
+> [!WARNING]
+> A thread woken by `Pulse` continues only after the pulsing thread releases the lock and the woken thread re-acquires it - by then, the condition may no longer hold. Moreover, a pulse is not remembered: if no thread is waiting, it is lost (unlike `AutoResetEvent`). Therefore, `Wait` should always be called in a loop that re-checks the condition (just like `std::condition_variable::wait` in C++):
+> ```csharp
+> // Consumer
+> lock (_locker)
+> {
+>     while (_queue.Count == 0)   // Re-check the condition after waking up
+>         Monitor.Wait(_locker);
+>     item = _queue.Dequeue();
+> }
+>
+> // Producer
+> lock (_locker)
+> {
+>     _queue.Enqueue(item);
+>     Monitor.Pulse(_locker);
+> }
+> ```
