@@ -192,6 +192,29 @@ unsafe
 > }
 > ```
 
+### `Span<T>`
+
+`Span<T>` (oraz jego wersja tylko do odczytu `ReadOnlySpan<T>`) to `ref struct` reprezentujący ciągły obszar pamięci: tablicę (lub jej fragment), pamięć zaalokowaną przez `stackalloc` lub pamięć niezarządzaną (zob. `NativeMemory` poniżej). Zapewnia dostęp ze sprawdzaniem zakresu bez kontekstu `unsafe`, dzięki czemu jedna metoda przyjmująca `Span<T>` może działać na dowolnym rodzaju pamięci.
+
+Od C# 14 konwersje z `T[]` do `Span<T>` i `ReadOnlySpan<T>`, ze `Span<T>` do `ReadOnlySpan<T>` oraz z `string` do `ReadOnlySpan<char>` są wbudowane w język (ang. *implicit span conversions*). Wcześniej były to zwykłe operatory konwersji zdefiniowane przez użytkownika, których kompilator nie bierze pod uwagę np. przy wywołaniach metod rozszerzających czy wnioskowaniu typów generycznych. Teraz metody rozszerzające dla `Span<T>` z klasy `MemoryExtensions` można wywoływać bezpośrednio na tablicach:
+
+```csharp
+int[] array = [1, 2, 3, 4];
+Span<int> onStack = stackalloc int[] { 1, 2, 3, 4 };
+
+Console.WriteLine(Sum(array));   // 10 (int[] -> ReadOnlySpan<int>)
+Console.WriteLine(Sum(onStack)); // 10 (Span<int> -> ReadOnlySpan<int>)
+Console.WriteLine(array.StartsWith([1, 2])); // True (C# 14)
+
+static int Sum(ReadOnlySpan<int> values)
+{
+    int sum = 0;
+    foreach (int value in values)
+        sum += value;
+    return sum;
+}
+```
+
 ## Pola tablicowe o stałym rozmiarze
 
 Słowo kluczowe `fixed` może też być użyte do deklaracji tablicy bezpośrednio wewnątrz struktury, zapewniając, że dane są osadzone liniowo w układzie pamięci struktury, zamiast być referencją do oddzielnego obiektu na stercie.
