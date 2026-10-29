@@ -189,7 +189,7 @@ Func<string> greet = () => { return "Hello, world"; };
 - Jeżeli lambda ma tylko jedno wyrażenie możemy użyć skróconego zapisu i pominąć słówko `return`
 - Kompilator sam jest w stanie wydedukować typy parametrów i wartości zwracanej lambdy na podstawie typu lewej strony
 
-Możemy również jawnie sprecyzować typy parametrów i typ zwracany. Pozwala to kompilatorowi na wywnioskowanie typu delegata, dzięki czemu możemy użyć słowa kluczowego `var` po lewej stronie przypisania. Czasami zwiększa to po prostu czytelność kodu.
+Możemy również jawnie sprecyzować typy parametrów oraz, od C# 10, typ zwracany (zapisywany przed listą parametrów). Czasami zwiększa to po prostu czytelność kodu. Jawne typy parametrów pozwalają też kompilatorowi samodzielnie wywnioskować typ delegata, dzięki czemu możemy użyć słowa kluczowego `var` po lewej stronie przypisania.
 
 ```csharp
 var square = double (double x) => x * x;
@@ -198,14 +198,61 @@ var write = void (string str) => Console.Write(str);
 var greet = string () => { return "Hello, world"; };
 ```
 
-### Parametry domyślne C# 12
+### Typ naturalny (C# 10)
 
-Od C# 12 parametry lambdy mogą przyjmować wartości domyślne:
+Od C# 10 lambda z jawnie określonymi typami parametrów (lub bez parametrów) ma *typ naturalny* (*natural type*): kompilator dobiera pasujący delegat `Func` lub `Action` (albo syntetyzuje anonimowy typ delegata, jeśli żaden nie pasuje, np. dla parametrów `ref`). Typ zwracany jest wnioskowany na podstawie ciała lambdy – trzeba go podać jawnie tylko wtedy, gdy nie da się go wywnioskować. Lambda z niejawnie typowanymi parametrami nie ma typu naturalnego, więc potrzebuje docelowego typu delegata (np. `Func<int, int>` po lewej stronie). Typ naturalny mają również grupy metod, o ile wskazują na jedną metodę.
+
+```csharp
+var cube = (double x) => x * x * x;            // Func<double, double>
+var choose = object (bool b) => b ? 1 : "one"; // Func<bool, object>
+var read = Console.ReadLine;                   // Func<string?>
+Delegate d = (int x) => x + 1;                 // Func<int, int>
+
+var identity = x => x;         // Error CS8917: The delegate type could not be inferred
+var print = Console.WriteLine; // Error CS8917 (WriteLine has many overloads)
+```
+
+Również od C# 10 lambdy mogą mieć atrybuty – na samej lambdzie, na jej parametrach i na wartości zwracanej (lista parametrów musi wtedy być w nawiasach). Korzystają z nich głównie frameworki, które analizują delegaty za pomocą refleksji, np. *minimal API* w ASP.NET Core.
+
+```csharp
+using System.ComponentModel;
+using System.Reflection;
+
+var greet = [Description("Greets a person")] (string name) => $"Hello, {name}!";
+
+var attribute = greet.Method.GetCustomAttribute<DescriptionAttribute>();
+Console.WriteLine(attribute?.Description); // Greets a person
+```
+
+### Parametry domyślne i `params` (C# 12)
+
+Od C# 12 parametry lambdy mogą przyjmować wartości domyślne, a ostatni parametr może być tablicą `params`:
 
 ```csharp
 var write = (string str = "hello") => Console.WriteLine(str);
 write();
 write("world");
+
+var sum = (params int[] values) => values.Sum();
+Console.WriteLine(sum(1, 2, 3)); // 6
+```
+
+Takich lambd nie da się przedstawić za pomocą `Func` ani `Action`, więc ich typem naturalnym jest typ delegata wygenerowany przez kompilator.
+
+### Modyfikatory parametrów bez typów (C# 14)
+
+Parametry z modyfikatorami takimi jak `ref`, `out`, `in`, `ref readonly` czy `scoped` wymagały dotąd jawnego podania typu. Od C# 14 typy takich parametrów również mogą być wywnioskowane na podstawie docelowego typu delegata:
+
+```csharp
+TryParse<int> parse = (text, out result) => int.TryParse(text, out result);
+// Before C# 14: (string text, out int result) => int.TryParse(text, out result)
+
+if (parse("42", out int number))
+{
+    Console.WriteLine(number); // 42
+}
+
+delegate bool TryParse<T>(string text, out T result);
 ```
 
 ### Przechwytywanie zmiennych
@@ -260,6 +307,14 @@ private static void <Main>$(string[] args)
 }
 ```
 {{% /details %}}
+
+Jeżeli lambda nie powinna niczego przechwytywać (np. aby uniknąć przypadkowych alokacji na stercie), możemy oznaczyć ją modyfikatorem `static` (C# 9). Odwołanie się w takiej lambdzie do zmiennej lokalnej, parametru lub `this` jest błędem kompilacji:
+
+```csharp
+int factor = 3;
+Func<int, int> triple = static x => x * 3;
+Func<int, int> multiply = static x => x * factor; // Error CS8820: A static anonymous function cannot contain a reference to 'factor'
+```
 
 ## Metody anonimowe
 
