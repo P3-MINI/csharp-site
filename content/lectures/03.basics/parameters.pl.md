@@ -97,6 +97,30 @@ static string Concat(string str, params string[] strings)
 }
 ```
 
+### Kolekcje `params` (C# 13)
+
+Od C# 13 parametr `params` może być również typu `Span<T>`, `ReadOnlySpan<T>`, typu interfejsu kolekcji (np. `IEnumerable<T>`, `IReadOnlyList<T>`, `IList<T>`) albo typu kolekcji (np. `List<T>`). Najbardziej przydatny jest `params ReadOnlySpan<T>` (`ReadOnlySpan<T>` to widok tylko do odczytu na ciągły obszar pamięci): kompilator może umieścić argumenty na stosie, więc - w przeciwieństwie do `params T[]` - przy każdym wywołaniu nie jest alokowana tablica na stercie. Jeżeli istnieją oba przeciążenia, kompilator wybiera wersję ze spanem. Od .NET 9 wiele metod biblioteki standardowej (np. `string.Join`, `string.Concat`, `Path.Combine`, `Task.WhenAll`) ma takie przeciążenia, więc istniejący kod pozbywa się tych alokacji po samej ponownej kompilacji.
+
+```csharp
+Console.WriteLine(Sum(1, 2, 3)); // 6
+Console.WriteLine(Sum());        // 0
+PrintAll("a", "b", "c");         // a, b, c
+PrintAll(["x", "y"]);            // x, y - a collection can also be passed directly
+
+static int Sum(params ReadOnlySpan<int> numbers) // no array is allocated
+{
+    int sum = 0;
+    foreach (int n in numbers)
+        sum += n;
+    return sum;
+}
+
+static void PrintAll(params IEnumerable<string> items)
+{
+    Console.WriteLine(string.Join(", ", items));
+}
+```
+
 ## Opcjonalne parametry, nazwane argumenty
 
 Parametry w C# mogą mieć wartość domyślną. Wartość domyślna musi być stała w czasie kompilacji. Wszystkie parametry domyślne muszą być zdefiniowane po parametrach wymaganych. Jeżeli jest potrzeba pominięcia niektórych opcjonalnych parametrów, można wskazać, którym z nich chcemy nadać wartość, używając argumentów nazwanych.
