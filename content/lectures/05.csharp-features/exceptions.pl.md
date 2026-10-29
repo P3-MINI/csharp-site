@@ -4,11 +4,11 @@ title: "Wyjątki"
 
 # Wyjątki
 
-Implementacja wyjątków w C# jest bardzo podobna do tej w C++. Składniowo jest niemalże identycznie, z kilkoma nowymi możliwościami w C#. Zmianą jest to, że w C# możemy rzucać jedynie obiektami dziedziczącymi po `System.Exception`. W C++ mogliśmy rzucać w zasadzie dowolnym obiektem, czego się i tak nie robi w praktyce.
+Implementacja wyjątków w C# jest bardzo podobna do tej w C++. Składniowo jest niemalże identyczna, z kilkoma nowymi możliwościami w C#. Główną różnicą jest to, że w C# możemy rzucać jedynie obiektami dziedziczącymi po `System.Exception`. W C++ mogliśmy rzucać w zasadzie dowolnym obiektem, czego się i tak nie robi w praktyce.
 
 ## Łapanie wyjątków
 
-Tak jak w C++, żeby złapać wyjątek otaczamy kod który może rzucić wyjątkiem w blok `try` i dołączamy do niego bloki `catch` z obsługą sytuacji wyjątkowych. W przypadku wyjątku, program szuka odpowiedniego bloku `catch` od góry do dołu.
+Tak jak w C++, żeby złapać wyjątek, otaczamy kod, który może rzucić wyjątkiem, blokiem `try` i dołączamy do niego bloki `catch` z obsługą sytuacji wyjątkowych. W przypadku wyjątku program szuka odpowiedniego bloku `catch` od góry do dołu.
 
 ```csharp
 try
@@ -32,14 +32,14 @@ catch (Exception ex) // This will catch any exception
 
 ## Zgłaszanie wyjątków
 
-Żeby zgłosić wyjątek używamy instrukcji `throw` po której następuje obiekt wyjątku, zazwyczaj tworzony w miejscu operatorem `new`. Sam typ wyjątku po części dokumentuje sytuację wyjątkową, ale warto również doprecyzować co się stało podając dodatkową wiadomość w parametrze konstruktora.
+Żeby zgłosić wyjątek, używamy instrukcji `throw`, po której następuje obiekt wyjątku, zazwyczaj tworzony w miejscu operatorem `new`. Sam typ wyjątku po części dokumentuje sytuację wyjątkową, ale warto również doprecyzować, co się stało, podając dodatkową wiadomość w parametrze konstruktora.
 
 ```csharp
 public static void ValidateInput(string input, int maxLength)
 {
-    if (string.IsNullOrWhiteSpace(input))
+    if (input is null)
     {
-        throw new ArgumentNullException(nameof(input), "Input cannot be null or empty.");
+        throw new ArgumentNullException(nameof(input), "Input cannot be null.");
     }
 
     if (input.Length > maxLength)
@@ -51,7 +51,7 @@ public static void ValidateInput(string input, int maxLength)
 
 ## Przerzucenie wyjątku
 
-W bloku `catch` możemy przekazać dalej wyjątek jednocześnie częściowo na niego reagując (np. przez zalogowanie błędu), służy do tego instrukcja `throw` bez żadnego parametru. 
+W bloku `catch` możemy przekazać dalej wyjątek, jednocześnie częściowo na niego reagując (np. przez zalogowanie błędu). Służy do tego instrukcja `throw` bez żadnego parametru. 
 
 ```csharp
 try
@@ -73,9 +73,12 @@ catch (Exception e)
 }
 ```
 
+> [!WARNING]
+> `throw;` ponownie rzuca złapany wyjątek i zachowuje jego oryginalny ślad stosu (*stack trace*). Gdybyśmy zamiast tego napisali `throw e;`, rzucony zostałby ten sam obiekt, ale jego ślad stosu zostałby zresetowany do bieżącego bloku `catch` – stracilibyśmy informację o tym, gdzie faktycznie wystąpił błąd.
+
 ## Filtry wyjątków
 
-Do bloków `catch` możemy doklejać klauzulę `when` w której możemy sprecyzować dodatkowe warunki, które muszą być spełnione:
+Do bloków `catch` możemy doklejać klauzulę `when`, w której możemy sprecyzować dodatkowe warunki, które muszą być spełnione:
 
 ```csharp
 try
@@ -95,7 +98,7 @@ catch (HttpRequestException ex)
 
 ## Własne typy wyjątków
 
-Biblioteka standardowa dostarcza całkiem pokaźny wachlarz wbudowanych typów wyjątków. Czasami jednak chcemy bardziej szczegółowe typy wyjątków lepiej opisujące sytuację. Dzięki temu kod staje się bardziej czytelny, a obsługa błędów bardziej precyzyjna. Zazwyczaj reimplementuje się trzy najczęściej używane konstruktory, ale oczywiście można w takiej klasie dodawać własne konstruktory i pola.
+Biblioteka standardowa dostarcza całkiem pokaźny wachlarz wbudowanych typów wyjątków. Czasami jednak potrzebujemy bardziej szczegółowych typów wyjątków, lepiej opisujących sytuację. Dzięki temu kod staje się bardziej czytelny, a obsługa błędów bardziej precyzyjna. Zazwyczaj reimplementuje się trzy najczęściej używane konstruktory, ale oczywiście można w takiej klasie dodawać własne konstruktory i pola.
 
 ```csharp
 public class InvalidOrderException : Exception
@@ -116,9 +119,9 @@ public class InvalidOrderException : Exception
 }
 ```
 
-## W końcu
+## Blok `finally`
 
-Blok `finally` może zostać dołączony do bloku `try-catch`. Kod w takim bloku wykona się zawsze, niezależnie od okoliczności w jakich wychodzimy z bloku `try`. Głównym zastosowaniem bloku `finally` jest zwalnianie zasobów takich jak: strumienie plików, połączenie z bazą danych, zasoby sieciowe.
+Blok `finally` może zostać dołączony do bloku `try-catch`. Kod w takim bloku wykona się zawsze, niezależnie od okoliczności, w jakich wychodzimy z bloku `try` (normalnie, przez `return`/`break` czy z powodu wyjątku). Nie wykona się jedynie przy gwałtownym zakończeniu całego procesu, np. przez `Environment.FailFast` lub przepełnienie stosu. Głównym zastosowaniem bloku `finally` jest zwalnianie zasobów, takich jak strumienie plików, połączenia z bazą danych czy zasoby sieciowe.
 
 ```csharp
 FileStream? fs = null;
