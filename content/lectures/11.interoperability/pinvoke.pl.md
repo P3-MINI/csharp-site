@@ -9,7 +9,7 @@ Platform Invoke (P/Invoke) to mechanizm pozwalający kodowi zarządzanemu (C#) n
 
 ## Atrybut `DllImport`
 
-Przykładowo, chcemy wywołać funkcję z `user32.dll` z WinAPI:
+Przykładowo, jeśli chcemy wywołać funkcję z `user32.dll` z WinAPI:
 
 ```cpp
 int MessageBox(HWND hWnd, LPCTSTR lpText, LPCTSTR lpCaption, UINT uType);
@@ -69,7 +69,7 @@ Najważniejsze jest użycie `extern "C"`. Kompilatory `C++` domyślnie zmieniaj�
 extern "C" EXPORT void Hello();
 ```
 
-Następnie po stronie `C#` musimy zaimportować tę funkcję używając atrybutu `DllImport` lub `LibraryImport`.
+Następnie po stronie `C#` musimy zaimportować tę funkcję, używając atrybutu `DllImport` lub `LibraryImport`.
 
 ```csharp
 [LibraryImport("HelloCpp")]
