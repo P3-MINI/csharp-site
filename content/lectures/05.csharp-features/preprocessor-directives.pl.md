@@ -94,3 +94,33 @@ Za pomocą dyrektyw można także generować ostrzeżenia i błędy kompilacji, 
     Console.WriteLine("This code will generate a warning message if DEMO is defined.");
 #endif
 ```
+
+## Aplikacje jednoplikowe (.NET 10)
+
+Od .NET 10 pojedynczy plik `.cs` można zbudować i uruchomić bez pliku projektu (`dotnet run app.cs`) jako aplikację jednoplikową (*file-based app*). Ustawienia projektu podaje się wtedy w samym pliku, za pomocą dyrektyw `#:` umieszczonych na początku pliku, przed jakimkolwiek kodem:
+
+- `#:package Nazwa@Wersja` - dodaje referencję do pakietu NuGet,
+- `#:property Nazwa=Wartość` - ustawia właściwość MSBuild,
+- `#:sdk Nazwa` - wybiera SDK projektu (domyślnie `Microsoft.NET.Sdk`),
+- `#:project ścieżka` - dodaje referencję do innego projektu.
+
+W systemach uniksowych pierwszą linią pliku może być też *shebang* (`#!`), który pozwala uruchamiać plik bezpośrednio, jak skrypt (plik musi mieć końce linii `LF` i nie może zaczynać się od BOM). Przykładowy plik `hello.cs`:
+
+```csharp
+#!/usr/bin/env -S dotnet --
+#:package Humanizer@2.14.1
+#:property PublishAot=false
+
+using Humanizer;
+
+Console.WriteLine($"Hello, {(args.Length > 0 ? args[0] : "world")}!");
+Console.WriteLine(TimeSpan.FromMinutes(90).Humanize(2)); // 1 hour, 30 minutes
+```
+
+```bash
+dotnet run hello.cs -- Alice  # Hello, Alice!
+chmod +x hello.cs
+./hello.cs Alice              # Hello, Alice!
+```
+
+Te dyrektywy są dozwolone tylko w aplikacjach jednoplikowych - w zwykłym projekcie powodują błąd kompilacji. Polecenie `dotnet project convert hello.cs` zamienia taki plik na zwykły projekt z plikiem `.csproj`.
