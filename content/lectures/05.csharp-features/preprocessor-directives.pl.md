@@ -108,7 +108,7 @@ W systemach uniksowych pierwszą linią pliku może być też *shebang* (`#!`), 
 
 ```csharp
 #!/usr/bin/env dotnet
-#:package Humanizer@2.14.1
+#:package Humanizer@3.0.10
 #:property PublishAot=false
 
 using Humanizer;
@@ -123,4 +123,4 @@ chmod +x hello.cs
 ./hello.cs Alice              # Hello, Alice!
 ```
 
-Te dyrektywy są dozwolone tylko w aplikacjach jednoplikowych - w zwykłym projekcie powodują błąd kompilacji. Polecenie `dotnet project convert hello.cs` zamienia taki plik na zwykły projekt z plikiem `.csproj`.
+Te dyrektywy są dozwolone tylko w aplikacjach jednoplikowych - w zwykłym projekcie powodują błąd kompilacji. Polecenie `dotnet project convert hello.cs` zamienia taki plik na zwykły projekt z plikiem `.csproj`. Pracę z aplikacjami jednoplikowymi opisano szerzej w wykładzie [MSBuild]({{< ref "/lectures/02.tools/msbuild" >}}).
