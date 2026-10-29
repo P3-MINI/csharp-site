@@ -21,7 +21,9 @@ Classes, on the other hand, should be chosen for types that have an **'identity'
 
 ## Default Constructor
 
-Structs always have a parameterless default constructor that zeroes out all the struct's fields. Even if we define a parameterless constructor, we can call the default constructor via `default`. Furthermore, an array of structs is bitwise-zeroed by default, and classes also bitwise-zero their fields. It's worth protecting against this and always treating a zeroed-out struct as a possible valid value.
+Structs always have a parameterless default constructor that zeroes out all the struct's fields. Even if we define our own parameterless constructor (C# 10), we can still obtain the zeroed-out value via `default`. Furthermore, an array of structs is bitwise-zeroed by default, and classes also bitwise-zero their fields. It's worth protecting against this and always treating a zeroed-out struct as a possible valid value.
+
+If a struct does not declare a parameterless constructor, `new Point()` is equivalent to `default`: field and property initializers are not executed, which is why `p2.Y` in the example below is `0` and not `1`.
 
 ```csharp
 Point p1 = new Point(1); // 1, 1
@@ -38,7 +40,7 @@ public struct Point
 
 ## `readonly` structs
 
-The `readonly` keyword in a struct definition enforces that the struct is immutable, meaning its fields must also be read-only, and properties can only have a `get` accessor.
+The `readonly` keyword in a struct definition enforces that the struct is immutable, meaning its fields must also be read-only, and auto-implemented properties can only have a `get` (or `init`) accessor.
 
 ```csharp
 public readonly struct Point
@@ -54,7 +56,7 @@ Individual methods can also be marked as `readonly`, which prevents them from mo
 
 ## `ref` structs
 
-Structs with the `ref` keyword can only be allocated on the stack. Any construct that would force such a variable to be placed on the heap results in a compilation error. Among other things, you cannot create arrays of such structs, they cannot be fields of classes or non-`ref` structs, they cannot be used inside iterators, asynchronous methods, or lambdas, and they cannot implement interfaces.
+Structs with the `ref` keyword can only be allocated on the stack. Any construct that would force such a variable to be placed on the heap results in a compilation error. Among other things, you cannot create arrays of such structs, they cannot be fields of classes or non-`ref` structs, they cannot be boxed (converted to `object` or to an interface type), captured by lambdas or local functions, or used as generic type arguments (unless the type parameter is declared with `allows ref struct`, C# 13). Since C# 13, they can implement interfaces and can be used as local variables in iterators and asynchronous methods, as long as their value does not have to be preserved across a `yield return` or an `await`.
 
 ```csharp
 public ref struct Point
