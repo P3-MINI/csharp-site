@@ -9,7 +9,7 @@ Poniedziałki, 14:15 - 16:00, sala 328
 | **Data**   | **Temat**                                                        |
 |------------|------------------------------------------------------------------|
 | 05.10.2026 | L01: Wprowadzenie, Podstawy C#                                   |
-| 12.10.2026 | L02: Podstawy C# (cont.)                                         |
+| 12.10.2026 | L02: Podstawy C# (cd.)                                           |
 | 19.10.2026 | L03:                                                             |
 | 26.10.2026 | L04:                                                             |
 | 02.11.2026 | L05:                                                             |
@@ -32,8 +32,8 @@ Piątki, 16:15 - 18:00
 | ---------- | ------------------------------------------------------------- |
 | 02.10.2026 | W01: git                                                      |
 | 09.10.2026 | W02: msbuild                                                  |
-| 16.10.2026 | W03: C# Podstawy                                              |
-| 23.10.2026 | L01: C# Podstawy                                              |
+| 16.10.2026 | W03: Podstawy C#                                              |
+| 23.10.2026 | L01: Podstawy C#                                              |
 | 30.10.2026 | W04: Kolekcje, Generyki                                       |
 | 06.11.2026 | W05: Enumerable, Wyrażenia Lambda, LINQ, Metody Rozszerzające |
 | 20.11.2026 | L02: Enumerable, Wyrażenia Lambda, LINQ, Metody Rozszerzające |

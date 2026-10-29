@@ -10,9 +10,9 @@ W ramach zaliczenia można realizować dowolny projekt w C#. Liczba punktów zal
 
 Poniżej proponowane projekty:
 
-## 1. Raytracer (Raytracing in One Weekend)
+## 1. Raytracer (Ray Tracing in One Weekend)
 
-**Opis:** Implementujemy pierwszą książkę "Raytracing in One Weekend" w C#.
+**Opis:** Implementujemy pierwszą książkę "Ray Tracing in One Weekend" w C#.
 
 **Ważne:** Ograniczamy alokacje pamięci przy renderowaniu (wybór: klasa czy struktura).
 
@@ -20,9 +20,9 @@ Poniżej proponowane projekty:
 
 **Punkty:** ok. 4
 
-## 2. CityBike - Analiza danych LINQ
+## 2. Citi Bike - Analiza danych LINQ
 
-**Opis:** Pobieramy dane (np. z https://citibikenyc.com/system-data), wczytujemy je i wykonujemy min. 5 zapytań LINQ.
+**Opis:** Pobieramy dane (np. z <https://citibikenyc.com/system-data>), wczytujemy je i wykonujemy min. 5 zapytań LINQ.
 
 **Mile widziane:** Łączymy dane z wypożyczalni z danymi pogodowymi.
 

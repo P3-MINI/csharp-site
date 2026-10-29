@@ -548,7 +548,6 @@ Zamiast implementować interfejs `IComparer<T>`, można również dziedziczyć p
 > [!IMPORTANT]
 > # Dodatkowe materiały na warsztaty
 > Materiały: {{< filetree dir="labs/w04.collections-generics/Lab/" >}}
-> Rozwiązania: {{< filetree dir="labs/w04.collections-generics/LabSolution" >}}
 
 
 

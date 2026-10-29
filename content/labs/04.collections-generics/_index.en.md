@@ -548,7 +548,6 @@ Instead of implementing `IComparer<T>` you can also just derive from `Comparer<T
 > [!IMPORTANT]
 > # Additonal materials for workshop
 > Materials: {{< filetree dir="labs/w04.collections-generics/Lab" >}}
-> Solutions: {{< filetree dir="labs/w04.collections-generics/LabSolution" >}}
 
 
 
