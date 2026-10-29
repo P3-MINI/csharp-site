@@ -117,6 +117,22 @@ async Task<int> GetPrimesCountAsync()
 > Lambda expressions can also be asynchronous. The same rules apply to them as to regular async methods.
 
 > [!NOTE]
+> Since C# 13, async methods (and iterators) can declare `ref` local variables and local variables of `ref struct` types (e.g., `Span<T>`), and they can contain `unsafe` blocks. Such variables cannot be used across an `await` (or `yield return`), because they cannot be stored in the state machine object on the heap – the compiler reports an error in that case.
+> ```csharp
+> async Task<int> SumAsync(int[] data)
+> {
+>     await Task.Delay(100);
+>     Span<int> span = data.AsSpan(); // OK since C# 13
+>     int sum = 0;
+>     foreach (int item in span)
+>         sum += item;
+>     // await Task.Delay(100);
+>     // Console.WriteLine(span[0]); // error CS4007
+>     return sum;
+> }
+> ```
+
+> [!NOTE]
 > C# also supports asynchronous streams through the `IAsyncEnumerable` interface and the `await foreach` construct. Although `yield return` within an iterator block is always synchronous, the entire iterator can fetch data asynchronously, suspending its execution between elements.
 
 > [!INFO]
