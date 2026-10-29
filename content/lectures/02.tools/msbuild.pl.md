@@ -315,7 +315,7 @@ Poniższy przykład pokazuje typowy plik projektu, stworzony poleceniem `dotnet 
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -329,7 +329,7 @@ Ten plik, mimo że jest znacznie krótszy, zawiera całą potrzebną logikę do 
 
 Właściwości sterują całym przepływem budowania. Kilka z nich, które najczęściej się zmienia:
 
-*   **`TargetFramework`**: Określa docelową wersję środowiska .NET (np. net8.0). Ma wpływ na to jakiej wersji języka można używać w projekcie i późniejszą kompatybilność z innymmi programami.
+*   **`TargetFramework`**: Określa docelową wersję środowiska .NET (np. `net10.0`). Ma wpływ na to, jakiej wersji języka można używać w projekcie, i na późniejszą kompatybilność z innymi programami.
 *   **`OutputType`**: Typ pliku wynikowego, `Exe` (aplikacja) lub `Library` (biblioteka).
 *   **`Nullable`**: Włącza lub wyłącza funkcję `Nullable Reference Types` w C#. Najczęściej ustawiana na `enable`.
 *   **`LangVersion`**: Wersję języka, można też ustawić niezależnie od `TargetFramework`.
@@ -351,6 +351,30 @@ Projekty w stylu SDK definiują wiele itemów. Oto niektóre z nich:
 *   **`PackageReference`**: Odwołania do pakietów NuGet.
 
 Pełną listę itemów można znaleźć w [dokumentacji](https://learn.microsoft.com/visualstudio/msbuild/common-msbuild-project-items).
+
+### Pliki solucji (solution)
+
+Większe aplikacje składają się z wielu projektów (np. aplikacja, biblioteki, testy). Grupuje się je w pliku **solucji** (solution), który otwierają środowiska IDE i który można przekazać do `dotnet build` lub `msbuild`, aby zbudować naraz wszystkie jej projekty. Dawniej solucje zapisywano w tekstowym formacie `.sln`, trudnym do czytania i ręcznej edycji. Od .NET 10 polecenie `dotnet new sln` domyślnie tworzy solucję w nowym formacie **`.slnx`**, opartym na XML:
+
+```bash
+dotnet new sln -n Shop
+dotnet new console -o Shop.App
+dotnet new classlib -o Shop.Core
+dotnet sln add Shop.App Shop.Core
+dotnet add Shop.App reference Shop.Core
+dotnet build
+```
+
+Powstały plik `Shop.slnx` po prostu wymienia projekty:
+
+```xml
+<Solution>
+  <Project Path="Shop.App/Shop.App.csproj" />
+  <Project Path="Shop.Core/Shop.Core.csproj" />
+</Solution>
+```
+
+Istniejący plik `.sln` można przekonwertować poleceniem `dotnet sln migrate`. Stary plik `.sln` należy potem usunąć – jeśli w katalogu znajduje się więcej niż jeden plik projektu lub solucji, `dotnet build` wymaga wskazania, którego użyć (błąd `MSB1011`). Solucję w starym formacie można nadal utworzyć poleceniem `dotnet new sln --format sln`.
 
 ### Logowanie i diagnozowanie problemów
 
