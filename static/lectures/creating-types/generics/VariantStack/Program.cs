@@ -8,8 +8,8 @@ class Program
         var carStack = new Stack<Car>();
         carStack.Push(new Car());
         carStack.Push(new Car());
-        IPoppable<Car> vehiclePoppable = carStack;
-        WashVehicles(vehiclePoppable);
+        IPoppable<Car> carPoppable = carStack;
+        WashVehicles(carPoppable);
         
         void WashVehicles(IPoppable<Vehicle> vehicles)
         {
@@ -24,8 +24,8 @@ class Program
         var vehiclesStack = new Stack<Vehicle>();
         vehiclesStack.Push(new Car());
         vehiclesStack.Push(new Bike());
-        IPushable<Vehicle> carPushable = vehiclesStack;
-        DeliverCars(carPushable, 2);
+        IPushable<Vehicle> vehiclePushable = vehiclesStack;
+        DeliverCars(vehiclePushable, 2);
 
         void DeliverCars(IPushable<Car> cars, int count)
         {
