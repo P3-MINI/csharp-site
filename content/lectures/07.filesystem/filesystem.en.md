@@ -29,6 +29,9 @@ Console.WriteLine($"Full Path: {Path.GetFullPath(path)}"); // /home/tomasz/Works
 Console.WriteLine($"Directory Separator: {Path.DirectorySeparatorChar}"); // \ (on Windows), / (on Linux)
 ```
 
+> [!WARNING]
+> If any of the later arguments of `Path.Combine` is an absolute path, all preceding arguments are discarded: `Path.Combine("data", "/etc/passwd")` returns `/etc/passwd`. This is a common source of bugs (and security vulnerabilities) when combining a path with user input. `Path.Join` (.NET Core 2.1+) simply joins the parts with a separator: `Path.Join("data", "/etc/passwd")` returns `data/etc/passwd`.
+
 ## File Operations
 
 ### The `File` Class (static)
@@ -36,7 +39,7 @@ Console.WriteLine($"Directory Separator: {Path.DirectorySeparatorChar}"); // \ (
 *   **File Manipulation**: `Exists`, `Delete`, `Copy`, `Move`, `Replace`, `CreateSymbolicLink`
 *   **Attribute Operations**: `GetAttributes`, `SetAttributes`
 *   **Timestamp Operations**: `GetCreationTime`, `GetLastAccessTime`, `GetLastWriteTime`, `SetCreationTime`, `SetLastAccessTime`, `SetLastWriteTime`
-*   **Permission Operations**: `GetUnixFileMode`, `SetUnixFileMode`
+*   **Permission Operations** (Unix, .NET 7): `GetUnixFileMode`, `SetUnixFileMode`
 
 It provides simple, high-level methods for file operations like copying, moving, or deleting.
 
@@ -85,7 +88,7 @@ if (fileInfo.Exists)
 *   **Getting Contents (Lazily)**: `EnumerateFiles`, `EnumerateDirectories`, `EnumerateFileSystemEntries`
 *   **Working with the Current Directory**: `GetCurrentDirectory`, `SetCurrentDirectory`
 *   **Timestamp Operations**: `GetCreationTime`, `GetLastAccessTime`, `GetLastWriteTime`, `SetCreationTime`, `SetLastAccessTime`, `SetLastWriteTime`
-*   **Other**: `GetParent`, `GetDirectoryRoot`
+*   **Other**: `GetParent`, `GetDirectoryRoot`, `CreateTempSubdirectory` (.NET 7, creates a uniquely named directory in the temporary folder)
 
 Used for performing one-off operations on directories.
 

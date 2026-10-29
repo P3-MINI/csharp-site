@@ -57,6 +57,23 @@ The table below presents selected methods and properties that allow for precise 
 | `ZipArchiveEntry.Open` | Opens a stream to the entry's content, allowing it to be read or written. |
 | `ZipArchiveEntry.ExtractToFile` | (Extension method) Extracts the current entry to a file on disk. |
 
+### Asynchronous API (.NET 10)
+
+Since .NET 10, ZIP archives can also be processed [asynchronously]({{< ref "/lectures/09.concurrency/asynchronous-programming" >}}), without blocking a thread during I/O operations: `ZipFile.CreateFromDirectoryAsync`, `ZipFile.ExtractToDirectoryAsync`, `ZipFile.OpenAsync`, `ZipFile.OpenReadAsync`, `ZipArchive.CreateAsync`, `ZipArchiveEntry.OpenAsync`, and the extension methods `CreateEntryFromFileAsync`, `ExtractToFileAsync`, `ExtractToDirectoryAsync`. `ZipArchive` also implements `IAsyncDisposable`.
+
+```csharp
+if (File.Exists("archive.zip")) File.Delete("archive.zip");
+await ZipFile.CreateFromDirectoryAsync("my_files_to_zip", "archive.zip");
+
+await using ZipArchive zip = await ZipFile.OpenReadAsync("archive.zip");
+foreach (ZipArchiveEntry entry in zip.Entries)
+{
+    await using Stream stream = await entry.OpenAsync();
+    using StreamReader reader = new StreamReader(stream);
+    Console.WriteLine($"{entry.FullName}: {await reader.ReadToEndAsync()}");
+}
+```
+
 ## TAR Archives (.NET 7)
 
 The TAR (`Tape Archive`) format only groups files into a single container, but **does not apply compression itself**. Its advantage is support for Unix system attributes. In practice, `.tar` archives are often additionally compressed using GZip, Brotli, or BZip2 (not available in the standard library) algorithms, resulting in files with `.tar.gz` (or `.tgz`) and `.tar.br` extensions.
@@ -109,4 +126,43 @@ Directory.CreateDirectory(destinationDirectory);
 using FileStream fileStream = File.OpenRead(sourceArchive);
 using GZipStream gzipStream = new(fileStream, CompressionMode.Decompress);
 TarFile.ExtractToDirectory(gzipStream, destinationDirectory, false);
+```
+
+### `TarWriter` and `TarReader`
+
+For more control, entry by entry (similar to `ZipArchive`), the `TarWriter` and `TarReader` classes are used. They operate on streams, so they can be combined with compression streams as well:
+
+```csharp
+// Creating .tar.gz archive entry by entry
+using (FileStream fs = File.Create("logs.tar.gz"))
+using (GZipStream gz = new GZipStream(fs, CompressionMode.Compress))
+using (TarWriter writer = new TarWriter(gz))
+{
+    // Entry from a file on disk
+    writer.WriteEntry(Path.Combine("my_files_to_tar", "log.txt"), entryName: "logs/log.txt");
+
+    // Entry with data from a stream
+    var entry = new PaxTarEntry(TarEntryType.RegularFile, "logs/info.txt")
+    {
+        DataStream = new MemoryStream("Hello from TarWriter"u8.ToArray())
+    };
+    writer.WriteEntry(entry);
+}
+
+// Reading .tar.gz archive entry by entry
+using (FileStream fs = File.OpenRead("logs.tar.gz"))
+using (GZipStream gz = new GZipStream(fs, CompressionMode.Decompress))
+using (TarReader reader = new TarReader(gz))
+{
+    while (reader.GetNextEntry() is TarEntry entry)
+    {
+        Console.WriteLine($"{entry.Name,-16} {entry.Length,3} bytes, mode: {entry.Mode}");
+        // entry.DataStream - entry contents, entry.ExtractToFile(...) - extracting to disk
+    }
+}
+```
+
+```text
+logs/log.txt       9 bytes, mode: OtherRead, GroupRead, UserWrite, UserRead
+logs/info.txt     20 bytes, mode: OtherRead, GroupRead, UserWrite, UserRead
 ```

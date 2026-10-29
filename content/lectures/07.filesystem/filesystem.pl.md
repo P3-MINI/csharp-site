@@ -29,6 +29,9 @@ Console.WriteLine($"Full Path: {Path.GetFullPath(path)}"); // /home/tomasz/Works
 Console.WriteLine($"Directory Separator: {Path.DirectorySeparatorChar}"); // \ (on Windows) / (on Linux)
 ```
 
+> [!WARNING]
+> Jeżeli któryś z dalszych argumentów `Path.Combine` jest ścieżką bezwzględną, wszystkie wcześniejsze argumenty są pomijane: `Path.Combine("data", "/etc/passwd")` zwraca `/etc/passwd`. Jest to częste źródło błędów (i luk bezpieczeństwa) przy łączeniu ścieżki z danymi od użytkownika. `Path.Join` (.NET Core 2.1+) po prostu łączy części separatorem: `Path.Join("data", "/etc/passwd")` zwraca `data/etc/passwd`.
+
 ## Operacje na plikach
 
 ### Klasa `File` (statyczna)
@@ -36,7 +39,7 @@ Console.WriteLine($"Directory Separator: {Path.DirectorySeparatorChar}"); // \ (
 * **Manipulowanie plikami**: `Exists`, `Delete`, `Copy`, `Move`, `Replace`, `CreateSymbolicLink`
 * **Operacje na atrybutach**: `GetAttributes`, `SetAttributes`
 * **Operacje na znacznikach czasu**: `GetCreationTime`, `GetLastAccessTime`, `GetLastWriteTime`, `SetCreationTime`, `SetLastAccessTime`, `SetLastWriteTime`
-* **Operacje na uprawnieniach**: `GetUnixFileMode`, `SetUnixFileMode`
+* **Operacje na uprawnieniach** (Unix, .NET 7): `GetUnixFileMode`, `SetUnixFileMode`
 
 Umożliwia proste, wysokopoziomowe operacje na plikach, takie jak kopiowanie, przenoszenie czy usuwanie.
 
@@ -85,7 +88,7 @@ if (fileInfo.Exists)
 * **Pobieranie zawartości (leniwie)**: `EnumerateFiles`, `EnumerateDirectories`, `EnumerateFileSystemEntries`
 * **Praca z obecnym katalogiem**: `GetCurrentDirectory`, `SetCurrentDirectory`
 * **Operacje na znacznikach czasu**: `GetCreationTime`, `GetLastAccessTime`, `GetLastWriteTime`, `SetCreationTime`, `SetLastAccessTime`, `SetLastWriteTime`
-* **Inne**: `GetParent`, `GetDirectoryRoot`
+* **Inne**: `GetParent`, `GetDirectoryRoot`, `CreateTempSubdirectory` (.NET 7, tworzy katalog o unikalnej nazwie w folderze tymczasowym)
 
 Służy do wykonywania jednorazowych operacji na folderach.
 
