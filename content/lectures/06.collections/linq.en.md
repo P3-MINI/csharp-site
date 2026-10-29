@@ -9,7 +9,7 @@ weight: 30
 
 ## Internal Implementation
 
-The implementation of LINQ methods is usually very simple - they are iterating-extension methods.
+The implementation of LINQ methods is usually very simple - they are extension methods implemented as iterators.
 
 ```csharp
 public static IEnumerable<TSource> Where<TSource> 
@@ -46,7 +46,7 @@ var querySyntaxResult = from num in numbers
 // Both queries produce the sequence { 4, 16, 36 }
 ```
 
-### IEnumerable<T> vs IQueryable<T>
+### `IEnumerable<T>` vs `IQueryable<T>`
 
 Although both interfaces look similar, and `IQueryable<T>` inherits from `IEnumerable<T>`, they work in a fundamentally different way underneath. This difference is crucial when working with remote data sources, like databases.
 
@@ -82,7 +82,7 @@ var inefficientQuery = db.Products
 
 ## Deferred Execution
 
-One of the most important features of LINQ is **deferred execution**. Simply defining a LINQ query does not cause it to execute immediately. The query is executed only when we actually request the results. This most often happens during iteration (e.g., in a `foreach` loop) or after calling a method that forces the materialization of the collection (e.g., `ToList()`, `ToArray()`, `Count()`). This allows for building complex queries in a very efficient way, without creating unnecessary intermediate collections.
+One of the most important features of LINQ is **deferred execution**. Simply defining a LINQ query does not cause it to execute immediately. The query is executed only when we actually request the results. This most often happens during iteration (e.g., in a `foreach` loop) or after calling a method that forces immediate execution - one that materializes the results into a collection (e.g., `ToList()`, `ToArray()`) or computes a single value (e.g., `Count()`, `First()`). This allows for building complex queries in a very efficient way, without creating unnecessary intermediate collections.
 
 ```csharp
 string[] names = { "Tom", "Dick", "Harry", "Mary", "Jay" };
@@ -98,6 +98,9 @@ foreach (var name in query)
     Console.WriteLine(name);
 }
 ```
+
+> [!NOTE]
+> Deferred execution does not mean that every operator processes elements one at a time. *Streaming* operators (e.g., `Where`, `Select`, `Take`) pass on each element as soon as they read it, whereas *buffering* operators (e.g., `OrderBy`, `GroupBy`, `Reverse`) have to read the entire source on the first call to `MoveNext` - in the example above, `OrderBy` sorts all names that passed the `Where` filter before the first one reaches the `foreach` loop. Moreover, a deferred query is executed anew on every enumeration, so if its results are needed several times, it is better to materialize them once with `ToList()` or `ToArray()`.
 
 ## Method Overview
 
@@ -203,7 +206,7 @@ var uniqueCategories = products.DistinctBy(p => p.Category);
 
 Projection involves transforming each element of a sequence into a new form. This allows for extracting only the necessary properties from objects or creating entirely new structures based on the input data.
 
-##### The `Select` Method
+#### The `Select` Method
 
 This is the basic projection operation. It transforms each element of a sequence into a new form, defined by the selector. It is often used to extract a single property or create a new value based on an object.
 
@@ -277,10 +280,9 @@ foreach (var item in query)
 public record Category(int Id, string Name);
 public record Product(string Name, int CategoryId);
 ```
-We combine two lists on categories.Id and products.CategoryId
-The output in the format of table for the example above looks like this:
+We join the two lists on `products.CategoryId` and `categories.Id`. Presented as a table, the output of the example above looks like this:
 
-```diff
+```text
 +-----------+-------------+
 | Product   | Category    |
 +-----------+-------------+
@@ -338,7 +340,7 @@ public record Product(string Name, int CategoryId);
 
 The output for the example above is:
 
-```diff
+```text
 Category: Electronics
   - Laptop
   - Keyboard
@@ -380,12 +382,12 @@ Specify an additional sorting criterion for elements that are equal according to
 ```csharp
 var people = new[] { new { L = "Smith", F = "John" }, new { L = "Doe", F = "Jane" }, new { L = "Smith", F = "Anna" } };
 var sorted = people.OrderBy(p => p.L).ThenBy(p => p.F);
-// sorted: Anna Smith, Jane Doe, John Smith
+// sorted: Jane Doe, Anna Smith, John Smith
 ```
 
 #### The `Reverse` Method
 
-Reverses the order of elements in a sequence. `List<T>` and arrays define their own `Reverse` method, which works differently and reverses the elements in-place.
+Reverses the order of elements in a sequence. `List<T>` defines its own instance method `Reverse` (and for arrays there is the static `Array.Reverse` method), which works differently: it reverses the elements in place and returns `void`. Since an instance method takes precedence over an extension method, calling `Reverse()` on a variable of type `List<T>` would not invoke LINQ - hence the `IEnumerable<int>` variable in the example.
 
 ```csharp
 IEnumerable<int> numbers = new[] { 1, 2, 3 };
@@ -410,7 +412,7 @@ var groups = numbers.GroupBy(n => n % 2 == 0 ? "Even" : "Odd");
 ```
 
 It is common for `GroupBy` to be used with [aggregating functions](#aggregation).
-In the following example it is used with `Count` and counts the number of products per category
+In the following example it is used with `Count` and counts the number of products per category.
 
 ```csharp
 var categories = new List<Category>
@@ -446,9 +448,9 @@ public record Category(int Id, string Name);
 public record Product(string Name, int CategoryId);
 ```
 
-The output in the format of table for the example above looks like this:
+The output of the example above is:
 
-```diff
+```text
 +------------+-------+
 | CategoryId | Count |
 +------------+-------+
@@ -485,7 +487,7 @@ var result = seq1.Concat(seq2);
 
 #### The `Union` and `UnionBy` Methods
 
-Creates the set union of two sequences, removing duplicates. `UnionBy` allows specifying a key for comparing uniqueness.
+Create the set union of two sequences, removing duplicates. `UnionBy` allows specifying a key for comparing uniqueness.
 
 ```csharp
 var seq1 = new[] { 1, 2 };
@@ -496,7 +498,7 @@ var result = seq1.Union(seq2);
 
 #### The `Intersect` and `IntersectBy` Methods
 
-Creates the set intersection of two sequences, returning only those elements that exist in both collections.
+Create the set intersection of two sequences, returning only those (distinct) elements that exist in both collections.
 
 ```csharp
 var seq1 = new[] { 1, 2 };
@@ -507,7 +509,7 @@ var result = seq1.Intersect(seq2);
 
 #### The `Except` and `ExceptBy` Methods
 
-Creates the set difference of two sequences, returning elements from the first sequence that do not appear in the second.
+Create the set difference of two sequences, returning the (distinct) elements of the first sequence that do not appear in the second.
 
 ```csharp
 var seq1 = new[] { 1, 2, 3 };
@@ -553,7 +555,7 @@ Dictionary<int, int> dict = numbers.ToDictionary(k => k, v => v * v);
 
 #### The `AsEnumerable` and `AsQueryable` Methods
 
-Casts a collection to the `IEnumerable<T>` or `IQueryable<T>` interface. The main use of `AsEnumerable()` is to consciously change the query context from `IQueryable` to `IEnumerable`, so that further operations are executed in the application's memory, not in the external data source (e.g., a database).
+Cast a collection to the `IEnumerable<T>` or `IQueryable<T>` interface. The main use of `AsEnumerable()` is to consciously change the query context from `IQueryable` to `IEnumerable`, so that further operations are executed in the application's memory, not in the external data source (e.g., a database).
 
 ```csharp
 // Assume db.Products is an IQueryable<Product> from a database context
@@ -589,7 +591,7 @@ int last = numbers.Last(); // 30
 
 #### The `Single` and `SingleOrDefault` Methods
 
-Retrieve the only element of a sequence. They throw an exception if the sequence contains zero or more than one element. `SingleOrDefault` allows for an empty sequence (returns `default`), but still throws an exception for more than one element.
+Retrieve the only element of a sequence. `Single` throws an exception if the sequence contains zero or more than one element. `SingleOrDefault` allows for an empty sequence (returns `default`), but still throws an exception for more than one element.
 
 ```csharp
 var singleItem = new[] { 42 }.Single(); // 42
