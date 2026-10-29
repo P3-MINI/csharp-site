@@ -18,7 +18,7 @@ var result = await expression;
 statement(s);
 ```
 
-> [!NOTICE]
+> [!NOTE]
 > The *expression* is most often of type `Task` or `Task<TResult>`. However, any object with a `GetAwaiter` method that returns an *awaiter* will satisfy the compiler. See: [await-anything](https://devblogs.microsoft.com/pfxteam/await-anything/).
 
 This transformation involves several steps:
@@ -76,9 +76,10 @@ Asynchronous methods in C# are implemented as a form of coroutines. An asynchron
 2.  It instructs the compiler to transform the method into a state machine that can manage suspending and resuming its execution.
 
 *   The `async` keyword itself does not create a new thread. Simply marking a method as `async` does not make it run in the background. The method begins execution synchronously on the current thread. Only when it encounters an `await` on an operation that has not yet completed does the method suspend, and the thread is released.
-*   Return Types: An `async` method must return one of three types:
+*   Return Types: An `async` method returns one of the following types (asynchronous iterators, which return `IAsyncEnumerable<T>`, are described in [Asynchronous Sequences]({{< ref "/lectures/09.concurrency/asynchronous-streams" >}})):
     *   `Task`: For asynchronous operations that do not return a value.
     *   `Task<TResult>`: For operations that return a value of type TResult upon completion.
+    *   `ValueTask` / `ValueTask<TResult>`: Lightweight structs that avoid allocating a `Task` object when the method often completes synchronously (e.g., returns a cached value). Such a result should be awaited only once.
     *   `void`: **Recommended only for event handlers** (e.g., `async void Button_Click(...)`). Using `async void` elsewhere is bad practice because it makes exception handling and tracking the operation's completion difficult.
 
 The following example shows a **synchronous** operation. The `GetPrimesCount()` method uses `Thread.Sleep(1000)`, which means the thread that called it is blocked for one second. If this were a UI thread, the application would become unresponsive for that time.
@@ -216,12 +217,12 @@ The mechanism for canceling tasks is based on two related types: `CancellationTo
 
 How it works:
 
-1.  You create an instance of `CancellationTokenSource`. The constructor accepts an optional `int timeout` parameter; if present, cancellation will be automatically signaled after the specified time.
+1.  You create an instance of `CancellationTokenSource`. A constructor overload accepts a delay (`int millisecondsDelay` or `TimeSpan delay`); if it is used, cancellation will be automatically signaled after the specified time (the `CancelAfter` method does the same for an existing source).
 2.  From this source, you get a `CancellationToken` using the `Token` property.
-3.  You pass this token to the task you want to be able to cancel.
+3.  You pass this token to the task you want to be able to cancel. When the task is created with `Task.Run`, pass the token also as its second argument: then the task ends in the `Canceled` state (rather than `Faulted`) when the operation is canceled with this token, and it does not start at all if cancellation has already been requested.
 4.  Inside the task, you must periodically check the token's state. The simplest way is to call the `token.ThrowIfCancellationRequested()` method. It throws an `OperationCanceledException` if cancellation has been signaled. Alternatively, you can check the token's state with the `token.IsCancellationRequested` property.
 5.  To initiate cancellation, you call the `Cancel()` method on the `CancellationTokenSource` object.
-6.  When a task is canceled, awaiting it (e.g., via `Wait()` or `await`) will result in an `OperationCanceledException`.
+6.  When a task is canceled, `await` on it throws an `OperationCanceledException` (or the derived `TaskCanceledException`), while `Wait()` and `Result` throw an `AggregateException` that wraps it.
 
 ```csharp
 class Program
@@ -258,7 +259,7 @@ class Program
             }
 
             return primes;
-        });
+        }, token);
     }
 
     static bool IsPrime(int number)

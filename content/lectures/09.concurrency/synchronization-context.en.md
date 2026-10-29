@@ -11,7 +11,7 @@ Using the `SynchronizationContext.Send` and `SynchronizationContext.Post` method
 
 Every thread can have an instance of `SynchronizationContext` associated with it. A running thread can be associated with a synchronization context by calling the static `SynchronizationContext.SetSynchronizationContext` method, and the current context of the running thread can be queried via the `SynchronizationContext.Current` property.
 
-Synchronization contexts are important in GUI application programming. GUI applications set the synchronization context to the so-called "UI thread". This type of synchronization context invokes the delegates passed to it precisely on that thread. This is very useful because GUI applications allow manipulating controls only on the same thread on which they were created. Thanks to synchronization contexts, we can execute code from any thread and safely return execution to the UI thread.
+Synchronization contexts are important in GUI application programming. GUI frameworks install a synchronization context on the so-called "UI thread". This type of synchronization context invokes the delegates passed to it precisely on that thread. This is very useful because GUI applications allow manipulating controls only on the same thread on which they were created. Thanks to synchronization contexts, we can execute code from any thread and safely return execution to the UI thread.
 
 A typical implementation of a synchronization context, where the "location" is a single thread, looks like this:
 
@@ -63,6 +63,8 @@ public class MySynchronizationContext : SynchronizationContext, IDisposable
     }
 }
 ```
+
+For brevity, only `Post` is overridden – the `Send` method inherited from `SynchronizationContext` invokes the delegate synchronously on the calling thread, not on the processing thread.
 
 Such a synchronization context allows code to be executed on this thread from anywhere:
 
