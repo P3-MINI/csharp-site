@@ -675,8 +675,8 @@ Discovering a server in the LAN (the server runs on a machine named `lab-pc`):
 ```text
 $ dotnet run --project MiniKV.Client
 Looking for servers via 255.255.255.255...
-  found 'lab-pc' at 192.168.0.104:5555 (0 key(s))
-Connected to 192.168.0.104:5555. Commands: get <key> | set <key> <value> | del <key> | keys | watch <key> | unwatch <key> | quit
+  found 'lab-pc' at 192.168.1.20:5555 (0 key(s))
+Connected to 192.168.1.20:5555. Commands: get <key> | set <key> <value> | del <key> | keys | watch <key> | unwatch <key> | quit
 > set user:1 Ala
 OK
 > keys
@@ -690,10 +690,10 @@ $ dotnet run --project MiniKV.Server
 Loaded 0 key(s) from 'minikv-5555.json'
 Listening on 0.0.0.0:5555. Press Ctrl+C to stop.
 Answering discovery probes on UDP port 5556 as 'lab-pc'
-[udp] probe from 192.168.0.104:53709
-[192.168.0.104:52014] connected
-[192.168.0.104:52014] SetRequest { Key = user:1, Value = Ala }
-[192.168.0.104:52014] KeysRequest { }
+[udp] probe from 192.168.1.20:53709
+[192.168.1.20:52014] connected
+[192.168.1.20:52014] SetRequest { Key = user:1, Value = Ala }
+[192.168.1.20:52014] KeysRequest { }
 ...
 ```
 
@@ -706,7 +706,7 @@ Listening on 0.0.0.0:5557. Press Ctrl+C to stop.
 Discovery disabled: Address already in use
 ```
 
-Here the broadcast was also delivered to the sending machine itself, so the server answered from its LAN address (`192.168.0.104`), not from `127.0.0.1`. On a machine without a network, sending the broadcast fails and the loopback fallback is used:
+Here the broadcast was also delivered to the sending machine itself, so the server answered from its LAN address (`192.168.1.20`), not from `127.0.0.1`. On a machine without a network, sending the broadcast fails and the loopback fallback is used:
 
 ```text
 $ dotnet run --project MiniKV.Client
@@ -724,7 +724,7 @@ Bye!
 When no server is running at all, the client gives up after 3 attempts × 500 ms per address and prints `No server found. Start one or pass its address: MiniKV.Client <host> [port]`.
 
 > [!TIP]
-> Work in pairs: start the server on one computer and discover it from another one in the same network. If nothing is found, a firewall probably blocks the UDP port 5556 or the TCP port 5555 – you can still connect with an explicit address (`dotnet run --project MiniKV.Client -- 192.168.0.104`). You can check your IP address with `ip a` (Linux) or `ipconfig` (Windows).
+> Work in pairs: start the server on one computer and discover it from another one in the same network. If nothing is found, a firewall probably blocks the UDP port 5556 or the TCP port 5555 – you can still connect with an explicit address (`dotnet run --project MiniKV.Client -- 192.168.1.20`). You can check your IP address with `ip a` (Linux) or `ipconfig` (Windows).
 
 > [!NOTE]
 > #### Stage 5

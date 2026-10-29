@@ -675,8 +675,8 @@ Wykrywanie serwera w sieci lokalnej (serwer działa na komputerze o nazwie `lab-
 ```text
 $ dotnet run --project MiniKV.Client
 Looking for servers via 255.255.255.255...
-  found 'lab-pc' at 192.168.0.104:5555 (0 key(s))
-Connected to 192.168.0.104:5555. Commands: get <key> | set <key> <value> | del <key> | keys | watch <key> | unwatch <key> | quit
+  found 'lab-pc' at 192.168.1.20:5555 (0 key(s))
+Connected to 192.168.1.20:5555. Commands: get <key> | set <key> <value> | del <key> | keys | watch <key> | unwatch <key> | quit
 > set user:1 Ala
 OK
 > keys
@@ -690,10 +690,10 @@ $ dotnet run --project MiniKV.Server
 Loaded 0 key(s) from 'minikv-5555.json'
 Listening on 0.0.0.0:5555. Press Ctrl+C to stop.
 Answering discovery probes on UDP port 5556 as 'lab-pc'
-[udp] probe from 192.168.0.104:53709
-[192.168.0.104:52014] connected
-[192.168.0.104:52014] SetRequest { Key = user:1, Value = Ala }
-[192.168.0.104:52014] KeysRequest { }
+[udp] probe from 192.168.1.20:53709
+[192.168.1.20:52014] connected
+[192.168.1.20:52014] SetRequest { Key = user:1, Value = Ala }
+[192.168.1.20:52014] KeysRequest { }
 ...
 ```
 
@@ -706,7 +706,7 @@ Listening on 0.0.0.0:5557. Press Ctrl+C to stop.
 Discovery disabled: Address already in use
 ```
 
-W tym przypadku rozgłoszenie dotarło także do komputera, który je wysłał, więc serwer odpowiedział ze swojego adresu w sieci lokalnej (`192.168.0.104`), a nie z `127.0.0.1`. Na komputerze bez sieci wysłanie rozgłoszenia się nie udaje i używany jest awaryjny adres pętli zwrotnej:
+W tym przypadku rozgłoszenie dotarło także do komputera, który je wysłał, więc serwer odpowiedział ze swojego adresu w sieci lokalnej (`192.168.1.20`), a nie z `127.0.0.1`. Na komputerze bez sieci wysłanie rozgłoszenia się nie udaje i używany jest awaryjny adres pętli zwrotnej:
 
 ```text
 $ dotnet run --project MiniKV.Client
@@ -724,7 +724,7 @@ Bye!
 Gdy nie działa żaden serwer, klient poddaje się po 3 próbach × 500 ms dla każdego adresu i wypisuje `No server found. Start one or pass its address: MiniKV.Client <host> [port]`.
 
 > [!TIP]
-> Spróbuj w parze z kolegą: uruchom serwer na jednym komputerze i wykryj go z innego komputera w tej samej sieci. Jeśli nic nie zostanie znalezione, prawdopodobnie zapora sieciowa blokuje port UDP 5556 lub port TCP 5555 – nadal możesz połączyć się, podając adres jawnie (`dotnet run --project MiniKV.Client -- 192.168.0.104`). Swój adres IP sprawdzisz poleceniem `ip a` (Linux) lub `ipconfig` (Windows).
+> Spróbuj w parze z kolegą: uruchom serwer na jednym komputerze i wykryj go z innego komputera w tej samej sieci. Jeśli nic nie zostanie znalezione, prawdopodobnie zapora sieciowa blokuje port UDP 5556 lub port TCP 5555 – nadal możesz połączyć się, podając adres jawnie (`dotnet run --project MiniKV.Client -- 192.168.1.20`). Swój adres IP sprawdzisz poleceniem `ip a` (Linux) lub `ipconfig` (Windows).
 
 > [!NOTE]
 > #### Etap 5
