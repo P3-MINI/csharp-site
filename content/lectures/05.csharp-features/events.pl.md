@@ -23,13 +23,13 @@ Dobrą praktyką jest stworzenie dedykowanej klasy dziedziczącej po `System.Eve
 ```csharp
 public class PriceChangedEventArgs : EventArgs
 {
-    public decimal NewPrice { get; }
     public decimal OldPrice { get; }
+    public decimal NewPrice { get; }
 
-    public PriceChangedEventArgs(decimal newPrice, decimal oldPrice)
+    public PriceChangedEventArgs(decimal oldPrice, decimal newPrice)
     {
-        NewPrice = newPrice;
         OldPrice = oldPrice;
+        NewPrice = newPrice;
     }
 }
 ```
@@ -51,8 +51,9 @@ public class Product
         set
         {
             if (value == _price) return;
-            OnPriceChanged(new PriceChangedEventArgs(value, _price));
+            decimal oldPrice = _price;
             _price = value;
+            OnPriceChanged(new PriceChangedEventArgs(oldPrice, value));
         }
     }
 
@@ -64,7 +65,7 @@ public class Product
 ```
 
 > [!IMPORTANT]
-> Definicja systemowego delegatu `EvenetHandler`:
+> Definicja systemowego delegatu `EventHandler<TEventArgs>`:
 > ```csharp
 > public delegate void EventHandler<TEventArgs>(object? sender, TEventArgs e);
 > ```
@@ -77,7 +78,7 @@ Subskrybent definiuje metodę zgodną z sygnaturą delegatu.
 public class Notifier
 {
     // Event handler, with matching signature:
-    public void HandlePriceChanged(object sender, PriceChangedEventArgs e)
+    public void HandlePriceChanged(object? sender, PriceChangedEventArgs e)
     {
         if (sender is Product product)
         {
@@ -106,9 +107,9 @@ product.PriceChanged -= notifier.HandlePriceChanged;
 
 ### Rola słowa kluczowego `event`
 
-Powyższy przykład zadziała identycznie, bez względu na to czy użyjemy słowa kluczowego `event`.
+Powyższy przykład zadziała identycznie, bez względu na to, czy użyjemy słowa kluczowego `event`.
 
-Słowo kluczowe `event` jest kluczowe dla enkapsulacji. Gdybyśmy wystawili publicznie sam delegat:
+Słowo kluczowe `event` ma zasadnicze znaczenie dla enkapsulacji. Gdybyśmy wystawili publicznie sam delegat:
 
 ```csharp
 public EventHandler<PriceChangedEventArgs> PriceChanged;
@@ -119,7 +120,7 @@ public EventHandler<PriceChangedEventArgs> PriceChanged;
 - Wywołać zdarzenie: `product.PriceChanged(null, null);`
 - Wyzerować listę subskrybentów: `product.PriceChanged = null;`
 
-Słówko `event` ogranicza te możliwości, udostępniając z zewnątrz **jedynie na operacje `+=` i `-=`**. Gwarantuje to, że tylko klasa-właściciel może wywołać zdarzenie.
+Słówko `event` ogranicza te możliwości, udostępniając z zewnątrz **jedynie operacje `+=` i `-=`**. Gwarantuje to, że tylko klasa-właściciel może wywołać zdarzenie.
 
 ## Programowanie sterowane zdarzeniami
 
@@ -129,7 +130,7 @@ Programowanie sterowane zdarzeniami to podstawa działania wszystkich interfejs�
 
 ### Przykład
 
-Powyższy diagram ilustruje przepływ zdarzeń w przykładowym systemie:
+Poniższy diagram ilustruje przepływ zdarzeń w przykładowym systemie:
 
 *   Klasa `Product` jest głównym **wydawcą** – informuje o zmianach swojej ceny oraz stanu magazynowego.
 *   `Notifier` i `ShoppingCart` to **subskrybenci** zdarzeń z `Product`. `Notifier` reaguje na zmiany w magazynie, a `ShoppingCart` na zmiany cen, aby przeliczyć swoją wartość.
