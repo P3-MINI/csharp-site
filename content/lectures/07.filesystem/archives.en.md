@@ -5,7 +5,7 @@ weight: 30
 
 # Archives
 
-Archives are files that act as containers for other files and folders. The C# standard library allows working with archives in `.zip` and `.tar` (from .NET 7) formats through classes in the `System.IO.Compression` namespace.
+Archives are files that act as containers for other files and folders. The C# standard library allows working with archives in `.zip` format through classes in the `System.IO.Compression` namespace, and in `.tar` format (from .NET 7) through classes in the `System.Formats.Tar` namespace.
 
 ## ZIP Archives
 
@@ -23,11 +23,11 @@ File.WriteAllText(Path.Combine(sourceDirectory, "file1.txt"), "Hello");
 Directory.CreateDirectory(Path.Combine(sourceDirectory, "subfolder"));
 File.WriteAllText(Path.Combine(sourceDirectory, "subfolder", "file2.txt"), "World");
 
-// Creating .zip archive (override existing)
+// Creating .zip archive (overwrite existing)
 if (File.Exists(zipPath)) File.Delete(zipPath);
 ZipFile.CreateFromDirectory(sourceDirectory, zipPath);
 
-// Extracting archive (override if files exist)
+// Extracting archive (overwrite if files exist)
 if (Directory.Exists(extractPath)) Directory.Delete(extractPath, true);
 ZipFile.ExtractToDirectory(zipPath, extractPath);
 ```
@@ -72,7 +72,7 @@ File.WriteAllText(Path.Combine(sourceDirectory, "log.txt"), "Log entry");
 
 // Creating .tar archive
 if (File.Exists(tarPath)) File.Delete(tarPath);
-TarFile.CreateFromDirectory(sourceDirectory, tarPath);
+TarFile.CreateFromDirectory(sourceDirectory, tarPath, false);
 ```
 
 Similarly, the `ExtractToDirectory` method is used to extract archives. Unlike `ZipFile`, it requires the target folder to exist.

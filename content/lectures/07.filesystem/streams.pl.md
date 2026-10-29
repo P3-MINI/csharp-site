@@ -20,15 +20,15 @@ Console.WriteLine($"Can Seek: {stream.CanSeek}");
 
 ## Praca ze strumieniem
 
-Strumienie dostarczają metody podobne w swoim działaniu do tych z API POSIXa. Główną różnicą jest sposób obsługi wyjątków. W C# metody związane ze strumieniami zgłaszają błędy za pomocą wyjątków dziedziczących po `IOException`. 
+Strumienie dostarczają metody podobne w swoim działaniu do tych z API POSIXa. Główną różnicą jest sposób obsługi błędów. Zamiast zwracać kody błędów (i ustawiać `errno`), metody związane ze strumieniami w C# zgłaszają wyjątki — najczęściej `IOException` i klasy pochodne (np. `FileNotFoundException`), ale też inne, np. `UnauthorizedAccessException` (brak uprawnień) lub `NotSupportedException` (operacja nieobsługiwana przez dany strumień).
 
-> Praca z "surowym strumieniem" jest zazwyczaj niewygodna/niewskazana, lepiej to robić przez [adaptery strumieni]({{< ref "#adaptery-strumieni" >}}) lub korzystając z [fasady pliku]({{< ref "#fasada" >}})
+> Praca z "surowym strumieniem" jest zazwyczaj niewygodna/niewskazana, lepiej to robić przez [adaptery strumieni]({{< ref "#adaptery-strumieni" >}}) lub korzystając z [fasady pliku]({{< ref "#fasada" >}}).
 
 > Większość operacji na strumieniach ma swoje odpowiedniki asynchroniczne (nieblokujące), np. `Read` - `ReadAsync`. Na tym etapie przemilczymy ich istnienie.
 
 ### Odczyt
 
-Metoda `int Read(byte[] buffer, int offset, int count)` ma analogiczne parametry do funkcji `read` z POSIX API. Podobnie, zwraca ilość przeczytanych bajtów, która może się różnić od ilości bajtów, które chcielibyśmy przeczytać. Koniec strumienia jest sygnalizowany przez zwrócenie wartości `0`.
+Metoda `int Read(byte[] buffer, int offset, int count)` ma analogiczne parametry do funkcji `read` z POSIX API. Podobnie, zwraca liczbę przeczytanych bajtów, która może się różnić od liczby bajtów, które chcielibyśmy przeczytać. Koniec strumienia jest sygnalizowany przez zwrócenie wartości `0`.
 
 ```csharp
 using Stream stream = new FileStream("lorem.txt", FileMode.Open);
@@ -46,7 +46,7 @@ while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
 
 ### Zapis
 
-Analogicznie, metoda `void Write(byte[] buffer, int offset, int count)` ma analogiczne parametry do funkcji `write` z POSIX API.
+Podobnie metoda `void Write(byte[] buffer, int offset, int count)` ma analogiczne parametry do funkcji `write` z POSIX API.
 
 ```csharp
 using Stream stream = new FileStream("lorem.txt", FileMode.Create);
@@ -78,7 +78,7 @@ stream.Seek(offset: -10, SeekOrigin.Current);
 
 ### Opróżnianie i zamykanie strumieni
 
-Dane, które wpisujemy do strumienia, zazwyczaj nie są od razu zapisywane do miejsca docelowego (plik, sieć, itp.). Operacje `I/O` są często buforowane, czy to przez system operacyjny, czy inny mechanizm. Aby wymusić zapis buforów, na strumieniu używamy metody `Flush`. Zamknięcie strumienia powoduje jego automatyczne opróżnienie. Strumień zamykamy metodą `Dispose` lub `Close`. Obie te metody są równoważne i robią to samo.
+Dane, które wpisujemy do strumienia, zazwyczaj nie są od razu zapisywane do miejsca docelowego (plik, sieć itp.). Operacje `I/O` są często buforowane, czy to przez system operacyjny, czy inny mechanizm. Aby wymusić zapis buforów strumienia, używamy na nim metody `Flush`. `Flush` przekazuje dane zbuforowane przez obiekt strumienia do systemu operacyjnego, ale nie gwarantuje, że system fizycznie zapisał je na dysk. Do tego `FileStream` udostępnia przeciążenie `Flush(flushToDisk: true)` (odpowiednik `fsync`). Zamknięcie strumienia powoduje jego automatyczne opróżnienie. Strumień zamykamy metodą `Dispose` lub `Close`. Obie te metody są równoważne i robią to samo.
 
 Najlepiej jest używać instrukcji `using` — powoduje ona, że na końcu bloku zasoby z nią związane są automatycznie zwalniane poprzez wywołanie metody `Dispose`. Dzięki temu unikamy błędów związanych z niezamkniętymi zasobami.
 
@@ -138,7 +138,7 @@ FileStream fs1 = new FileStream("file1.txt", FileMode.OpenOrCreate, FileAccess.R
 // File façade methods:
 FileStream fs2 = File.Create("file2.txt");
 FileStream fs3 = File.OpenRead("file3.txt");
-FileStream fs4 = File.OpenWrite("file4.txt");
+FileStream fs4 = File.OpenWrite("file4.txt"); // FileMode.OpenOrCreate - does not truncate an existing file!
 FileStream fs5 = File.Open("file5.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
 ```
 
@@ -196,7 +196,7 @@ Klasa `File` udostępnia fasadę, czyli uproszczony interfejs, który dostarcza 
    const string logFile = "log.txt";
    for (int i = 0; i < 100; i++)
    {
-       File.AppendAllText(logFile, $"[Info] This is a log entry no. {i}");
+       File.AppendAllText(logFile, $"[Info] This is a log entry no. {i}{Environment.NewLine}");
    }
    ```
 
@@ -249,7 +249,9 @@ classDiagram
 
 ### `BufferedStream` 
 
-`BufferedStream` dodaje buforowanie do strumienia. Opakowywuje on inny strumień (np. FileStream) i utrzymuje w pamięci bufor (np. 4KB). Gdy spróbujemy odczytać z niego mniejszą ilość bajtów, `BufferedStream` w rzeczywistości odczyta na raz z pliku 4KB i zapisze je do wewnętrznego bufora, z którego będziemy czytać aż bufor się nie wyczerpie. Analogicznie byłoby z zapisem. Czytanie z i zapis do pamięci RAM jest dużo szybsze niż operacje na plikach na dysku, a buforowanie pozwala na minimalizację ilości kosztownych operacji I/O.
+`BufferedStream` dodaje buforowanie do strumienia. Opakowuje on inny strumień (np. FileStream) i utrzymuje w pamięci bufor (np. 4KB). Gdy spróbujemy odczytać z niego mniejszą liczbę bajtów, `BufferedStream` w rzeczywistości odczyta naraz z pliku 4KB i zapisze je do wewnętrznego bufora, z którego będziemy czytać, dopóki bufor się nie wyczerpie. Analogicznie byłoby z zapisem. Czytanie z i zapis do pamięci RAM jest dużo szybsze niż operacje na plikach na dysku, a buforowanie pozwala na minimalizację liczby kosztownych operacji I/O.
+
+> `FileStream` ma już własny wewnętrzny bufor (domyślnie 4 KB, rozmiar można ustawić parametrem konstruktora `bufferSize`), więc opakowywanie go w `BufferedStream` niewiele daje, chyba że potrzebujemy większego bufora. `BufferedStream` jest najbardziej przydatny dla strumieni bez własnego buforowania, np. `NetworkStream`.
 
 ```csharp
 // Write 100K bytes to a file:
@@ -265,7 +267,7 @@ Console.WriteLine(fs.Position); // 20000
 
 ### Kompresja
 
-Biblioteka standardowa dostarcza trzy metody kompresji reprezentowane przez dekoratory strumieni `GZipStream`, `DeflateStream`, `BrotliStream`. Gdy opakowujemy strumień w np. `GZipStream` i zapisujemy do niego dane, `GZipStream` najpierw kompresuje te dane zanim przekaże je dalej do opakowanego strumienia. Podczas odczytów proces jest odwrotny: `GzipStream` czyta skompresowane dane z opakowanego strumienia i dekompresuje je zanim je zwróci.
+Biblioteka standardowa dostarcza kompresujące dekoratory strumieni `DeflateStream`, `ZLibStream` (.NET 6), `GZipStream` i `BrotliStream`. Pierwsze trzy korzystają z tego samego algorytmu Deflate i różnią się jedynie formatem nagłówka i stopki (surowy Deflate, zlib, gzip); `BrotliStream` używa algorytmu Brotli. Gdy opakowujemy strumień w np. `GZipStream` i zapisujemy do niego dane, `GZipStream` najpierw kompresuje te dane, zanim przekaże je dalej do opakowanego strumienia. Podczas odczytów proces jest odwrotny: `GZipStream` czyta skompresowane dane z opakowanego strumienia i dekompresuje je, zanim je zwróci.
 
 1. Kompresja
 
@@ -302,7 +304,7 @@ Biblioteka standardowa dostarcza trzy metody kompresji reprezentowane przez deko
 
 ### Łączenie dekoratorów
 
-Naturalnie, jako że dekoratory są same w sobie strumieniami, to dzięki temu możemy łączyć dekoratory w łańcuchy.
+Ponieważ dekoratory same są strumieniami, możemy łączyć je w łańcuchy.
 
 ```csharp
 using Stream fs = new FileStream("dane.bin.gz", FileMode.Create);
@@ -325,7 +327,7 @@ Największą przewagą nad API POSIX są adaptery strumieni. Dla strumieni mamy 
 
 ### Adaptery tekstu
 
-Adaptery tekstu dodają do strumienia możliwość odczytu i zapisu znaków, słów i całych linii tekstu. Pozwalają na operacje takie jak `string? ReadLine()`, `string? ReadToEnd()`, `void WriteLine(string str)`, `void Write(string str)`.
+Adaptery tekstu dodają do strumienia możliwość odczytu i zapisu znaków, napisów i całych linii tekstu. Pozwalają na operacje takie jak `string? ReadLine()`, `string? ReadToEnd()`, `void WriteLine(string str)`, `void Write(string str)`.
 
 1. `StreamReader`
    ```csharp
@@ -340,7 +342,7 @@ Adaptery tekstu dodają do strumienia możliwość odczytu i zapisu znaków, sł
 
 2. `StreamWriter`
    ```csharp
-   using FileStream fs = File.OpenWrite("fizzbuzz.txt");
+   using FileStream fs = File.Create("fizzbuzz.txt");
    using StreamWriter sw = new StreamWriter(fs);
 
    for (int i = 1; i <= 100; i++)
@@ -363,7 +365,7 @@ Z kolei adapterów binarnych używamy, gdy pracujemy z danymi binarnymi. Adapter
 
 1. `BinaryWriter`
    ```csharp
-   using FileStream fs = File.OpenWrite("player.bin");
+   using FileStream fs = File.Create("player.bin");
    using BinaryWriter bw = new BinaryWriter(fs);
    
    Player player = new Player("Bob", 100, 2500, 10, new Vector2(48.5f, 32.5f));
