@@ -21,15 +21,20 @@ lock(lockObject)
 Instrukcja `lock` jest tłumaczona następująco:
 
 ```csharp
-Monitor.Enter(lockObject);
+object __lockObj = lockObject;
+bool __lockWasTaken = false;
 try
 {
+    Monitor.Enter(__lockObj, ref __lockWasTaken);
     statement(s);
 }
-finally { Monitor.Exit(lockObject); }
+finally
+{
+    if (__lockWasTaken) Monitor.Exit(__lockObj);
+}
 ```
 
-Jest to bardzo szybki mechanizm, jeśli nie dochodzi do rywalizacji. W przypadku rywalizacji wątek jest blokowany przez system operacyjny. Instrukcja `lock` działa tylko w obrębie jednego procesu. Ponadto tak jak było wspomniane na wstępie przed i po bloku instrukcji `lock` wstawiana jest bariera pamięci.
+Jest to bardzo szybki mechanizm, jeśli nie dochodzi do rywalizacji. W przypadku rywalizacji wątek jest blokowany przez system operacyjny. Instrukcja `lock` działa tylko w obrębie jednego procesu. Ponadto, jak wspomniano we wstępie, przed i po bloku instrukcji `lock` wstawiana jest bariera pamięci.
 
 ```csharp
 int counter = 0, times = 1_000_000;
@@ -56,8 +61,8 @@ Console.WriteLine($"Counter Value: {counter}");
 > {{< filetree dir="lectures/synchronization/LocksDemo" >}}
 
 > [!NOTE] 
-> Od C# 13 zaleca się używać obiektu typu `Lock` w instrukcji `lock`, lub bezpośrednio typem `Lock`.
-> Jeżeli obiektem blokady jest obiekt typu `Lock`, to Instrukcja `lock` tłumaczy się następująco:
+> Od C# 13 i .NET 9 zaleca się używanie w instrukcji `lock` obiektu typu `System.Threading.Lock` lub bezpośrednie korzystanie z typu `Lock`.
+> Jeżeli obiektem blokady jest obiekt typu `Lock`, to instrukcja `lock` tłumaczy się następująco:
 > ```csharp
 > Lock.Scope scope = lockObject.EnterScope();
 > try
@@ -91,7 +96,7 @@ Console.WriteLine($"Counter Value: {counter}");
 
 Klasa `System.Threading.Mutex` to prymityw synchronizacji działający na poziomie jądra systemu operacyjnego.
 
-Może być nazwany, co pozwala na synchronizację wątków pomiędzy różnymi procesami (np. zapobieganie uruchomieniu drugiej instancji aplikacji). Jest znacznie wolniejszy od instrukcji `lock` (nawet 50x wolniejszy) z powodu konieczności przełączania kontekstu do jądra.
+Może być nazwany, co pozwala na synchronizację wątków pomiędzy różnymi procesami (np. zapobieganie uruchomieniu drugiej instancji aplikacji). Jest znacznie wolniejszy od instrukcji `lock` (nawet bez rywalizacji zwykle kilkadziesiąt razy wolniejszy), ponieważ jest ciężkim obiektem poziomu jądra.
 
 ```csharp
 int counter = 0, times = 1_000_000;

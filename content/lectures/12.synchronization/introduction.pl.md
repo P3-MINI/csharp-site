@@ -17,7 +17,7 @@ Dostępne mechanizmy można podzielić na cztery główne kategorie:
     - `Semaphore(Slim)`
     - `ReaderWriterLock(Slim)`
 -   **Sygnalizacja** (*Signaling*) - pozwala na komunikację między wątkami i oczekiwanie na określone zdarzenie.
-    - `(ManualReset|AutoReset|Countdown)Event(Slim)`
+    - `ManualResetEvent(Slim)`, `AutoResetEvent`, `CountdownEvent`
     - `Monitor.Wait`, `Monitor.Pulse` (zmienne warunkowe)
     - `Barrier`
 -   **Inne niskopoziomowe** - nie wymagają blokowania wątków.
@@ -26,7 +26,7 @@ Dostępne mechanizmy można podzielić na cztery główne kategorie:
 
 ## Problem
 
-W poniższym przykładzie zmienna `complete` nie jest zabezpieczona. Kompilator (szczególnie w trybie `Release`) może zoptymalizować pętlę `while` w taki sposób, że wartość `complete` zostanie pobrana do rejestru procesora tylko raz. Mimo że główny wątek zmienia wartość na `true`, wątek poboczny może tego nigdy nie zauważyć, powodując zawieszenie programu.
+W poniższym przykładzie zmienna `complete` nie jest zabezpieczona. Kompilator JIT (szczególnie w trybie `Release`) może zoptymalizować pętlę `while` w taki sposób, że wartość `complete` zostanie pobrana do rejestru procesora tylko raz. Mimo że główny wątek zmienia wartość na `true`, wątek poboczny może tego nigdy nie zauważyć, powodując zawieszenie programu.
 
 ```csharp
 class Program
@@ -61,12 +61,12 @@ Bariera pamięci to instrukcja procesora lub kompilatora, która wymusza określ
 1.  **Zapobiega zmianie kolejności instrukcji**:  
     Zarówno kompilatory, jak i nowoczesne procesory optymalizują kod, zmieniając kolejność wykonywania instrukcji, jeśli uznają, że nie wpłynie to na wynik w ramach pojedynczego wątku. W środowisku wielowątkowym taka zmiana może jednak prowadzić do błędów, gdzie jeden wątek widzi zmiany w niewłaściwej kolejności. Bariera "powstrzymuje" te optymalizacje, gwarantując, że instrukcje przed barierą wykonają się przed instrukcjami za nią.
 2.  **Gwarantuje widoczność**:  
-    W systemach wielordzeniowych każdy rdzeń ma własną pamięć podręczną (cache). Zapis do zmiennej przez jeden wątek może trafić tylko do cache'u lokalnego i nie być od razu widoczny dla innych rdzeni (i wątków). Bariera pamięci wymusza synchronizację cache'u z pamięcią główną (RAM), dzięki czemu inne wątki widzą najnowsze wartości.
+    W systemach wielordzeniowych zapis do zmiennej przez jeden wątek może najpierw trafić do bufora zapisu rdzenia (*store buffer*) lub zostać zatrzymany przez kompilator w rejestrze, przez co nie jest od razu widoczny dla innych rdzeni (i wątków). Bariera pamięci wymusza dokończenie takich oczekujących zapisów i zapobiega odczytywaniu nieaktualnych kopii, dzięki czemu inne wątki widzą najnowsze wartości. (Wbrew popularnemu przekonaniu bariera nie "zrzuca cache'u do RAM-u" - spójność pamięci podręcznych wszystkich rdzeni zapewnia sam sprzęt.)
 
-W C# barierę można wywołać ręcznie, korzystając z metody `Thread.MemoryBarrier`. Rzadko jednak używa się ich bezpośrednio. Dzieje się ona niejawnie przy:
-1. Instrukcji `lock` (przed i po wyjściu)
+W C# barierę można wywołać ręcznie, korzystając z metody `Thread.MemoryBarrier`. Rzadko jednak wywołuje się ją bezpośrednio, ponieważ bariery są generowane niejawnie przy:
+1. Instrukcji `lock` (przy wejściu i przy wyjściu)
 2. Metodach z prymitywów synchronizacji (np. `Mutex`, `Semaphore`, `AutoResetEvent`)
-3. Odczycie/zapisie wartości `volatile`
+3. Odczycie/zapisie pól `volatile` (półbariery: odczyt ma semantykę *acquire*, a zapis - *release*)
 4. Metodach z klasy `Interlocked`
 5. Uruchomieniu, czekaniu na wątek/`Task`
 
@@ -80,7 +80,7 @@ Klasa `Interlocked` służy do wykonywania atomowych operacji na zmiennych wspó
 
 Na przykład atomowe nie są:
 - inkrementacja, dekrementacja
-- dodawanie 64-bitowych liczb na 32-bitowym procesorze
+- odczyt/zapis wartości 64-bitowych (`long`, `double`) na platformie 32-bitowej
 - swap
 
 ### Przykład

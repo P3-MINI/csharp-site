@@ -17,7 +17,7 @@ Available mechanisms can be divided into four main categories:
     - `Semaphore(Slim)`
     - `ReaderWriterLock(Slim)`
 -   **Signaling** - allows for communication between threads and waiting for a specific event.
-    - `(ManualReset|AutoReset|Countdown)Event(Slim)`
+    - `ManualResetEvent(Slim)`, `AutoResetEvent`, `CountdownEvent`
     - `Monitor.Wait`, `Monitor.Pulse` (condition variables)
     - `Barrier`
 -   **Other low-level** - do not require thread blocking.
@@ -26,7 +26,7 @@ Available mechanisms can be divided into four main categories:
 
 ## Problem
 
-In the example below, the `complete` variable is not protected. The compiler (especially in `Release` mode) may optimize the `while` loop in such a way that the value of `complete` is fetched into the processor register only once. Even though the main thread changes the value to `true`, the background thread may never notice this, causing the program to hang.
+In the example below, the `complete` variable is not protected. The JIT compiler (especially in `Release` mode) may optimize the `while` loop in such a way that the value of `complete` is fetched into the processor register only once. Even though the main thread changes the value to `true`, the background thread may never notice this, causing the program to hang.
 
 ```csharp
 class Program
@@ -61,12 +61,12 @@ A memory barrier is a processor or compiler instruction that enforces a specific
 1.  **Prevents instruction reordering**:  
     Both compilers and modern processors optimize code by changing the order of instruction execution if they determine it will not affect the result within a single thread. However, in a multi-threaded environment, such reordering can lead to errors where one thread sees changes in the wrong order. A barrier "stops" these optimizations, guaranteeing that instructions before the barrier are executed before instructions after it.
 2.  **Guarantees visibility**:  
-    In multi-core systems, each core has its own cache. A write to a variable by one thread may only reach the local cache and not be immediately visible to other cores (and threads). A memory barrier forces synchronization of the cache with main memory (RAM), so that other threads see the latest values.
+    In multi-core systems, a write to a variable by one thread may first go to the core's write buffer (*store buffer*), or be kept in a register by the compiler, and therefore not be immediately visible to other cores (and threads). A memory barrier forces such pending writes to complete and prevents reading stale copies, so that other threads see the latest values. (Contrary to a popular belief, it does not "flush the cache to RAM" - the hardware itself keeps the caches of all cores coherent.)
 
-In C#, a barrier can be invoked manually using the `Thread.MemoryBarrier` method. However, they are rarely used directly. It happens implicitly during:
-1. The `lock` statement (before and after exit)
+In C#, a barrier can be invoked manually using the `Thread.MemoryBarrier` method. However, it is rarely called directly, because barriers are generated implicitly by:
+1. The `lock` statement (on entry and on exit)
 2. Methods from synchronization primitives (e.g., `Mutex`, `Semaphore`, `AutoResetEvent`)
-3. Read/write of `volatile` values
+3. Reads/writes of `volatile` fields (half barriers: a read has *acquire* semantics, a write has *release* semantics)
 4. Methods from the `Interlocked` class
 5. Starting, waiting for a thread/`Task`
 
@@ -80,7 +80,7 @@ The `Interlocked` class is used to perform atomic operations on variables shared
 
 For example, the following are not atomic:
 - increment, decrement
-- adding 64-bit numbers on a 32-bit processor
+- reading/writing 64-bit values (`long`, `double`) on a 32-bit platform
 - swap
 
 ### Example

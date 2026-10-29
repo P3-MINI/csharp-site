@@ -21,12 +21,17 @@ lock(lockObject)
 The `lock` statement is translated as follows:
 
 ```csharp
-Monitor.Enter(lockObject);
+object __lockObj = lockObject;
+bool __lockWasTaken = false;
 try
 {
+    Monitor.Enter(__lockObj, ref __lockWasTaken);
     statement(s);
 }
-finally { Monitor.Exit(lockObject); }
+finally
+{
+    if (__lockWasTaken) Monitor.Exit(__lockObj);
+}
 ```
 
 It is a very fast mechanism if there is no contention. In case of contention, the thread is blocked by the operating system. The `lock` statement works only within a single process. Furthermore, as mentioned in the introduction, a memory barrier is inserted before and after the `lock` block.
@@ -56,7 +61,7 @@ Console.WriteLine($"Counter Value: {counter}");
 > {{< filetree dir="lectures/synchronization/LocksDemo" >}}
 
 > [!NOTE] 
-> Starting from C# 13, it is recommended to use the `Lock` object in the `lock` statement, or use the `Lock` type directly.
+> Starting from C# 13 and .NET 9, it is recommended to use an object of the `System.Threading.Lock` type in the `lock` statement, or to use the `Lock` type directly.
 > If the lock object is of type `Lock`, the `lock` statement translates as follows:
 > ```csharp
 > Lock.Scope scope = lockObject.EnterScope();
@@ -91,7 +96,7 @@ Console.WriteLine($"Counter Value: {counter}");
 
 The `System.Threading.Mutex` class is a synchronization primitive operating at the operating system kernel level.
 
-It can be named, which allows for thread synchronization between different processes (e.g., preventing a second instance of an application from starting). It is significantly slower than the `lock` statement (up to 50x slower) due to the need for context switching to the kernel.
+It can be named, which allows for thread synchronization between different processes (e.g., preventing a second instance of an application from starting). It is significantly slower than the `lock` statement (even without contention, typically tens of times slower), because it is a heavyweight, kernel-level object.
 
 ```csharp
 int counter = 0, times = 1_000_000;
