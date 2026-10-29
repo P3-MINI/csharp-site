@@ -63,6 +63,20 @@ else
 > [!NOTE]
 > Zachowanie domyślnego przechwytywania kontekstu przez `await` można wyłączyć, używając `await expression.ConfigureAwait(false)`.
 
+Od .NET 8 typy `Task` i `Task<TResult>` mają również przeciążenie `ConfigureAwait(ConfigureAwaitOptions options)`, które przyjmuje kombinację flag:
+
+* `None` – kontekst nie jest przechwytywany (odpowiednik `ConfigureAwait(false)`),
+* `ContinueOnCapturedContext` – kontekst jest przechwytywany (odpowiednik `ConfigureAwait(true)`, czyli zachowania domyślnego),
+* `SuppressThrowing` – `await` nie rzuca wyjątku, jeśli zadanie zakończyło się błędem lub zostało anulowane; jego stan można sprawdzić później (obsługiwane tylko dla niegenerycznego `Task`),
+* `ForceYielding` – kontynuacja jest zawsze planowana asynchronicznie, nawet jeśli zadanie już się zakończyło (podobnie jak `await Task.Yield()`).
+
+```csharp
+Task task = Task.Run(() => throw new InvalidOperationException("Boom"));
+
+await task.ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+Console.WriteLine(task.Status); // Faulted
+```
+
 > [!INFO]
 > Przykład ilustrujący przełączanie wątków:
 > {{< filetree dir="lectures/concurrency/AsyncAwaitThreads" >}}
