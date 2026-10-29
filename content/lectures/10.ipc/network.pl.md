@@ -17,6 +17,8 @@ W warstwie transportu znajdują się dwa podstawowe protokoły wysyłania i odbi
 
 `UDP` i `TCP` pozwalają na przesył danych, nie definiują wiadomości jakie można nimi wysyłać ani jakiejś ustalonej kolejności ich wymiany. Używając bezpośrednio tych protokołów musimy sami o to zadbać o takie rzeczy jak autentykacja czy szyfrowanie.
 
+Korzystanie z obu protokołów w .NET opisują osobne strony: [TCP]({{< ref "/lectures/10.ipc/tcp" >}}) i [UDP]({{< ref "/lectures/10.ipc/udp" >}}).
+
 ### Warstwa aplikacji
 
 Warstwa aplikacji definiuje protokoły wyższego poziomu - w jaki sposób aplikacje komunikują się ze sobą i wymieniają dane. Protokoły warstwy aplikacji, takie jak *HTTP*, *FTP*, *SMTP*, czy *DNS*, określają format wiadomości oraz zasady interakcji między klientem a serwerem. W przeciwieństwie do protokołów transportowych (TCP/UDP), które zajmują się przesyłaniem bajtów, protokoły aplikacji skupiają się na semantyce danych i operacjach specyficznych dla danej usługi.
