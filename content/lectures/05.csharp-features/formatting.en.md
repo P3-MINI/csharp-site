@@ -4,18 +4,18 @@ title: "Formatting"
 
 # Formatting
 
-All types in .NET have a `ToString()` method, but sometimes its basic implementation is insufficient. Sometimes we need a mechanism that allows for precise control over the textual representation of an object-for example, to display a number as currency or to format a date according to a specific pattern.
+All types in .NET have a `ToString()` method, but sometimes its basic implementation is insufficient. Sometimes we need a mechanism that allows for precise control over the textual representation of an object – for example, to display a number as currency or to format a date according to a specific pattern.
 
 This is what the formatting system based on the `IFormattable` interface is for.
 
 ## The `IFormattable` Interface
 
-It is implemented by all primitive types, numeric types, and `DateTime`. It defines one overload of the `ToString` method:
+It is implemented by all numeric types, date and time types (`DateTime`, `DateTimeOffset`, `TimeSpan`, …), `Guid` and enums (but not by `bool` or `string`). It defines one overload of the `ToString` method:
 
 ```csharp
 public interface IFormattable
 {
-    string ToString(string format, IFormatProvider formatProvider);
+    string ToString(string? format, IFormatProvider? formatProvider);
 }
 ```
 
@@ -49,10 +49,10 @@ var date = new DateTime(2025, 12, 25);
 
 // Assuming current culture is pl-PL
 Console.WriteLine($"Price: {price:C}"); // Output: Price: 1 250,50 zł
-Console.WriteLine($"Date: {date:D}");   // Output: Date: 25 grudnia 2025
+Console.WriteLine($"Date: {date:D}");   // Output: Date: czwartek, 25 grudnia 2025
 ```
 
-> Starting from .NET 6 we can interpolate `string`s using chosen format provider, using static helper method `string.Create`:
+> Starting from .NET 6, we can interpolate `string`s using a chosen format provider with the static helper method `string.Create`:
 > 
 > ```csharp
 > string.Create(culture, $"{date,23}{number,20:N3}");
@@ -118,7 +118,7 @@ public class Temperature : IFormattable
     public Temperature(decimal temperature)
     {
         if (temperature < -273.15m)
-            throw new ArgumentOutOfRangeException($"{temperature} is less than absolute zero.");
+            throw new ArgumentOutOfRangeException(nameof(temperature), $"{temperature} is less than absolute zero.");
         this.temp = temperature;
     }
 
@@ -133,12 +133,12 @@ public class Temperature : IFormattable
         return ToString("G", CultureInfo.CurrentCulture);
     }
 
-    public string ToString(string format)
+    public string ToString(string? format)
     {
         return ToString(format, CultureInfo.CurrentCulture);
     }
 
-    public string ToString(string format, IFormatProvider provider)
+    public string ToString(string? format, IFormatProvider? provider)
     {
         if (String.IsNullOrEmpty(format)) format = "G";
         if (provider == null) provider = CultureInfo.CurrentCulture;
@@ -182,7 +182,7 @@ These are the most commonly used formats that cover most typical use cases.
 | `D`         | Decimal         | `(123).ToString("D5")`       | `00123`          |
 | `F`         | Fixed-point     | `(1234.567).ToString("F2")`  | `1234.57`        |
 | `N`         | Number          | `(1234.567).ToString("N2")`  | `1,234.57`       |
-| `P`         | Percent         | `(0.123).ToString("P1")`     | `12.3 %`         |
+| `P`         | Percent         | `(0.123).ToString("P1")`     | `12.3%`          |
 | `X`         | Hexadecimal     | `(255).ToString("X")`        | `FF`             |
 
 > [!NOTE]
@@ -223,7 +223,7 @@ Similar to numbers, we have standard and custom formats at our disposal.
 
 ### Custom Date and Time Formats
 
-| Specifier   | Description                       | Example (for `2025-11-23 14:30:05`) | Result            |
+| Specifier   | Description                       | Example (for `2025-11-23 14:30:05`) | Result (`en-US`)  |
 | :---------- | :-------------------------------- | :---------------------------------- | :---------------- |
 | `dd`        | Day of the month (01-31).         | `date.ToString("dd")`               | `23`              |
 | `dddd`      | Full name of the day of the week. | `date.ToString("dddd")`             | `Sunday`          |
@@ -238,6 +238,8 @@ Similar to numbers, we have standard and custom formats at our disposal.
 
 ```csharp
 DateTime date = new DateTime(2025, 11, 23, 14, 30, 5);
+
+// Assuming current culture is en-US
 Console.WriteLine(date.ToString("dddd, dd MMMM yyyy")); // Output: Sunday, 23 November 2025
 Console.WriteLine(date.ToString("yyyy-MM-dd HH:mm:ss")); // Output: 2025-11-23 14:30:05
 ```
