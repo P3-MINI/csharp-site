@@ -161,6 +161,16 @@ char newLine = '\n';
 char copyright = '\u00A9';
 ```
 
+### Escape Sequences and `\e` (C# 13)
+
+Escape sequences in `char` and `string` literals are mostly the same as in C++ (`\n`, `\t`, `\0`, `\\`, `\'`, `\"`, ...). Additionally, `\uXXXX` denotes a UTF-16 code unit given by 4 hexadecimal digits. Since C# 13, there is also `\e` - the ESC character (U+001B), used e.g. in ANSI escape codes that control the terminal (colors, bold text). Previously, it had to be written as `\u001b` or `\x1b`; the latter is error-prone, because `\x` consumes from 1 to 4 hexadecimal digits.
+
+```csharp
+char escape = '\e'; // C# 13, the same as '\u001b'
+Console.WriteLine("\e[1mBold\e[0m and normal text"); // ANSI escape codes
+Console.WriteLine("\x1bCafe" == "\u1BCAfe"); // True - \x consumed 4 hex digits: \x1bCa
+```
+
 ## The `Convert` Class
 
 The `Convert` class contains many useful methods for converting between types. It allows for conversions between basic types and strings, or conversions between the `bool` type and numeric types. Conversions using this class round floating-point numbers when converting to integers.
