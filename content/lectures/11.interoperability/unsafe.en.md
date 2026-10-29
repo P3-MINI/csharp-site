@@ -192,6 +192,29 @@ unsafe
 > }
 > ```
 
+### `Span<T>`
+
+`Span<T>` (and its read-only counterpart `ReadOnlySpan<T>`) is a `ref struct` representing a contiguous region of memory: an array (or a part of it), memory allocated with `stackalloc`, or unmanaged memory (see `NativeMemory` below). It provides bounds-checked access without an `unsafe` context, so a single method accepting a span can work with any kind of memory.
+
+Since C# 14, the conversions from `T[]` to `Span<T>` and `ReadOnlySpan<T>`, from `Span<T>` to `ReadOnlySpan<T>` and from `string` to `ReadOnlySpan<char>` are built into the language (*implicit span conversions*). Previously, they were ordinary user-defined conversion operators, which the compiler does not consider, e.g., for extension method receivers or generic type inference. Now, extension methods for spans from the `MemoryExtensions` class can be called directly on arrays:
+
+```csharp
+int[] array = [1, 2, 3, 4];
+Span<int> onStack = stackalloc int[] { 1, 2, 3, 4 };
+
+Console.WriteLine(Sum(array));   // 10 (int[] -> ReadOnlySpan<int>)
+Console.WriteLine(Sum(onStack)); // 10 (Span<int> -> ReadOnlySpan<int>)
+Console.WriteLine(array.StartsWith([1, 2])); // True (C# 14)
+
+static int Sum(ReadOnlySpan<int> values)
+{
+    int sum = 0;
+    foreach (int value in values)
+        sum += value;
+    return sum;
+}
+```
+
 ## Fixed-size buffers
 
 The `fixed` keyword can also be used to declare an array directly within a struct, ensuring that the data is embedded linearly in the struct's memory layout, instead of being a reference to a separate object on the heap.
