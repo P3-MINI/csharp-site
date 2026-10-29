@@ -6,7 +6,7 @@ title: "Extension Methods"
 
 Extension methods allow you to add methods to existing types without modifying their code. This is particularly useful if you want to extend the functionality of a type to which you do not have access. They also allow you to divide and group the functionality of an object across several classes.
 
-Extension methods must be defined in a static class. The first parameter specifies the type being extended and must be preceded by the `this` keyword.
+Extension methods must be defined in a static, non-generic, non-nested class. The first parameter specifies the type being extended and must be preceded by the `this` keyword.
 
 ```csharp
 public static class StringExtensions
@@ -90,7 +90,7 @@ Console.WriteLine(str.WordCount());
 
 ## Trivia
 
-We can extend non-iterable types with a method that returns an iterator.
+We can extend non-iterable types with a `GetEnumerator` method that returns an iterator (`foreach` accepts such extension methods since C# 9).
 
 ```csharp
 public static class IntExtensions
