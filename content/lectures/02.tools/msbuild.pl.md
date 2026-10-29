@@ -369,3 +369,78 @@ MSBuild oferuje opcje logowania, które są nieocenione przy diagnozowaniu probl
     dotnet build /flp:LogFile=build.log;Verbosity=diagnostic
     ```
     To polecenie zapisze logi do pliku `build.log`.
+
+## Aplikacje jednoplikowe (file-based apps)
+
+Od .NET 10 pojedynczy plik `.cs` można zbudować i uruchomić bez pliku projektu. Takie **aplikacje jednoplikowe** (file-based apps) są wygodne do pisania małych narzędzi, skryptów i eksperymentów:
+
+```csharp
+// hello.cs
+Console.WriteLine($"Hello, {(args.Length > 0 ? args[0] : "World")}!");
+```
+
+```bash
+dotnet run hello.cs          # Hello, World!
+dotnet run hello.cs -- Bob   # Hello, Bob!
+dotnet hello.cs Bob          # shorter form
+```
+
+Pod spodem SDK tworzy dla programu wirtualny plik projektu (z ustawieniami domyślnymi podobnymi do `dotnet new console`, np. włączonymi `ImplicitUsings` i `Nullable`) i buduje go za pomocą MSBuild. Wyniki budowania są przechowywane w katalogu podręcznym (cache) poza katalogiem ze źródłami, dzięki czemu kolejne uruchomienia są szybkie. Kompilowany jest tylko ten jeden plik – inne pliki `.cs` w tym samym katalogu nie są częścią programu.
+
+Ustawienia projektu podaje się za pomocą dyrektyw `#:` umieszczonych na początku pliku:
+
+*   `#:package Nazwa@Wersja` – referencja do pakietu NuGet (`PackageReference`),
+*   `#:property Nazwa=Wartość` – właściwość MSBuild,
+*   `#:sdk Nazwa` – inne SDK, np. `#:sdk Microsoft.NET.Sdk.Web` dla aplikacji ASP.NET Core,
+*   `#:project Ścieżka` – referencja do innego projektu (`ProjectReference`), np. `#:project ../MyLib/MyLib.csproj`.
+
+W systemach uniksowych plik może dodatkowo zaczynać się od linii shebang i być uruchamiany jak skrypt:
+
+```csharp
+#!/usr/bin/env dotnet
+#:package Humanizer@3.0.10
+#:property TreatWarningsAsErrors=true
+
+using Humanizer;
+
+foreach (var arg in args)
+    Console.WriteLine($"{arg} -> {int.Parse(arg).ToWords()}");
+```
+
+```bash
+chmod +x tool.cs
+./tool.cs 7 42
+# 7 -> seven
+# 42 -> forty-two
+```
+
+Polecenia `dotnet build` i `dotnet publish` również przyjmują plik `.cs`. Domyślnie aplikacje jednoplikowe są publikowane jako natywne pliki wykonywalne Native AOT (`PublishAot=true`) do katalogu `artifacts` obok pliku źródłowego.
+
+Gdy program przerośnie jeden plik, można go przekształcić w zwykły projekt:
+
+```bash
+dotnet project convert tool.cs
+```
+
+Polecenie tworzy katalog `tool` zawierający kopię `tool.cs` bez dyrektyw oraz plik `tool.csproj`, w którym dyrektywy (i ustawienia domyślne) stały się zwykłymi właściwościami i itemami MSBuild:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PublishAot>true</PublishAot>
+    <PackAsTool>true</PackAsTool>
+    <UserSecretsId>tool-...</UserSecretsId>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer" Version="3.0.10" />
+  </ItemGroup>
+
+</Project>
+```

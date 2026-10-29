@@ -369,3 +369,78 @@ MSBuild offers logging options that are invaluable when diagnosing build problem
     dotnet build /flp:LogFile=build.log;Verbosity=diagnostic
     ```
     This command will save the logs to the `build.log` file.
+
+## File-based Apps
+
+Since .NET 10, a single `.cs` file can be built and run without a project file. Such **file-based apps** are convenient for small tools, scripts, and experiments:
+
+```csharp
+// hello.cs
+Console.WriteLine($"Hello, {(args.Length > 0 ? args[0] : "World")}!");
+```
+
+```bash
+dotnet run hello.cs          # Hello, World!
+dotnet run hello.cs -- Bob   # Hello, Bob!
+dotnet hello.cs Bob          # shorter form
+```
+
+Under the hood, the SDK creates a virtual project file for the program (with defaults similar to `dotnet new console`, e.g., `ImplicitUsings` and `Nullable` enabled) and builds it with MSBuild. The build output is stored in a cache directory outside the source folder, so subsequent runs are fast. Only this single file is compiled – other `.cs` files in the same directory are not part of the program.
+
+Project settings are specified with `#:` directives placed at the beginning of the file:
+
+*   `#:package Name@Version` – a reference to a NuGet package (`PackageReference`),
+*   `#:property Name=Value` – an MSBuild property,
+*   `#:sdk Name` – a different SDK, e.g., `#:sdk Microsoft.NET.Sdk.Web` for an ASP.NET Core application,
+*   `#:project Path` – a reference to another project (`ProjectReference`), e.g., `#:project ../MyLib/MyLib.csproj`.
+
+On Unix-like systems, the file can additionally start with a shebang line and be run like a script:
+
+```csharp
+#!/usr/bin/env dotnet
+#:package Humanizer@3.0.10
+#:property TreatWarningsAsErrors=true
+
+using Humanizer;
+
+foreach (var arg in args)
+    Console.WriteLine($"{arg} -> {int.Parse(arg).ToWords()}");
+```
+
+```bash
+chmod +x tool.cs
+./tool.cs 7 42
+# 7 -> seven
+# 42 -> forty-two
+```
+
+The `dotnet build` and `dotnet publish` commands also accept a `.cs` file. By default, file-based apps are published as Native AOT executables (`PublishAot=true`) to the `artifacts` directory next to the source file.
+
+When the program outgrows a single file, it can be converted into a regular project:
+
+```bash
+dotnet project convert tool.cs
+```
+
+The command creates a `tool` directory containing a copy of `tool.cs` without the directives and a `tool.csproj` file, in which the directives (and the implicit defaults) have become ordinary MSBuild properties and items:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PublishAot>true</PublishAot>
+    <PackAsTool>true</PackAsTool>
+    <UserSecretsId>tool-...</UserSecretsId>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer" Version="3.0.10" />
+  </ItemGroup>
+
+</Project>
+```

@@ -64,6 +64,9 @@ Aplikację możemy od razu uruchomić:
 dotnet run
 ```
 
+> [!TIP]
+> Od .NET 10 pojedynczy plik `.cs` można też uruchomić bezpośrednio, bez tworzenia projektu: `dotnet run hello.cs` (zob. [aplikacje jednoplikowe]({{< ref "/lectures/02.tools/msbuild#aplikacje-jednoplikowe-file-based-apps" >}})).
+
 W starszych szablonach projektów, ten sam kod wyglądałby następująco:
 
 ```csharp
