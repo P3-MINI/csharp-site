@@ -189,7 +189,7 @@ Func<string> greet = () => { return "Hello, world"; };
 - If a lambda has only one expression, we can use the expression body syntax and omit the `return` keyword.
 - The compiler can infer the parameter types and the return value of the lambda from the type on the left-hand side.
 
-We can also explicitly specify the parameter types and the return type. This allows the compiler to infer the delegate's type, enabling us to use the `var` keyword on the left-hand side of the assignment. Sometimes this simply improves code readability.
+We can also explicitly specify the parameter types and, since C# 10, the return type (written before the parameter list). Sometimes this simply improves code readability. Explicit parameter types also allow the compiler to infer the delegate type on its own, enabling us to use the `var` keyword on the left-hand side of the assignment.
 
 ```csharp
 var square = double (double x) => x * x;
@@ -198,14 +198,61 @@ var write = void (string str) => Console.Write(str);
 var greet = string () => { return "Hello, world"; };
 ```
 
-### Default Parameters in C# 12
+### Natural Type (C# 10)
 
-Since C# 12, lambda parameters can have default values:
+Since C# 10, a lambda with explicitly typed parameters (or without parameters) has a *natural type*: the compiler picks a matching `Func` or `Action` delegate (or synthesizes an anonymous delegate type if none fits, e.g., for `ref` parameters). The return type is inferred from the body – it has to be specified explicitly only if it cannot be inferred. A lambda with implicitly typed parameters has no natural type, so it needs a target delegate type (e.g., `Func<int, int>` on the left-hand side). Method groups also have a natural type, as long as they refer to a single method.
+
+```csharp
+var cube = (double x) => x * x * x;            // Func<double, double>
+var choose = object (bool b) => b ? 1 : "one"; // Func<bool, object>
+var read = Console.ReadLine;                   // Func<string?>
+Delegate d = (int x) => x + 1;                 // Func<int, int>
+
+var identity = x => x;         // Error CS8917: The delegate type could not be inferred
+var print = Console.WriteLine; // Error CS8917 (WriteLine has many overloads)
+```
+
+Also since C# 10, lambdas can have attributes – on the lambda itself, on its parameters, and on its return value (the parameter list must then be in parentheses). They are used mainly by frameworks that inspect delegates through reflection, e.g., ASP.NET Core minimal APIs.
+
+```csharp
+using System.ComponentModel;
+using System.Reflection;
+
+var greet = [Description("Greets a person")] (string name) => $"Hello, {name}!";
+
+var attribute = greet.Method.GetCustomAttribute<DescriptionAttribute>();
+Console.WriteLine(attribute?.Description); // Greets a person
+```
+
+### Default and `params` Parameters (C# 12)
+
+Since C# 12, lambda parameters can have default values, and the last parameter can be a `params` array:
 
 ```csharp
 var write = (string str = "hello") => Console.WriteLine(str);
 write();
 write("world");
+
+var sum = (params int[] values) => values.Sum();
+Console.WriteLine(sum(1, 2, 3)); // 6
+```
+
+Such lambdas cannot be represented by `Func` or `Action`, so their natural type is a delegate type synthesized by the compiler.
+
+### Parameter Modifiers Without Types (C# 14)
+
+Parameters with modifiers such as `ref`, `out`, `in`, `ref readonly` or `scoped` used to require an explicitly specified type. Since C# 14, the types of such parameters can be inferred from the target delegate type as well:
+
+```csharp
+TryParse<int> parse = (text, out result) => int.TryParse(text, out result);
+// Before C# 14: (string text, out int result) => int.TryParse(text, out result)
+
+if (parse("42", out int number))
+{
+    Console.WriteLine(number); // 42
+}
+
+delegate bool TryParse<T>(string text, out T result);
 ```
 
 ### Capturing Variables
@@ -262,6 +309,14 @@ private static void <Main>$(string[] args)
 }
 ```
 {{% /details %}}
+
+If a lambda should not capture anything (e.g., to avoid accidental heap allocations), we can mark it with the `static` modifier (C# 9). Referencing a local variable, a parameter, or `this` inside such a lambda is a compile-time error:
+
+```csharp
+int factor = 3;
+Func<int, int> triple = static x => x * 3;
+Func<int, int> multiply = static x => x * factor; // Error CS8820: A static anonymous function cannot contain a reference to 'factor'
+```
 
 ## Anonymous Methods
 
