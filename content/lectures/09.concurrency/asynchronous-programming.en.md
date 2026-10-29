@@ -117,7 +117,7 @@ async Task<int> GetPrimesCountAsync()
 > Lambda expressions can also be asynchronous. The same rules apply to them as to regular async methods.
 
 > [!NOTE]
-> Since C# 13, async methods (and iterators) can declare `ref` local variables and local variables of `ref struct` types (e.g., `Span<T>`), and they can contain `unsafe` blocks. Such variables cannot be used across an `await` (or `yield return`), because they cannot be stored in the state machine object on the heap – the compiler reports an error in that case.
+> Since C# 13, async methods (and iterators) can declare `ref` local variables and local variables of `ref struct` types (e.g., `Span<T>`); iterators can also contain `unsafe` blocks (async methods could already do so before). Such variables cannot be used across an `await` (or `yield return`), because they cannot be stored in the state machine object on the heap – the compiler reports an error in that case.
 > ```csharp
 > async Task<int> SumAsync(int[] data)
 > {
