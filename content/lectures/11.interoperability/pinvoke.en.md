@@ -80,6 +80,30 @@ private static partial void Hello();
 > 
 > **C#** {{< filetree dir="lectures/interoperability/HelloCSharp" >}}
 
+### Library name resolution and `NativeLibrary`
+
+The library name is given without a prefix and an extension. The runtime adds the extension appropriate for the platform (`.dll`, `.so`, `.dylib`), and on *Unix* systems it also tries the `lib` prefix, so `"HelloCpp"` finds `HelloCpp.dll` on Windows, `libHelloCpp.so` on Linux and `libHelloCpp.dylib` on macOS. By default, the library is searched for in the application directory (the directory of the assembly) and in the standard system locations.
+
+A library can also be loaded manually using the `NativeLibrary` class (.NET Core 3.0), which is an equivalent of `dlopen`/`dlsym` (`LoadLibrary`/`GetProcAddress` on Windows). The address of an exported function can then be called through an unmanaged function pointer (see [Unsafe context]({{< ref "/lectures/11.interoperability/unsafe" >}})):
+
+```csharp
+unsafe
+{
+    nint library = NativeLibrary.Load("HelloCpp", typeof(Program).Assembly, null);
+    try
+    {
+        var hello = (delegate* unmanaged<void>)NativeLibrary.GetExport(library, "Hello");
+        hello(); // Hello from C++
+    }
+    finally
+    {
+        NativeLibrary.Free(library);
+    }
+}
+```
+
+The `NativeLibrary.SetDllImportResolver` method allows replacing the way libraries used by `DllImport`/`LibraryImport` declarations of a given assembly are resolved, e.g., to choose a library file depending on the platform.
+
 ## Marshalling
 
 Marshalling is the process of converting data types between managed and unmanaged code.
