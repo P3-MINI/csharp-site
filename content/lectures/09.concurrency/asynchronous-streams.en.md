@@ -127,7 +127,7 @@ public class Program
 
 ## LINQ
 
-Asynchronous sequences work with LINQ through the `System.Linq.Async` namespace (available via NuGet package).
+Since .NET 10, LINQ operators for asynchronous sequences are part of the base class library: the `System.Linq.AsyncEnumerable` class in the `System.Linq` namespace. In earlier versions of .NET, they were provided by the community-maintained `System.Linq.Async` NuGet package (in .NET 10, remove this package reference or upgrade it to version 7, otherwise ambiguous call errors may occur).
 
 ```csharp
 IAsyncEnumerable<int> asyncSequence = RangeAsync(from: 0, to: 100, delay: 50)
@@ -138,4 +138,19 @@ await foreach(var item in asyncSequence)
 {
     Console.WriteLine(item);
 }
+```
+
+Operators that return a single value or a collection (e.g., `ToListAsync`, `CountAsync`, `FirstAsync`) are asynchronous and have to be awaited. Many operators also have overloads that accept an asynchronous delegate, which takes a `CancellationToken` and returns a `ValueTask<T>`:
+
+```csharp
+List<int> squares = await RangeAsync(from: 0, to: 10, delay: 50)
+    .Where(x => x % 2 == 0)
+    .Select(async (x, token) =>
+    {
+        await Task.Delay(10, token);
+        return x * x;
+    })
+    .ToListAsync();
+
+Console.WriteLine(string.Join(", ", squares)); // 0, 4, 16, 36, 64
 ```
