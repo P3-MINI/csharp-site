@@ -5,18 +5,18 @@ weight: 60
 
 # Serializacja
 
-Serializacja to proces konwersji obiektu (jego aktualnego stanu w pamięci) do formatu, który można łatwo zapisać lub przesłać. Jest to albo format binarny albo tekstowy, taki jak `JSON` lub `XML`.
+Serializacja to proces konwersji obiektu (jego aktualnego stanu w pamięci) do formatu, który można łatwo zapisać lub przesłać. Może to być format binarny albo tekstowy, taki jak `JSON` lub `XML`.
 
 Główne zastosowania serializacji to:
 
-1. Trwałe przechowywanie: Umożliwia zapisanie obiektu na dysku (w pliku) lub w bazie danych. Po ponownym uruchomieniu aplikacji można wczytać te dane i odtworzyć obiekt w takim samym stanie, w jakim był w momencie zapisu.
-2. Komunikacja: Pozwala na przesyłanie obiektów. Jedna aplikacja serializuje obiekt i wysyła go, a druga odbiera dane i deserializuje je, czyli odtwarza oryginalny obiekt.
+1. **Trwałe przechowywanie:** Umożliwia zapisanie obiektu na dysku (w pliku) lub w bazie danych. Po ponownym uruchomieniu aplikacji można wczytać te dane i odtworzyć obiekt w takim samym stanie, w jakim był w momencie zapisu.
+2. **Komunikacja:** Pozwala na przesyłanie obiektów. Jedna aplikacja serializuje obiekt i wysyła go, a druga odbiera dane i deserializuje je, czyli odtwarza oryginalny obiekt.
 
 Procesem odwrotnym do serializacji jest deserializacja - czyli odtwarzanie obiektu z jego zapisanej (zserializowanej) formy.
 
-Biblioteka standardowa dostarcza zarówno mechanizmów serializacji do formatów `JSON` i `XML` poprzez klasy `JsonSerializer` i `XmlSerializer` dostępnych w przestrzeniach nazw: `System.Text.Json` i `System.Xml.Serialization`. Popularna jest również zewnętrzna implementacja serializacji do formatu `JSON` dostępnej w pakiecie NuGet `Newtonsoft.Json`. Jest ona prostsza w użyciu, również często używana, jednak mniej wydajna. 
+Biblioteka standardowa dostarcza mechanizmy serializacji zarówno do formatu `JSON`, jak i `XML` poprzez klasy `JsonSerializer` i `XmlSerializer`, dostępne odpowiednio w przestrzeniach nazw `System.Text.Json` i `System.Xml.Serialization`. Popularna jest również zewnętrzna implementacja serializacji do formatu `JSON` dostępna w pakiecie NuGet `Newtonsoft.Json`. Jest ona wciąż często używana, oferuje więcej funkcji i mniej restrykcyjne ustawienia domyślne, jednak jest mniej wydajna.
 
-Obydwa podejścia oferują "automagiczny" mechanizm serializacji oparty na **refleksji**. Metoda serializacji przyjmuje tylko obiekt do serializacji i w czasie wykonania odczytuje jego pola i właściwości i na tej podstawie go serializuje. Deserializacja przyjmuje łańcuch znaków i obiekt reprezentujący deserializowany typ i refleksją tworzy jego instancję i go inicjalizuje. Na proces serializacji i deserializacji można wpływać ozdabiając klasy i jej składowe atrybutami.
+Obydwa podejścia oferują "automagiczny" mechanizm serializacji oparty na **refleksji**. Metoda serializacji przyjmuje tylko obiekt do serializacji i w czasie wykonania odczytuje jego pola i właściwości i na tej podstawie go serializuje. Deserializacja przyjmuje łańcuch znaków i obiekt reprezentujący deserializowany typ, a następnie za pomocą refleksji tworzy jego instancję i ją inicjalizuje. Na proces serializacji i deserializacji można wpływać, ozdabiając klasy i ich składowe atrybutami.
 
 ## System.Text.Json
 
@@ -79,7 +79,7 @@ public class Person
     [JsonPropertyName("FirstName")]
     public string Name { get; set; }
     
-    [JsonInclude] // Used to serialize non-public fields and properties
+    [JsonInclude] // Needed for fields (not serialized by default) and non-public members
     private DateTime DateOfBirth;
     
     [JsonIgnore]
@@ -148,8 +148,8 @@ public class Person
     [JsonProperty("FirstName")]
     public string Name { get; set; }
 
-    [JsonProperty] // Fields are not serialized by default in Newtonsoft.Json.
-    public DateTime DateOfBirth;
+    [JsonProperty] // Needed for non-public members (unlike System.Text.Json, public fields are serialized by default)
+    private DateTime DateOfBirth;
 
     [JsonIgnore]
     public int Age { get; set; }
