@@ -217,3 +217,24 @@ Równoważnie:
 ```csharp
 string? s = (sb == null ? null : sb.ToString());
 ```
+
+#### Null-conditional assignment (C# 14)
+
+Od C# 14 operatorów `?.` i `?[]` można używać także po lewej stronie przypisania, również złożonego (`+=`, `-=`, ...). Przypisanie jest wykonywane tylko wtedy, gdy obiekt nie jest `null`em - i tylko wtedy obliczana jest prawa strona:
+
+```csharp
+Customer? customer = FindCustomer(id);
+customer?.Name = GetName();    // GetName() is called only if customer is not null
+customer?.Orders?[0] = order;
+customer?.Points += 10;        // compound assignment is also allowed
+// customer?.Points++;         // error: ++ and -- are not allowed
+```
+
+Równoważnie (dla drugiej linii):
+
+```csharp
+if (customer != null)
+{
+    customer.Name = GetName();
+}
+```
