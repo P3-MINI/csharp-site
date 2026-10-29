@@ -197,7 +197,7 @@ class ShopItem
 }
 ```
 
-Since C# 14, you can use the `field` keyword to access the compiler-generated backing field directly, without having to declare it manually:
+Since C# 14, you can use the `field` keyword to access the compiler-generated backing field directly, without having to declare it manually (if the type already has a member named `field`, inside accessors it has to be referred to as `this.field` or `@field`). Only the accessor that needs additional logic has to be written; the other one can remain automatically implemented:
 
 ```csharp
 class ShopItem
@@ -207,6 +207,8 @@ class ShopItem
         get => field; 
         set => field = Math.Max(value, 0); 
     }
+
+    public string Name { get; set => field = value.Trim(); } = ""; // get is auto-implemented
 }
 ```
 
