@@ -5,7 +5,7 @@ weight: 30
 
 # Archiwa
 
-Archiwa to pliki będące kontenerami dla innych plików i folderów. Biblioteka standardowa C# pozwala na pracę z archiwami w formacie `.zip` oraz `.tar` (od .NET 7) poprzez klasy w przestrzeni nazw `System.IO.Compression`.
+Archiwa to pliki będące kontenerami dla innych plików i folderów. Biblioteka standardowa C# pozwala na pracę z archiwami w formacie `.zip` poprzez klasy w przestrzeni nazw `System.IO.Compression` oraz w formacie `.tar` (od .NET 7) poprzez klasy w przestrzeni nazw `System.Formats.Tar`.
 
 ## Archiwa ZIP
 
@@ -23,11 +23,11 @@ File.WriteAllText(Path.Combine(sourceDirectory, "file1.txt"), "Hello");
 Directory.CreateDirectory(Path.Combine(sourceDirectory, "subfolder"));
 File.WriteAllText(Path.Combine(sourceDirectory, "subfolder", "file2.txt"), "World");
 
-// Creating .zip archive (override existing)
+// Creating .zip archive (overwrite existing)
 if (File.Exists(zipPath)) File.Delete(zipPath);
 ZipFile.CreateFromDirectory(sourceDirectory, zipPath);
 
-// Extracting archive (override if files exist)
+// Extracting archive (overwrite if files exist)
 if (Directory.Exists(extractPath)) Directory.Delete(extractPath, true);
 ZipFile.ExtractToDirectory(zipPath, extractPath);
 ```
@@ -40,13 +40,13 @@ using ZipArchive zip = ZipFile.Open("archive.zip", ZipArchiveMode.Read);
 Console.WriteLine("Archive content:");
 foreach (ZipArchiveEntry entry in zip.Entries)
 {
-    Console.WriteLine($"{entry.FullName,-32} Rozmiar: {entry.Length} bajtów");
+    Console.WriteLine($"{entry.FullName,-32} Size: {entry.Length} bytes");
 }
 ```
 
 Poniższa tabela przedstawia wybrane metody i właściwości, które pozwalają na precyzyjną manipulację archiwami po ich otwarciu.
 
-|  Method or Property                | Description                                                                                   |
+|  Metoda lub właściwość             | Opis                                                                                          |
 | :--------------------------------- | :-------------------------------------------------------------------------------------------- |
 | `ZipArchive.Entries`               | Pobiera kolekcję wszystkich wpisów (plików i folderów) znajdujących się w archiwum.           |
 | `ZipArchive.CreateEntry`           | Tworzy nowy, pusty wpis w archiwum.                                                           |
@@ -72,7 +72,7 @@ File.WriteAllText(Path.Combine(sourceDirectory, "log.txt"), "Log entry");
 
 // Creating .tar archive
 if (File.Exists(tarPath)) File.Delete(tarPath);
-TarFile.CreateFromDirectory(sourceDirectory, tarPath);
+TarFile.CreateFromDirectory(sourceDirectory, tarPath, false);
 ```
 
 Podobnie, do rozpakowywania archiwów służy metoda `ExtractToDirectory`. W odróżnieniu od `ZipFile`, wymaga ona, aby folder docelowy istniał.

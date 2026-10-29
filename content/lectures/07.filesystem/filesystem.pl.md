@@ -11,7 +11,7 @@ Przestrzeń nazw `System.IO` dostarcza bogaty zestaw klas do interakcji z system
 
 Ścieżki w C# przechowujemy w obiektach typu **`string`**. Klasa `Path` to statyczne narzędzie do manipulacji ścieżkami (w postaci stringów). Pozwala na operacje na ścieżkach w sposób niezależny od systemu operacyjnego.
 
-* **Manipulacja ścieżek**: **`Combine`**, `IsPathRooted`, `GetPathRoot`, `GetDirectoryName`, `GetFileName`, `GetFullPath`
+* **Manipulacja ścieżkami**: **`Combine`**, `IsPathRooted`, `GetPathRoot`, `GetDirectoryName`, `GetFileName`, `GetFullPath`
 * **Praca z rozszerzeniami**: `HasExtension`, `GetExtension`, `GetFileNameWithoutExtension`, `ChangeExtension`
 * **Ścieżki niezależne od systemu**: `DirectorySeparatorChar`, `AltDirectorySeparatorChar`, `PathSeparator`, `VolumeSeparatorChar`, `GetInvalidPathChars`, `GetInvalidFileNameChars`
 * **Praca z tymczasowymi plikami**: `GetTempPath`, `GetRandomFileName`, `GetTempFileName`
@@ -19,14 +19,14 @@ Przestrzeń nazw `System.IO` dostarcza bogaty zestaw klas do interakcji z system
 ```csharp
 string path = Path.Combine("Workspace", "csharp-site", "hugo.yaml");
 
-Console.WriteLine($"Path combined: {path}"); // Workspace/csharp-site/hugo.yaml
+Console.WriteLine($"Path combined: {path}"); // Workspace/csharp-site/hugo.yaml (on Windows: Workspace\csharp-site\hugo.yaml)
 
 Console.WriteLine($"File Name: {Path.GetFileName(path)}"); // hugo.yaml
 Console.WriteLine($"Name without extension: {Path.GetFileNameWithoutExtension(path)}"); // hugo
 Console.WriteLine($"Extension: {Path.GetExtension(path)}");  // .yaml
 Console.WriteLine($"Parent Directory: {Path.GetDirectoryName(path)}"); // Workspace/csharp-site
 Console.WriteLine($"Full Path: {Path.GetFullPath(path)}"); // /home/tomasz/Workspace/csharp-site/hugo.yaml (resolves relative to the current working directory)
-Console.WriteLine($"Directory Separator: {Path.DirectorySeparatorChar}"); // \ (on Windows) / (on Linux)
+Console.WriteLine($"Directory Separator: {Path.DirectorySeparatorChar}"); // \ (on Windows), / (on Linux)
 ```
 
 ## Operacje na plikach
@@ -81,9 +81,9 @@ if (fileInfo.Exists)
 ### Klasa `Directory` (statyczna)
 
 * **Manipulacja katalogami**: `CreateDirectory`, `Exists`, `Delete`, `Move`, `CreateSymbolicLink`
-* **Pobieranie zawartości**: `GetFiles`, `GetDirectories`, `GetFileSystemEntries`,
+* **Pobieranie zawartości**: `GetFiles`, `GetDirectories`, `GetFileSystemEntries`
 * **Pobieranie zawartości (leniwie)**: `EnumerateFiles`, `EnumerateDirectories`, `EnumerateFileSystemEntries`
-* **Praca z obecnym katalogiem**: `GetCurrentDirectory`, `SetCurrentDirectory`
+* **Praca z bieżącym katalogiem**: `GetCurrentDirectory`, `SetCurrentDirectory`
 * **Operacje na znacznikach czasu**: `GetCreationTime`, `GetLastAccessTime`, `GetLastWriteTime`, `SetCreationTime`, `SetLastAccessTime`, `SetLastWriteTime`
 * **Inne**: `GetParent`, `GetDirectoryRoot`
 
@@ -116,20 +116,20 @@ foreach (var e in entries) Console.WriteLine(e);
 Directory.Delete(newDir, recursive: true);
 ```
 
-Metody `Get*` i `Enumerate*` są przeciążone i umożliwiają także przekazanie wzorca (`string searchPattern`) oraz dodatkowych opcji (`SearchOption options`). Przekazanie opcji `SearchOption.AllDirectories` spowoduje rekursywne przeszukanie katalogu. Na przykład rekursywne przeszukiwanie wszystkich plików pdf w bieżącym katalogu:
+Metody `Get*` i `Enumerate*` są przeciążone i umożliwiają także przekazanie wzorca (`string searchPattern`) oraz dodatkowych opcji (`SearchOption searchOption`). Przekazanie opcji `SearchOption.AllDirectories` spowoduje rekurencyjne przeszukanie katalogu. Na przykład rekurencyjne wyszukanie wszystkich plików PDF w bieżącym katalogu:
 
 ```csharp
 IEnumerable<string> entries = Directory.EnumerateFileSystemEntries(".", "*.pdf", SearchOption.AllDirectories);
 foreach (var e in entries) Console.WriteLine(e);
 ```
 
-> [!NOTICE]
+> [!TIP]
 > **`EnumerateFiles` vs `GetFiles`**
 > Metody `GetFiles` i `GetDirectories` zwracają od razu całą kolekcję (tablicę) nazw. Jeśli katalog zawiera tysiące plików, może to zająć dużo czasu i pamięci. Ich odpowiedniki, `EnumerateFiles` i `EnumerateDirectories`, działają w sposób "leniwy", zwracając `IEnumerable<string>`. Elementy są pobierane w miarę iterowania, co może być bardziej efektywne dla dużych katalogów.
 
 ### Klasa `DirectoryInfo` (instancyjna)
 
-Reprezentuje konkretny katalog. Wygodne, gdy wykonujemy na nim wiele operacji.
+Reprezentuje konkretny katalog. Jest wygodna, gdy wykonujemy na nim wiele operacji.
 
 ```csharp
 var dirInfo = new DirectoryInfo("."); // Current directory
@@ -142,11 +142,11 @@ Console.WriteLine($"Root: {dirInfo.Root}");
 DirectoryInfo subDir = dirInfo.CreateSubdirectory("Subdir");
 
 FileInfo[] filesInDir = dirInfo.GetFiles("*.dll");
-Console.WriteLine("DLL files in the directory:");
+Console.WriteLine("\nDLL files in the directory:");
 foreach (var f in filesInDir)
     Console.WriteLine($"    {f.Name}");
 
-Console.WriteLine("Subdirectories in the directory:");
+Console.WriteLine("\nSubdirectories in the directory:");
 DirectoryInfo[] dirsInDir = dirInfo.GetDirectories();
 foreach (var d in dirsInDir)
     Console.WriteLine($"    {d.Name}");
@@ -154,7 +154,7 @@ foreach (var d in dirsInDir)
 
 ### Specjalne katalogi
 
-Metoda `Environment.GetFolderPath` pozwala na pobranie ścieżek do specjalnych, predefiniowanych katalogów systemowych, takich jak katalog domowy, pulpit, itp., w sposób niezależny od systemu operacyjnego.
+Metoda `Environment.GetFolderPath` pozwala na pobranie ścieżek do specjalnych, predefiniowanych katalogów systemowych, takich jak katalog domowy czy pulpit, w sposób niezależny od systemu operacyjnego.
 
 ```csharp
 string userHomePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -166,8 +166,8 @@ string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDoc
 Klasa `DriveInfo` pozwala uzyskać informacje o zamontowanych dyskach w systemie.
 
 ```csharp
-const int GB = 1024 * 1024 * 1024;
-DriveInfo root = new DriveInfo("/");
+const long GB = 1024 * 1024 * 1024;
+DriveInfo root = new DriveInfo("/"); // On Windows, e.g., new DriveInfo("C")
 
 Console.WriteLine($"Total size: {root.TotalSize / GB} GB");
 Console.WriteLine($"Free size: {root.TotalFreeSpace / GB} GB"); // Ignoring quotas
@@ -179,9 +179,9 @@ foreach (DriveInfo drive in DriveInfo.GetDrives())
 }
 ```
 
-## Zdarzenia systemu pliku
+## Zdarzenia systemu plików
 
-Klasa `FileSystemWatcher` pozwala na nasłuchiwanie zdarzeń systemu pliku. Dla określonej ścieżki pozwala na monitorowanie zdarzeń utworzenia, usunięcia, modyfikacji, lub zmiany nazwy pliku lub katalogu. Jest to rozwiązanie pod spodem korzystające z `inotify` na systemie Linux lub innych podobnych w zależności od systemu operacyjnego.
+Klasa `FileSystemWatcher` pozwala na nasłuchiwanie zdarzeń systemu plików. Dla określonej ścieżki pozwala na monitorowanie zdarzeń utworzenia, usunięcia, modyfikacji lub zmiany nazwy pliku lub katalogu. Pod spodem korzysta z `inotify` w systemie Linux lub z podobnych mechanizmów, zależnie od systemu operacyjnego.
 
 ```csharp
 namespace FileSystemEvents;
@@ -241,6 +241,6 @@ class Program
 }
 ```
 
-> Wewnętrznie `FileSystemWatcher` uruchamia osobny wątek na którym będzie powiadamiać o zdarzeniach. Tym samym obsługa zdarzeń będzie uruchamiana asynchronicznie na osobnym wątku.
+> Wewnętrznie `FileSystemWatcher` uruchamia osobny wątek, na którym będzie powiadamiać o zdarzeniach. Tym samym obsługa zdarzeń będzie uruchamiana asynchronicznie na osobnym wątku.
 
-> Zdarzenie `Error` służy powiadamianiu o wewnętrznych błędach samego `FileSystemWatcher`a, a nie błędów systemu plików. Może to się stać, gdy na raz zachodzi wiele zmian, która spowodowałaby przepełnienie wewnętrznego bufora używanego do kolejkowania zdarzeń. W takiej sytuacji zdarzeniem `Error` zostaniemy poinformowani, że jakieś zdarzenia mogły się zgubić.
+> Zdarzenie `Error` służy powiadamianiu o wewnętrznych błędach samego `FileSystemWatcher`a, a nie o błędach systemu plików. Może się to zdarzyć, gdy naraz zachodzi wiele zmian, co powoduje przepełnienie wewnętrznego bufora używanego do kolejkowania zdarzeń. W takiej sytuacji zdarzeniem `Error` zostaniemy poinformowani, że jakieś zdarzenia mogły się zgubić.

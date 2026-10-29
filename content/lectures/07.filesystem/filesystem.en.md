@@ -19,7 +19,7 @@ In C#, paths are stored in `string` objects. The `Path` class is a static utilit
 ```csharp
 string path = Path.Combine("Workspace", "csharp-site", "hugo.yaml");
 
-Console.WriteLine($"Path combined: {path}"); // Workspace/csharp-site/hugo.yaml
+Console.WriteLine($"Path combined: {path}"); // Workspace/csharp-site/hugo.yaml (on Windows: Workspace\csharp-site\hugo.yaml)
 
 Console.WriteLine($"File Name: {Path.GetFileName(path)}"); // hugo.yaml
 Console.WriteLine($"Name without extension: {Path.GetFileNameWithoutExtension(path)}"); // hugo
@@ -81,7 +81,7 @@ if (fileInfo.Exists)
 ### The `Directory` Class (static)
 
 *   **Directory Manipulation**: `CreateDirectory`, `Exists`, `Delete`, `Move`, `CreateSymbolicLink`
-*   **Getting Contents**: `GetFiles`, `GetDirectories`, `GetFileSystemEntries`,
+*   **Getting Contents**: `GetFiles`, `GetDirectories`, `GetFileSystemEntries`
 *   **Getting Contents (Lazily)**: `EnumerateFiles`, `EnumerateDirectories`, `EnumerateFileSystemEntries`
 *   **Working with the Current Directory**: `GetCurrentDirectory`, `SetCurrentDirectory`
 *   **Timestamp Operations**: `GetCreationTime`, `GetLastAccessTime`, `GetLastWriteTime`, `SetCreationTime`, `SetLastAccessTime`, `SetLastWriteTime`
@@ -116,14 +116,14 @@ foreach (var e in entries) Console.WriteLine(e);
 Directory.Delete(newDir, recursive: true);
 ```
 
-The `Get*` and `Enumerate*` methods are overloaded to accept a search pattern (`string searchPattern`) and additional options (`SearchOption options`). Passing `SearchOption.AllDirectories` will cause the search to be recursive. For example, to recursively search for all PDF files in the current directory:
+The `Get*` and `Enumerate*` methods are overloaded to accept a search pattern (`string searchPattern`) and additional options (`SearchOption searchOption`). Passing `SearchOption.AllDirectories` will cause the search to be recursive. For example, to recursively search for all PDF files in the current directory:
 
 ```csharp
 IEnumerable<string> entries = Directory.EnumerateFileSystemEntries(".", "*.pdf", SearchOption.AllDirectories);
 foreach (var e in entries) Console.WriteLine(e);
 ```
 
-> [!NOTICE]
+> [!TIP]
 > **`EnumerateFiles` vs `GetFiles`**
 > The `GetFiles` and `GetDirectories` methods return the entire collection (an array) of names at once. If a directory contains thousands of files, this can consume a lot of time and memory. Their counterparts, `EnumerateFiles` and `EnumerateDirectories`, work "lazily" by returning an `IEnumerable<string>`. Items are retrieved as you iterate through them, which can be more efficient for large directories.
 
@@ -167,7 +167,7 @@ The `DriveInfo` class allows you to get information about the mounted drives in 
 
 ```csharp
 const long GB = 1024 * 1024 * 1024;
-DriveInfo root = new DriveInfo("/");
+DriveInfo root = new DriveInfo("/"); // On Windows, e.g., new DriveInfo("C")
 
 Console.WriteLine($"Total size: {root.TotalSize / GB} GB");
 Console.WriteLine($"Free size: {root.TotalFreeSpace / GB} GB"); // Ignoring quotas
