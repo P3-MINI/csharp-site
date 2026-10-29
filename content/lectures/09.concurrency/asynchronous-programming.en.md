@@ -207,6 +207,25 @@ Console.WriteLine($"Primes: {await completedTask}");
 *   The outer `Task` completes when any task from the collection completes.
 *   The result of the outer `Task` is the inner `Task` that just completed. You need to unwrap it (e.g., with another `await`) to get its result.
 
+### `Task.WhenEach`
+
+`Task.WhenEach` (.NET 9) returns an asynchronous sequence (`IAsyncEnumerable<Task<TResult>>`, or `IAsyncEnumerable<Task>`) that yields the provided tasks in the order in which they complete. This allows processing results as soon as they are available, without repeatedly calling `Task.WhenAny` and removing the completed task from a list.
+
+```csharp
+Task<int>[] tasks =
+[
+    CountPrimesAsync(0, 3_000_000),
+    CountPrimesAsync(3_000_000, 4_000_000),
+    CountPrimesAsync(4_000_000, 5_000_000)
+];
+
+await foreach (Task<int> completedTask in Task.WhenEach(tasks))
+{
+    Console.WriteLine($"Primes: {await completedTask}");
+}
+```
+
+The yielded tasks have already completed, so `await` returns the result immediately (or throws the exception the task ended with). The `await foreach` statement is described in [Asynchronous Sequences]({{< ref "/lectures/09.concurrency/asynchronous-streams" >}}).
 
 ## Cancelling Tasks
 
