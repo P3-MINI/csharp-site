@@ -161,6 +161,8 @@ mutex.ReleaseMutex();
 
 > [!WARNING]
 > Niewłaściwe użycie `SpinLock` (np. w długich sekcjach krytycznych) może drastycznie obniżyć wydajność programu.
+>
+> `SpinLock` jest modyfikowalną strukturą, więc nie wolno go kopiować: nie należy przechowywać go w polu `readonly` ani przekazywać przez wartość - każda kopia jest osobną blokadą (w przypadku pola `readonly` każde wywołanie operuje na kopii defensywnej (*defensive copy*), więc `Exit` rzuca `SynchronizationLockException`).
 
 ```csharp
 int counter = 0, times = 1_000_000;
