@@ -87,6 +87,15 @@ Console.WriteLine($"Counter Value: {counter}");
 > Console.WriteLine($"Counter Value: {counter}");
 > ```
 
+> [!WARNING]
+> The compiler uses `Lock.EnterScope()` only when it knows statically that the expression is of type `Lock`. If a `Lock` object is converted to another type (e.g., `object`), the `lock` statement falls back to `Monitor` - the compiler reports this with warning CS9216 at the conversion:
+> ```csharp
+> Lock locker = new();
+> object o = locker; // warning CS9216
+> lock (o) { }       // Monitor.Enter/Exit, not Lock.EnterScope()
+> ```
+> Moreover, `Lock` has no equivalent of `Monitor.Wait`/`Monitor.Pulse` (see [Signaling]({{< ref "/lectures/12.synchronization/signaling" >}})), so a condition variable still requires locking on an ordinary object. Like `Monitor`, `Lock` is reentrant and has thread affinity: it must be released by the thread that acquired it. That is why `await` is not allowed inside a `lock` block, and a `Lock.Scope` (a `ref struct`) cannot be preserved across `await` (error CS4007).
+
 ## Mutex
 
 The `System.Threading.Mutex` class is a synchronization primitive operating at the operating system kernel level.
