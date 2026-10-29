@@ -10,7 +10,7 @@ Pipes are a mechanism for inter-process communication (IPC) that allows data to 
 ## Named Pipes
 
 > [!NOTE]
-> Naming conventions in .NET can be misleading. On Unix-like systems (such as Linux or macOS), `NamedPipeStream` is not implemented as FIFO files (which are POSIX named pipes), but rather as **Unix Domain Sockets**. On Windows, these are indeed named pipes.
+> Naming conventions in .NET can be misleading. On Unix-like systems (such as Linux or macOS), `NamedPipeServerStream` and `NamedPipeClientStream` are not implemented as FIFO files (which are POSIX named pipes), but rather as **Unix Domain Sockets**, whose socket files are created in the temporary directory (e.g., `/tmp/CoreFxPipe_p3_pipe`). On Windows, these are indeed named pipes. Therefore, some features are available only on Windows, e.g., the message transmission mode (`PipeTransmissionMode.Message`) or connecting to a pipe on a remote machine.
 
 Named pipes, as their name suggests, have a unique name within the system. This allows them to be used by any two processes, even if they are not related. The communication model resembles a client-server architecture. One process acts as a server, which creates the pipe and waits for a connection, while the other is a client that connects to it.
 
@@ -71,7 +71,7 @@ class Program
 
     private static async IAsyncEnumerable<string> EnumerateLines(string path)
     {
-        var stream = new StreamReader(path);
+        using var stream = new StreamReader(path);
 
         while (await stream.ReadLineAsync() is { } line)
         {
@@ -125,6 +125,7 @@ class Program
             Environment.Exit(-1);
         }
         Console.WriteLine("Child process started with PID: " + childProcess.Id);
+        pipe.DisposeLocalCopyOfClientHandle(); // The child has its own copy now
 
         var writer = new StreamWriter(pipe);
         writer.AutoFlush = true;
@@ -164,6 +165,8 @@ class Program
 ```
 
 An important element in the parent's code is the line `await pipe.DisposeAsync()`. Closing the pipe on the server side sends an end-of-file (EOF) signal to the client. This causes the `reader.ReadLineAsync()` call in the child process to return `null`, allowing the loop to terminate naturally and the child application to close correctly. Without this, the child process would wait indefinitely for data, and the parent process would wait for the child to finish, leading to a deadlock.
+
+Note also the call to `pipe.DisposeLocalCopyOfClientHandle()` right after the child process is started. The child has already inherited the client handle, so the parent closes its own copy. Otherwise, the parent would not notice that the child has closed its end of the pipe (e.g., because it exited early) – instead of throwing an `IOException` (broken pipe), its writes would block once the pipe buffer is full.
 
 > [!INFO]
 > ## Source Code

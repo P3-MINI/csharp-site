@@ -3,7 +3,7 @@ title: "Mapowanie pamięci"
 weight: 50
 ---
 
-## Mapowanie plików i pamięć dzielona
+# Mapowanie plików i pamięć dzielona
 
 Mapowanie plików (*memory-mapped files*) to mechanizm systemu operacyjnego, który pozwala na mapowanie zawartości pliku bezpośrednio do przestrzeni adresowej procesu. Dzięki temu można odczytywać i modyfikować zawartość pliku tak, jakby był on tablicą w pamięci.
 
@@ -17,7 +17,7 @@ W .NET do pracy z plikami mapowanymi w pamięci służy klasa `MemoryMappedFile`
 
 ### Zapis i odczyt pliku
 
-Żeby pisać lub czytać z pliku należy pobrać z pliku obiekt "widoku" `ViewAccessor`. Pozwala on na odczyt i zapis typów podstawowych, tablic i struktur w określonym fragmencie pliku.
+Żeby pisać do pliku lub czytać z pliku, należy pobrać z pliku obiekt "widoku" `MemoryMappedViewAccessor` (`CreateViewAccessor`). Pozwala on na odczyt i zapis typów podstawowych, tablic i struktur w określonym fragmencie pliku.
 Poniższy przykład pokazuje, jak stworzyć plik mapowany w pamięci, zapisać do niego dane, a następnie je odczytać.
 
 ```csharp
@@ -44,17 +44,17 @@ using (var accessor = mmf.CreateViewAccessor(0, message.Length * 2, MemoryMapped
 }
 ```
 
-Przy losowym odczycie/zapisie taki sposób pracy z plikiem jest około ~10 razy szybszy w stosunku do strumieni. Sytuacja jest odwrotna przy sekwencyjnym odczycie/zapisie.
+Przy losowym odczycie/zapisie taki sposób pracy z plikiem jest około 10 razy szybszy w stosunku do strumieni. Sytuacja jest odwrotna przy sekwencyjnym odczycie/zapisie.
 
 ## Pamięć dzielona (*Shared Memory*)
 
 Pamięć dzielona to specjalny przypadek użycia plików mapowanych, gdzie celem nie jest praca z plikiem na dysku, ale **bezpośrednia wymiana danych między procesami**. W tym scenariuszu system operacyjny może utworzyć mapowanie, które nie jest powiązane z żadnym fizycznym plikiem.
 
-Jest to bardzo wydajna forma IPC, dane nie są kopiowane między procesami – oba procesy operują na tym samym bloku fizycznej pamięci.
+Jest to bardzo wydajna forma IPC, ponieważ dane nie są kopiowane między procesami – oba procesy operują na tym samym bloku fizycznej pamięci.
 
 ### Przykład komunikacji IPC
 
-Nie jest to mechanizm wieloplatformowy. Windows wspiera nazwane mapowania, które tworzą pamięć dzieloną, do której później inne procesy mogą się odwoływać za pomocą wspólnej nazwy. Na Linuxie żeby stworzyć pamięć dzieloną można ją stworzyć jako plik w `/dev/shm`. Jest to tymczasowy system plików zamontowany w pamięci RAM.
+Nazwane mapowania nie są mechanizmem wieloplatformowym. Windows wspiera nazwane mapowania, które tworzą pamięć dzieloną, do której później inne procesy mogą się odwoływać za pomocą wspólnej nazwy. Na Linuxie .NET nie wspiera nazwanych mapowań (`CreateOrOpen` i `OpenExisting` zgłaszają wyjątek `PlatformNotSupportedException`), więc żeby stworzyć pamięć dzieloną, można utworzyć plik w `/dev/shm`. Jest to tymczasowy system plików (`tmpfs`) zamontowany w pamięci RAM.
 
 {{< tabs >}}
 {{% tab "Linux" %}} 
@@ -105,7 +105,7 @@ public class Program
     
     public static void Reader()
     {
-        Mutex mutex = Mutex.OpenExisting(MutexName);
+        using Mutex mutex = Mutex.OpenExisting(MutexName);
         mutex.WaitOne();
         using var mmf = MemoryMappedFile.CreateFromFile(ShmFile, FileMode.Open);
         using var accessor = mmf.CreateViewAccessor();
@@ -167,7 +167,7 @@ public class Program
 
     public static void Reader()
     {
-        Mutex mutex = Mutex.OpenExisting(MutexName);
+        using Mutex mutex = Mutex.OpenExisting(MutexName);
         mutex.WaitOne();
         using var mmf = MemoryMappedFile.OpenExisting(MapName);
         using var accessor = mmf.CreateViewAccessor();
@@ -186,7 +186,7 @@ public class Program
 > [!WARNING]
 > ## Synchronizacja
 > Kiedy wiele procesów (lub wątków) ma dostęp do tego samego obszaru pamięci, może być potrzebna **synchronizacja**. Bez niej może dojść do sytuacji wyścigu (*race condition*), gdzie jeden proces próbuje odczytać dane, które są w trakcie modyfikacji przez inny.
-> W powyższym przykładzie użyto klasy `Mutex` do zapewnienia, że w danym momencie tylko jeden proces ma dostęp do współdzielonego obszaru.
+> W powyższym przykładzie użyto nazwanego (ogólnosystemowego) muteksu `Mutex` do zapewnienia, że w danym momencie tylko jeden proces ma dostęp do współdzielonego obszaru.
 
 > [!INFO]
 > ## Kod źródłowy

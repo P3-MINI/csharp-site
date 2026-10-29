@@ -34,6 +34,7 @@ class Program
             Environment.Exit(-1);
         }
         Console.WriteLine("Child process started with PID: " + childProcess.Id);
+        pipe.DisposeLocalCopyOfClientHandle(); // The child has its own copy now
 
         var writer = new StreamWriter(pipe);
         writer.AutoFlush = true;

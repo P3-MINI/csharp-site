@@ -14,7 +14,7 @@ The main applications of serialization are:
 
 The reverse process of serialization is deserialization – which is the reconstruction of an object from its saved (serialized) form.
 
-The standard library provides mechanisms for serialization to both `JSON` and `XML` formats through the `JsonSerializer` and `XmlSerializer` classes, available in the `System.Text.Json` and `System.Xml.Serialization` namespaces, respectively. The external `Newtonsoft.Json` NuGet package is also popular for `JSON` serialization. It is simpler to use and frequently employed, though less performant.
+The standard library provides mechanisms for serialization to both `JSON` and `XML` formats through the `JsonSerializer` and `XmlSerializer` classes, available in the `System.Text.Json` and `System.Xml.Serialization` namespaces, respectively. The external `Newtonsoft.Json` NuGet package is also popular for `JSON` serialization. It is still frequently used and offers more features and more lenient defaults, though it is less performant.
 
 Both approaches offer an "automagic" serialization mechanism based on **reflection**. The serialization method takes only the object to be serialized and at runtime reads its fields and properties, then serializes it based on this information. Deserialization takes a string and an object representing the deserialized type, and uses reflection to create and initialize its instance. The serialization and deserialization process can be influenced by decorating classes and their members with attributes.
 
@@ -79,7 +79,7 @@ public class Person
     [JsonPropertyName("FirstName")]
     public string Name { get; set; }
     
-    [JsonInclude] // Used to serialize non-public fields and properties
+    [JsonInclude] // Needed for fields (not serialized by default) and non-public members
     private DateTime DateOfBirth;
     
     [JsonIgnore]
@@ -148,8 +148,8 @@ public class Person
     [JsonProperty("FirstName")]
     public string Name { get; set; }
 
-    [JsonProperty] // Fields are not serialized by default in Newtonsoft.Json.
-    public DateTime DateOfBirth;
+    [JsonProperty] // Needed for non-public members (unlike System.Text.Json, public fields are serialized by default)
+    private DateTime DateOfBirth;
 
     [JsonIgnore]
     public int Age { get; set; }
