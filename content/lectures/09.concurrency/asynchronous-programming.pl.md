@@ -206,6 +206,25 @@ Console.WriteLine($"Primes: {await task}");
 * Zewnętrzny `Task` kończy się, gdy dowolne zadanie z kolekcji się zakończy.
 * Wynikiem zewnętrznego `Task`a jest ten wewnętrzny `Task,` który właśnie się zakończył. Trzeba go odpakować, aby dostać się do jego wyniku.
 
+### `Task.WhenEach`
+
+`Task.WhenEach` (.NET 9) zwraca asynchroniczną sekwencję (`IAsyncEnumerable<Task<TResult>>` lub `IAsyncEnumerable<Task>`), w której przekazane zadania pojawiają się w kolejności ich zakończenia. Pozwala to przetwarzać wyniki, gdy tylko są dostępne, bez wielokrotnego wywoływania `Task.WhenAny` i usuwania zakończonego zadania z listy.
+
+```csharp
+Task<int>[] tasks =
+[
+    CountPrimesAsync(0, 3_000_000),
+    CountPrimesAsync(3_000_000, 4_000_000),
+    CountPrimesAsync(4_000_000, 5_000_000)
+];
+
+await foreach (Task<int> completedTask in Task.WhenEach(tasks))
+{
+    Console.WriteLine($"Primes: {await completedTask}");
+}
+```
+
+Zwracane zadania są już zakończone, więc `await` od razu zwraca ich wynik (lub rzuca wyjątek, którym zakończyło się zadanie). Instrukcja `await foreach` jest opisana w części [Asynchroniczne sekwencje]({{< ref "/lectures/09.concurrency/asynchronous-streams" >}}).
 
 ## Anulowanie zadań
 
