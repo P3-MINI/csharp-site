@@ -118,7 +118,7 @@ delegate T Function<T>(T x);
 
 ### System Delegates
 
-The standard library provides two kinds of generic delegates: `Func` and `Action`. **In most cases, there is no need to define your own delegate types**; these built-in ones are general enough to represent almost any method signature. The exceptions are methods with `ref`, `out` or `in` parameters (e.g. `bool TryParse(string s, out int result)`) – `Func` and `Action` cannot represent them, so a custom delegate type is needed.
+The standard library provides two kinds of generic delegates: `Func` and `Action`. **In most cases, there is no need to define your own delegate types**; these built-in ones are general enough to represent almost any method signature. The exceptions are methods with `ref`, `out` or `in` parameters (e.g., `bool TryParse(string s, out int result)`) – `Func` and `Action` cannot represent them, so a custom delegate type is needed.
 
 ```csharp
 delegate TResult Func<out TResult>();

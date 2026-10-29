@@ -121,7 +121,7 @@ public class InvalidOrderException : Exception
 
 ## The `finally` Block
 
-A `finally` block can be attached to a `try-catch` block. The code within such a block will always execute, regardless of the circumstances under which the `try` block is exited (normally, via `return`/`break`, or because of an exception). It is skipped only when the whole process is terminated abruptly, e.g. by `Environment.FailFast` or a stack overflow. The main use of the `finally` block is to release resources such as file streams, database connections, or network resources.
+A `finally` block can be attached to a `try-catch` block. The code within such a block will always execute, regardless of the circumstances under which the `try` block is exited (normally, via `return`/`break`, or because of an exception). It is skipped only when the whole process is terminated abruptly, e.g., by `Environment.FailFast` or a stack overflow. The main use of the `finally` block is to release resources such as file streams, database connections, or network resources.
 
 ```csharp
 FileStream? fs = null;
