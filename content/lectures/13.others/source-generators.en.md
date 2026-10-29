@@ -189,6 +189,13 @@ namespace BuilderGenerator
 }
 ```
 
+The `Initialize` method does not generate code directly - it only builds a *pipeline* of transformations, which the compiler executes and whose intermediate results it caches (in the IDE, the pipeline runs after almost every keystroke):
+
+*   `RegisterPostInitializationOutput` adds code that does not depend on the user's code - here, the marker attribute.
+*   `SyntaxProvider.ForAttributeWithMetadataName` (available since Roslyn 4.3) finds declarations marked with an attribute of the given fully qualified name. It is much more efficient than `CreateSyntaxProvider`, which inspects every syntax node, because the compiler examines only declarations that carry an attribute with a matching name. The cheap `predicate` filters syntax nodes, and `transform` gets access to the semantic model and the symbol (`TargetSymbol`).
+*   `transform` returns a simple model (`ClassModel`) with value equality. Thanks to that, the generator reuses cached results and regenerates code only when the model changes - this is why models should not contain syntax nodes or symbols.
+*   `RegisterSourceOutput` produces source files from the models.
+
 To use such a generator in an application project, we must add it as an `Analyzer`. This allows us to use the generated builders to create objects, even though we didn't write them ourselves.
 
 ```xml
@@ -230,9 +237,16 @@ namespace App
 > Source code:
 > {{< filetree dir="lectures/other/source-generators" >}}
 
+> [!TIP]
+> To see the generated files, add `<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>` to the application project - they will be written to `obj/<configuration>/<target framework>/generated/`. IDEs (Visual Studio, Rider) also show generated files among the project's dependencies (in the analyzers/source generators node); you can navigate to them and debug them like ordinary code.
+
 ### Applications in the .NET Platform
 
 *   **`System.Text.Json`**: Generates serialization code at compile time, allowing operation without reflection (crucial for AOT - *Ahead-of-Time compilation*).
 *   **`System.Text.RegularExpressions` (.NET 7+)**: The `[GeneratedRegex]` attribute generates optimized C# code implementing regular expression logic instead of interpreting it at runtime.
 *   **Interoperability (`[LibraryImport]`, .NET 7+)**: Generates marshalling code (data passing) for P/Invoke, replacing dynamically generated stubs in `[DllImport]`.
 *   **Logging (`[LoggerMessage]`)**: Allows generating strongly-typed, high-performance logging methods that avoid costly template parsing and argument boxing at runtime.
+
+### Interceptors
+
+Generators cannot modify existing code, but the compiler offers a limited mechanism for redirecting calls - *interceptors*. A generated method marked with the `[InterceptsLocation]` attribute replaces, at compile time, a call at a specific location in the user's code (generators obtain the location using `SemanticModel.GetInterceptableLocation`). For example, ASP.NET Core minimal APIs (with Native AOT) and the configuration binding generator use them to replace reflection-based calls with generated code. Interceptors were introduced as an experimental feature in .NET 8 (C# 12); according to the [Roslyn documentation](https://github.com/dotnet/roslyn/blob/main/docs/features/interceptors.md), they are supported as stable since the .NET 9.0.2xx SDK (Microsoft Learn still describes them as experimental). A project must opt in by listing the namespaces allowed to contain interceptors in the `<InterceptorsNamespaces>` property.
