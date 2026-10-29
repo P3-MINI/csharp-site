@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Shell.Abstractions/Shell.Abstractions.csproj" />
+  <Project Path="Shell/Shell.csproj" />
+</Solution>
