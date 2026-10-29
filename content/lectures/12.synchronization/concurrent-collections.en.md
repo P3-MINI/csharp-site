@@ -18,6 +18,9 @@ The `System.Collections.Concurrent` namespace contains collections optimized for
 *   **`ConcurrentStack<T>`**: A thread-safe LIFO stack.
 *   **`ConcurrentBag<T>`**: An unordered multi-set of elements.
 
+> [!WARNING]
+> `ConcurrentDictionary` guarantees atomicity of the operations on its internal state, but not of the delegates passed to it. The `valueFactory` of `GetOrAdd` and the delegates of `AddOrUpdate` are invoked **outside** the internal locks, so under contention they may be called several times for the same key (only one result is stored). They should therefore be fast and free of side effects; if the value must be created exactly once, store `Lazy<TValue>` objects in the dictionary.
+
 > [!INFO]
 > Iterating over a concurrent collection while it is being modified by another thread may include both already removed and newly added values, but it will not result in an exception being thrown.
 

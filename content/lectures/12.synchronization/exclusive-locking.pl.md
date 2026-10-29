@@ -136,6 +136,23 @@ Console.WriteLine($"Counter Value: {counter}");
 > Kod źródłowy:
 > {{< filetree dir="lectures/synchronization/MutexDemo" >}}
 
+Nazwany `Mutex` jest typowo używany do zapewnienia, że działa tylko jedna instancja aplikacji:
+
+```csharp
+using var mutex = new Mutex(initiallyOwned: false, name: "P3.SingleInstanceDemo");
+if (!mutex.WaitOne(TimeSpan.Zero))
+{
+    Console.WriteLine("Another instance is already running.");
+    return;
+}
+Console.WriteLine("Running...");
+Thread.Sleep(4000); // ... application logic
+mutex.ReleaseMutex();
+```
+
+> [!NOTE]
+> Podobnie jak `lock`, `Mutex` pozwala na ponowne wejście tego samego wątku i jest związany z wątkiem: `ReleaseMutex` musi zostać wywołane przez wątek, który go zajął (w przeciwnym razie rzucany jest `ApplicationException`), dlatego pomiędzy `WaitOne` a `ReleaseMutex` nie wolno używać `await`. Jeżeli wątek (lub proces) będący właścicielem zakończy się bez zwolnienia obiektu `Mutex`, staje się on *porzucony* (*abandoned*) - kolejne wywołanie `WaitOne` zajmuje go, ale rzuca `AbandonedMutexException`, sygnalizując, że chronione dane mogą być w niespójnym stanie.
+
 ## SpinLock
 
 `System.Threading.SpinLock` to lekka struktura, która realizuje blokowanie poprzez aktywne oczekiwanie (*busy waiting*). Zamiast blokować wątek (co kosztuje czas na przełączenie kontekstu), wątek aktywnie czeka, sprawdzając dostępność blokady.

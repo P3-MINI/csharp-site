@@ -136,6 +136,23 @@ Console.WriteLine($"Counter Value: {counter}");
 > Source code:
 > {{< filetree dir="lectures/synchronization/MutexDemo" >}}
 
+A named mutex is typically used to ensure that only one instance of an application is running:
+
+```csharp
+using var mutex = new Mutex(initiallyOwned: false, name: "P3.SingleInstanceDemo");
+if (!mutex.WaitOne(TimeSpan.Zero))
+{
+    Console.WriteLine("Another instance is already running.");
+    return;
+}
+Console.WriteLine("Running...");
+Thread.Sleep(4000); // ... application logic
+mutex.ReleaseMutex();
+```
+
+> [!NOTE]
+> Like `lock`, a `Mutex` is reentrant and has thread affinity: `ReleaseMutex` must be called by the thread that acquired it (otherwise `ApplicationException` is thrown), so you must not `await` between `WaitOne` and `ReleaseMutex`. If the owning thread (or process) terminates without releasing the mutex, the mutex becomes *abandoned* - the next `WaitOne` acquires it but throws `AbandonedMutexException`, signaling that the protected data may be in an inconsistent state.
+
 ## SpinLock
 
 `System.Threading.SpinLock` is a lightweight structure that implements locking via active waiting (*busy waiting*). Instead of blocking the thread (which costs time for context switching), the thread actively waits by checking the lock availability.
