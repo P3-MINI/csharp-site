@@ -7,9 +7,9 @@ weight: 80
 
 Generyki w C# wyglądają podobnie i służą do tego samego celu co szablony z C++. Również za ich pomocą piszemy kod niezależny od typu, ale jest to mechanizm prostszy i bezpieczniejszy. 
 
-Szablony w C++ działają w czasie kompilacji, dla każdego typu użytego w szablonie kompilator C++ tworzy nową oddzielną kopię klasy lub funkcji. W C# generyki **działają w czasie wykonania**. Kompilator generyki kompiluje zawsze raz do języka pośredniego, gdzie typy na razie pozostają niepodstawione. Dopiero podczas uruchomienia kompilator JIT (*Just-In-Time*) przy pierwszym użyciu generyka tworzy jej wyspecjalizowaną wersję.
+Szablony w C++ działają w czasie kompilacji, dla każdego typu użytego w szablonie kompilator C++ tworzy nową oddzielną kopię klasy lub funkcji. W C# generyki **działają w czasie wykonania**. Kompilator generyki kompiluje zawsze raz do języka pośredniego, gdzie typy na razie pozostają niepodstawione. Dopiero podczas uruchomienia kompilator JIT (*Just-In-Time*) przy pierwszym użyciu generyka tworzy jego wyspecjalizowaną wersję (osobną dla każdego typu bezpośredniego użytego jako argument, natomiast wszystkie typy referencyjne współdzielą jedną wersję).
 
-W C++ (przynajmniej przed C++20) kompilator nie weryfikuje operacji na typach szablonowych, aż do próby użycia. Często generuje to bardzo nieprzejrzyste i trudne w zrozumieniu błędy kompilacji. W C# typy generyczne są w pełni bezpieczne - żeby wiedzieć, jak można użyć typu, należy go ograniczyć. Podobny mechanizm w C++ istnieje od wersji C++20: [Constraints and concepts](https://en.cppreference.com/w/cpp/language/constraints.html).
+W C++ (przynajmniej przed C++20) kompilator nie weryfikuje operacji na typach szablonowych aż do próby użycia. Często generuje to bardzo nieprzejrzyste i trudne w zrozumieniu błędy kompilacji. W C# typy generyczne są w pełni bezpieczne - żeby wiedzieć, jak można użyć typu, należy go ograniczyć. Podobny mechanizm w C++ istnieje od wersji C++20: [Constraints and concepts](https://en.cppreference.com/w/cpp/language/constraints.html).
 
 W C++ ten szablon jest jak najbardziej poprawny, jednak jeżeli spróbujemy go użyć na typie `T`, który nie definiuje operatora porównywania, to dostaniemy trudny do zdebugowania błąd.
 
@@ -20,7 +20,7 @@ template <class T> T Max(T a, T b)
 }
 ```
 
-W C# żeby wiedzieć, że typy możemy ze sobą porównywać musielibyśmy na przykład ograniczyć `T` do typu implementującego `IComparable<T>`. Dzięki temu, tej generycznej metody możemy używać tylko na typach porównywalnych, przez co nie będzie niespodzianek po podstawieniu.
+W C#, żeby wiedzieć, że typy możemy ze sobą porównywać, musielibyśmy na przykład ograniczyć `T` do typu implementującego `IComparisonOperators<T, T, bool>` (interfejs z przestrzeni nazw `System.Numerics` deklarujący operatory porównania). Dzięki temu tej generycznej metody możemy używać tylko na typach porównywalnych, przez co nie będzie niespodzianek po podstawieniu.
 
 ```csharp
 static T Max<T>(T a, T b) where T : IComparisonOperators<T, T, bool>
@@ -66,7 +66,7 @@ public class Stack
 > {{< filetree dir="lectures/creating-types/generics/ObjectStack" >}}
 
 
-Jednak próba użycia takiego stosu uwidacznia problemy z tą implementacją. Po pierwsze wrzucanie na stos typów bezpośrednich wymaga pakowania. Po drugie, taki stos nie zapewnia nam bezpieczeństwa typów. Pobranie elementu wiąże się z niebezpiecznym rzutowaniem w dół. Typy generyczne rozwiązują oba te problemy.
+Jednak próba użycia takiego stosu uwidacznia problemy z tą implementacją. Po pierwsze, wrzucanie na stos typów bezpośrednich wymaga pakowania. Po drugie, taki stos nie zapewnia nam bezpieczeństwa typów. Pobranie elementu wiąże się z niebezpiecznym rzutowaniem w dół. Typy generyczne rozwiązują oba te problemy.
 
 ```csharp
 Stack stack = new Stack();
@@ -158,7 +158,7 @@ Jeżeli kompilator potrafi wywnioskować parametry generyczne, to nie trzeba ich
 int i = 3, j = 5;
 Swap<int>(ref i, ref j);
 Swap(ref i, ref j);
-Console.WriteLine($"i: {i}, j: {j}");
+Console.WriteLine($"i: {i}, j: {j}"); // i: 3, j: 5
 ```
 
 ## Ograniczenia typów generycznych
@@ -186,7 +186,7 @@ Możliwe ograniczenia:
 
 * `where T : `*<base class/interface>* - najczęstsze ograniczenie i najbardziej przydatne, pozwala wywołać metody z ograniczanych klas i interfejsów.
 * `where T : `*<base class/interface>?* - pozwala wywołać metody z ograniczanych klas i interfejsów, dodatkowo może być `null`owalny
-* `where T : new()` - typ musi zawierać konstruktor bezparametrowy, przydatne jeżeli musimy tworzyć nowe instancje
+* `where T : new()` - typ musi zawierać publiczny konstruktor bezparametrowy, przydatne jeżeli musimy tworzyć nowe instancje
 * `where T : class` - typ musi być referencyjny
 * `where T : class?` - typ musi być referencyjny, może być `null`owalny
 * `where T : struct` - typ musi być bezpośredni
@@ -238,13 +238,13 @@ public class Finder<T> where T : IEquatable<T>
 }
 ```
 
-To też ma sens, chcemy szukać obiektów, które są porównywalne ze sobą równościowo, inaczej nie wiedzielibyśmy jak szukać.
+To też ma sens, chcemy szukać obiektów, które są porównywalne ze sobą równościowo, inaczej nie wiedzielibyśmy, jak szukać.
 
 Poprawne jest też: `class Foo<Bar> where Bar : Foo<Bar>`.
 
-## Niezmienność
+## Inwariancja
 
-Typy generyczne domyślnie są niezmienne. Nie można rzutować ich parametrów generycznych w dół ani w górę.
+Klasy i struktury generyczne są zawsze inwariantne (niezmiennicze). Nie można rzutować ich parametrów generycznych w dół ani w górę.
 
 Rzutowanie w dół jest niedozwolone, bo moglibyśmy ze stosu samochodów nagle zdjąć inny rodzaj pojazdu.
 
@@ -270,7 +270,7 @@ public class Bike : Vehicle;
 
 ## Wariancja
 
-W interfejsach możemy deklarować zmienne (*wariantne*) parametry generyczne. Ograniczają one sposób użycia parametru generycznego, ale dzięki temu pozwalają na rzutowanie tego parametru w jedną ze stron. Parametry kowarientne (out) mogą być używane tylko do zwracania wartości. Parametry kontrawarientne (in) mogą być używane tylko jako parametry wejściowe do metod.
+W interfejsach (i delegatach) możemy deklarować wariantne parametry generyczne. Ograniczają one sposób użycia parametru generycznego, ale dzięki temu pozwalają na rzutowanie tego parametru w jedną ze stron. Parametry kowariantne (out) mogą być używane tylko do zwracania wartości. Parametry kontrawariantne (in) mogą być używane tylko jako parametry wejściowe do metod.
 
 ```csharp
 // Covariant T type parameter (can be used only as a return value)
@@ -323,10 +323,10 @@ Kowariantne parametry generyczne (out) pozwalają na rzutowanie w górę. Będzi
 var carStack = new Stack<Car>();
 carStack.Push(new Car());
 carStack.Push(new Car());
-IPoppable<Car> vehiclePoppable = carStack;
-WashVehicles(vehiclePoppable);
+IPoppable<Car> carPoppable = carStack;
+WashVehicles(carPoppable);
 
-public void WashVehicles(IPoppable<Vehicle> vehicles)
+void WashVehicles(IPoppable<Vehicle> vehicles)
 {
     while (vehicles.Count > 0)
     {
@@ -348,10 +348,10 @@ Kontrawariantne parametry generyczne (in) pozwalają na rzutowanie w dół. Będ
 var vehiclesStack = new Stack<Vehicle>();
 vehiclesStack.Push(new Car());
 vehiclesStack.Push(new Bike());
-IPushable<Vehicle> carPushable = vehiclesStack;
-DeliverCars(carPushable, 2);
+IPushable<Vehicle> vehiclePushable = vehiclesStack;
+DeliverCars(vehiclePushable, 2);
 
-public void DeliverCars(IPushable<Car> cars, int count)
+void DeliverCars(IPushable<Car> cars, int count)
 {
     for (int i = 0; i < count; i++)
     {
