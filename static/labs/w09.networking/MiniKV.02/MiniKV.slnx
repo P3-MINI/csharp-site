@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="MiniKV.Client/MiniKV.Client.csproj" />
+  <Project Path="MiniKV.Protocol/MiniKV.Protocol.csproj" />
+  <Project Path="MiniKV.Server/MiniKV.Server.csproj" />
+</Solution>
