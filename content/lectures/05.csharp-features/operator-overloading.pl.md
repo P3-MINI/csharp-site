@@ -83,6 +83,47 @@ public interface IIncrementable<TSelf> where TSelf : IIncrementable<TSelf>
 }
 ```
 
+### Matematyka generyczna (C# 11)
+
+Statyczne abstrakcyjne operatory w interfejsach są podstawą *matematyki generycznej* (*generic math*, .NET 7+). Wbudowane typy liczbowe implementują interfejsy generyczne, takie jak `INumber<TSelf>` (przestrzeń nazw `System.Numerics`), który udostępnia operatory arytmetyczne i porównania oraz składowe takie jak `T.Zero` i `T.One`. Dzięki temu jedna metoda generyczna może działać dla dowolnego typu liczbowego - w C++ zwykle realizuje się to szablonami:
+
+```csharp
+using System.Numerics;
+
+static T Sum<T>(IEnumerable<T> values) where T : INumber<T>
+{
+    T result = T.Zero;
+    foreach (T value in values)
+        result += value;
+    return result;
+}
+
+Console.WriteLine(Sum([1, 2, 3]));    // 6
+Console.WriteLine(Sum([1.5, 2.5]));   // 4
+Console.WriteLine(Sum([0.1m, 0.2m])); // 0.3
+```
+
+## Operatory `checked` (C# 11)
+
+Od C# 11 typ może zdefiniować osobną wersję operatora dla kontekstu `checked`, np. rzucającą wyjątek `OverflowException` przy przepełnieniu. Można ją zadeklarować dla operatorów `++`, `--`, jednoargumentowego `-`, dwuargumentowych `+`, `-`, `*`, `/` oraz dla jawnych konwersji. Zawsze wymaga ona zwykłej wersji tego samego operatora, która jest używana w kontekście `unchecked` (domyślnym):
+
+```csharp
+public readonly struct Money(int cents)
+{
+    public int Cents { get; } = cents;
+
+    public static Money operator +(Money a, Money b) => new(a.Cents + b.Cents);
+    public static Money operator checked +(Money a, Money b) => new(checked(a.Cents + b.Cents));
+}
+```
+
+```csharp
+var max = new Money(int.MaxValue);
+var one = new Money(1);
+Console.WriteLine(unchecked(max + one).Cents); // -2147483648
+Console.WriteLine(checked(max + one).Cents);   // OverflowException
+```
+
 ## Definiowanie konwersji
 
 Można definiować własne konwersje dla typu, zarówno jawne, jak i niejawne.

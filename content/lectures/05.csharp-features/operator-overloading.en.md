@@ -83,6 +83,47 @@ public interface IIncrementable<TSelf> where TSelf : IIncrementable<TSelf>
 }
 ```
 
+### Generic Math (C# 11)
+
+Static abstract operators in interfaces are the basis of *generic math* (.NET 7+). Built-in numeric types implement generic interfaces such as `INumber<TSelf>` (namespace `System.Numerics`), which provides arithmetic and comparison operators as well as members such as `T.Zero` and `T.One`. Thanks to that, a single generic method can work with any numeric type - something that in C++ is typically done with templates:
+
+```csharp
+using System.Numerics;
+
+static T Sum<T>(IEnumerable<T> values) where T : INumber<T>
+{
+    T result = T.Zero;
+    foreach (T value in values)
+        result += value;
+    return result;
+}
+
+Console.WriteLine(Sum([1, 2, 3]));    // 6
+Console.WriteLine(Sum([1.5, 2.5]));   // 4
+Console.WriteLine(Sum([0.1m, 0.2m])); // 0.3
+```
+
+## Checked Operators (C# 11)
+
+Since C# 11, a type can define a separate version of an operator for the `checked` context, e.g., one that throws an `OverflowException` on overflow. It can be declared for the `++`, `--`, unary `-`, binary `+`, `-`, `*`, `/` operators and for explicit conversions, and always requires the regular version of the same operator, which is used in the `unchecked` context (the default):
+
+```csharp
+public readonly struct Money(int cents)
+{
+    public int Cents { get; } = cents;
+
+    public static Money operator +(Money a, Money b) => new(a.Cents + b.Cents);
+    public static Money operator checked +(Money a, Money b) => new(checked(a.Cents + b.Cents));
+}
+```
+
+```csharp
+var max = new Money(int.MaxValue);
+var one = new Money(1);
+Console.WriteLine(unchecked(max + one).Cents); // -2147483648
+Console.WriteLine(checked(max + one).Cents);   // OverflowException
+```
+
 ## Defining Conversions
 
 You can define your own conversions for a type, both explicit and implicit.
