@@ -6,7 +6,7 @@ title: "Metody rozszerzające"
 
 Metody rozszerzające pozwalają na dodawanie metod do istniejących typów bez modyfikowania ich kodu. Jest to szczególnie przydatne, jeżeli chcemy rozszerzyć funkcjonalność typu, do którego nie mamy dostępu. Pozwalają one też podzielić i pogrupować funkcjonalności obiektu na kilka klas.
 
-Metody rozszerzające muszą być zdefiniowane w statycznej klasie. Pierwszy parametr określa typ, który jest rozszerzany i musi być poprzedzony słówkiem `this`.
+Metody rozszerzające muszą być zdefiniowane w statycznej, niegenerycznej i niezagnieżdżonej klasie. Pierwszy parametr określa typ, który jest rozszerzany, i musi być poprzedzony słówkiem `this`.
 
 ```csharp
 public static class StringExtensions
@@ -18,10 +18,10 @@ public static class StringExtensions
 }
 ```
 
-Mimo że metody rozszerzające są zdefiniowane jako metody statyczne, to można je wywoływać tak jakby były metodami instancyjnymi dla rozszerzanego typu.
+Mimo że metody rozszerzające są zdefiniowane jako metody statyczne, to można je wywoływać tak, jakby były metodami instancyjnymi dla rozszerzanego typu.
 
 ```csharp
-string greeting = "Quick fox jumps over the lazy dog.";
+string greeting = "The quick brown fox jumps over the lazy dog.";
 int j = greeting.WordCount();
 ```
 
@@ -90,7 +90,7 @@ Console.WriteLine(str.WordCount());
 
 ## Ciekawostki
 
-Możemy rozszerzać typy nieiterowalne o metodę zwracającą iterator.
+Możemy rozszerzać typy nieiterowalne o metodę `GetEnumerator` zwracającą iterator (`foreach` akceptuje takie metody rozszerzające od C# 9).
 
 ```csharp
 public static class IntExtensions

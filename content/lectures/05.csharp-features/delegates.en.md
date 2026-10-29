@@ -25,7 +25,7 @@ Function quadratic = QuadraticFunction;
 ```
 
 > [!NOTE]
-> All delegates implicitly inherit from the `System.Delegate` class. They store a reference to the method they call and, optionally, a reference to the object on which the method is invoked if the method is not static. It's worth remembering this, as a delegate can thereby extend the lifetime of objects and even cause memory leaks.
+> All delegate types implicitly inherit from the `System.MulticastDelegate` class (which in turn inherits from `System.Delegate`). They store a reference to the method they call and, optionally, a reference to the object on which the method is invoked if the method is not static. It's worth remembering this, as a delegate can thereby extend the lifetime of objects and even cause memory leaks.
 
 A delegate can be invoked just like a method:
 
@@ -102,7 +102,7 @@ public static class Program
 
 ### Generic Delegates
 
-A Delegate type can be generic:
+A delegate type can be generic:
 
 ```csharp
 Function<double> function = QuadraticFunction;
@@ -118,7 +118,7 @@ delegate T Function<T>(T x);
 
 ### System Delegates
 
-The standard library provides two kinds of generic delegates: `Func` and `Action`. **There is no need to define your own delegate types**; these built-in ones are general enough to represent any delegate.
+The standard library provides two kinds of generic delegates: `Func` and `Action`. **In most cases, there is no need to define your own delegate types**; these built-in ones are general enough to represent almost any method signature. The exceptions are methods with `ref`, `out` or `in` parameters (e.g., `bool TryParse(string s, out int result)`) – `Func` and `Action` cannot represent them, so a custom delegate type is needed.
 
 ```csharp
 delegate TResult Func<out TResult>();
@@ -136,7 +136,7 @@ delegate void Action<in T1, in T2>(T1 arg1, T2 arg2);
 
 ### Multicast Delegates
 
-Delegates can hold references to multiple methods. The `+=` and `-=` operators allow adding and removing methods from a delegate. Invoking such a delegate will call all the methods it holds, in the order they were added. Such delegates implicitly inherit from `System.MulticastDelegate`, which in turn inherits from `System.Delegate`.
+Delegates can hold references to multiple methods. The `+=` and `-=` operators allow adding and removing methods from a delegate. Invoking such a delegate will call all the methods it holds (its *invocation list*), in the order they were added. Every delegate type supports this, as all of them inherit from `System.MulticastDelegate`. Delegates are immutable – `+=` and `-=` actually create a new delegate (using `Delegate.Combine` and `Delegate.Remove`) and assign it to the variable.
 
 ```csharp
 Action<string> writeLog = Console.WriteLine;
@@ -144,13 +144,13 @@ writeLog += WriteLogToFile;
 
 writeLog("DEBUG: This is a test entry");
 
-private static void WriteLogToFile(string log)
+static void WriteLogToFile(string log)
 {
-    File.AppendAllText("test.log", $"{log}");
+    File.AppendAllText("test.log", $"{log}\n");
 }
 ```
 
-Using the `+=` operator on a delegate that is `null` will also work. This will be equivalent to assigning a new delegate.
+Using the `+=` operator on a delegate that is `null` will also work. This will be equivalent to assigning a new delegate. Conversely, removing the last method with `-=` sets the variable to `null`.
 
 ```csharp
 Action<string>? writeLog = null;
@@ -226,6 +226,8 @@ foreach(Action action in actions)
 }
 ```
 
+As a result, all lambdas print the final value of `i` and the output is `333`, not `012`.
+
 {{% details title="The compiler will generate the following code:" open=false %}}
 ```csharp
 [CompilerGenerated]
@@ -263,7 +265,7 @@ private static void <Main>$(string[] args)
 
 ## Anonymous Methods
 
-Anonymous methods were introduced in C# 2.0 and have been completely superseded by lambda expressions, which were introduced in the next version. There are no advantages to using anonymous methods over lambda expressions. All subsequent language enhancements have focused exclusively on lambdas. You won't find any bells and whistles here.
+Anonymous methods were introduced in C# 2.0 and have been completely superseded by lambda expressions, which were introduced in the next version. There are no advantages to using anonymous methods over lambda expressions. All subsequent language enhancements have focused almost exclusively on lambdas. You won't find any bells and whistles here.
 
 Unlike lambda expressions, the body of an anonymous method must always be a code block. However, the parameter list can be omitted if the parameters are not used.
 

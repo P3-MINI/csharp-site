@@ -23,13 +23,13 @@ It is good practice to create a dedicated class inheriting from `System.EventArg
 ```csharp
 public class PriceChangedEventArgs : EventArgs
 {
-    public decimal NewPrice { get; }
     public decimal OldPrice { get; }
+    public decimal NewPrice { get; }
 
-    public PriceChangedEventArgs(decimal newPrice, decimal oldPrice)
+    public PriceChangedEventArgs(decimal oldPrice, decimal newPrice)
     {
-        NewPrice = newPrice;
         OldPrice = oldPrice;
+        NewPrice = newPrice;
     }
 }
 ```
@@ -51,8 +51,9 @@ public class Product
         set
         {
             if (value == _price) return;
-            OnPriceChanged(new PriceChangedEventArgs(value, _price));
+            decimal oldPrice = _price;
             _price = value;
+            OnPriceChanged(new PriceChangedEventArgs(oldPrice, value));
         }
     }
 
@@ -64,7 +65,7 @@ public class Product
 ```
 
 > [!IMPORTANT]
-> Definition of the system delegate `EventHandler`:
+> Definition of the system delegate `EventHandler<TEventArgs>`:
 > ```csharp
 > public delegate void EventHandler<TEventArgs>(object? sender, TEventArgs e);
 > ```
@@ -77,7 +78,7 @@ The subscriber defines a method that matches the delegate's signature.
 public class Notifier
 {
     // Event handler, with matching signature:
-    public void HandlePriceChanged(object sender, PriceChangedEventArgs e)
+    public void HandlePriceChanged(object? sender, PriceChangedEventArgs e)
     {
         if (sender is Product product)
         {
@@ -129,7 +130,7 @@ Event-driven programming is the foundation of how all user interfaces work. Acti
 
 ### Example
 
-The diagram above illustrates the flow of events in an example system:
+The diagram below illustrates the flow of events in an example system:
 
 *   The `Product` class is the main **publisher** – it informs about changes to its price and stock level.
 *   `Notifier` and `ShoppingCart` are **subscribers** to events from `Product`. `Notifier` reacts to changes in stock, and `ShoppingCart` to price changes to recalculate its value.
