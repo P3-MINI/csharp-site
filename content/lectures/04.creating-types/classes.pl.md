@@ -229,7 +229,7 @@ class ShopItem
 }
 ```
 
-Od wersji C# 14 możesz użyć słowa kluczowego `field`, aby uzyskać bezpośredni dostęp do wygenerowanego przez kompilator ukrytego pola (backing field), bez konieczności jego ręcznego deklarowania:
+Od wersji C# 14 możesz użyć słowa kluczowego `field`, aby uzyskać bezpośredni dostęp do wygenerowanego przez kompilator ukrytego pola (backing field), bez konieczności jego ręcznego deklarowania (jeżeli typ ma już składową o nazwie `field`, wewnątrz akcesorów trzeba się do niej odwoływać przez `this.field` lub `@field`). Wystarczy napisać tylko ten akcesor, który potrzebuje dodatkowej logiki; drugi może pozostać automatycznie zaimplementowany:
 
 ```csharp
 class ShopItem
@@ -239,6 +239,8 @@ class ShopItem
         get => field; 
         set => field = Math.Max(value, 0); 
     }
+
+    public string Name { get; set => field = value.Trim(); } = ""; // get is auto-implemented
 }
 ```
 
