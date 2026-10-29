@@ -72,6 +72,61 @@ public struct Complex
 - When overloading the `==` operator, you must also override the `Equals` and `GetHashCode` methods, otherwise the compiler will issue a warning.
 - It is also worth implementing the `IEquatable<T>` and `IComparable<T>` interfaces. In .NET 7 (C# 11) and newer, when overloading arithmetic operators, it is worth considering the implementation of generic interfaces, e.g., `IAdditionOperators<TSelf, TOther, TResult>`, `IMultiplyOperators<TSelf, TOther, TResult>`, etc. This will allow us to later constrain the generic type, and it is also a form of code documentation.
 
+## Compound Assignment Operators (C# 14)
+
+Before C# 14, `x += y` was always evaluated as `x = x + y`. For mutable types storing a lot of data (e.g., vectors or matrices), this means allocating a new object and copying the data on every `+=`. Since C# 14, a type can define compound assignment operators (`+=`, `-=`, `*=`, ...) and the `++` and `--` operators as **instance** methods that modify the object in place. Such an operator must be `public`, must not be `static`, and returns `void`; a compound assignment operator takes one parameter (the right-hand side), while `++` and `--` take none.
+
+```csharp
+public class Vector
+{
+    private readonly double[] _data;
+
+    public Vector(int size) => _data = new double[size];
+
+    public double this[int i]
+    {
+        get => _data[i];
+        set => _data[i] = value;
+    }
+
+    public static Vector operator +(Vector a, Vector b)
+    {
+        var result = new Vector(a._data.Length);
+        for (int i = 0; i < a._data.Length; i++)
+            result._data[i] = a._data[i] + b._data[i];
+        return result;
+    }
+
+    public void operator +=(Vector other)
+    {
+        for (int i = 0; i < _data.Length; i++)
+            _data[i] += other._data[i];
+    }
+
+    public void operator ++()
+    {
+        for (int i = 0; i < _data.Length; i++)
+            _data[i]++;
+    }
+}
+```
+
+```csharp
+var v = new Vector(3);
+var w = new Vector(3);
+w[0] = 1;
+var sum = v + w; // static operator +: allocates a new Vector
+v += w;          // instance operator +=: modifies v in place
+v++;             // instance operator ++
+Console.WriteLine($"{v[0]} {v[1]} {sum[0]}"); // 2 1 1
+// var old = v++; // error: the instance ++ cannot be used when the result of x++ is used
+```
+
+If a type does not define a compound assignment operator, the compiler still evaluates `x += y` as `x = x + y`. The instance `++` is not used when the result of a postfix `x++` is used (e.g., `y = x++`), because the value from before the increment is needed - in that case a static `operator ++` is required.
+
+> [!NOTE]
+> Since C# 14, operators can also be declared in extension blocks, which allows adding operators to types we do not control - see [Extension Methods]({{< ref "/lectures/05.csharp-features/extension-methods" >}}).
+
 ## Operator Inheritance
 
 Operators defined in classes are not inherited, but operators defined in interfaces as `static abstract` or `static virtual` are.
