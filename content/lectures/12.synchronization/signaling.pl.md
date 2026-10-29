@@ -20,7 +20,7 @@ Klasy pochodne od `EventWaitHandle` (`ManualResetEvent`, `AutoResetEvent`) dzia�
 
 ### Rodzaje zdarzeń
 
-1.  **`ManualResetEvent(Slim)`**: Po otwarciu (`Set`) pozostaje otwarta dla dowolnej liczby wątków, dopóki nie zostanie ręcznie zamknięta (`Reset`). Działa jak klasyczna brama.
+1.  **`ManualResetEvent(Slim)`**: Po otwarciu (`Set`) pozostaje otwarta dla dowolnej liczby wątków, dopóki nie zostanie ręcznie zamknięta (`Reset`). Działa jak klasyczna brama. (`ManualResetEventSlim` to lżejsza wersja działająca w obrębie procesu, która nie dziedziczy po `EventWaitHandle` i zamiast `WaitOne()` udostępnia `Wait()`.)
 2.  **`AutoResetEvent`**: Po otwarciu przepuszcza **tylko jeden** czekający wątek i natychmiast automatycznie się zamyka. Działa jak bramka w metrze.
 3.  **`CountdownEvent`**: Zostaje zasygnalizowany dopiero, gdy jego wewnętrzny licznik spadnie do zera. Każde wywołanie `Signal()` zmniejsza ten licznik. Jest przydatny w sytuacjach, gdy jeden wątek musi czekać na zakończenie pracy przez określoną liczbę innych wątków.
 
@@ -29,7 +29,7 @@ Klasy pochodne od `EventWaitHandle` (`ManualResetEvent`, `AutoResetEvent`) dzia�
 Poniższy przykład implementuje kolejkę o ograniczonej pojemności, używając `ManualResetEvent` do sygnalizowania, czy kolejka jest pełna, czy pusta.
 
 > [!NOTE]
-> Zauważ pętlę `while(true)` w metodach `Enqueue` i `Dequeue`. Jest ona konieczna, ponieważ pomiędzy wywołaniem `WaitOne()` (sygnał: jest miejsce) a wejściem w `lock` inny wątek mógł zająć to miejsce. Wymaga to ponownego sprawdzenia warunku.
+> Zauważ pętlę `while(true)` w metodach `Enqueue` i `Dequeue`. Jest ona konieczna, ponieważ pomiędzy wywołaniem `WaitOne()` (sygnał: jest miejsce/element) a wejściem w `lock` inny wątek mógł zająć to miejsce lub pobrać ten element. Wymaga to ponownego sprawdzenia warunku.
 
 ```csharp
 public class Queue<T> : IDisposable
@@ -164,7 +164,7 @@ class Program
 
 Jest to mechanizm zmiennych warunkowych (powiązany z `lock`).
 
-*   `Monitor.Wait(obj)`: Zwalnia blokadę na obiekcie `obj` i usypia wątek do momentu otrzymania powiadomienia.
+*   `Monitor.Wait(obj)`: Zwalnia blokadę na obiekcie `obj` i usypia wątek do momentu otrzymania powiadomienia, a przed powrotem ponownie zajmuje blokadę.
 *   `Monitor.Pulse(obj)`: Budzi jeden wątek czekający na obiekcie `obj`.
 *   `Monitor.PulseAll(obj)`: Budzi wszystkie czekające wątki.
 
