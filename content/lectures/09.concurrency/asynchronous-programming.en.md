@@ -63,6 +63,20 @@ else
 > [!NOTE]
 > The default behavior of `await` capturing the context can be disabled by using `await expression.ConfigureAwait(false)`.
 
+Since .NET 8, `Task` and `Task<TResult>` also have a `ConfigureAwait(ConfigureAwaitOptions options)` overload, which accepts a combination of flags:
+
+*   `None` – the context is not captured (equivalent to `ConfigureAwait(false)`),
+*   `ContinueOnCapturedContext` – the context is captured (equivalent to `ConfigureAwait(true)`, i.e., the default behavior),
+*   `SuppressThrowing` – `await` does not throw if the task faulted or was canceled; its state can be checked afterwards (supported only for the non-generic `Task`),
+*   `ForceYielding` – the continuation is always scheduled asynchronously, even if the task has already completed (similar to `await Task.Yield()`).
+
+```csharp
+Task task = Task.Run(() => throw new InvalidOperationException("Boom"));
+
+await task.ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+Console.WriteLine(task.Status); // Faulted
+```
+
 > [!INFO]
 > An example illustrating thread switching:
 > {{< filetree dir="lectures/concurrency/AsyncAwaitThreads" >}}
