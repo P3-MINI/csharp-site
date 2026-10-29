@@ -12,9 +12,10 @@ Parameters are passed by value; the rules for value and reference types are desc
 | (none)     | value       | before the call           |                  |
 | `ref`      | reference   | before the call           |                  |
 | `in`       | reference   | before the call           | read-only        |
+| `ref readonly` | reference | before the call         | read-only (C# 12) |
 | `out`      | reference   | before returning control  |                  |
 
-Furthermore, you can pass parameters **by reference** in three different ways.
+Furthermore, you can pass parameters **by reference** in four different ways.
 
 ## Passing by Reference (`ref`)
 
@@ -70,6 +71,26 @@ static void Multiply(in Matrix4 a,
                      out Matrix4 result)
 {
     /**/
+}
+```
+
+## Read-only Reference Parameters (`ref readonly`, C# 12)
+
+The `ref readonly` modifier, just like `in`, passes the argument by reference and makes it read-only within the method body. The difference lies at the call site. An `in` argument can be passed without any modifier, and it does not even have to be a variable (e.g., it can be a constant or the result of a method call) - the compiler then silently passes a reference to a temporary copy. A `ref readonly` parameter expresses that the method really needs a reference to an existing variable: the argument should be a variable passed with `ref` or `in`, otherwise the compiler reports a warning. This modifier is mainly used in APIs whose parameters were originally declared as `ref` but are never modified - changing them to `ref readonly` does not break existing callers.
+
+```csharp
+using System.Numerics;
+
+Matrix4x4 m = Matrix4x4.CreateScale(2.0f);
+Print(ref m);              // OK
+Print(in m);               // OK
+Print(m);                  // Warning: argument should be passed with 'ref' or 'in'
+Print(Matrix4x4.Identity); // Warning: argument should be a variable
+
+static void Print(ref readonly Matrix4x4 matrix)
+{
+    // matrix.M11 = 0; // Compilation error: 'matrix' is read-only
+    Console.WriteLine(matrix.M11);
 }
 ```
 

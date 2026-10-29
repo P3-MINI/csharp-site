@@ -12,9 +12,10 @@ Parametry są przekazywane przez wartość, zasady dla typów bezpośrednich i r
 | (żaden)     | wartość             | przed wywołaniem          |                  |
 | `ref`       | referencję          | przed wywołaniem          |                  |
 | `in`        | referencję          | przed wywołaniem          | tylko do odczytu |
+| `ref readonly` | referencję       | przed wywołaniem          | tylko do odczytu (C# 12) |
 | `out`       | referencję          | przed zwróceniem kontroli |                  |
 
-Ponadto można przekazywać parametry **przez referencję** na trzy różne sposoby.
+Ponadto można przekazywać parametry **przez referencję** na cztery różne sposoby.
 
 ## Przekazywanie przez referencję (`ref`)
 
@@ -70,6 +71,26 @@ static void Multiply(in Matrix4 a,
                      out Matrix4 result)
 {
     /**/
+}
+```
+
+## Referencje tylko do odczytu (`ref readonly`, C# 12)
+
+Modyfikator `ref readonly`, podobnie jak `in`, przekazuje argument przez referencję i sprawia, że w ciele metody jest on tylko do odczytu. Różnica dotyczy miejsca wywołania. Argument `in` można przekazać bez żadnego modyfikatora i nie musi on nawet być zmienną (może to być np. stała lub wynik wywołania metody) - kompilator po cichu przekazuje wtedy referencję do tymczasowej kopii. Parametr `ref readonly` wyraża, że metoda faktycznie potrzebuje referencji do istniejącej zmiennej: argument powinien być zmienną przekazaną z `ref` lub `in`, w przeciwnym razie kompilator zgłasza ostrzeżenie. Modyfikator ten jest używany głównie w API, których parametry pierwotnie zadeklarowano jako `ref`, ale nigdy nie są one modyfikowane - zmiana na `ref readonly` nie psuje istniejących wywołań.
+
+```csharp
+using System.Numerics;
+
+Matrix4x4 m = Matrix4x4.CreateScale(2.0f);
+Print(ref m);              // OK
+Print(in m);               // OK
+Print(m);                  // Warning: argument should be passed with 'ref' or 'in'
+Print(Matrix4x4.Identity); // Warning: argument should be a variable
+
+static void Print(ref readonly Matrix4x4 matrix)
+{
+    // matrix.M11 = 0; // Compilation error: 'matrix' is read-only
+    Console.WriteLine(matrix.M11);
 }
 ```
 
