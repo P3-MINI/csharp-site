@@ -101,6 +101,38 @@ class Book
 
 Jeśli klasa nie ma zdefiniowanego żadnego konstruktora, to zostanie wygenerowany konstruktor bezparametrowy. 
 
+### Konstruktory główne (C# 12)
+
+Od C# 12 parametry konstruktora można zadeklarować bezpośrednio po nazwie klasy lub struktury. Parametry takiego *konstruktora głównego* (*primary constructor*) są dostępne w całym ciele typu: można ich użyć do inicjalizacji pól i właściwości lub bezpośrednio w składowych.
+
+```csharp
+public class Account(string owner, decimal balance)
+{
+    public string Owner { get; } = owner;                     // initializes a property
+
+    public Account(string owner) : this(owner, 0) { }         // must call the primary constructor
+
+    public void Deposit(decimal amount) => balance += amount; // captured parameter
+    public override string ToString() => $"{Owner}: {balance}";
+}
+
+public class SavingsAccount(string owner, decimal rate) : Account(owner) // calls the base class constructor
+{
+    public decimal Rate => rate;
+}
+```
+
+- Każdy inny konstruktor musi wywołać konstruktor główny (bezpośrednio lub pośrednio) za pomocą `this(...)`, a klasa z konstruktorem głównym nie dostaje niejawnego konstruktora bezparametrowego.
+- Konstruktor klasy bazowej wywołujemy bezpośrednio w deklaracji typu: `: Account(owner)`.
+- W przeciwieństwie do [rekordów]({{< ref "/lectures/05.csharp-features/records" >}}) parametry konstruktora głównego klas i struktur **nie stają się właściwościami**. Jeżeli parametr jest używany w składowej (jak `balance` powyżej), kompilator przechwytuje go w ukrytym prywatnym polu. Nadal jest to jednak parametr: można go modyfikować, nie można się do niego odwołać przez `this` i nie jest widoczny poza typem.
+
+```csharp
+var account = new Account("Alice", 100);
+account.Deposit(50);
+Console.WriteLine(account);            // Alice: 150
+// Console.WriteLine(account.balance); // Compilation error
+```
+
 ## Dekonstruktory
 
 Dekonstruktory służą do odwrócenia przypisania pól z powrotem do zmiennych.
