@@ -80,6 +80,9 @@ var inefficientQuery = db.Products
 // SQL generated is simply: SELECT * FROM Products
 ```
 
+> [!NOTE]
+> Od .NET 10 LINQ jest dostępny bez dodatkowych pakietów także dla sekwencji asynchronicznych (`IAsyncEnumerable<T>`): klasa `System.Linq.AsyncEnumerable` dostarcza te same operatory (np. `Where`, `Select`), a operatory zwracające pojedynczą wartość lub kolekcję mają asynchroniczne odpowiedniki, na które trzeba poczekać za pomocą `await` (np. `ToListAsync`, `CountAsync`). Wcześniej wymagało to pakietu NuGet `System.Linq.Async`. Więcej w rozdziale [Asynchroniczne sekwencje]({{< ref "/lectures/09.concurrency/asynchronous-streams" >}}).
+
 ## Odroczone wykonanie (Deferred Execution)
 
 Jedną z najważniejszych cech LINQ jest **odroczone wykonanie**. Samo zdefiniowanie zapytania nie powoduje jego natychmiastowego uruchomienia. Zapytanie jest wykonywane dopiero wtedy, gdy faktycznie zażądamy wyników. Dzieje się to najczęściej podczas iteracji (np. w pętli `foreach`) lub po wywołaniu metody, która wymusza materializację kolekcji (np. `ToList()`, `ToArray()`, `Count()`). Pozwala to na budowanie skomplikowanych zapytań w sposób bardzo wydajny, bez tworzenia zbędnych kolekcji pośrednich.
@@ -104,15 +107,15 @@ foreach (var name in query)
 | Kategoria | Metody |
 |---|---|
 | **Filtrowanie** | `Where`, `Take`, `TakeLast`, `TakeWhile`, `Skip`, `SkipLast`, `SkipWhile`, `Distinct`, `DistinctBy` |
-| **Projekcja** | `Select`, `SelectMany` |
-| **Łączenie** | `Join`, `GroupJoin`, `Zip` |
-| **Porządek** | `OrderBy`, `OrderByDescending`, `ThenBy`, `ThenByDescending`, `Reverse` |
-| **Grupowanie** | `GroupBy`, `Chunk` |
+| **Projekcja** | `Select`, `SelectMany`, `Index` |
+| **Łączenie** | `Join`, `GroupJoin`, `LeftJoin`, `RightJoin`, `Zip` |
+| **Porządek** | `OrderBy`, `OrderByDescending`, `Order`, `OrderDescending`, `ThenBy`, `ThenByDescending`, `Reverse`, `Shuffle` |
+| **Grupowanie** | `GroupBy`, `Chunk`, `CountBy`, `AggregateBy` |
 | **Operacje na zbiorach** | `Concat`, `Union`, `UnionBy`, `Intersect`, `IntersectBy`, `Except`, `ExceptBy` |
 | **Konwersja** | `OfType`, `Cast`, `ToArray`, `ToList`, `ToDictionary`, `ToLookup`, `AsEnumerable`, `AsQueryable` |
 | **Wybór elementu** | `First`, `FirstOrDefault`, `Last`, `LastOrDefault`, `Single`, `SingleOrDefault`, `ElementAt`, `ElementAtOrDefault`, `MinBy`, `MaxBy`, `DefaultIfEmpty` |
-| **Agregacja** | `Aggregate`, `Average`, `Count`, `LongCount`, `Sum`, `Max`, `Min`, `All`, `Any`, `Contains`, `SequenceEqual` |
-| **Generacja** | `Empty`, `Range`, `Repeat` |
+| **Agregacja** | `Aggregate`, `Average`, `Count`, `LongCount`, `TryGetNonEnumeratedCount`, `Sum`, `Max`, `Min`, `All`, `Any`, `Contains`, `SequenceEqual` |
+| **Generacja** | `Empty`, `Range`, `Repeat`, `Sequence`, `InfiniteSequence` |
 
 ### Filtrowanie
 
@@ -239,6 +242,21 @@ foreach(var name in fullNames)
 public record Person(string FirstName, string LastName, int Age);
 ```
 
+#### Metoda `Index` (.NET 9)
+
+Łączy każdy element z jego pozycją, zwracając sekwencję krotek `(int Index, T Item)`. Jest czytelniejszą alternatywą dla przeciążenia `Select((item, index) => ...)`.
+
+```csharp
+var planets = new[] { "Mercury", "Venus", "Earth" };
+foreach (var (index, planet) in planets.Index())
+{
+    Console.WriteLine($"{index}: {planet}");
+}
+// 0: Mercury
+// 1: Venus
+// 2: Earth
+```
+
 #### Metoda `SelectMany`
 
 Spłaszcza sekwencję sekwencji w jedną. Dla każdego elementu wejściowego tworzy sekwencję, a następnie spłaszcza je wszystkie w jedną.
@@ -343,18 +361,77 @@ var zipped = numbers.Zip(letters, (n, l) => $"{n}-{l}");
 // zipped contains { "1-A", "2-B", "3-C" }
 ```
 
+Bez selektora wyniku `Zip` zwraca sekwencję krotek. Od .NET 6 potrafi też połączyć jednocześnie trzy sekwencje:
+
+```csharp
+var numbers = new[] { 1, 2, 3 };
+var letters = new[] { "A", "B", "C", "D" };
+var symbols = new[] { 'x', 'y', 'z' };
+var pairs = numbers.Zip(letters);
+// pairs contains { (1, "A"), (2, "B"), (3, "C") }
+var triples = numbers.Zip(letters, symbols);
+// triples contains { (1, "A", 'x'), (2, "B", 'y'), (3, "C", 'z') }
+```
+
+#### Metody `LeftJoin` i `RightJoin` (.NET 10)
+
+`LeftJoin` działa jak `LEFT OUTER JOIN` w SQL: zwraca wszystkie elementy pierwszej (lewej) sekwencji, a dla elementu bez dopasowania w drugiej sekwencji selektor wyniku otrzymuje `default` (np. `null`) zamiast elementu wewnętrznego. `RightJoin` działa analogicznie, ale zachowuje wszystkie elementy drugiej (prawej) sekwencji. Przed .NET 10 złączenie lewostronne trzeba było wyrażać, łącząc `GroupJoin`, `SelectMany` i `DefaultIfEmpty`.
+
+```csharp
+var categories = new List<Category>
+{
+    new(1, "Electronics"),
+    new(2, "Food"),
+    new(3, "Toys") // This category has no products
+};
+var products = new List<Product>
+{
+    new("Laptop", 1),
+    new("Milk", 2),
+    new("Keyboard", 1),
+    new("Spaceship", 4) // This product has no category
+};
+
+var leftJoin = categories.LeftJoin(products,
+    cat => cat.Id,
+    prod => prod.CategoryId,
+    (cat, prod) => $"{cat.Name}: {prod?.Name ?? "(none)"}");
+// leftJoin contains { "Electronics: Laptop", "Electronics: Keyboard", "Food: Milk", "Toys: (none)" }
+
+var rightJoin = categories.RightJoin(products,
+    cat => cat.Id,
+    prod => prod.CategoryId,
+    (cat, prod) => $"{prod.Name}: {cat?.Name ?? "(none)"}");
+// rightJoin contains { "Laptop: Electronics", "Milk: Food", "Keyboard: Electronics", "Spaceship: (none)" }
+
+public record Category(int Id, string Name);
+public record Product(string Name, int CategoryId);
+```
+
 ### Porządek
 
 Ta kategoria zawiera metody do sortowania elementów w sekwencji. Można sortować rosnąco lub malejąco, a także definiować wielopoziomowe kryteria sortowania.
 
 #### Metody `OrderBy` i `OrderByDescending`
 
-Sortują elementy sekwencji w porządku rosnącym (`OrderBy`) lub malejącym (`OrderByDescending`).
+Sortują elementy sekwencji w porządku rosnącym (`OrderBy`) lub malejącym (`OrderByDescending`). Sortowanie jest stabilne: elementy o równych kluczach zachowują swoją pierwotną względną kolejność (w przeciwieństwie do `List<T>.Sort` i `Array.Sort`, które są niestabilne - podobnie jak `std::stable_sort` i `std::sort` w C++).
 
 ```csharp
 var numbers = new[] { 3, 1, 2 };
 var sorted = numbers.OrderBy(n => n);
 // sorted contains { 1, 2, 3 }
+```
+
+#### Metody `Order` i `OrderDescending` (.NET 7)
+
+Sortują same elementy (używając domyślnego komparatora), bez selektora klucza. Są skrótem dla `OrderBy(x => x)` i `OrderByDescending(x => x)`.
+
+```csharp
+var numbers = new[] { 3, 1, 2 };
+var ascending = numbers.Order();
+// ascending contains { 1, 2, 3 }
+var descending = numbers.OrderDescending();
+// descending contains { 3, 2, 1 }
 ```
 
 #### Metody `ThenBy` i `ThenByDescending`
@@ -379,6 +456,16 @@ foreach (int i in numbers.Reverse())
 }
 ```
 
+#### Metoda `Shuffle` (.NET 10)
+
+Zwraca elementy sekwencji w losowej kolejności. Jak inne metody LINQ, nie modyfikuje źródła. Do przetasowania tablicy w miejscu można użyć `Random.Shared.Shuffle(array)` (.NET 8).
+
+```csharp
+var numbers = Enumerable.Range(1, 5);
+var shuffled = numbers.Shuffle();
+// shuffled contains e.g. { 3, 1, 5, 2, 4 } - a new random order on each enumeration
+```
+
 ### Grupowanie
 
 Grupowanie pozwala na organizowanie elementów sekwencji w grupy na podstawie wspólnego klucza. Każda grupa zawiera klucz oraz kolekcję wszystkich elementów, które do niej należą.
@@ -401,6 +488,36 @@ Dzieli sekwencję na kawałki (*chunks*) o zadanym rozmiarze. Ostatni kawałek m
 var numbers = new[] { 1, 2, 3, 4, 5, 6, 7 };
 var chunks = numbers.Chunk(3);
 // chunks contains { {1,2,3}, {4,5,6}, {7} }
+```
+
+#### Metody `CountBy` i `AggregateBy` (.NET 9)
+
+`CountBy` zlicza elementy dla każdego klucza, a `AggregateBy` agreguje elementy dla każdego klucza (tak jak `Aggregate`) - bez tworzenia pośrednich grup. Obie zwracają sekwencję `KeyValuePair<TKey, TValue>`. Zatem `products.GroupBy(p => p.CategoryId).Select(g => new { g.Key, Count = g.Count() })` można zastąpić przez `products.CountBy(p => p.CategoryId)`.
+
+```csharp
+var products = new List<Product>
+{
+    new("Laptop", 1, 3500m),
+    new("Milk", 2, 4m),
+    new("Keyboard", 1, 200m),
+    new("Bread", 2, 6m),
+    new("Monitor", 1, 900m)
+};
+
+foreach (var (categoryId, count) in products.CountBy(p => p.CategoryId))
+{
+    Console.WriteLine($"Category {categoryId}: {count} products");
+}
+// Category 1: 3 products
+// Category 2: 2 products
+
+var totalPrices = products.AggregateBy(
+    keySelector: p => p.CategoryId,
+    seed: 0m,
+    func: (total, p) => total + p.Price);
+// totalPrices contains { [1, 4600], [2, 10] }
+
+public record Product(string Name, int CategoryId, decimal Price);
 ```
 
 ### Operacje na zbiorach
@@ -593,6 +710,16 @@ var count = new[] { 1, 2, 3 }.Count(); // 3
 var evenCount = new[] { 1, 2, 3 }.Count(n => n % 2 == 0); // 1
 ```
 
+`Count()` może wymagać przejścia przez całą sekwencję (O(n)) - chyba że źródłem jest kolekcja, która zna swój rozmiar. `TryGetNonEnumeratedCount` (.NET 6) zwraca liczbę elementów tylko wtedy, gdy da się ją ustalić bez przeglądania sekwencji (np. dla `ICollection<T>`), a w przeciwnym razie zwraca `false`:
+
+```csharp
+IEnumerable<int> list = new List<int> { 1, 2, 3 };
+bool known = list.TryGetNonEnumeratedCount(out int count); // true, count == 3
+
+IEnumerable<int> filtered = list.Where(n => n > 1);
+bool knownFiltered = filtered.TryGetNonEnumeratedCount(out int filteredCount); // false, filteredCount == 0
+```
+
 #### Metody `All`, `Any`, `Contains`
 
 Sprawdzają warunki logiczne. `All` zwraca `true`, jeśli wszystkie elementy spełniają warunek. `Any` zwraca `true`, jeśli jakikolwiek element spełnia warunek. `Contains` sprawdza, czy sekwencja zawiera określony element.
@@ -641,4 +768,15 @@ Tworzy sekwencję, która zawiera jeden, powtórzony element określoną liczbę
 ```csharp
 var threes = Enumerable.Repeat(3, 5);
 // threes contains { 3, 3, 3, 3, 3 }
+```
+
+#### Metody `Sequence` i `InfiniteSequence` (.NET 10)
+
+Uogólniają `Range` na dowolny typ liczbowy i krok. `Sequence(start, endInclusive, step)` generuje wartości aż do `endInclusive` włącznie, a `InfiniteSequence(start, step)` generuje nieskończoną sekwencję, którą trzeba ograniczyć, np. za pomocą `Take`.
+
+```csharp
+var evens = Enumerable.Sequence(0, 10, 2);
+// evens contains { 0, 2, 4, 6, 8, 10 }
+var halves = Enumerable.InfiniteSequence(0.0, 0.5).Take(4);
+// halves contains { 0, 0.5, 1, 1.5 }
 ```
