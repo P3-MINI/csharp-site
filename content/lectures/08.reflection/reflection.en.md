@@ -27,22 +27,22 @@ The reflection mechanism is available through classes in the following namespace
 The `System.Reflection` namespace contains classes that represent various code elements and allow you to inspect and interact with them:
 
 ```text
-│└── Assembly
-│    └── Module
-│        └── Type (System.Type)
-│            └── MemberInfo
-│                ├── MethodBase
-│                │   ├── ConstructorInfo
-│                │   │   └── ParameterInfo
-│                │   └── MethodInfo
-│                │       └── ParameterInfo
-│                ├── PropertyInfo
-│                ├── FieldInfo
-│                └── EventInfo
+├── Assembly
+│   └── Module
+│       └── Type (System.Type)
+│           └── MemberInfo
+│               ├── MethodBase
+│               │   ├── ConstructorInfo
+│               │   │   └── ParameterInfo
+│               │   └── MethodInfo
+│               │       └── ParameterInfo
+│               ├── PropertyInfo
+│               ├── FieldInfo
+│               └── EventInfo
 └── CustomAttributeData
 ```
 
-> The existence of modules can usually be ignored. In 99.99% of cases, an assembly consists of exactly one module (a file with intermediate code, i.e., a `.dll` or `.exe`). Visual Studio does not support creating multi-module assemblies, and it is also rarely useful. One example is when part of a single library's code is written in another language that also compiles to intermediate code. In that case, multiple separately compiled modules are collected into a single assembly. Typically, modules and assemblies are treated as equivalent (both being files with intermediate code).
+> The existence of modules can usually be ignored. In .NET (Core), an assembly always consists of exactly one module (a file with intermediate code, i.e., a `.dll` or `.exe`). Multi-module assemblies are supported only by .NET Framework (and Visual Studio does not support creating them anyway); they are also rarely useful. One example is when part of a single library's code is written in another language that also compiles to intermediate code. In that case, multiple separately compiled modules are collected into a single assembly. Typically, modules and assemblies are treated as equivalent (both being files with intermediate code).
 
 The `System.Reflection.Emit` namespace is used for dynamically generating new code at runtime. You can create your own classes, methods, and their code and use them as if they were part of the original compiled program. This process involves emitting Common Intermediate Language (CIL) instructions. We will skip this part of reflection. Dynamic code generation is used, for example, to create mocks for unit tests or to create compiled regular expressions.
 
@@ -104,9 +104,9 @@ We can get a `Type` object in three ways:
    Type? personType = Type.GetType("Reflection.Person");
    ```
 
-   We can do this without knowing the desired type at compile time, for instance, by loading the class name from a configuration file.
+   We can do this without knowing the desired type at compile time, for instance, by loading the class name from a configuration file. The name must include the namespace; for types from assemblies other than the calling one and `System.Private.CoreLib`, the assembly-qualified name is required (e.g., `"System.Text.Json.JsonSerializer, System.Text.Json"`). If the type is not found, the method returns `null`.
 
-### Getting Information About Members:
+### Getting Information About Members
 
 Regardless of how we obtain the `Type` object, we can then inspect the type's members. We can get all members using `GetMembers`, or specific kinds of members: `GetFields`, `GetProperties`, `GetEvents`, `GetMethods`, `GetConstructors`, `GetNestedTypes`.
 
@@ -120,10 +120,10 @@ foreach (MemberInfo member in members)
 
 > Reflection allows you to break encapsulation; you can use it to access private members. For reflection to return private members, you must pass the `BindingFlags.NonPublic | BindingFlags.Instance` flags to the overloaded method:
 > ```csharp
-> typeof(Person).GetMembers(BindingFlags.NonPublic);
+> typeof(Person).GetMembers(BindingFlags.NonPublic | BindingFlags.Instance);
 > ```
 
-Alternatively, you can use the `GetTypeInfo()` API, which returns an `IEnumerable` sequence:
+Alternatively, you can use the `TypeInfo` API (`GetTypeInfo()`), whose `Declared*` properties return `IEnumerable` sequences:
 
 ```csharp
 IEnumerable<MemberInfo> members = typeof(Person)
@@ -137,9 +137,9 @@ foreach (MemberInfo member in members)
 ```
 
 > [!INFO]
-> `DeclaredMembers` does not list inherited members.
+> `DeclaredMembers` does not list inherited members, but it does list non-public and static members.
 
-If we know the name of a member, we can find it using one of the following methods: `GetMember`, `GetField`, `GetProperty`, `GetEvent`, `GetMethod`, `GetNestedType`. Based on a provided list of arguments, we can also find the appropriate constructor using `GetConstructor`.
+If we know the name of a member, we can find it using one of the following methods: `GetMember`, `GetField`, `GetProperty`, `GetEvent`, `GetMethod`, `GetNestedType`. Based on a provided list of parameter types, we can also find the appropriate constructor using `GetConstructor`.
 
 ### Invoking Members
 
@@ -191,7 +191,7 @@ Methods, constructors, and property getters and setters can be invoked after bei
    {
        DateTime? birthday = property.GetValue(person) as DateTime?;
        property.SetValue(person, birthday?.AddYears(-2));
-       Console.WriteLine($"Age: {DateTime.Now.Year - birthday?.Year}");
+       Console.WriteLine($"Age: {DateTime.Now.Year - person.Birthday.Year}"); // 23
    }
    ```
 4. Setting fields:
@@ -219,7 +219,7 @@ A found `MethodInfo` can be assigned to a delegate, which helps avoid some of th
 
 ```csharp
 Person person = new Person("Alice", "Smith", DateTime.Now.AddYears(-21));
-MethodInfo? method = typeof(Person).GetMethod(nameof(Person.IsAdult));
+MethodInfo method = typeof(Person).GetMethod(nameof(Person.IsAdult))!;
 // Binding to a delegate:
 Func<bool> isAdult = (Func<bool>)Delegate
     .CreateDelegate(typeof(Func<bool>), person, method);
@@ -262,7 +262,7 @@ foreach (var type in assembly.GetTypes())
 
 We can define our own attributes—these are classes that inherit from `System.Attribute`. By convention, their names should end with `...Attribute`; the compiler allows you to omit this suffix when using the attribute. The `AttributeUsage` attribute is used to specify what we can do with our attribute. It has three properties:
 
-* **`AttributeTargets`** - specifies which code elements we can attach the attribute to.
+* **`ValidOn`** (constructor parameter of type `AttributeTargets`) - specifies which code elements we can attach the attribute to.
 * **`AllowMultiple`** (optional) - a flag indicating whether the attribute can be applied multiple times. Defaults to `false`.
 * **`Inherited`** - a flag indicating whether the attribute will be inherited by derived classes and overridden members. Defaults to `true`.
 
@@ -270,16 +270,16 @@ We can define our own attributes—these are classes that inherit from `System.A
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
 public class BenchmarkAttribute : Attribute
 {
-    public int Repetitions { get; }
+    public uint Repetitions { get; }
 
-    public BenchmarkAttribute(int repetitions = 10)
+    public BenchmarkAttribute(uint repetitions = 100)
     {
         Repetitions = repetitions;
     }
 }
 ```
 
-Attributes attached to code elements can later be retrieved using reflection. The `GetCustomAttributes<TAttribute>` method is defined on every type representing a code element and returns a sequence of attributes. Based on the attribute and its data, you can then take further steps.
+Attributes attached to code elements can later be retrieved using reflection. The `GetCustomAttributes<TAttribute>` (extension) method is available for every type representing a code element and returns a sequence of attributes. Based on the attribute and its data, you can then take further steps.
 
 ```csharp
 public static class Program
