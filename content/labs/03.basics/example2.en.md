@@ -37,11 +37,11 @@ Create the following classes that inherit from `Matrix`: `DenseMatrix` and `Spar
 
 Both classes should have a constructor that accepts the number of rows and columns. Newly initialized matrices should be filled with zeros.
 
-The program should check the validity of the arguments. In case of invalidity, it should throw an `ArgumentException` with an appropriate comment.
+The program should check the validity of the arguments. In case of invalidity, it should throw an `ArgumentException` with an appropriate message.
 
 ### Hints
  - [Microsoft Learn: Indexers](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/indexers/?redirectedfrom=MSDN)
- - [Microsoft Learn: StringBuilder](https://learn.microsoft.com/pl-pl/dotnet/api/system.text.stringbuilder?view=net-8.0)
+ - [Microsoft Learn: StringBuilder](https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder?view=net-8.0)
  - [Microsoft Learn: String interpolation](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/tokens/interpolated)
  - [Microsoft Learn: Standard numeric format strings](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings?redirectedfrom=MSDN)
   - [Microsoft Learn: Create and throw exceptions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/exceptions/creating-and-throwing-exceptions)
@@ -86,7 +86,7 @@ In the implementation, use the `GetInstance` method. For functions that take one
 - [Microsoft Learn: Operator overloading](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/operator-overloading)
 
 ### Scoring
-1 for the `GetInstance` method, 0.5 points for each overload. 
+1 point for the `GetInstance` method, 0.5 points for each overload. 
 
 ## Stage 4 (2 points)
 

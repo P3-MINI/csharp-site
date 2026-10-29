@@ -287,7 +287,7 @@ Create a `HitInfo.cs` file with a struct storing hit details:
 > [!IMPORTANT]
 > #### Interfaces in C#
 > 
-> Interfaces are abstract types defining a contract – a set of methods and properties that an implementing class must provide. They do not hold state (fields) or implementation. In our program, every object that can be intersected by a ray will implement a common interface, enabling polymorphic handling of various scene geometries.
+> Interfaces are abstract types defining a contract – a set of methods and properties that an implementing class must provide. They cannot hold instance state (fields) and usually contain no implementation (since C# 8, interfaces can provide default method implementations, but we will not use them here). In our program, every object that can be intersected by a ray will implement a common interface, enabling polymorphic handling of various scene geometries.
 
 > [!IMPORTANT]
 > #### The "out" Modifier
@@ -428,7 +428,7 @@ Implement the private method `RayColor(Ray ray, int depth, IHittable world)`:
 
 #### Verifying Stage Four
 
-In `Program.cs`, update scene setup. Create a red sphere, a white plane, and a large light-emitting cyan sphere with radius 1000 enclosing the scene (a skysphere), then render the image:
+In `Program.cs`, update scene setup. Create a red sphere, a white plane, and a large light-emitting light-blue sphere with radius 1000 enclosing the scene (a skysphere), then render the image:
 
 ```csharp
 world.Add(new Sphere(new Vector3(0, 0, 0), 1000.0f, new EmissiveMaterial(new Vector3(0.5f, 0.7f, 1.0f))));

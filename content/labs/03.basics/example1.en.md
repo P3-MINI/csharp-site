@@ -1,5 +1,5 @@
 ---
-title: "2025/2025"
+title: "2025/2026"
 weight: 10
 bookHidden: "true"
 ---
@@ -26,7 +26,7 @@ In this laboratory, you will implement both of these representations.
 
 ### **General Requirements**
 
-The goal of this laboratory is to implement a directed graph data structure and depth-first search algorithm associated with it. All classes should be in the `Graphs` namespace.
+The goal of this laboratory is to implement a directed graph data structure and the depth-first search algorithm associated with it. All classes should be in the `Graphs` namespace.
 
 ### **Stage 1: Graph Representation (5 points)**
 
@@ -39,7 +39,7 @@ This stage focuses on creating the basic graph structure and two different imple
     * public `List<int> GetOutVertices(int vertex);` - returns neighbors list of `vertex`
     * public `void AddEdge(int from, int to);` - add directed edge to the graph
   * Implement a public `void Display()` method that prints the graph's adjacency information to the console. The output for each vertex should be in the format `vertex -> [neighbor1,neighbor2,...]`, for example:
-    ```
+    ```text
     0 -> [1,2]
     1 -> [3]
     2 -> []
@@ -66,8 +66,8 @@ Depth-First Search (DFS) is an algorithm for traversing or searching tree or gra
   * Add a public `void DepthFirstSearch(int start, IVertexVisitor visitor)` method to the abstract `Graph` class.
   * This method should implement the DFS traversal algorithm recursively.
   * The traversal should start from the `start` vertex.
-  * Before the recursive call for each neighbor, the method should call `PreVisit` from the `IVertexVisitor` interface.
-  * After the recursive call for each neighbor, the method should call `PostVisit` from the `IVertexVisitor` interface.
+  * When entering a vertex (before the recursive calls for its neighbors), the method should call `PreVisit` from the `IVertexVisitor` interface for that vertex.
+  * When leaving a vertex (after the recursive calls for its neighbors), the method should call `PostVisit` from the `IVertexVisitor` interface for that vertex.
   * The method might use a helper method, for example `DepthFirstSearchRecursive(int vertex, bool[] visited, IVertexVisitor visitor)`.
     * Use a `bool[] visited` array to mark and skip already visited vertices.
 
