@@ -13,19 +13,19 @@ Poniższy diagram przedstawia typy sieciowe w bibliotece systemowej wraz z warst
 
 ### Warstwa transportu
 
-W warstwie transportu znajdują się dwa podstawowe protokoły wysyłania i odbierania danych: `TCP` (*Transmission and Control Protocol*) i `UDP` (*Univeral Datagram Protocol*). Protokół `TCP` bazuje na nawiązaniu połączenia. Wykorzystywany wszędzie tam gdzie potrzebna jest gwarancja, że dane dotrą w całości i w dobrej kolejności. Protokół `UDP` nie wymaga nawiązywania połączenia, nie gwarantuje też dostarczenia danych, ale wspierają rozgłaszanie. Wykorzystywane tam gdzie szybkość jest ważniejsza niż niezawodność, np. strumieniowanie wideo, rozmowy głosowe.
+W warstwie transportu znajdują się dwa podstawowe protokoły wysyłania i odbierania danych: `TCP` (*Transmission Control Protocol*) i `UDP` (*User Datagram Protocol*). Protokół `TCP` bazuje na nawiązaniu połączenia. Wykorzystywany jest wszędzie tam, gdzie potrzebna jest gwarancja, że dane dotrą w całości i w dobrej kolejności. Protokół `UDP` nie wymaga nawiązywania połączenia, nie gwarantuje też dostarczenia danych, ale wspiera rozgłaszanie (*broadcast*). Wykorzystywany jest tam, gdzie szybkość jest ważniejsza niż niezawodność, np. przy strumieniowaniu wideo czy rozmowach głosowych.
 
-`UDP` i `TCP` pozwalają na przesył danych, nie definiują wiadomości jakie można nimi wysyłać ani jakiejś ustalonej kolejności ich wymiany. Używając bezpośrednio tych protokołów musimy sami o to zadbać o takie rzeczy jak autentykacja czy szyfrowanie.
+`UDP` i `TCP` pozwalają na przesył danych, nie definiują wiadomości, jakie można nimi wysyłać, ani ustalonej kolejności ich wymiany. Używając bezpośrednio tych protokołów, musimy sami zadbać o takie rzeczy jak uwierzytelnianie czy szyfrowanie.
 
 ### Warstwa aplikacji
 
 Warstwa aplikacji definiuje protokoły wyższego poziomu - w jaki sposób aplikacje komunikują się ze sobą i wymieniają dane. Protokoły warstwy aplikacji, takie jak *HTTP*, *FTP*, *SMTP*, czy *DNS*, określają format wiadomości oraz zasady interakcji między klientem a serwerem. W przeciwieństwie do protokołów transportowych (TCP/UDP), które zajmują się przesyłaniem bajtów, protokoły aplikacji skupiają się na semantyce danych i operacjach specyficznych dla danej usługi.
 
-Wiele z protokołów w warstwie aplikacji to najczęściej obudowany protokół TCP/UDP w semantykę wymiany wiadomości. *HTTP* do wersji 2, *SMTP* i *FTP* wykorzytują *TCP*, *HTTP* w wersji 3, *VoIP* (*Voice over IP*), *BitTorrent*, *DNS* wykorzystują *UDP*. W .NET, klasa `HttpClient` jest podstawowym sposobem interakcji z usługami opartymi na protokole HTTP.
+Wiele protokołów warstwy aplikacji to najczęściej protokół TCP/UDP obudowany semantyką wymiany wiadomości. *HTTP* do wersji 2, *SMTP* i *FTP* wykorzystują *TCP*; *HTTP* w wersji 3, *VoIP* (*Voice over IP*), *BitTorrent*, *DNS* wykorzystują *UDP*. W .NET, klasa `HttpClient` jest podstawowym sposobem interakcji z usługami opartymi na protokole HTTP.
 
 ## Adresy i porty
 
-Do komunikacji między urządzeniami i komputerami w sieci potrzebujemy adresów. Istnieją dwa standardy zapisu adresów: 32-bitowy `IPv4` (np. `192.168.8.1`) i 128-bitowy `IPv6` (np. `DEAD:BEEF:2137:6967:0420:0B4D:ADD4:E550`). Klasa `IPAddress` z przestrzeni nazw `System.Net` jest w stanie reprezentować obydwa adresy.
+Do komunikacji między urządzeniami i komputerami w sieci potrzebujemy adresów. Istnieją dwa standardy zapisu adresów: 32-bitowy `IPv4` (np. `192.168.8.1`) i 128-bitowy `IPv6` (np. `DEAD:BEEF:2137:6967:0420:0B4D:ADD4:E550`). Klasa `IPAddress` z przestrzeni nazw `System.Net` jest w stanie reprezentować obydwa rodzaje adresów.
 
 ```csharp
 IPAddress ipv4 = IPAddress.Parse("192.168.0.100");
@@ -36,7 +36,7 @@ Console.WriteLine($"{ipv6}, addr family: {ipv6.AddressFamily}");
 // 2001:db8:85a3::8a2e:370:7334, addr family: InterNetworkV6
 ```
 
-Protokoły TCP i UDP dzielą każdy adress IP na `65536` portów (0-65535), dzięki czemu komputer z pojedynczym adresem IP może uruchamiać wiele aplikacji, każda na osobnym porcie. Adres IP wraz z portem jest reprezentowany przez klasę `IPEndPoint`.
+Protokoły TCP i UDP dzielą każdy adres IP na `65536` portów (0-65535), dzięki czemu komputer z pojedynczym adresem IP może uruchamiać wiele aplikacji, każda na osobnym porcie. Adres IP wraz z portem jest reprezentowany przez klasę `IPEndPoint`.
 
 ```csharp
 IPAddress ipv4 = IPAddress.Parse("192.168.0.100");
@@ -47,7 +47,7 @@ Console.WriteLine(ipv4Ep);
 
 ## DNS
 
-`DNS` to usługa, która pozwala na konwersję między adresami IP, a przyjaznymi dla człowieka nazwami domeny (np. `csharp.mini.pw.edu.pl`).
+`DNS` to usługa, która pozwala na konwersję między adresami IP a przyjaznymi dla człowieka nazwami domen (np. `csharp.mini.pw.edu.pl`).
 
 Klasa `Dns` pozwala na konwersję w dwie strony:
 
