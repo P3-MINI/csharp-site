@@ -7,7 +7,7 @@ weight: 100
 
 Namespaces work on the same principle as in C++. The difference is the way elements are extracted from a namespace; in C#, this is done using the `.` operator. Additionally, there are several ways to define namespaces.
 
-> The exception is the global namespace, from which elements are extracted using the `global::` operator. In practice, however, this is rarely useful (if at all).
+> The exception is the global namespace, from which elements are extracted using the `global::` qualifier. In handwritten code this is rarely needed - it is mainly used in generated code to avoid name conflicts.
 
 ```csharp
 Outer.Middle.Inner.ClassA a;
@@ -27,10 +27,14 @@ namespace Outer.Middle.Inner
 {
     class ClassB {}
 }
+```
 
+A file-scoped namespace applies to the end of the file. It must precede all other members of the file and cannot be combined with block-scoped namespaces (or top-level statements) in the same file:
+
+```csharp
 namespace Outer.Middle.Inner; // Applies to the end of the file
 
-class classC {}
+class ClassC {}
 ```
 
 ## The `using` directive

@@ -5,7 +5,7 @@ weight: 30
 
 ## Typ `string`
 
-Typ `string` jest aliasem dla klasy `System.String`. Jest to kontener przechowujący ciągłą tablicę znaków. Tak jak i `char` typ `string` jest kodowany za pomocą UTF-16. W przeciwieństwie do C++ obiekt typu `string` jest niezmienialny (*immutable*). Dzięki temu *runtime* może stosować różne sztuczki do optymalizacji w okół tego typu. Operacje, które wydają się, że ten obiekt zmieniają, tak naprawdę tworzą nowy obiekt typu `string` w pamięci. Typ `string` jest typem referencyjnym, ale porównanie za pomocą operatora zachowuje się tak, jakby był to typ bezpośredni.
+Typ `string` jest aliasem dla klasy `System.String`. Jest to kontener przechowujący ciągłą tablicę znaków. Tak jak i `char`, typ `string` jest kodowany za pomocą UTF-16. W przeciwieństwie do C++ obiekt typu `string` jest niezmienialny (*immutable*). Dzięki temu *runtime* może stosować różne sztuczki optymalizacyjne wokół tego typu. Operacje, które pozornie zmieniają ten obiekt, tak naprawdę tworzą nowy obiekt typu `string` w pamięci. Typ `string` jest typem referencyjnym, ale porównanie za pomocą operatora `==` zachowuje się tak, jakby był to typ bezpośredni.
 
 ```csharp
 string txt = "Hello, ";
@@ -25,30 +25,32 @@ Console.WriteLine(txt2.ToUpper()); // "HELLO, WORLD!"
 
 ## Konstruktory i właściwości
 
-Stringa można stworzyć albo za pomocą literału, np. `"Hello"`, albo za pomocą konstruktora klasy. Tak jak w każdym cywilizowanym języku stringi można ze sobą dodawać, można je indeksować. Właściwość indeksowania jest jednak tylko do odczytu. Dodatkowo posiada on właściwość `Length`, zwracającą jego długość.
+Stringa można stworzyć albo za pomocą literału, np. `"Hello"`, albo za pomocą konstruktora klasy. Tak jak w każdym cywilizowanym języku stringi można ze sobą łączyć i indeksować. Indekser jest jednak tylko do odczytu. Dodatkowo posiada on właściwość `Length`, zwracającą jego długość.
 
 ```csharp
-char[] chars = new {'w', 'o', 'r', 'l', 'd'};
+char[] chars = new[] {'w', 'o', 'r', 'l', 'd'};
 string fromLiteral = "Hello";
 string fromArray = new string(chars);
-string fromSubArray = new string(chars, 1, 2);
+string fromSubArray = new string(chars, 1, 2); // "or"
 string repeatedChar = new string(' ', 4);
 string concatenated = fromLiteral + ' ' + fromArray;
 Console.WriteLine(concatenated);
 Console.WriteLine("string Length: " + concatenated.Length);
 char space = concatenated[5];
-concatenated[5] = '_'; // compilation error, read-only
+// concatenated[5] = '_'; // compilation error, read-only
 ```
 
 ## Modyfikowalne stringi
 
-Jako, że stringi są niezmienialne, każda operacja modyfikacji (np. dodawanie nowego tekstu za pomocą operatora + w pętli) powoduje: powstanie nowego obiektu; skopiowanie starej zawartości stringa i konkatenacja; pozostawienie starego obiektu do usunięcia przez *Garbage Collector*.
+Jako że stringi są niezmienialne, każda operacja modyfikacji (np. dodawanie nowego tekstu za pomocą operatora `+` w pętli) powoduje: powstanie nowego obiektu; skopiowanie starej zawartości stringa i konkatenację; pozostawienie starego obiektu do usunięcia przez *Garbage Collector*.
 
-Klasa `StringBuilder` z przestrzeni nazw `System.Text` jest zmienną (mutable) wersją stringa i używa wewnętrznego, dynamicznie rozszerzanego bufora. Dzięki temu, dodawanie tekstu za pomocą metod `Append`, `Remove`, `Insert`, `Replace` modyfikuje istniejący obiekt w buforze, zamiast tworzyć setki (lub więcej) nowych obiektów (**szczególnie istotne gdy stringi są modyfikowane w pętli**).
+Klasa `StringBuilder` z przestrzeni nazw `System.Text` jest modyfikowalną (*mutable*) wersją stringa i używa wewnętrznego, dynamicznie rozszerzanego bufora. Dzięki temu, dodawanie tekstu za pomocą metod `Append`, `Remove`, `Insert`, `Replace` modyfikuje istniejący obiekt w buforze, zamiast tworzyć setki (lub więcej) nowych obiektów (**szczególnie istotne, gdy stringi są modyfikowane w pętli**).
 
 Po skończeniu pracy ze `StringBuilder`em możemy z niego pobrać zwykłego `string`a wywołując na nim `ToString()`.
 
 ```csharp
+using System.Text;
+
 StringBuilder stringBuilder = new StringBuilder("Hello, ");
 stringBuilder.Append("this is ");
 stringBuilder.Append("a simple ");
@@ -84,7 +86,7 @@ Console.WriteLine($"Join: {joined}");
 
 ## Dosłowne literały (*Verbatim string literals*)
 
-Dosłowne literały (*Verbatim string literals*) pozwalają zapisać stringa bez potrzeby uciekania sekwencji specjalnych: nowych linii, slashy, itp. Jedynym wyjątkiem jest `"`, który uciekamy wtedy podwójnym znakiem `""`. Szczególnie przydatne do zapisywania ścieżek ze znakiem `\`.
+Dosłowne literały (*Verbatim string literals*) pozwalają zapisać stringa bez potrzeby uciekania znaków specjalnych: nowych linii, ukośników wstecznych (*backslashy*) itp. Jedynym wyjątkiem jest `"`, który uciekamy wtedy podwójnym znakiem `""`. Szczególnie przydatne do zapisywania ścieżek ze znakiem `\`.
 
 ```csharp
 string filePath = @"C:\Users\scoleridge\Documents\";
@@ -95,14 +97,15 @@ To sit beside our Cot,...";
 /* Output:
 My pensive SARA ! thy soft cheek reclined
 Thus on mine arm, most soothing sweet it is
-To sit beside our Cot,...*/
+To sit beside our Cot,...
+*/
 string quote = @"Her name was ""Sara.""";
 //Output: Her name was "Sara."
 ```
 
 ## Surowe literały (*Raw string literals*) (C# 11)
 
-Surowe literały zaczynają się i kończą trzema lub więcej znakami `"`. Występują w wersji jedno i wielolinijkowej. W nich nie trzeba uciekać sekwencji specjalnych jeszcze bardziej. Dozwolone są kolejne znaki `"`, o ile jest ich mniej niż w otwierających i zamykających ciapkach. W wielolinijkowej wersji białe znaki po otwarciu stringa są ignorowane do nowej lini, natomiast białe znaki poprzedzające zamknięcie są usuwane z każdej lini stringa. Szczególnie przydatne, gdy chcemy utrzymać ładnie sformatowany kod wewnątrz stringa.
+Surowe literały zaczynają się i kończą trzema lub więcej znakami `"`. Występują w wersji jedno- i wielolinijkowej. Sekwencje ucieczki nie są w nich w ogóle przetwarzane, więc niczego nie trzeba uciekać. Wewnątrz dozwolone są ciągi znaków `"`, o ile są krótsze niż cudzysłowy otwierające i zamykające. W wielolinijkowej wersji białe znaki po otwarciu stringa są ignorowane do nowej linii, natomiast białe znaki poprzedzające zamknięcie są usuwane z każdej linii stringa. Szczególnie przydatne, gdy chcemy utrzymać ładnie sformatowany kod wewnątrz stringa.
 
 ```csharp
 var str1 = """This is a "raw string literal".""";

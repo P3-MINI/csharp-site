@@ -9,12 +9,13 @@ weight: 60
 
 ## Boxing
 
-Casting a value type to/from an `object` involves a so-called boxing/unboxing operation. Downcasting requires an explicit cast; if it fails, the Runtime throws an `InvalidCastException`. The boxing operation consists of allocating the value type on the heap and copying it there. This is a costly operation and should be avoided if possible. Unboxing consists of copying the value type back to the stack.
+Casting a value type to/from an `object` involves a so-called boxing/unboxing operation. Downcasting requires an explicit cast; if it fails, the Runtime throws an `InvalidCastException`. The boxing operation consists of allocating the value type on the heap and copying it there. This is a costly operation and should be avoided if possible. Unboxing consists of copying the value out of the box (e.g., back into a local variable on the stack). Unboxing requires the exact type of the boxed value - e.g., a boxed `int` cannot be unboxed directly to `long`.
 
 ```csharp
 int num = 42;
 object obj = num; // Boxing
 int unboxedNum = (int)obj; // Unboxing
+// long l = (long)obj; // InvalidCastException: the boxed value is an int
 ```
 
 ## Definition of the `object` type
@@ -38,7 +39,7 @@ public class Object
 
 ## Methods in the `object` type
 
-Since all types inherit from `object`, the methods (e.g., `ToString()`, `GetType()`, `GetHashCode()`, and `Equals(object)`) defined in `object` are also available in other types. Calling these methods (except for `GetType`) on a value type does not cause a boxing operation.
+Since all types inherit from `object`, the methods (e.g., `ToString()`, `GetType()`, `GetHashCode()`, and `Equals(object)`) defined in `object` are also available in other types. Calling these methods on a value type that overrides them (as all built-in types do) does not cause a boxing operation. However, calling a method that the struct does not override, or calling `GetType` (which is not virtual), boxes the value.
 
 ```csharp
 int i = 15;
@@ -66,7 +67,7 @@ class Person
 
 ## `GetType` and the `typeof` operator
 
-The `typeof` operator allows you to obtain type information at compile time, while the `GetType` method does so at runtime. Apart from that, both methods work identically: they return an object that is a representation of the type.
+The `typeof` operator allows you to obtain type information at compile time, while the `GetType` method does so at runtime. Apart from that, both work identically: they return a `System.Type` object that is a representation of the type.
 
 ```csharp
 DateTime now = DateTime.Now;
