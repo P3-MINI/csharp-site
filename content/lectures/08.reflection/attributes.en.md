@@ -17,14 +17,14 @@ We attach attributes by listing them in `[]` before the chosen element:
 [Obsolete("Use iterator `GetFibonacciIter` method instead.")]
 public static int GetFibonacci(int n)
 {
-    if (n < 0) throw new ArgumentException(nameof(n), "Input must be a non-negative integer.");
+    if (n < 0) throw new ArgumentOutOfRangeException(nameof(n), "Input must be a non-negative integer.");
     if (n is 0 or 1) return 1;
     return GetFibonacci(n - 1) + GetFibonacci(n - 2);
 }
 ```
 
 > [!INFO]
-> When trying to use a method marked with `Obsolete`, the compiler will generate a warning: `warning CS0618: 'FibUtils.GetFibonacci(int)' is obsolete: 'Use iterator method instead.'`
+> When trying to use a method marked with `Obsolete`, the compiler will generate a warning: ``warning CS0618: 'FibUtils.GetFibonacci(int)' is obsolete: 'Use iterator `GetFibonacciIter` method instead.'``
 
 An attribute is a class itself. The definition of the system's `Obsolete` attribute looks like this:
 
@@ -69,7 +69,7 @@ public void AnotherVeryOldMethod() { }
 ```
 
 > [!WARNING]
-> **Attribute arguments must be compile-time constants.**
+> **Attribute arguments must be compile-time constants** (or `typeof` expressions, or one-dimensional arrays of such values).
 
 ## Attaching an Attribute
 
@@ -84,6 +84,7 @@ An attribute can be attached to almost any code element:
 - Delegate
 - Constructor
 - Method
+- Parameter
 - Property
 - Field
 - Event
@@ -118,7 +119,7 @@ public class Stack<[Description("Applied to a generic parameter")] T>
     }
 
     [return: Description("Applied to a return value")]
-    [method: Description("Implicitly applied to a method")]
+    [method: Description("Explicitly applied to a method")]
     public T Pop()
     {
         if (Count == 0)
@@ -130,7 +131,7 @@ public class Stack<[Description("Applied to a generic parameter")] T>
 }
 ```
 
-### Attaching Multiple Attributes:
+### Attaching Multiple Attributes
 
 We can attach multiple attributes to a single element. This can be done in two ways, in a single set of `[]`:
 
