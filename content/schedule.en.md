@@ -37,8 +37,8 @@ Fridays, 18:15 - 20:00
 | 30.10.2026 | W04: Collections, Generics                                   |
 | 06.11.2026 | W05: Enumerable, Lambda Expressions, LINQ, Extension Methods |
 | 20.11.2026 | L02: Enumerable, Lambda Expressions, LINQ, Extension Methods |
-| 27.11.2026 | W06: Events, Filesytem, Streams                              |
-| 04.12.2026 | L03: Events, Filesytem, Streams                              |
+| 27.11.2026 | W06: Events, Filesystem, Streams                              |
+| 04.12.2026 | L03: Events, Filesystem, Streams                              |
 | 11.12.2026 | W07: Assembly, Reflection                                    |
 | 18.12.2026 | L04: Assembly, Reflection                                    |
 | 08.01.2027 | W08: Concurrency                                             |

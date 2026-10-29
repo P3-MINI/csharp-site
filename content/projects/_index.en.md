@@ -10,9 +10,9 @@ As part of the course credit, students can implement any project in C#. The numb
 
 Below are example projects:
 
-## 1. Raytracer (Raytracing in One Weekend)
+## 1. Raytracer (Ray Tracing in One Weekend)
 
-**Description:** Implement the first book "Raytracing in One Weekend" in C#.
+**Description:** Implement the first book "Ray Tracing in One Weekend" in C#.
 
 **Important:** Minimize memory allocations during rendering (choice: class or struct).
 
@@ -20,9 +20,9 @@ Below are example projects:
 
 **Points:** approx. 4
 
-## 2. CityBike - LINQ Data Analysis
+## 2. Citi Bike - LINQ Data Analysis
 
-**Description:** Download data (e.g., from https://citibikenyc.com/system-data), load it, and perform at least 5 LINQ queries.
+**Description:** Download data (e.g., from <https://citibikenyc.com/system-data>), load it, and perform at least 5 LINQ queries.
 
 **Welcome additions:** Combine rental data with weather data.
 
