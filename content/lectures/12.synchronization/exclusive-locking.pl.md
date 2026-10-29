@@ -5,7 +5,7 @@ weight: 20
 
 # Blokowanie wyłączne (*Exclusive Locking*)
 
-Blokowanie wyłączne to mechanizm synchronizacji gwarantujący, że w danej chwili tylko jeden wątek ma dostęp do chronionego zasobu (sekcji krytycznej). Inne wątki próbujące uzyskać dostęp są wstrzymywane do momentu zwolnienia blokady.
+Blokowanie wyłączne to mechanizm synchronizacji gwarantujący, że w danej chwili tylko jeden wątek ma dostęp do chronionego zasobu (sekcji krytycznej). Inne wątki próbujące uzyskać dostęp muszą czekać (są blokowane lub aktywnie czekają) do momentu zwolnienia blokady.
 
 ## Instrukcja `lock`
 

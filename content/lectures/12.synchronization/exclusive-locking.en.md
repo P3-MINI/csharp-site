@@ -5,7 +5,7 @@ weight: 20
 
 # Exclusive Locking
 
-Exclusive locking is a synchronization mechanism ensuring that only one thread has access to a protected resource (critical section) at any given time. Other threads attempting to access the resource are suspended until the lock is released.
+Exclusive locking is a synchronization mechanism ensuring that only one thread has access to a protected resource (critical section) at any given time. Other threads attempting to access the resource must wait (they are blocked or spin) until the lock is released.
 
 ## The `lock` Statement
 
