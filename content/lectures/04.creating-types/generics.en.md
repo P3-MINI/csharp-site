@@ -190,7 +190,7 @@ Possible constraints:
 * `where T : class` - the type must be a reference type.
 * `where T : class?` - the type must be a reference type, can be nullable.
 * `where T : struct` - the type must be a value type.
-* `where T : allows ref struct` - the type can be a "ref struct".
+* `where T : allows ref struct` - (C# 13) an anti-constraint: the type is also allowed to be a `ref struct` (see [Structs]({{< ref "/lectures/04.creating-types/structs" >}})).
 * `where T : unmanaged` - the type must be a value type and recursively consist of other value or pointer types.
 * `where T : notnull` - cannot be nullable.
 

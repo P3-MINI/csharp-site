@@ -190,7 +190,7 @@ Możliwe ograniczenia:
 * `where T : class` - typ musi być referencyjny
 * `where T : class?` - typ musi być referencyjny, może być `null`owalny
 * `where T : struct` - typ musi być bezpośredni
-* `where T : allows ref struct` - typ może być "ref strukturą"
+* `where T : allows ref struct` - (C# 13) antyograniczenie: typ może być także strukturą `ref` (zob. [Struktury]({{< ref "/lectures/04.creating-types/structs" >}}))
 * `where T : unmanaged` - typ musi być bezpośredni i rekursywnie składać się z innych typów bezpośrednich lub wskaźnikowych
 * `where T : notnull` - nie może być `null`owalny
 
