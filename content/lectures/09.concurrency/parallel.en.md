@@ -206,6 +206,30 @@ public class Program
 }
 ```
 
+## Parallel.ForEachAsync and Parallel.ForAsync
+
+`Parallel.For` and `Parallel.ForEach` block the calling thread and are intended for synchronous (CPU-bound) work. For asynchronous operations (e.g., I/O), there are asynchronous counterparts: `Parallel.ForEachAsync` (.NET 6) and `Parallel.ForAsync` (.NET 8). Their body is an asynchronous delegate that receives an element (or an index) and a `CancellationToken`, and returns a `ValueTask`. The methods return a `Task` that completes when all iterations have finished. By default, at most `Environment.ProcessorCount` iterations run concurrently; this can be changed with `ParallelOptions` (described below). The following example downloads the files from the `urls` list of the previous example:
+
+```csharp
+using HttpClient httpClient = new HttpClient();
+
+await Parallel.ForEachAsync(urls, async ((string url, string output) tuple, CancellationToken token) =>
+{
+    byte[] content = await httpClient.GetByteArrayAsync(tuple.url, token);
+    await File.WriteAllBytesAsync(tuple.output, content, token);
+    Console.WriteLine($"{tuple.output} downloaded successfully.");
+});
+
+await Parallel.ForAsync(0, 10, async (i, token) =>
+{
+    await Task.Delay(1000, token); // e.g., an asynchronous I/O operation
+    Console.WriteLine(i);
+});
+```
+
+> [!WARNING]
+> Do not pass an `async` lambda to `Parallel.For` or `Parallel.ForEach`. It would be converted to an `async void` delegate, so the loop would finish without waiting for the asynchronous operations to complete.
+
 ## ParallelOptions
 
 An object of `ParallelOptions` can be used to configure the behavior of `Parallel` class methods.

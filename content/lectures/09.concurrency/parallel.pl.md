@@ -206,6 +206,30 @@ public class Program
 }
 ```
 
+## Parallel.ForEachAsync i Parallel.ForAsync
+
+`Parallel.For` i `Parallel.ForEach` blokują wątek wywołujący i są przeznaczone do pracy synchronicznej (obliczeniowej). Do operacji asynchronicznych (np. wejścia-wyjścia) służą ich asynchroniczne odpowiedniki: `Parallel.ForEachAsync` (.NET 6) i `Parallel.ForAsync` (.NET 8). Ich ciałem jest asynchroniczny delegat, który przyjmuje element (lub indeks) oraz `CancellationToken` i zwraca `ValueTask`. Metody te zwracają `Task`, który kończy się, gdy zakończą się wszystkie iteracje. Domyślnie współbieżnie wykonuje się co najwyżej `Environment.ProcessorCount` iteracji; można to zmienić za pomocą obiektu `ParallelOptions` (opisanego poniżej). Poniższy przykład pobiera pliki z listy `urls` z poprzedniego przykładu:
+
+```csharp
+using HttpClient httpClient = new HttpClient();
+
+await Parallel.ForEachAsync(urls, async ((string url, string output) tuple, CancellationToken token) =>
+{
+    byte[] content = await httpClient.GetByteArrayAsync(tuple.url, token);
+    await File.WriteAllBytesAsync(tuple.output, content, token);
+    Console.WriteLine($"{tuple.output} downloaded successfully.");
+});
+
+await Parallel.ForAsync(0, 10, async (i, token) =>
+{
+    await Task.Delay(1000, token); // e.g., an asynchronous I/O operation
+    Console.WriteLine(i);
+});
+```
+
+> [!WARNING]
+> Nie należy przekazywać lambdy `async` do `Parallel.For` ani `Parallel.ForEach`. Zostałaby ona przekształcona w delegat `async void`, przez co pętla zakończyłaby się, nie czekając na zakończenie operacji asynchronicznych.
+
 ## ParallelOptions
 
 Do konfiguracji zachowania metod z klasy `Parallel` można użyć obiektu `ParallelOptions`.
