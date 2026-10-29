@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SnakeArena.Client/SnakeArena.Client.csproj" />
+  <Project Path="SnakeArena.Server/SnakeArena.Server.csproj" />
+  <Project Path="SnakeArena.Shared/SnakeArena.Shared.csproj" />
+  <Project Path="SnakeArena.Tests/SnakeArena.Tests.csproj" />
+</Solution>
