@@ -216,6 +216,23 @@ class ShopItem
 
 The `set` accessor can be replaced with `init` effectively making the read-only properties. Init properties can be initialized in the constructor, object initializer or inline. If we omit `set` accessor the property can still be initialized in the constructor or inline, and cannot be changes later.
 
+Since C# 11, a field or property can be marked as `required`. Every object creation must then set it in an object initializer; otherwise the code does not compile. Combined with `init`, this gives immutable properties that have to be set by the caller, without writing a dedicated constructor:
+
+```csharp
+var alice = new Person { Name = "Alice", Age = 25 };
+var bob = new Person { Name = "Bob" };    // Age is optional
+// var nobody = new Person { Age = 30 }; // Compilation error: required member 'Name' must be set
+// alice.Name = "Carol";                 // Compilation error: init-only property
+
+class Person
+{
+    public required string Name { get; init; }
+    public int Age { get; init; }
+}
+```
+
+A constructor that initializes all required members can be marked with the `[SetsRequiredMembers]` attribute (from the `System.Diagnostics.CodeAnalysis` namespace); objects created with it do not have to set the required members in an object initializer.
+
 ## Indexers
 Indexers are similar to overloading `operator[]` in C++. To write an indexer, we define a property called `this`, specifying the arguments in square brackets:
 

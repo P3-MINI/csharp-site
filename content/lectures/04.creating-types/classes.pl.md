@@ -216,6 +216,23 @@ class ShopItem
 
 Akcesor `set` można zastąpić `init`, co czyni właściwości tylko do odczytu. Właściwość `init` można inicjalizować w konstruktorze, inicjalizatorze obiektów lub przy deklaracji. Jeśli pominiemy akcesor `set`, właściwość nadal może być inicjalizowana w konstruktorze lub w deklaracji i nie może być później zmieniana.
 
+Od C# 11 pole lub właściwość można oznaczyć jako `required`. Wtedy każde utworzenie obiektu musi je ustawić w inicjalizatorze obiektu; w przeciwnym razie kod się nie skompiluje. W połączeniu z `init` dostajemy niezmienne właściwości, które musi ustawić wywołujący, bez pisania dedykowanego konstruktora:
+
+```csharp
+var alice = new Person { Name = "Alice", Age = 25 };
+var bob = new Person { Name = "Bob" };    // Age is optional
+// var nobody = new Person { Age = 30 }; // Compilation error: required member 'Name' must be set
+// alice.Name = "Carol";                 // Compilation error: init-only property
+
+class Person
+{
+    public required string Name { get; init; }
+    public int Age { get; init; }
+}
+```
+
+Konstruktor, który inicjalizuje wszystkie wymagane składowe, można oznaczyć atrybutem `[SetsRequiredMembers]` (z przestrzeni nazw `System.Diagnostics.CodeAnalysis`); obiekty tworzone za jego pomocą nie muszą ustawiać wymaganych składowych w inicjalizatorze obiektu.
+
 ## Indeksery
 Indeksery są podobne do przeciążania `operator[]` w C++. Aby napisać indeksator, definiujemy właściwość o nazwie `this`, określając argumenty w nawiasach kwadratowych:
 
