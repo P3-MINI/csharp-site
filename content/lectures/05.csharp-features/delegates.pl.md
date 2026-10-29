@@ -4,7 +4,7 @@ title: "Delegaty"
 
 ## Delegaty
 
-Delegat to obiekt, który wie jak wywołać metodę - jest to bezpieczny odpowiednik wskaźnika na funkcję z C/C++.
+Delegat to obiekt, który wie, jak wywołać metodę - jest to bezpieczny pod względem typów odpowiednik wskaźnika na funkcję z C/C++.
 
 Typ delegata deklarujemy w następujący sposób:
 
@@ -12,20 +12,20 @@ Typ delegata deklarujemy w następujący sposób:
 delegate double Function(double x);
 ```
 
-Parametry i typ zwracany delegata określają jakie funkcje delegat może wywoływać. Tak zdefiniowany delegat będzie kompatybilny z metodami, które przyjmują parametr `double` i zwracają `double`. Na przykład:
+Parametry i typ zwracany delegata określają, jakie metody delegat może wywoływać. Tak zdefiniowany delegat będzie kompatybilny z metodami, które przyjmują parametr `double` i zwracają `double`. Na przykład:
 
 ```csharp
 double QuadraticFunction(double x) => x * x - 2 * x + 1;
 ```
 
-Instancję obiektu delegata można stworzyć przypisując kompatybilną metodę do zmiennej typu delegacji.
+Instancję obiektu delegata można stworzyć, przypisując kompatybilną metodę do zmiennej typu delegata.
 
 ```csharp
 Function quadratic = QuadraticFunction;
 ```
 
 > [!NOTE]
-> Wszystkie delegaty niejawnie dziedziczą po klasie `System.Delegate`. Przechowują w środku wskazanie na metodę, którą wywołują i opcjonalnie referencję obiektu na rzecz którego wywołują metodę, jeżeli metoda nie jest statyczna. Warto o tym pamiętać, ponieważ delegat przedłuża przez to czas życia obiektów, a nawet może powodować wycieki pamięci.
+> Wszystkie typy delegatów niejawnie dziedziczą po klasie `System.MulticastDelegate` (która z kolei dziedziczy po `System.Delegate`). Przechowują w środku wskazanie na metodę, którą wywołują, i opcjonalnie referencję do obiektu, na rzecz którego wywołują metodę, jeżeli metoda nie jest statyczna. Warto o tym pamiętać, ponieważ delegat może przez to przedłużać czas życia obiektów, a nawet powodować wycieki pamięci.
 
 Delegata można wywołać tak samo jak metodę:
 
@@ -102,7 +102,7 @@ public static class Program
 
 ### Generyczne delegaty
 
-Typ Delegata może być generyczny:
+Typ delegata może być generyczny:
 
 ```csharp
 Function<double> function = QuadraticFunction;
@@ -118,7 +118,7 @@ delegate T Function<T>(T x);
 
 ### Systemowe delegaty
 
-Biblioteka standardowa dostarcza dwa rodzaje generycznych delegatów: `Func` i `Action`. **Nie ma potrzeby definiowania własnych typów delegatów**, te wbudowane są na tyle ogólne, że można za ich pomocą przedstawić dowolnego delegata.
+Biblioteka standardowa dostarcza dwa rodzaje generycznych delegatów: `Func` i `Action`. **W większości przypadków nie ma potrzeby definiowania własnych typów delegatów**, te wbudowane są na tyle ogólne, że można za ich pomocą przedstawić niemal dowolną sygnaturę metody. Wyjątkiem są metody z parametrami `ref`, `out` lub `in` (np. `bool TryParse(string s, out int result)`) – `Func` i `Action` nie pozwalają ich wyrazić, więc potrzebny jest własny typ delegata.
 
 ```csharp
 delegate TResult Func<out TResult>();
@@ -132,11 +132,11 @@ delegate void Action<in T1, in T2>(T1 arg1, T2 arg2);
 ```
 
 > [!NOTE]
-> Parametry generyczne delegatów można oznaczać `in` (wejściowe) i `out` (wyjściowe) tak samo jak parametry generyczne w interfejsach. Ma to podobne znaczenie. Takie parametry generyczne można dzięki temu rzutować w dół (`in`) lub w górę (`out`).
+> Parametry generyczne delegatów można oznaczać jako `in` (kontrawariantne) i `out` (kowariantne), tak samo jak parametry generyczne w interfejsach. Pozwala to na większą elastyczność przy przypisywaniu delegatów o zgodnych, ale nie identycznych parametrach typu.
 
 ### Delegaty 'multicast' (*Multicast Delegates*)
 
-Delegaty mogą przechowywać w sobie wskazania na kilka metod. Operatory `+=` i `-=` pozwalają do delegata dodawać i usuwać metody. Wywołanie takiego delegata spowoduje wywołanie wszystkich przechowywanych w nim metod w kolejności dodania. Takie delegaty dziedziczą niejawnie po `System.MulticastDelegate`, które dziedziczy po zwykłym `System.Delegate`.
+Delegaty mogą przechowywać w sobie wskazania na kilka metod. Operatory `+=` i `-=` pozwalają do delegata dodawać i usuwać metody. Wywołanie takiego delegata spowoduje wywołanie wszystkich przechowywanych w nim metod (jego *listy wywołań*, ang. *invocation list*) w kolejności dodania. Obsługuje to każdy typ delegata, ponieważ wszystkie dziedziczą po `System.MulticastDelegate`. Delegaty są niezmienne (*immutable*) – `+=` i `-=` w rzeczywistości tworzą nowego delegata (za pomocą `Delegate.Combine` i `Delegate.Remove`) i przypisują go do zmiennej.
 
 ```csharp
 Action<string> writeLog = Console.WriteLine;
@@ -144,13 +144,13 @@ writeLog += WriteLogToFile;
 
 writeLog("DEBUG: This is a test entry");
 
-private static void WriteLogToFile(string log)
+static void WriteLogToFile(string log)
 {
     File.AppendAllText("test.log", $"{log}\n");
 }
 ```
 
-Zadziała również użycie operatora `+=` na delegacie, który jest `null`em. Będzie to równoważne z przypisaniem do delegata wartości.
+Zadziała również użycie operatora `+=` na delegacie, który jest `null`em. Będzie to równoważne z przypisaniem do delegata wartości. Analogicznie usunięcie ostatniej metody operatorem `-=` ustawi zmienną na `null`.
 
 ```csharp
 Action<string>? writeLog = null;
@@ -159,7 +159,7 @@ writeLog += Console.WriteLine;
 writeLog?.Invoke("DEBUG: This is a test entry");
 ```
 
-> Jeżeli delegat zwraca jakieś wartości to zwracana jest wartość z ostatniej metody na liście wywołań.
+> Jeżeli delegat zwraca wartość, to zwracana jest wartość z ostatniej metody na liście wywołań.
 
 ## Wyrażenia lambda
 
@@ -185,8 +185,8 @@ Action<string> write = str => Console.Write(str);
 Func<string> greet = () => { return "Hello, world"; };
 ```
 
-- Jeżeli lambda ma tylko jeden parametr możemy pominąć nawiasy
-- Jeżeli lambda ma tylko jedno wyrażenie możemy użyć skróconego zapisu i pominąć słówko `return`
+- Jeżeli lambda ma tylko jeden parametr, możemy pominąć nawiasy
+- Jeżeli lambda ma tylko jedno wyrażenie, możemy użyć skróconego zapisu i pominąć słówko `return`
 - Kompilator sam jest w stanie wydedukować typy parametrów i wartości zwracanej lambdy na podstawie typu lewej strony
 
 Możemy również jawnie sprecyzować typy parametrów i typ zwracany. Pozwala to kompilatorowi na wywnioskowanie typu delegata, dzięki czemu możemy użyć słowa kluczowego `var` po lewej stronie przypisania. Czasami zwiększa to po prostu czytelność kodu.
@@ -210,7 +210,7 @@ write("world");
 
 ### Przechwytywanie zmiennych
 
-W wyrażeniach lambda możemy odwoływać się do zmiennych na zewnątrz. Mówimy że takie zmienne sa przechwytywane. To co się dzieje kiedy przechwytujemy zmienną, to kompilator generuje specjalną klasę w której przechowywane są przechwycone zmienne. Jeśli wiele lambd odwołuje się do tego samego pola, to wszystkie będą się odwoływać do tej samej instancji wygenerowanej klasy i tego samego pola. Przechwycone zmienne żyją na stosie jako część wygenerowanej klasy. Należy pamiętać, że przechwytywanie zmiennych wiąże się z alokacją obiektu na stercie.
+W wyrażeniach lambda możemy odwoływać się do zmiennych zewnętrznych. Mówimy, że takie zmienne są przechwytywane. Gdy przechwytujemy zmienną, kompilator generuje specjalną klasę, w której przechowywane są przechwycone zmienne. Jeśli wiele lambd odwołuje się do tej samej zmiennej, to wszystkie będą się odwoływać do tej samej instancji wygenerowanej klasy i tego samego pola. Przechwycone zmienne żyją na stercie jako część wygenerowanej klasy. Należy pamiętać, że przechwytywanie zmiennych wiąże się z alokacją obiektu na stercie.
 
 Zmienna `i` zostanie przechwycona i zostanie umieszczona na stercie, będzie współdzielona przez wszystkie lambdy:
 
@@ -225,6 +225,8 @@ foreach(Action action in actions)
     action();
 }
 ```
+
+W efekcie wszystkie lambdy wypiszą końcową wartość `i`, więc program wypisze `333`, a nie `012`.
 
 {{% details title="Kompilator wygeneruje następujący kod:" open=false %}}
 ```csharp
@@ -263,7 +265,9 @@ private static void <Main>$(string[] args)
 
 ## Metody anonimowe
 
-Metody anonimowe zostały wprowadzone w C# 2.0 i zostały całkowicie wyparte przez wyrażenia lambda, wprowadzone w następnej wersji. Nie ma żadnych korzyści z korzystania z metod anonimowych zamiast z wyrażeń lambda. Wszelkie udogodnienia w następnych wersjach języka dotykały wyłącznie wyrażeń lambda. Nie uświadczymy tu żadnych wodotrysków. W przeciwieństwie do wyrażeń lambda, treść metody anonimowej musi być zawsze blokiem kodu. Można natomiast pominąć listę parametrów, jeśli nie są używane.
+Metody anonimowe zostały wprowadzone w C# 2.0 i zostały całkowicie wyparte przez wyrażenia lambda, wprowadzone w następnej wersji. Nie ma żadnych korzyści z korzystania z metod anonimowych zamiast z wyrażeń lambda. Wszelkie udogodnienia w następnych wersjach języka dotykały niemal wyłącznie wyrażeń lambda. Nie uświadczymy tu żadnych wodotrysków.
+
+W przeciwieństwie do wyrażeń lambda, treść metody anonimowej musi być zawsze blokiem kodu. Można natomiast pominąć listę parametrów, jeśli nie są używane.
 
 ```csharp
 Numerics.Function function = delegate (double x) { return x * x - 2 * x + 1; };
@@ -272,7 +276,7 @@ Numerics.Function derivative = delegate (double x) { return 2 * x - 2; };
 double root = Numerics.NewtonRootFinding(function, derivative);
 ```
 
-Jedyną przydatną funkcją metod anonimowych jest możliwość stworzenia pustej metody z pominięciem parametrów, taką metodę anonimową możemy przypisać do dowolnego delegata nie zwracającego wartości. Jest to alternatywa od inicjowania delegata `null`em, dzięki temu unikamy wyjątków `NullReferenceException` przy próbie wywołania 'pustego' delegata.
+Jedyną przydatną funkcją metod anonimowych jest możliwość stworzenia pustej metody z pominięciem parametrów; taką metodę anonimową możemy przypisać do dowolnego delegata niezwracającego wartości. Jest to alternatywa dla inicjowania delegata `null`em, dzięki której unikamy wyjątków `NullReferenceException` przy próbie wywołania 'pustego' delegata.
 
 ```csharp
 Action<string> writeLog = delegate {};
