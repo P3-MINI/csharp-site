@@ -14,13 +14,13 @@ class ClassName
 ```
 
 W przeciwieństwie do C++, klasy mogą mieć modyfikatory poprzedzające nazwę klasy:
-- `internal` - klasy są domyślnie wewnętrzne, co oznacza, że są widoczne tylko wewnątrz *assembly* (pliku wykonywalnego lub `.dll`)
+- `internal` - klasy niezagnieżdżone są domyślnie wewnętrzne, co oznacza, że są widoczne tylko wewnątrz *assembly* (pliku wykonywalnego lub `.dll`)
 - `public` - widoczne zewsząd
 - `static` - nie można tworzyć instancji, musi zawierać tylko statyczne składowe
 - `sealed` - z klasy nie można już dziedziczyć
-- `abstract` - obiektu tej klasy nie można zainicjalizować (odpowiednik klasy zawierającej czysto wirtualną metodę w C++)
+- `abstract` - obiektu tej klasy nie można utworzyć (odpowiednik klasy zawierającej czysto wirtualną metodę w C++)
 
-W C# każdy członek klasy ma swój własny modyfikator dostępu:
+W C# każda składowa klasy ma swój własny modyfikator dostępu:
 
 ```csharp
 class MyClass
@@ -33,7 +33,7 @@ class MyClass
 
 ## Pola
 
-Pole to zmienna, która jest członkiem klasy lub struktury.
+Pole to zmienna, która jest składową klasy lub struktury.
 
 ```csharp
 class Student
@@ -43,11 +43,11 @@ class Student
 }
 ```
 
-Modyfikatory pól są podobne do tych w C++, główna różnica leży między `readonly` a `const`. Składowe `const` muszą być inicjalizowane w deklaracji, a wartość musi być znana w czasie kompilacji, natomiast składowe `readonly` muszą być inicjalizowane do zakończenia wywołania konstruktora.
+Modyfikatory pól są podobne do tych w C++, główna różnica leży między `readonly` a `const`. Składowe `const` muszą być inicjalizowane w deklaracji, a wartość musi być znana w czasie kompilacji, natomiast pola `readonly` można przypisać tylko w deklaracji lub w konstruktorze i nie można ich zmienić po zakończeniu konstruktora.
 
 Prywatne pola powinny być pisane w konwencji camelCase, zaczynające się od podkreślenia, w przeciwnym razie w PascalCase. Więcej wskazówek na temat stylu można znaleźć w [dokumentacji](https://learn.microsoft.com/dotnet/csharp/fundamentals/coding-style/identifier-names).
 
-Niezainicjalizowane pola mają swoją wartość ustawioną na `0`, dzieje się to przed wywołaniem konstruktora.
+Niezainicjalizowane pola mają swoją wartość ustawioną na bitowe `0` (czyli `0`, `false`, `null`), dzieje się to przed wywołaniem konstruktora.
 
 ## Metody
 
@@ -65,12 +65,12 @@ Można ją zapisać za pomocą uproszczonej składni:
 int Foo (int x) => x * 2;
 ```
 
-Podobnie jak w C++, możemy również definiować metody lokalne (metodę wewnątrz innej metody):
+W przeciwieństwie do C++ możemy również definiować funkcje lokalne (metodę wewnątrz innej metody):
 
 ```csharp
-void MyMethod
+void MyMethod()
 {
-    void PrintInt(int value) => Console.Writeline(value);
+    void PrintInt(int value) => Console.WriteLine(value);
 
     PrintInt(1);
     PrintInt(2);
@@ -99,11 +99,11 @@ class Book
 }
 ```
 
-Jeśli klasa nie ma zdefiniowanego żadnego konstruktora, to zostanie wygenerowany konstruktor bezparametrowy. 
+Jeśli klasa nie ma zdefiniowanego żadnego konstruktora, to zostanie wygenerowany konstruktor bezparametrowy.
 
 ## Dekonstruktory
 
-Dekonstruktory służą do odwrócenia przypisania pól z powrotem do zmiennych.
+Dekonstruktor (metoda o nazwie `Deconstruct` z parametrami `out`) działa odwrotnie do konstruktora: przypisuje pola obiektu z powrotem do osobnych zmiennych.
 
 ```csharp
 class Point
@@ -130,16 +130,16 @@ Dekonstruktor można wywołać w następujący sposób:
 var point = new Point(1, 2);
 
 (float x, float y) = point;
-(var x, var y) = point;
-var (x, y) = point;
+// or: (var x, var y) = point;
+// or: var (x, y) = point;
 
-Console.WriteLine($"x: {x}, y:{y}");
+Console.WriteLine($"x: {x}, y: {y}"); // x: 1, y: 2
 ```
 
 > Nie mylić dekonstrukcji z destrukcją, obiekt po dekonstrukcji jest nadal prawidłowy.
 
 ## Inicjalizatory obiektów
-Inicjalizator obiektu może być użyty do inicjalizacji publicznych pól lub właściwości, bezpośrednio po konstruktorze.
+Inicjalizator obiektu może być użyty do inicjalizacji dostępnych (np. publicznych) pól lub właściwości bezpośrednio po wywołaniu konstruktora.
 
 ```csharp
 class Hamster
@@ -147,7 +147,7 @@ class Hamster
     public string Name;
     public bool LikesViolence;
 
-    public Hamster () {};
+    public Hamster() {}
     public Hamster(string name) => Name = name;
 }
 ```
@@ -160,9 +160,9 @@ Hamster h2 = new Hamster ("Boo")       {LikesViolence=true};
 ```
 
 **Kolejność inicjalizacji** to:
-1. pola
-2. konstruktory
-3. inicjalizatory
+1. inicjalizatory pól (wartości przypisane przy deklaracjach pól i właściwości)
+2. ciało konstruktora
+3. inicjalizator obiektu
 
 ## Właściwości
 
@@ -172,7 +172,7 @@ Właściwości wyglądają jak pola, smakują jak pola, ale w rzeczywistości s�
 var book = new ShopItem();
 book.Price = 9.99m;
 book.Price -= 1.0m;
-Console.WriteLine($"Price: {book.Price}$");
+Console.WriteLine($"Price: {book.Price}$"); // Price: 8.99$
 
 class ShopItem
 {
@@ -180,20 +180,20 @@ class ShopItem
     public decimal Price
     {
         get { return _price; }               // get => _price;
-        set { _price = Math.Max(value, 0); } // set => Math.Max(value, 0);
+        set { _price = Math.Max(value, 0); } // set => _price = Math.Max(value, 0);
     }
 }
 ```
 
 > Niejawne słowo kluczowe `value` używane w akcesorze `set` reprezentuje wartość, która jest przypisywana do właściwości.
 
-Zarówno `get`, jak i `set` są opcjonalne. Jeśli ciała `get` i `set` zostaną pominięte, kompilator automatycznie wygeneruje odpowiednie pole. Jest to najczęstszy przypadek użycia właściwości.
+Można pominąć `get` albo `set`. Jeśli ciała `get` i `set` zostaną pominięte, kompilator automatycznie wygeneruje ukryte pole (*backing field*), a właściwość nazywamy wtedy automatyczną (*auto-implemented property*). Jest to najczęstszy przypadek użycia właściwości.
 
 ```csharp
 class ShopItem
 {
-    public decimal Price { get; set; } = 0.0m; // automatycznie generowane właściwości mogą być tutaj inicjalizowane
-    public string Name { get; set ;}
+    public decimal Price { get; set; } = 0.0m; // auto-implemented properties can be initialized here
+    public string Name { get; set; }
 }
 ```
 
@@ -210,14 +210,14 @@ class ShopItem
 }
 ```
 
-> Zarówno `get`, jak i `set` mogą mieć własne modyfikatory dostępu: `public decimal Price {get; private set;}`, w przeciwnym razie dziedziczą modyfikator dostępu odpowiedniej właściwości.
+> Jeden z akcesorów (zwykle `set`) może mieć własny, bardziej restrykcyjny modyfikator dostępu: `public decimal Price { get; private set; }`. W przeciwnym razie akcesory mają modyfikator dostępu właściwości.
 
 ## Init-only setter
 
-Akcesor `set` można zastąpić `init`, co czyni właściwości tylko do odczytu. Właściwość `init` można inicjalizować w konstruktorze, inicjalizatorze obiektów lub przy deklaracji. Jeśli pominiemy akcesor `set`, właściwość nadal może być inicjalizowana w konstruktorze lub w deklaracji i nie może być później zmieniana.
+Akcesor `set` można zastąpić `init` (C# 9), co czyni właściwość tylko do odczytu po inicjalizacji. Właściwość `init` można inicjalizować w konstruktorze, w inicjalizatorze obiektu lub przy deklaracji. Jeśli pominiemy akcesor `set`, właściwość nadal może być inicjalizowana w konstruktorze lub w deklaracji (ale nie w inicjalizatorze obiektu) i nie może być później zmieniana.
 
 ## Indeksery
-Indeksery są podobne do przeciążania `operator[]` w C++. Aby napisać indeksator, definiujemy właściwość o nazwie `this`, określając argumenty w nawiasach kwadratowych:
+Indeksery są podobne do przeciążania `operator[]` w C++. Aby napisać indekser, definiujemy właściwość o nazwie `this`, określając argumenty w nawiasach kwadratowych:
 
 ```csharp
 class Sentence
@@ -234,17 +234,17 @@ class Sentence
 }
 ```
 
-Używamy indeksatorów w ten sam sposób, w jaki używamy tablicy, z tą różnicą, że możemy zdefiniować argumenty indeksu dowolnego typu. Typ może deklarować wiele indeksatorów, a indeksery mogą mieć wiele parametrów.
+Używamy indekserów w ten sam sposób, w jaki używamy tablicy, z tą różnicą, że możemy zdefiniować argumenty indeksu dowolnego typu. Typ może deklarować wiele indekserów, a indeksery mogą mieć wiele parametrów.
 
 ```csharp
 Sentence sentence = new Sentence("The quick brown fox jumps over lazy dog");
 sentence[1] = "swift";
-Console.WriteLine(sentence[3]);
+Console.WriteLine(sentence[3]); // fox
 ```
 
 ## Finalizatory
 
-Finalizatory mogą wydawać się destruktorami z C++, ale różnica polega na tym, że nigdy nie wiemy, kiedy finalizator zostanie wywołany. Po tym, jak ostatnia referencja do obiektu zginie, obiekt czeka na odśmiecanie pamięci. Kiedy to nastąpi? Kiedy Garbage Collector uzna to za stosowne - najczęściej, gdy jest presja na pamięć lub losowo co jakiś czas. Przez to nie jest to zbyt przydatna konstrukcja.
+Finalizatory mogą wydawać się destruktorami z C++, ale różnica polega na tym, że nigdy nie wiemy, kiedy finalizator zostanie wywołany. Po tym, jak ostatnia referencja do obiektu zginie, obiekt czeka na odśmiecanie pamięci. Kiedy to nastąpi? Kiedy Garbage Collector uzna to za stosowne - najczęściej, gdy jest presja na pamięć. Finalizator może nawet nigdy nie zostać wywołany: .NET nie uruchamia finalizatorów przy zamykaniu aplikacji. Przez to nie jest to zbyt przydatna konstrukcja; zasoby należy zwalniać deterministycznie za pomocą [`IDisposable`]({{< ref "/lectures/05.csharp-features/disposable" >}}).
 
 ```csharp
 class Class1
@@ -253,4 +253,4 @@ class Class1
     {
     }
 }
-
+```
