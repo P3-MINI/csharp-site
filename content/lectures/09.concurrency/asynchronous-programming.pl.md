@@ -117,6 +117,22 @@ async Task<int> GetPrimesCountAsync()
 > Wyrażenia lambda również mogą być asynchroniczne. Obowiązują w nich te same zasady, co dla zwykłych metod asynchronicznych.
 
 > [!NOTE]
+> Od C# 13 metody asynchroniczne (oraz iteratory) mogą deklarować zmienne lokalne `ref` i zmienne lokalne typów `ref struct` (np. `Span<T>`); iteratory mogą też zawierać bloki `unsafe` (metody asynchroniczne mogły to robić już wcześniej). Wartość takiej zmiennej nie może jednak "przetrwać" `await` (ani `yield return`), ponieważ nie da się jej przechować w obiekcie maszyny stanów na stercie – kompilator zgłasza wtedy błąd.
+> ```csharp
+> async Task<int> SumAsync(int[] data)
+> {
+>     await Task.Delay(100);
+>     Span<int> span = data.AsSpan(); // OK since C# 13
+>     int sum = 0;
+>     foreach (int item in span)
+>         sum += item;
+>     // await Task.Delay(100);
+>     // Console.WriteLine(span[0]); // error CS4007
+>     return sum;
+> }
+> ```
+
+> [!NOTE]
 > C# wspiera również asynchroniczne sekwencje poprzez interfejs `IAsyncEnumerable` i konstrukcję `await foreach`. Chociaż sam `yield return` w bloku iteratora jest zawsze synchroniczny, to cały iterator może pobierać dane asynchronicznie, zawieszając swoje działanie między kolejnymi elementami.
 
 > [!INFO]
