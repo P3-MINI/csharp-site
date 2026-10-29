@@ -1,7 +1,8 @@
 import socket
 import os
 
-SOCKET_FILE = '/tmp/p3_pipe'
+# .NET maps the pipe name "p3_pipe" to a Unix domain socket in the temp directory
+SOCKET_FILE = '/tmp/CoreFxPipe_p3_pipe'
 
 def run_server():
     if os.path.exists(SOCKET_FILE):
