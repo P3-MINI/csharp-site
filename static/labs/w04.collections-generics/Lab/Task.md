@@ -13,7 +13,7 @@ public Package(string name, string version, int downloadKb, params string[] depe
 ```csharp
 public ISet<Package> PackagesByPriority() 
 ```
-2. Add `Register` method that's adds a new package to registry or if present updates package's version.
+2. Add `Register` method that adds a new package to registry or if present updates package's version.
 ```csharp
  public void Register(Package p)
 ```

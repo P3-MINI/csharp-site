@@ -17,8 +17,8 @@ public class Program {
         //Console.WriteLine($"add Box(4) (full): {boxes.Add(new Box<int>(4))}");              // False
 
         //Console.WriteLine($"take:              {boxes.Take()}");                            // Box: 3
-        //Console.WriteLine($"take:              {boxes.Take()}");                            // Box: 3
-        //Console.WriteLine($"take:              {boxes.Take()}");                            // Box: 3
+        //Console.WriteLine($"take:              {boxes.Take()}");                            // Box: 2
+        //Console.WriteLine($"take:              {boxes.Take()}");                            // Box: 1
         //Console.WriteLine($"take from empty:   {boxes.Take()?.ToString() ?? "<null>"}");    // <null>
         //Console.WriteLine();
 
