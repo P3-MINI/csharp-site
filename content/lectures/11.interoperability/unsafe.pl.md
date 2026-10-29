@@ -210,6 +210,42 @@ public unsafe struct Matrix4f
 }
 ```
 
+### Tablice inline (C# 12)
+
+Pola tablicowe o stałym rozmiarze mają ograniczenia: wymagają kontekstu `unsafe`, typ elementów musi być typem prostym (np. `int`, `float`, `char`), a indeksowanie nie sprawdza zakresu. Od C# 12 (.NET 8) taki sam układ pamięci można uzyskać w bezpiecznym kodzie za pomocą *tablicy inline* (ang. *inline array*) - struktury oznaczonej atrybutem `[InlineArray(length)]`, która zawiera dokładnie jedno pole. Środowisko uruchomieniowe powtarza to pole `length` razy.
+
+```csharp
+using System.Runtime.CompilerServices;
+
+[InlineArray(16)]
+public struct Float16
+{
+    private float _element0;
+}
+
+public struct Matrix4f
+{
+    // Stored inline, like a fixed-size buffer, but no unsafe code is needed.
+    public Float16 Elements;
+
+    public float this[int row, int col]
+    {
+        get => Elements[row * 4 + col];
+        set => Elements[row * 4 + col] = value;
+    }
+}
+```
+
+Tablicę inline można indeksować (ze sprawdzaniem zakresu), iterować po niej pętlą `foreach` oraz konwertować do `Span<T>` lub `ReadOnlySpan<T>`. Typ jej elementów może być dowolny, także referencyjny. Układ pamięci jest taki sam jak w przypadku tablicy w C, więc struktury zawierające tablice inline o elementach typów przekładalnych (*blittable*) można również przekazywać do kodu natywnego (podobnie jak pola tablicowe o stałym rozmiarze).
+
+```csharp
+var matrix = new Matrix4f();
+matrix[1, 2] = 5;
+Span<float> elements = matrix.Elements;
+Console.WriteLine(elements.Length); // 16
+matrix[4, 0] = 1; // IndexOutOfRangeException
+```
+
 ## Wskaźniki na funkcje (C# 9.0)
 
 Wskaźnik na funkcję `delegate*` to typ wskaźnikowy, który pozwala przechowywać **surowy adres w pamięci**, pod którym znajduje się kod maszynowy funkcji. W porównaniu do delegatów wskaźniki na funkcję nie powodują alokacji na stercie. Jest to po prostu odpowiednik wskaźników na funkcje z `C/C++`. Do wskaźnika na funkcje można przypisać wyłącznie adres statycznej metody.

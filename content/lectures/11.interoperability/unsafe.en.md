@@ -210,6 +210,42 @@ public unsafe struct Matrix4f
 }
 ```
 
+### Inline arrays (C# 12)
+
+Fixed-size buffers have limitations: they require an `unsafe` context, the element type must be a primitive type (e.g., `int`, `float`, `char`), and indexing is not bounds-checked. Since C# 12 (.NET 8), the same memory layout can be obtained in safe code with an *inline array* - a struct marked with the `[InlineArray(length)]` attribute that contains exactly one field. The runtime repeats this field `length` times.
+
+```csharp
+using System.Runtime.CompilerServices;
+
+[InlineArray(16)]
+public struct Float16
+{
+    private float _element0;
+}
+
+public struct Matrix4f
+{
+    // Stored inline, like a fixed-size buffer, but no unsafe code is needed.
+    public Float16 Elements;
+
+    public float this[int row, int col]
+    {
+        get => Elements[row * 4 + col];
+        set => Elements[row * 4 + col] = value;
+    }
+}
+```
+
+An inline array can be indexed (with bounds checking), iterated with `foreach` and converted to `Span<T>` or `ReadOnlySpan<T>`. Its element type can be any type, including reference types. The memory layout is the same as that of a C array, so structs containing inline arrays of blittable elements can also be passed to native code (like fixed-size buffers).
+
+```csharp
+var matrix = new Matrix4f();
+matrix[1, 2] = 5;
+Span<float> elements = matrix.Elements;
+Console.WriteLine(elements.Length); // 16
+matrix[4, 0] = 1; // IndexOutOfRangeException
+```
+
 ## Function pointers (C# 9.0)
 
 A function pointer `delegate*` is a pointer type that allows storing a **raw memory address** where the machine code of a function is located. Compared to delegates, function pointers do not cause heap allocations. It is simply the equivalent of function pointers from `C/C++`. Only the address of a static method can be assigned to a function pointer.
