@@ -41,7 +41,7 @@ A new solution can be created using:
 dotnet new sln -n <SolutionName>
 ```
 
-The `dotnet new` command creates a new element based on one of the templates available in the .NET SDK. In this case, we use the `sln` template, which is intended for creating solutions.
+The `dotnet new` command creates a new element based on one of the templates available in the .NET SDK. In this case, we use the `sln` template, which is intended for creating solutions. Since .NET 10, it creates a `<SolutionName>.slnx` file in the new XML-based solution format (older SDKs created `.sln` files).
 
 ### Creating a Library
 
@@ -104,7 +104,9 @@ dotnet sln list
 The following should then appear in the list:
 
 ```text
-<LibraryName>.Lib
+Project(s)
+----------
+<LibraryName>.Lib/<LibraryName>.Lib.csproj
 ```
 
 ### Creating a Console Application Project
@@ -257,15 +259,15 @@ A **Target** describes a specific stage of a process performed by MSBuild. A pro
 
 ```xml
 <Target Name="Prepare">
-    <Message Text="Preparing..." />
+    <Message Text="Preparing..." Importance="high" />
 </Target>
 
 <Target Name="BuildApplication" DependsOnTargets="Prepare">
-    <Message Text="Building..." />
+    <Message Text="Building..." Importance="high" />
 </Target>
 ```
 
-Running `BuildApplication` will first execute the `Prepare` **Target**. To run a target, you can use:
+Running `BuildApplication` will first execute the `Prepare` **Target**. To run a target, you can use the following command in the project directory:
 
 ```bash
 dotnet msbuild -target:BuildApplication
@@ -280,11 +282,11 @@ For example, if we want to create a directory and display a message after comple
 ```xml
 <Target Name="Prepare">
     <MakeDir Directories="build" />
-    <Message Text="Build directory prepared" />
+    <Message Text="Build directory prepared" Importance="high" />
 </Target>
 ```
 
-In this case, `Prepare` is a target, while `MakeDir` and `Message` are **Tasks**.
+In this case, `Prepare` is a target, while `MakeDir` and `Message` are **Tasks**. By default, messages have normal importance and are not shown at the default (minimal) verbosity of `dotnet build`/`dotnet msbuild`, so in the examples above we set `Importance="high"`.
 
 Here are some of the most common MSBuild **Tasks**:
 
