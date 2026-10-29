@@ -44,6 +44,28 @@ Słowo kluczowe `unsafe` zmienia kontekst na niebezpieczny, taki w którym możn
     }
     ```
 
+> [!NOTE]
+> Od C# 13 bloków `unsafe` można używać także w iteratorach (metodach z `yield return`), a iteratory i metody asynchroniczne mogą deklarować zmienne lokalne `ref` oraz zmienne lokalne typów `ref struct` (np. `Span<T>`). Takie zmienne nie mogą jednak przetrwać punktu wstrzymania metody: `yield return` nie może znajdować się wewnątrz bloku `unsafe`, `await` nie może być użyty w kontekście niebezpiecznym, a zmiennych lokalnych `ref` i typów `ref struct` zadeklarowanych przed `await` lub `yield return` nie można użyć po nim.
+> 
+> ```csharp
+> static IEnumerable<int> Sums(int[][] arrays)
+> {
+>     foreach (int[] array in arrays)
+>     {
+>         int sum = 0;
+>         unsafe // allowed in an iterator since C# 13
+>         {
+>             fixed (int* p = array)
+>             {
+>                 for (int i = 0; i < array.Length; i++)
+>                     sum += p[i];
+>             }
+>         }
+>         yield return sum; // yield return cannot be inside an unsafe block
+>     }
+> }
+> ```
+
 ## Wskaźniki
 
 W kontekście `unsafe` możemy używać wskaźników. Obsługiwane są standardowe operatory znane z C/C++:                                  

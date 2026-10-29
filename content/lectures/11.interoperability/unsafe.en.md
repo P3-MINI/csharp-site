@@ -44,6 +44,28 @@ The `unsafe` keyword changes the context to an unsafe one, where pointers can be
     }
     ```
 
+> [!NOTE]
+> Since C# 13, `unsafe` blocks can also be used in iterators (methods with `yield return`), and iterators and async methods can declare `ref` locals and locals of `ref struct` types (e.g., `Span<T>`). Such variables cannot live across a suspension point: `yield return` cannot be placed inside an `unsafe` block, `await` cannot be used in an unsafe context, and `ref` and `ref struct` locals declared before an `await` or `yield return` cannot be used after it.
+> 
+> ```csharp
+> static IEnumerable<int> Sums(int[][] arrays)
+> {
+>     foreach (int[] array in arrays)
+>     {
+>         int sum = 0;
+>         unsafe // allowed in an iterator since C# 13
+>         {
+>             fixed (int* p = array)
+>             {
+>                 for (int i = 0; i < array.Length; i++)
+>                     sum += p[i];
+>             }
+>         }
+>         yield return sum; // yield return cannot be inside an unsafe block
+>     }
+> }
+> ```
+
 ## Pointers
 
 In an `unsafe` context, we can use pointers. Standard operators known from C/C++ are supported:
