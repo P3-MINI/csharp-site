@@ -87,6 +87,7 @@ weight: 10
 - [Łącza]({{< ref "10.ipc/pipes" >}})
 - [Sieć]({{< ref "10.ipc/network" >}})
 - [TCP]({{< ref "10.ipc/tcp" >}})
+- [UDP]({{< ref "10.ipc/udp" >}})
 - [Serializacja]({{< ref "10.ipc/serialization" >}})
 
 ## Wykład 11

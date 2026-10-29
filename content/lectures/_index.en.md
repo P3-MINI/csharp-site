@@ -87,6 +87,7 @@ weight: 10
 - [Pipes]({{< ref "10.ipc/pipes" >}})
 - [Network]({{< ref "10.ipc/network" >}})
 - [TCP]({{< ref "10.ipc/tcp" >}})
+- [UDP]({{< ref "10.ipc/udp" >}})
 - [Serialization]({{< ref "10.ipc/serialization" >}})
 
 ## Lecture 11
