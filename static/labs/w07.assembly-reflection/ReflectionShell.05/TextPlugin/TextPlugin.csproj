@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <Version>1.0.0</Version>
+    <Description>Text manipulation commands for the reflection shell.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Compile against the shared contract, but do not copy it to the output: the host provides it at run time -->
+    <ProjectReference Include="..\Shell.Abstractions\Shell.Abstractions.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+  </ItemGroup>
+
+  <!-- After each build copy the plugin to the host's output directory: plugins/TextPlugin/ -->
+  <Target Name="CopyToShellPlugins" AfterTargets="Build">
+    <ItemGroup>
+      <PluginFiles Include="$(OutDir)**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PluginFiles)"
+          DestinationFolder="$(MSBuildThisFileDirectory)..\Shell\bin\$(Configuration)\$(TargetFramework)\plugins\$(MSBuildProjectName)\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>
