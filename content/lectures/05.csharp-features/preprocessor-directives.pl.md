@@ -107,7 +107,7 @@ Od .NET 10 pojedynczy plik `.cs` można zbudować i uruchomić bez pliku projekt
 W systemach uniksowych pierwszą linią pliku może być też *shebang* (`#!`), który pozwala uruchamiać plik bezpośrednio, jak skrypt (plik musi mieć końce linii `LF` i nie może zaczynać się od BOM). Przykładowy plik `hello.cs`:
 
 ```csharp
-#!/usr/bin/env -S dotnet --
+#!/usr/bin/env dotnet
 #:package Humanizer@2.14.1
 #:property PublishAot=false
 

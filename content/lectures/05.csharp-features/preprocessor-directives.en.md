@@ -107,7 +107,7 @@ Since .NET 10, a single `.cs` file can be built and run without a project file (
 On Unix-like systems, the first line of the file can also be a *shebang* (`#!`), which allows running the file directly, like a script (the file must use `LF` line endings and must not start with a BOM). An example `hello.cs` file:
 
 ```csharp
-#!/usr/bin/env -S dotnet --
+#!/usr/bin/env dotnet
 #:package Humanizer@2.14.1
 #:property PublishAot=false
 
