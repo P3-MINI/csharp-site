@@ -7,14 +7,14 @@ weight: 50
 
 The `Parallel` class (from the `System.Threading.Tasks` namespace) is one of the elements of the TPL (*Task Parallel Library*), which allows writing concurrent code in a simple way, abstracting from thread management.
 
-The `Parallel` class contains three methods:
+The `Parallel` class contains three basic methods:
 
 *   `Parallel.Invoke` - allows for the concurrent execution of multiple `Action` delegates
 *   `Parallel.For` - a parallel equivalent of the `for` loop
 *   `Parallel.ForEach` - a parallel equivalent of the `foreach` loop
 
 1.  For each of these methods, the work is efficiently partitioned into several tasks and run concurrently on the thread pool.
-2.  The methods of the `Parallel` class are blocking until all the work is completed.
+2.  These methods are blocking until all the work is completed.
 3.  If an exception occurs during the execution of one of the operations, `Parallel` will collect all exceptions and rethrow them as a single `AggregateException`.
 
 > [!NOTE]
@@ -99,12 +99,15 @@ public class Program
 }
 ```
 
+> [!NOTE]
+> The iterations are not executed in order, so the lines are printed in a nondeterministic order.
+
 ### Breaking the loop
 
 The `For` and `ForEach` methods include an overload that exposes `ParallelLoopState` in the delegate. Using it, loops can be broken early.
 
 *   `ParallelLoopState.Break()` ensures that all currently processed iterations, and all iterations with a lower index than the one for which `Break()` was called, will be executed. Further iterations with higher indices will not be started.
-*   `ParallelLoopState.Stop()` immediately halts the work of all threads.
+*   `ParallelLoopState.Stop()` signals that the loop should end as soon as possible: no further iterations (regardless of their index) will be started. Iterations that are already running are not interrupted, but they can check the `IsStopped` property and finish early.
 
 ```csharp
 public static ParallelLoopResult For(
@@ -257,3 +260,4 @@ public class Program
         return true;
     }
 }
+```

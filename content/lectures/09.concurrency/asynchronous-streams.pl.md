@@ -5,7 +5,7 @@ weight: 60
 
 # Asynchroniczne sekwencje
 
-Asynchroniczne sekwencje łączą ze sobą dwa koncepty: **iteratorów** (instrukcja *yield*) z **metodami asynchronicznymi** (*async/await*). Pozwalają one na pisanie metod iterujących, które zwracają kolejne elementy asynchronicznie. Jest to szczególnie **przydatne gdy trzeba czekać na każdy z elementów sekwencji**. (Jeżeli trzeba czekać na sekwencję jako całość, ale nie na pojedyncze elementy, lepiej rozważyć użycie `Task<IEnumerable<T>>`).
+Asynchroniczne sekwencje łączą ze sobą dwa koncepty: **iteratory** (instrukcja *yield*) i **metody asynchroniczne** (*async/await*). Pozwalają one na pisanie metod iterujących, które zwracają kolejne elementy asynchronicznie. Jest to szczególnie **przydatne, gdy trzeba czekać na każdy z elementów sekwencji**. (Jeżeli trzeba czekać na sekwencję jako całość, ale nie na pojedyncze elementy, lepiej rozważyć użycie `Task<IEnumerable<T>>`).
 
 ```csharp
 public interface IAsyncEnumerable<out T>
@@ -27,7 +27,7 @@ public interface IAsyncEnumerator<out T> : IAsyncDisposable
 
 > `IAsyncDisposable` jest asynchroniczną wersją interfejsu `IDisposable` z pojedynczą metodą `ValueTask DisposeAsync()`.
 
-Składnia języka dostarcza specjalnej instrukcji `await foreach`, która pozwala iterować się po kolejnych elementach sekwencji z oczekiwaniem asynchronicznym na kolejne elementy.
+Składnia języka dostarcza specjalnej instrukcji `await foreach`, która pozwala iterować po kolejnych elementach sekwencji z oczekiwaniem asynchronicznym na kolejne elementy.
 
 ```csharp
 IAsyncEnumerable<int> asyncSequence = RangeAsync(from: 0, to: 100, delay: 50);
@@ -38,9 +38,9 @@ await foreach(var item in asyncSequence)
 ```
 
 > [!NOTE]
-> Żeby przekazać `CancellationToken` do sekwencji można użyć metody rozszerzającej `WithCancellation(CancellationToken token)`, np: `await foreach(var item in asyncSequence.WithCancellation(token))`.
+> Żeby przekazać `CancellationToken` do sekwencji, można użyć metody rozszerzającej `WithCancellation(CancellationToken token)`, np.: `await foreach(var item in asyncSequence.WithCancellation(token))`.
 
-Podobnie jak `foreach`, `async foreach` jest cukierkiem składniowym. Kompilator rozwija tą instrukcję następująco:
+Podobnie jak `foreach`, `await foreach` jest cukierkiem składniowym. Kompilator rozwija tę instrukcję następująco:
 
 ```csharp
 IAsyncEnumerable<int> asyncSequence = RangeAsync(from: 0, to: 100, delay: 50);
@@ -64,7 +64,7 @@ finally
 
 ## Asynchroniczne metody iterujące
 
-Podobnie jak dla metod iterujących typem zwracanym musi być `IAsyncEnumerable<T>` lub `IAsyncEnumerator<T>`. Podobnie jak dla metod asynchronicznych musi być ona oznaczona `async`. W takiej metodzie możemy używać zarówno instrukcji `yield` jak i `await`.
+Podobnie jak dla metod iterujących, typem zwracanym musi być `IAsyncEnumerable<T>` lub `IAsyncEnumerator<T>`. Podobnie jak metoda asynchroniczna, musi być ona oznaczona `async`. W takiej metodzie możemy używać zarówno instrukcji `yield`, jak i `await`.
 
 ```csharp
 public class Program
@@ -92,9 +92,11 @@ Kompilator podobnie wygeneruje nam maszynę stanów odpowiadającą asynchronicz
 
 ### Anulowanie
 
-Asynchroniczne metody iterujące mogą wspierać anulowanie. Należy dodać do takiej metody parametr typu `CancellationToken` i ozdobić go atrybutem `EnumeratorCancellation`. Dzięki temu kompilator będzie wiedział, do którego parametru przekazać token w metodzie `WithCancellation`.
+Asynchroniczne metody iterujące mogą wspierać anulowanie. Należy dodać do takiej metody parametr typu `CancellationToken` i oznaczyć go atrybutem `EnumeratorCancellation` (z przestrzeni nazw `System.Runtime.CompilerServices`). Dzięki temu kompilator będzie wiedział, do którego parametru przekazać token w metodzie `WithCancellation`.
 
 ```csharp
+using System.Runtime.CompilerServices;
+
 public class Program
 {
     public static async Task Main()

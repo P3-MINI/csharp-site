@@ -17,7 +17,7 @@ Klasa `Task` dostarcza dwa rodzaje zadań:
 
 ## Tworzenie zadań
 
-Metoda `Task.Run(Action action)` tworzy zadanie i je uruchamia. Alternatywnie można użyć konstruktora `new Task...`, ale takie zadania nie są automatycznie uruchamiane - trzeba na nich wywołać potem metodę `Start()`. Nowe zadania są uruchamiane na dowolnym wątku z puli wątków. 
+Metoda `Task.Run(Action action)` tworzy zadanie i je uruchamia. Alternatywnie można użyć konstruktora `new Task(...)`, ale takie zadania nie są automatycznie uruchamiane – trzeba na nich wywołać potem metodę `Start()`. Nowe zadania są uruchamiane na dowolnym wątku z puli wątków. 
 
 ```csharp
 Task task = Task.Run(() =>
@@ -27,7 +27,7 @@ Task task = Task.Run(() =>
 });
 ```
 
-Metoda `Wait` pozwala blokujaco zaczekać, aż zadanie się nie zakończy.
+Metoda `Wait` pozwala blokująco zaczekać, aż zadanie się zakończy.
 
 ```csharp
 Console.WriteLine($"Is completed: {task.IsCompleted}");
@@ -37,7 +37,7 @@ Console.WriteLine($"Is completed: {task.IsCompleted}");
 
 ## Zwracanie wartości z zadania
 
-Metoda `Task<TResult>.Run(Func<TResult> func)` pozwala tworzyć zadania zwracające wartość. Po wykonaniu zadania możemy pobrać z takiego zadania wynik. Właściwość `Result` blokująco czeka na zakończenie zadania, i gdy zadanie jest zakończone, to pobiera z niego wartość.
+Metoda `Task.Run<TResult>(Func<TResult> function)` pozwala tworzyć zadania zwracające wartość (`Task<TResult>`). Po wykonaniu zadania możemy pobrać z takiego zadania wynik. Właściwość `Result` blokująco czeka na zakończenie zadania, i gdy zadanie jest zakończone, to pobiera z niego wartość.
 
 ```csharp
 Task<int> task1 = Task.Run(() => CountPrimes(1_000_000, 1_000_000));
@@ -46,7 +46,7 @@ Console.WriteLine("Started two tasks counting primes");
 Console.WriteLine($"Primes(1'000'000, 2'000'000): {task1.Result}");
 Console.WriteLine($"Primes(2'000'000, 3'000'000): {task2.Result}");
 
-private static int CountPrimes(int from, int count)
+static int CountPrimes(int from, int count)
 {
     return Enumerable.Range(from, count).Count(n =>
     {
@@ -67,7 +67,7 @@ private static int CountPrimes(int from, int count)
 
 ## Wyjątki w zadaniach
 
-W odróżnieniu od wątków nieobsłużone wyjątki nie powodują natychmiastowego zamknięcia aplikacji. Wyjątki rzucane są przechwytywane i przerzucane w momencie czekania na zadanie lub pobrania z niego wartości. Złapane wyjątki są opakowywane w `AggregateException`.
+W odróżnieniu od wątków nieobsłużone wyjątki w zadaniu nie powodują zamknięcia aplikacji. Rzucone wyjątki są przechwytywane i rzucane ponownie w momencie czekania na zadanie lub pobrania z niego wartości. Złapane wyjątki są opakowywane w `AggregateException`. Jeżeli wyjątek nigdy nie zostanie zaobserwowany, jest po cichu ignorowany (co najwyżej podczas odśmiecania zadania zgłaszane jest zdarzenie `TaskScheduler.UnobservedTaskException`).
 
 ```csharp
 class Program
@@ -110,7 +110,7 @@ continuation.Wait();
 
 ## Długie zadania
 
-Żeby nie blokować wątku z puli na zbyt długo, zadania powinny trwać maksymalnie kilkaset milisekund. Jeżeli potrzebujemy stworzyć zadanie, które będzie trwało dłużej można to zrobić za pomocą metody `Task.Factory.StartNew` z opcją `TaskCreationOptions.LongRunning`. Dla takiego zadania stworzony zostanie dedykowany wątek.
+Żeby nie blokować wątku z puli na zbyt długo, zadania powinny trwać maksymalnie kilkaset milisekund. Jeżeli potrzebujemy stworzyć zadanie, które będzie trwało dłużej, można to zrobić za pomocą metody `Task.Factory.StartNew` z opcją `TaskCreationOptions.LongRunning`. Dla takiego zadania stworzony zostanie dedykowany wątek.
 
 ```csharp
 Task<int> t = Task.Factory.StartNew(() =>

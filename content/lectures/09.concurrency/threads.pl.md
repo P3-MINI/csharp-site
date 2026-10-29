@@ -7,7 +7,7 @@ weight: 10
 
 ## Wprowadzenie
 
-**Wątek** (ang. *thread*) to podstawowa jednostka wykonania kodu, w obrębie jednego procesu. Wątki w ramach tego samego procesu współdzielą jego pamięć (dane na stercie) i zasoby systemu operacyjnego (uchwyty do plików, połączenia sieciowe, i inne). Jednakże, każdy wątek posiada swój własny:
+**Wątek** (ang. *thread*) to podstawowa jednostka wykonania kodu w obrębie jednego procesu. Wątki w ramach tego samego procesu współdzielą jego pamięć (dane na stercie) i zasoby systemu operacyjnego (uchwyty do plików, połączenia sieciowe i inne). Jednakże każdy wątek posiada swój własny:
 
 *   **Stos wywołań** (*call stack*): Każdy wątek ma oddzielny stos, na którym przechowywane są jego zmienne lokalne, parametry metod i adresy powrotu. Zmienna zadeklarowana wewnątrz metody jest w pełni prywatna dla wątku wykonującego tę metodę.
 *   **Kontekst procesora**: Każdy wątek ma swój unikalny stan rejestrów CPU, w tym wskaźnik instrukcji (*instruction pointer*), który jest zapisywany i odtwarzany podczas przełączania kontekstu.
@@ -15,7 +15,7 @@ weight: 10
 > [!NOTE]
 > Stworzenie nowego wątku jest lekką operacją w porównaniu do stworzenia procesu. 
 
-Przełączanie kontekstu (*context switching*) między wątkami przez scheduler systemu operacyjnego pozwala na osiągnięcie **współbieżności** na pojedynczym rdzeniu CPU. W systemach wielordzeniowych, wątki mogą być wykonywane **równolegle**, każdy na osobnym rdzeniu.
+Przełączanie kontekstu (*context switching*) między wątkami przez scheduler systemu operacyjnego pozwala na osiągnięcie **współbieżności** na pojedynczym rdzeniu CPU. W systemach wielordzeniowych wątki mogą być wykonywane **równolegle**, każdy na osobnym rdzeniu.
 
 > [!NOTE]
 > Operacje na współdzielonych zasobach mogą wymagać **synchronizacji**.
@@ -51,7 +51,7 @@ void PrintB()
 
 ## Usypianie i czekanie na wątek
 
-Metoda `Join` pozwala na poczekanie na inny wątku, aż ten się zakończy.
+Metoda `Join` pozwala poczekać na inny wątek, aż ten się zakończy.
 
 ```csharp
 Thread thread = new Thread(PrintA);
@@ -83,13 +83,13 @@ Thread.Sleep(millisecondsTimeout: 10);
 ```
 
 > [!NOTE]
-> Operacje `Sleep` i `Join` to operacje **blokujące**, które powodują, że wątek jest wstrzymywany przez system operacyjny i nie zużywa czasu procesora, dopóki nie zajdzie zdarzenie, na które wątek czeka. Inne typowe operacje blokujące to czekanie na prymitywy synchronizacji (np. `Mutex.Wait()`), albo oberacje I/O (np. `File.ReadAllText()`).
+> Operacje `Sleep` i `Join` to operacje **blokujące**, które powodują, że wątek jest wstrzymywany przez system operacyjny i nie zużywa czasu procesora, dopóki nie zajdzie zdarzenie, na które wątek czeka. Inne typowe operacje blokujące to czekanie na prymitywy synchronizacji (np. `Mutex.WaitOne()`) albo operacje I/O (np. `File.ReadAllText()`).
 
-## Wątki pierwszo- i drugoplanowe (Background Threads)
+## Wątki pierwszo- i drugoplanowe (*foreground* i *background threads*)
 
 Właściwość `IsBackground` decyduje o tym, czy dany wątek jest pierwszo- czy drugoplanowy.
 * **Wątki pierwszoplanowe** (domyślnie): Utrzymują proces aplikacji przy życiu. Aplikacja nie zakończy się, dopóki działa choćby jeden wątek pierwszoplanowy.
-* **Wątki drugoplanowe**: nie podtrzymują aplikacji przy życiu, aplikacja kończy się, gdy wszystkie wątki pierwszoplanowe zakończą pracę. Jeśli w tym momencie wciąż działają jakieś wątki drugoplanowe, są one **gwałtownie przerywane** bez możliwości dokończenia swojej pracy. Wątki drugoplanowe są idealne do zadań, które powinny działać "w tle" tak długo, jak działa aplikacja, ale nie są na tyle krytyczne, aby ich niedokończenie lub nagłe przerwanie było problemem.
+* **Wątki drugoplanowe**: nie podtrzymują aplikacji przy życiu – aplikacja kończy się, gdy wszystkie wątki pierwszoplanowe zakończą pracę. Jeśli w tym momencie wciąż działają jakieś wątki drugoplanowe, są one **gwałtownie przerywane** bez możliwości dokończenia swojej pracy. Wątki drugoplanowe są idealne do zadań, które powinny działać "w tle" tak długo, jak działa aplikacja, ale nie są na tyle krytyczne, aby ich niedokończenie lub nagłe przerwanie było problemem.
 
 ```csharp
 using System;
@@ -118,7 +118,7 @@ public class Program
 
 ## Bezpieczeństwo wątków i synchronizacja
 
-Wątki w ramach tego samego procesu współdzielą zasoby (np. pola statyczne, obiekty na stercie), dostęp do nich powinien być synchronizowany, aby uniknąć wyścigów (*race conditions*).
+Wątki w ramach tego samego procesu współdzielą zasoby (np. pola statyczne, obiekty na stercie), więc dostęp do nich powinien być synchronizowany, aby uniknąć wyścigów (*race conditions*).
 
 Poniższy przykład pokazuje problem wyścigu. Metoda `UnsafePrintOnce` powinna wypisać `Done` tylko raz, ale przy współbieżnym wywołaniu istnieje szansa, że wypisze je dwukrotnie.
 
@@ -144,7 +144,7 @@ static void Main()
 
 ### Instrukcja `lock`
 
-W C# najprostszym prymitywem synchronizacji jest instrukcja `lock`, która gwarantuje, że dany blok kodu (sekcja krytyczna) zostanie wykonany przez tylko jeden wątek w danym momencie. Pozostałe wątki są blokowane aż wątek, który wszedł do sekcji krytycznej z niej nie wyjdzie.
+W C# najprostszym prymitywem synchronizacji jest instrukcja `lock`, która gwarantuje, że dany blok kodu (sekcja krytyczna) zostanie wykonany w danym momencie tylko przez jeden wątek. Pozostałe wątki są blokowane, dopóki wątek, który wszedł do sekcji krytycznej, z niej nie wyjdzie.
 
 ```csharp
 private static bool _done = false;
@@ -173,7 +173,7 @@ static void Main()
 
 ## Obsługa wyjątków w wątkach
 
-Niewyłapany wyjątek w jakimkolwiek wątku, powoduje domyślnie **natychmiastowe zakończenie całej aplikacji**.
+Nieobsłużony wyjątek w jakimkolwiek wątku powoduje domyślnie **natychmiastowe zakończenie całej aplikacji**.
 
 ```csharp
 public class Program
@@ -195,11 +195,11 @@ public class Program
 }
 ```
 
-## Pula Wątków (*Thread Pool*)
+## Pula wątków (*thread pool*)
 
-CLR utrzymuje i zarządza **pulą wątków** (*Thread Pool*), co jest preferowanym sposobem wykonywania asynchronicznych zadań w .NET. Wątki z puli są ponownie wykorzystywane, co redukuje narzut związany z tworzeniem i niszczeniem wątków. Wątki puli są domyślnie drugoplanowe.
+CLR utrzymuje i zarządza **pulą wątków** (*thread pool*), co jest preferowanym sposobem wykonywania asynchronicznych zadań w .NET. Wątki z puli są ponownie wykorzystywane, co redukuje narzut związany z tworzeniem i niszczeniem wątków. Wątki puli są domyślnie drugoplanowe.
 
-Najprostszą metodą, żeby wywołać coś na puli wątków jest klasa `Task`:
+Najprostszą metodą, żeby wywołać coś na puli wątków, jest klasa `Task`:
 
 ```csharp
 public class Program
@@ -217,7 +217,7 @@ public class Program
 }
 ```
 
-> Pula wątków jest zarządzana przez *Runtime*, początkowo znajduje się tyle wątków, ile jest w systemie dostępnych fizycznych rdzeni. *Runtime* w zależności od potrzeb dokłada lub usuwa wątki z puli.
+> Pula wątków jest zarządzana przez *Runtime*, który tworzy wątki na żądanie: natychmiast do pewnej minimalnej liczby, domyślnie równej liczbie procesorów logicznych (`Environment.ProcessorCount`), a powyżej niej stopniowo, w zależności od obciążenia. Wątki, które przez dłuższy czas są bezczynne, są usuwane z puli.
 
 > [!NOTE]
 > Chociaż wątki są podstawą współbieżności, to w nowoczesnym C# bardzo rzadko korzysta się z nich bezpośrednio. Preferowane są abstrakcje wyższego poziomu operujące na wbudowanej puli wątków, takie jak `Task`, `Parallel` i `async/await`.

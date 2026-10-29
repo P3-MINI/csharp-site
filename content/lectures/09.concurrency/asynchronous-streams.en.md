@@ -40,7 +40,7 @@ await foreach(var item in asyncSequence)
 > [!NOTE]
 > To pass a `CancellationToken` to a sequence, you can use the `WithCancellation(CancellationToken token)` extension method, e.g.: `await foreach(var item in asyncSequence.WithCancellation(token))`.
 
-Similar to `foreach`, `async foreach` is syntactic sugar. The compiler expands this statement as follows:
+Similar to `foreach`, `await foreach` is syntactic sugar. The compiler expands this statement as follows:
 
 ```csharp
 IAsyncEnumerable<int> asyncSequence = RangeAsync(from: 0, to: 100, delay: 50);
@@ -92,9 +92,11 @@ The compiler will similarly generate a state machine corresponding to the asynch
 
 ### Cancellation
 
-Asynchronous iterator methods can support cancellation. You should add a `CancellationToken` parameter to such a method and decorate it with the `EnumeratorCancellation` attribute. This allows the compiler to know which parameter to pass the token to when using the `WithCancellation` method.
+Asynchronous iterator methods can support cancellation. You should add a `CancellationToken` parameter to such a method and decorate it with the `EnumeratorCancellation` attribute (from the `System.Runtime.CompilerServices` namespace). This allows the compiler to know which parameter to pass the token to when using the `WithCancellation` method.
 
 ```csharp
+using System.Runtime.CompilerServices;
+
 public class Program
 {
     public static async Task Main()
