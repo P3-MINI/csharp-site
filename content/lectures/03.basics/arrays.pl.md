@@ -51,6 +51,20 @@ Range lastTwoRange = ^2..;
 int[] lastTwo = primes[lastTwoRange];
 ```
 
+## Wyrażenia kolekcji (C# 12)
+
+Od C# 12 tablicę można również utworzyć za pomocą *wyrażenia kolekcji* (*collection expression*) - listy elementów w nawiasach kwadratowych. W przeciwieństwie do inicjalizatora `{ ... }`, którego można użyć tylko w deklaracji (w innych miejscach potrzebne jest `new[] { ... }`), wyrażenie kolekcji może wystąpić wszędzie tam, gdzie oczekiwana jest tablica, np. jako argument metody lub wartość zwracana. Nie ma ono jednak własnego typu, więc typ docelowy musi być znany (`var x = [1, 2];` się nie skompiluje). *Element rozwijający* (*spread element*) `..` wstawia wszystkie elementy innej kolekcji (czegokolwiek, po czym można iterować pętlą `foreach`). Ta sama składnia działa również dla innych kolekcji, np. `List<int> list = [1, 2, 3];` - więcej na ten temat w wykładzie [Kolekcje]({{< ref "/lectures/06.collections/collections" >}}).
+
+```csharp
+int[] empty = [];
+int[] small = [1, 2, 3];
+int[] combined = [0, ..small, ..small[1..], 4]; // [0, 1, 2, 3, 2, 3, 4]
+PrintAll([5, 6, 7]); // collection expression as a method argument
+// PrintAll({5, 6, 7}); // Compilation error: new[] {5, 6, 7} would be needed here
+
+static void PrintAll(int[] numbers) => Console.WriteLine(string.Join(", ", numbers));
+```
+
 ## Tablice prostokątne
 
 Tablice prostokątne deklaruje się używając `,` do wyspecyfikowania każdego z wymiarów. Tak samo jak tablice jednowymiarowe, można je zainicjalizować jawnie podając listę elementów. Metoda `GetLength(int)` zwraca długość tablicy wzdłuż `i`-tego wymiaru (zaczynając od 0).
