@@ -171,6 +171,9 @@ static void Main()
 }
 ```
 
+> [!NOTE]
+> The example uses the dedicated `System.Threading.Lock` type introduced in .NET 9. Since C# 13, `lock` on an instance of this type is compiled to a call to its `EnterScope()` method instead of using the `Monitor` class, which gives the best performance. In earlier versions of .NET and C#, the lock is a dedicated instance of any reference type, typically `private static readonly object LockObj = new object();`. More on locking: [Exclusive Locking]({{< ref "/lectures/12.synchronization/exclusive-locking" >}}).
+
 ## Exception Handling in Threads
 
 An unhandled exception in any thread, by default, causes the **immediate termination of the entire application**.

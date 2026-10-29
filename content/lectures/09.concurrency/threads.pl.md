@@ -171,6 +171,9 @@ static void Main()
 }
 ```
 
+> [!NOTE]
+> Przykład używa dedykowanego typu `System.Threading.Lock`, wprowadzonego w .NET 9. Od C# 13 instrukcja `lock` na obiekcie tego typu jest kompilowana do wywołania jego metody `EnterScope()` zamiast użycia klasy `Monitor`, co daje najlepszą wydajność. We wcześniejszych wersjach .NET i C# blokadą jest dedykowana instancja dowolnego typu referencyjnego, zazwyczaj `private static readonly object LockObj = new object();`. Więcej o blokowaniu: [Blokowanie wyłączne]({{< ref "/lectures/12.synchronization/exclusive-locking" >}}).
+
 ## Obsługa wyjątków w wątkach
 
 Niewyłapany wyjątek w jakimkolwiek wątku, powoduje domyślnie **natychmiastowe zakończenie całej aplikacji**.
