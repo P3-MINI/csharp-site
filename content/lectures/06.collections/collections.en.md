@@ -32,6 +32,7 @@ IEnumerable~T~ --> ICollection~T~
 ICollection~T~ --> IList~T~
 ICollection~T~ --> IDictionary~TKey, TValue~ : implements<br>ICollection&ltKeyValuePair&ltTKey,TValue&gt&gt
 ICollection~T~ --> ISet~T~
+IEnumerable~T~ ..> IEnumerator~T~ : GetEnumerator()
 class IEnumerable~T~{
     <<interface>>
 }
@@ -52,7 +53,7 @@ class ISet~T~{
 }
 ```
 
-### The ICollection<T> Interface
+### The `ICollection<T>` Interface
 
 `ICollection<T>` represents a modifiable, finite collection to which elements can be added and removed. It extends the possibility of iteration with basic operations of adding and removing elements, checking their count (`Count`), and whether a given element is in the collection (`Contains`).
 
@@ -69,7 +70,7 @@ public interface ICollection<T> : IEnumerable<T>
 }
 ```
 
-### The IList<T> Interface
+### The `IList<T>` Interface
 
 The list interface additionally introduces the ability to reference elements using an index.
 
@@ -83,7 +84,7 @@ public interface IList<T> : ICollection<T>
 }
 ```
 
-#### The List<T> Class
+#### The `List<T>` Class
 
 The most popular concrete implementation of this interface is `List<T>`. Underneath, it is a dynamically expanding array, similar to the `std::vector` type from C++. The `List<T>` class additionally provides several useful methods: `Sort`, `BinarySearch`, `Find`.
 
@@ -120,11 +121,11 @@ planets.Clear();
 Console.WriteLine($"\nNumber of planets after clearing: {planets.Count}");
 ```
 
-> `Array` also implements the `IList<T>` interface. The `Add`, `Remove`, `Insert`, and `RemoveAt` methods throw a `NotSupportedException`, as these are operations that change the size of the collection.
+> Arrays (`T[]`) also implement the `IList<T>` interface. The `Add`, `Remove`, `Insert`, `RemoveAt`, and `Clear` methods throw a `NotSupportedException`, as these are operations that change the size of the collection.
 
-### The IDictionary<TKey, TValue> Interface
+### The `IDictionary<TKey, TValue>` Interface
 
-Dictionaries are collections of key-value pairs in which the keys are unique. The dictionary interface provides two properties that allow access to a collection of only the keys (`Keys`) or only the values (`Values`). Most often, working with a dictionary involves using the indexer. We can use it to add new values, update existing ones, and retrieve existing values. Accessing a value that is not in the dictionary throws a `KeyNotFoundException`, so if we are not sure if a value exists, it is better to use the `TryGetValue` method. Inserting a new value or updating a value using the indexer always succeeds. The `Add` method, on the other hand, throws an `ArgumentException` if the value is already in the dictionary.
+Dictionaries are collections of key-value pairs in which the keys are unique. The dictionary interface provides two properties that allow access to a collection of only the keys (`Keys`) or only the values (`Values`). Most often, working with a dictionary involves using the indexer. We can use it to add new values, update existing ones, and retrieve existing values. Accessing a value that is not in the dictionary throws a `KeyNotFoundException`, so if we are not sure if a key exists, it is better to use the `TryGetValue` method. Inserting a new value or updating a value using the indexer always succeeds. The `Add` method, on the other hand, throws an `ArgumentException` if the key is already in the dictionary.
 
 ```csharp
 public interface IDictionary<TKey, TValue> : ICollection<KeyValuePair<TKey, TValue>>
@@ -139,7 +140,7 @@ public interface IDictionary<TKey, TValue> : ICollection<KeyValuePair<TKey, TVal
 }
 ```
 
-#### The Dictionary<TKey, TValue> Class
+#### The `Dictionary<TKey, TValue>` Class
 
 The most commonly used implementation of a dictionary is `Dictionary<TKey, TValue>`. Its internal implementation is a hash table, which corresponds to the `std::unordered_map` type from C++. In C#, every object has an `Equals` and `GetHashCode` method, making it a candidate for being a key in such a dictionary. Of course, these methods must be implemented correctly for `Dictionary<TKey, TValue>` to work properly.
 
@@ -250,7 +251,7 @@ if (openWith.Remove("doc"))
 
 > If we want the dictionary to be sorted by keys, there is also the `SortedDictionary<TKey, TValue>` implementation, which provides this. It is the equivalent of `std::map` from C++, internally using red-black trees.
 
-### The ISet<T> Interface
+### The `ISet<T>` Interface
 
 The `ISet<T>` interface represents a set in the mathematical sense. It stores only unique elements - duplicates are automatically ignored. The `Add` method returns `true` if the element was added, and `false` if the element already existed in the set. The rest of the methods in the set are set operations or methods for checking relationships between sets.
 
@@ -275,12 +276,14 @@ The most popular implementations of this interface are the `HashSet<T>` class, w
 
 ### Other Collections
 
-Besides the main branches of the hierarchy, there are other important collections that **directly implement `ICollection<T>`** without being a list, dictionary, or set:
+Besides the main branches of the hierarchy, there are other important collections that are not lists, dictionaries, or sets:
 
-- `LinkedList<T>` - A generic doubly-linked list. Unlike `List<T>`, it is optimized for frequent addition and removal of elements at any place in the list, as this does not require shifting subsequent elements.
+- `LinkedList<T>` - A generic doubly-linked list. Unlike `List<T>`, it is optimized for frequent addition and removal of elements at any place in the list, as this does not require shifting subsequent elements (with a reference to a `LinkedListNode<T>`, these operations take O(1) time).
 - `Queue<T>` - Implements a **FIFO** (First-In, First-Out) queue, internally using a **dynamically sized array**. The main methods are `Enqueue` (adds to the end) and `Dequeue` (retrieves from the beginning).
 - `Stack<T>` - Implements a **LIFO** (Last-In, First-Out) stack, also internally using a **dynamically sized array**. The main methods are `Push` (adds to the top) and `Pop` (retrieves from the top).
-- `PriorityQueue<TElement, TPriority>` - Implements a priority queue where elements are dequeued based on an associated priority rather than FIFO order. The main methods are `Enqueue` and `Dequeue`.
+- `PriorityQueue<TElement, TPriority>` - Implements a priority queue where elements are dequeued based on an associated priority rather than FIFO order. The main methods are `Enqueue` and `Dequeue`. It is a min-heap: the element with the **lowest** priority value is dequeued first (unlike `std::priority_queue` from C++, which by default returns the largest element).
+
+Of these, only `LinkedList<T>` implements `ICollection<T>`. `Queue<T>` and `Stack<T>` implement `IReadOnlyCollection<T>` (and thus `IEnumerable<T>`), but not `ICollection<T>` - elements can be added and removed only at their ends, so they do not provide `Add` and `Remove`. In turn, `PriorityQueue<TElement, TPriority>` does not even implement `IEnumerable<T>` - its elements can be viewed (in no particular order) through the `UnorderedItems` property.
 
 > It is also worth mentioning `BitArray` from the `System.Collections` namespace. It is a specialized, **non-generic** collection that allows for the efficient storage and manipulation of an array of bits (true/false values), using only one bit for each value.
 
