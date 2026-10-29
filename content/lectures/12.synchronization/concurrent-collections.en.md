@@ -79,3 +79,47 @@ Task.WaitAll(producer, consumer);
 > [!INFO]
 > Source code:
 > {{< filetree dir="lectures/synchronization/BlockingCollectionExample" >}}
+
+## Channels
+
+The `System.Threading.Channels` namespace (built into .NET since .NET Core 3.0) provides `Channel<T>` - a modern, **asynchronous** alternative to `BlockingCollection<T>`. A channel has two ends: `Writer` (`ChannelWriter<T>`), used by producers, and `Reader` (`ChannelReader<T>`), used by consumers. Instead of blocking threads, both sides wait asynchronously:
+
+*   **Producer**: `WriteAsync` waits (`await`) if a bounded channel (`Channel.CreateBounded<T>`) is full. `Channel.CreateUnbounded<T>()` creates a channel without a capacity limit.
+*   **Consumer**: `ReadAsync` waits for an item to appear. `ReadAllAsync()` returns an [asynchronous sequence]({{< ref "/lectures/09.concurrency/asynchronous-streams" >}}) (`IAsyncEnumerable<T>`) that ends when the producer calls `Writer.Complete()` and all remaining elements have been read.
+
+### Example
+
+The previous example rewritten using a channel:
+
+```csharp
+var channel = Channel.CreateBounded<int>(capacity: 5);
+
+Task producer = Task.Run(async () =>
+{
+    for (int i = 0; i < 10; i++)
+    {
+        Console.WriteLine($"Producing: {i}");
+        await channel.Writer.WriteAsync(i); // Waits asynchronously if full
+        await Task.Delay(500);
+    }
+    channel.Writer.Complete(); // Signal end of data
+});
+
+Task consumer = Task.Run(async () =>
+{
+    await foreach (var item in channel.Reader.ReadAllAsync())
+    {
+        Console.WriteLine($"Consuming: {item}");
+        await Task.Delay(1000);
+    }
+});
+
+await Task.WhenAll(producer, consumer);
+```
+
+> [!TIP]
+> In new code, especially asynchronous code, prefer `Channel<T>` over `BlockingCollection<T>` - waiting does not block thread pool threads. Bounded channels can also be configured (`BoundedChannelOptions.FullMode`) to drop the oldest or the newest element instead of waiting, and the `SingleReader`/`SingleWriter` options allow using faster implementations.
+
+> [!INFO]
+> Source code:
+> {{< filetree dir="lectures/synchronization/ChannelExample" >}}
