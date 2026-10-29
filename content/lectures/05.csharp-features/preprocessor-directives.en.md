@@ -2,7 +2,7 @@
 title: "Preprocessor Directives"
 ---
 
-## Preprocessor Directives
+# Preprocessor Directives
 
 The preprocessor in C# is much simpler than in C/C++.
 * There is no `#include` directive (in C#, we use `using` to import namespaces).
@@ -24,7 +24,7 @@ Logical operators `!`, `&&`, and `||` can be used within conditions.
     Console.WriteLine("TEST is not defined");
 #endif
 #if TEST && DEBUG
-    Console.WriteLine("DEBUG and TEST is defined");
+    Console.WriteLine("DEBUG and TEST are defined");
 #else
     Console.WriteLine("DEBUG and TEST are not both defined");
 #endif
