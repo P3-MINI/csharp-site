@@ -7,7 +7,7 @@ weight: 20
 
 ## Wprowadzenie
 
-MSBuild to narzędzie do budowania aplikacji. Jest częścią platformy .NET i służy do automatyzacji procesów kompilacji kodu, testowania, pakowania i publikowania aplikacji. Jest to silnik, który Visual Studio używa do budowania projektów, ale może być też uruchamiany niezależnie z lini poleceń, co jest szczególnie przydatne w przypadku zautomatyzowanych procesów kompilacji na serwerach (CI/CD).
+MSBuild to narzędzie do budowania aplikacji. Jest częścią platformy .NET i służy do automatyzacji procesów kompilacji kodu, testowania, pakowania i publikowania aplikacji. Jest to silnik, którego Visual Studio używa do budowania projektów, ale może być też uruchamiany niezależnie z linii poleceń, co jest szczególnie przydatne w przypadku zautomatyzowanych procesów kompilacji na serwerach (CI/CD).
 
 ## Pliki projektu MSBuild
 
@@ -59,7 +59,7 @@ Poniżej znajduje się plik projektu MSBuild, `HelloMSBuild.proj`, który kompil
   
   <Target Name="Clean">
     <Message Text="Cleaning..." Importance="high" />
-    <Delete Files="$(OutputPath)/$(OutputName)" />
+    <Delete Files="$(OutputPath)$(OutputName)" />
     <Delete Files="@(CppSource->'$(OutputPath)%(filename).o')" />
     <RemoveDir Directories="$(OutputPath)" />
   </Target>
@@ -95,7 +95,7 @@ W plikach MSBuild, aby odwołać się do wartości zdefiniowanych właściwości
 
 *   **`$()` do właściwości (Properties):** Aby uzyskać wartość właściwości, należy użyć jej nazwy wewnątrz nawiasów `$(NazwaWlasciwosci)`. Na przykład, `$(OutputName)` w powyższym przykładzie zostanie zastąpione przez `program`.
 
-*   **`@()` do elementów (Items):** Aby uzyskać listę wartości z elementów, należy użyć nazwy grupy elementów wewnątrz nawiasów `@(NazwaGrupyElementow)`. Na przykład, `@(CppSource)` zostanie zastąpione listą wszystkich plików (np. `main.cpp;log.cpp`).
+*   **`@()` do elementów (Items):** Aby uzyskać listę wartości z elementów, należy użyć typu elementu (nazwy elementu XML, np. `CppSource`) wewnątrz nawiasów `@(TypElementu)`. Na przykład, `@(CppSource)` zostanie zastąpione listą wszystkich plików (np. `main.cpp;log.cpp`).
 
 ### Metadane i transformacje itemów
 
@@ -115,7 +115,7 @@ Pełną listę można znaleźć w [dokumentacji](https://learn.microsoft.com/en-
 
 #### Składnia metadanych: `%()`
 
-Aby odwołać się do metadanych itemu, używa się składni `%(NazwaMetadanej)`. Jeśli odwołujemy się do metadanych wewnątrz targetu, w którym przetwarzana jest lista itemów (tzw. "batching"), MSBuild grupuje itemy po metadanych i wykona zadanie dla każdej z tych grup.
+Aby odwołać się do metadanych itemu, używa się składni `%(NazwaMetadanej)`. Jeśli odwołujemy się do metadanych wewnątrz targetu, w którym przetwarzana jest lista itemów (tzw. "batching"), MSBuild grupuje itemy według wartości tych metadanych i wykonuje zadanie dla każdej z tych grup.
 
 **Przykład:**
 
@@ -135,7 +135,7 @@ Załóżmy, że mamy listę plików C++ i chcemy dla każdego z nich zdefiniowa�
 </ItemGroup>
 
 <Target Name="Compile">
-  <Message Text="Kompilowanie @(CppSource) przy użyciu standardu %(CppSource.LanguageStandard)..." />
+  <Message Text="Kompilowanie @(CppSource) przy użyciu standardu %(CppSource.LanguageStandard)..." Importance="high" />
 </Target>
 ```
 
@@ -150,7 +150,7 @@ MSBuild podzielił itemy na dwie grupy i dla każdej z nich wykonał zadanie.
 
 #### Transformacje itemów (Item transformations)
 
-Transformacje pozwalają na konwersję jednej listy itemów na inną, z użyciem metadanych. Składnia transformacji to `'@(NazwaGrupy -> '%(Metadana)')'`. Opcjonalnie możemy jeszcze podać alternatywny znak separatora (domyślnie jest to ';'): `'@(NazwaGrupy -> '%(Metadana)', '_')'`.
+Transformacje pozwalają na konwersję jednej listy itemów na inną, z użyciem metadanych. Składnia transformacji to `@(TypElementu -> '%(Metadana)')`. Opcjonalnie możemy jeszcze podać alternatywny separator (domyślnie jest to `;`): `@(TypElementu -> '%(Metadana)', '_')`.
 
 **Przykład:**
 
@@ -162,7 +162,7 @@ Załóżmy, że chcemy przekształcić listę plików źródłowych `CppSource` 
 </ItemGroup>
 
 <Target Name="ListObjectFiles">
-  <Message Text="Pliki obiektowe: @(CppSource -> '%(Filename).o')" />
+  <Message Text="Pliki obiektowe: @(CppSource -> '%(Filename).o')" Importance="high" />
 </Target>
 ```
 
@@ -182,15 +182,17 @@ Target `ListObjectFiles` wyświetli: `Pliki obiektowe: main.o;utils.o`.
     dotnet build <nazwa_pliku_projektu>
     ```
     Jeśli w katalogu znajduje się tylko jeden plik projektu, można pominąć jego nazwę.
+    Na Linuksie i macOS MSBuild jest dostępny tylko jako część .NET SDK, czyli jako `dotnet msbuild` (samodzielne polecenie `msbuild` jest instalowane w systemie Windows razem z Visual Studio lub Build Tools for Visual Studio).
 
 *   **Wybór konkretnego targetu:**
     ```bash
     msbuild <nazwa_pliku_projektu> /t:<nazwa_targetu>
     ```
-    Polecenie `dotnet build` nie ma bezpośredniego przełącznika do uruchamiania niestandardowych targetów. Jednakże, można w tym celu użyć polecenia `dotnet msbuild`, które jest częścią .NET SDK i działa analogicznie do `msbuild`.
+    Polecenie `dotnet build` nie ma dedykowanej opcji do wyboru targetów, ale przekazuje do MSBuild przełączniki takie jak `/t` (i dodatkowo najpierw wykonuje restore). Można też użyć polecenia `dotnet msbuild`, które jest częścią .NET SDK i działa analogicznie do `msbuild`.
     ```bash
     msbuild <nazwa_pliku_projektu> /t:<nazwa_targetu>
     dotnet msbuild <nazwa_pliku_projektu> /t:<nazwa_targetu>
+    dotnet build <nazwa_pliku_projektu> /t:<nazwa_targetu>
     ```
     Dla standardowych operacji, takich jak `clean` czy `publish`, zaleca się używanie dedykowanych poleceń `dotnet`:
     ```bash
@@ -223,7 +225,7 @@ Kolejność jest następująca:
 
 3.  **Atrybut `DefaultTargets`:** Jeśli w linii poleceń nie podano żadnych targetów, MSBuild uruchomi targety zdefiniowane w tym atrybucie elementu `<Project>`.
 
-4.  **Pierwszy target w pliku:** Jeśli nie zdefiniowano `InitialTargets`, `DefaultTargets` i nie podano targetów w linii poleceń, MSBuild wykona pierwszy napotkany target w pliku projektu.
+4.  **Pierwszy target w pliku:** Jeśli nie zdefiniowano `DefaultTargets` i nie podano targetów w linii poleceń, MSBuild wykona (po targetach z `InitialTargets`) pierwszy napotkany target w pliku projektu.
 
 Po ustaleniu targetów początkowych, MSBuild używa następujących atrybutów do rekursywnego budowania drzewa zależności i określenia ostatecznej kolejności:
 
@@ -323,17 +325,17 @@ Poniższy przykład pokazuje typowy plik projektu, stworzony poleceniem `dotnet 
 </Project>
 ```
 
-Ten plik, mimo że jest znacznie krótszy, zawiera całą potrzebną logikę do zbudowania prostej aplikacji konsolowej - importuje ją z `Microsoft.NET.Sdk`. Te importowane pliki można znaleźć w katalogu instalacyjnym .NET SDK. W systemie Windows jest to zazwyczaj `C:\Program Files\dotnet\sdk\[wersja]\Sdks\`, a na Linuksie `/usr/share/dotnet/sdk/[wersja]/Sdks/`. Z takimi plikami będziemy pracować przez resztę semestru. Praca z nimi polega głównie na **edycji właściwości i itemów zdefiniowanych w SDK i podpinaniu się pod istniejące targety**.
+Ten plik, mimo że jest znacznie krótszy, zawiera całą potrzebną logikę do zbudowania prostej aplikacji konsolowej - importuje ją z `Microsoft.NET.Sdk`. Te importowane pliki można znaleźć w katalogu instalacyjnym .NET SDK. W systemie Windows jest to zazwyczaj `C:\Program Files\dotnet\sdk\[wersja]\Sdks\`, a na Linuksie np. `/usr/share/dotnet/sdk/[wersja]/Sdks/` (dokładna lokalizacja zależy od sposobu instalacji; pokazuje ją polecenie `dotnet --list-sdks`). Z takimi plikami będziemy pracować przez resztę semestru. Praca z nimi polega głównie na **edycji właściwości i itemów zdefiniowanych w SDK i podpinaniu się pod istniejące targety**.
 
 ### Właściwości zdefiniowane w SDK
 
 Właściwości sterują całym przepływem budowania. Kilka z nich, które najczęściej się zmienia:
 
-*   **`TargetFramework`**: Określa docelową wersję środowiska .NET (np. net8.0). Ma wpływ na to jakiej wersji języka można używać w projekcie i późniejszą kompatybilność z innymmi programami.
+*   **`TargetFramework`**: Określa docelową wersję środowiska .NET (np. `net10.0`). Ma wpływ na to, jakiej wersji języka można używać w projekcie, i na późniejszą kompatybilność z innymi programami.
 *   **`OutputType`**: Typ pliku wynikowego, `Exe` (aplikacja) lub `Library` (biblioteka).
 *   **`Nullable`**: Włącza lub wyłącza funkcję `Nullable Reference Types` w C#. Najczęściej ustawiana na `enable`.
-*   **`LangVersion`**: Wersję języka, można też ustawić niezależnie od `TargetFramework`.
-*   **`CodeAnalysisTreatWarningsAsErrors`**: Powoduje, że wszystkie ostrzeżenia kompilatora są traktowane jako błędy.
+*   **`LangVersion`**: Wersja języka; można ją też ustawić niezależnie od `TargetFramework`.
+*   **`TreatWarningsAsErrors`**: Powoduje, że wszystkie ostrzeżenia kompilatora są traktowane jako błędy.
 *   **`NoWarn`**: Lista kodów ostrzeżeń (np. 'CS1591'), które kompilator ma ignorować.
 *   **`RollForward`**: Określa w jaki sposób aplikacja wybiera wersję środowiska uruchomieniowego, jeśli docelowa wersja nie zostanie znaleziona (np. `LatestMajor` pozwala na uruchomienie na nowszych wersjach głównych).
 
@@ -363,9 +365,9 @@ MSBuild oferuje opcje logowania, które są nieocenione przy diagnozowaniu probl
     ```
     Możliwe wartości to `q[uiet]`, `m[inimal]`, `n[ormal]`, `d[etailed]` i `diag[nostic]`.
 
-*   **Logowanie do pliku:**
+*   **Logowanie do pliku** (argument trzeba ująć w cudzysłów, ponieważ `;` rozdziela polecenia w powłokach takich jak bash czy PowerShell):
     ```bash
-    msbuild /flp:LogFile=build.log;Verbosity=diagnostic
-    dotnet build /flp:LogFile=build.log;Verbosity=diagnostic
+    msbuild "/flp:LogFile=build.log;Verbosity=diagnostic"
+    dotnet build "/flp:LogFile=build.log;Verbosity=diagnostic"
     ```
     To polecenie zapisze logi do pliku `build.log`.

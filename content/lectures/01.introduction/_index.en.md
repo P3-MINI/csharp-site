@@ -6,7 +6,7 @@ weight: 10
 
 The C# language was created at Microsoft by a team led by **Anders Hejlsberg** and was introduced in 2002 as part of the **.NET Framework**. The name C# (C Sharp) is inspired by musical notation, where a sharp raises a note by a semitone, symbolizing an evolution relative to the C++ language.
 
-The .NET platform - which includes the C# **CoreCLR runtime** and the **Roslyn compiler** - initially available as **.NET Framework** only for Windows, was eventually complemented by **.NET Core** – a rewritten, multi-platform, and open-source version of the environment. For a time, both of these solutions were developed in parallel. Ultimately, the .NET Core line became the foundation for future development. Starting with .NET 5, the platform was symbolically unified under the single name **.NET**, becoming the successor to both .NET Core and .NET Framework. It was as part of this transformation that the entire environment – including the C# compiler (Roslyn) and the runtime (CoreCLR) – became an **open-source** project. Microsoft releases a new version of the platform every year (.NET 6, .NET 7, .NET 8, etc.). The latest changes can be tracked in the official documentation: [What's new in .NET](https://learn.microsoft.com/en-us/dotnet/core/whats-new/) and [What's new in C#](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/).
+The .NET platform – the runtime environment and the standard library, together with the C# compiler – initially available as **.NET Framework** only for Windows, was eventually complemented by **.NET Core** – a rewritten, multi-platform, and open-source version of the environment, built on the **CoreCLR runtime**. For a time, both of these solutions were developed in parallel. Ultimately, the .NET Core line became the foundation for future development. Starting with .NET 5, the platform was symbolically unified under the single name **.NET**, becoming the successor to both .NET Core and .NET Framework. The source code had been opened earlier, together with the creation of .NET Core: the new C# compiler **Roslyn** was published as open source in 2014, the CoreCLR runtime in 2015, and .NET Core 1.0 was released in 2016. Today the entire environment is developed as an **open-source** project. Microsoft releases a new version of the platform every year (.NET 6, .NET 7, .NET 8, etc.). The latest changes can be tracked in the official documentation: [What's new in .NET](https://learn.microsoft.com/en-us/dotnet/core/whats-new/) and [What's new in C#](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/).
 
 C# finds wide application in web applications (ASP.NET Core), desktop (WPF, WinUI), cloud, and also in game development (Unity and Godot engines).
 
@@ -16,11 +16,11 @@ The language is **significantly simpler** to learn than C++. It was designed wit
 
 C# is a **managed** language, which means that the code is executed under the control of the .NET runtime, not directly by the operating system. Mechanisms such as automatic memory management (**Garbage Collector**) eliminate entire classes of errors known from unmanaged languages, but this comes with a certain performance overhead. For example, the Garbage Collector sometimes has to pause the entire program to clean up memory. These sudden pauses can cause stuttering, which can be a problem for games.
 
-It is also a **strongly typed and object-oriented** language. Strong typing means that data types must be defined and are checked at compile time, which helps detect errors at an early stage. As an object-oriented language, C# provides mechanisms such as classes, interfaces, encapsulation, inheritance, and polymorphism. Unlike C++, all program code must be contained within classes. At the same time, C# draws from other paradigms, offering support for functional programming (LINQ, lambda expressions), event-driven programming (events, delegates), and asynchronous programming (`async`/`await`).
+It is also a **statically and strongly typed, object-oriented** language. Static typing means that data types must be defined and are checked at compile time, which helps detect errors at an early stage. As an object-oriented language, C# provides mechanisms such as classes, interfaces, encapsulation, inheritance, and polymorphism. Unlike C++, there are no global functions or variables – all program code must be contained within types (e.g., classes). At the same time, C# draws from other paradigms, offering support for functional programming (LINQ, lambda expressions), event-driven programming (events, delegates), and asynchronous programming (`async`/`await`).
 
 ### How Does C# Code Work? Compilation to CIL and JIT
 
-Unlike C++, where there are many compilers, C# has one main, official implementation from Microsoft. To build and run an application, the **.NET SDK** is required.
+Unlike C++, where there are many compilers, C# has one main, official implementation from Microsoft. To build an application, the **.NET SDK** is required (running an already built application only requires the .NET runtime).
 
 The process of running C# code is as follows:
 1.  The C# compiler (**Roslyn**) translates the source code into an **intermediate language** (Common Intermediate Language, CIL).
@@ -81,17 +81,17 @@ namespace Hello
 }
 ```
 
-> You can force the generation of the main program by adding the `--use-program-main` parameter when creating the project.
+> You can force the generation of an explicit `Program` class with a `Main` method by adding the `--use-program-main` parameter when creating the project.
 
 In this case, the entire structure is visible:
 - `namespace Hello` groups the code into a logical unit.
 - `class Program` is a container for data and methods.
 - `static void Main(string[] args)` is the program's entry point.
-- `using System;` imports the namespace where the `Console` class is defined. It is the equivalent of `#include` from C++.
+- `using System;` imports the namespace where the `Console` class is defined. It is the equivalent of `using namespace` from C++ (not of `#include` – library code is made available by referencing assemblies, not by including headers). In new projects it can be omitted: thanks to the `ImplicitUsings` setting, the most commonly used namespaces (including `System`) are imported automatically.
 
 The statement `Console.WriteLine("Hello, World!");` is a call to the static `WriteLine` method on the `Console` class.
 
-> Popular Integrated Development Environments (IDEs) for C# include Visual Studio (Windows), Visual Studio Code (cross-platform), and JetBrains Rider (cross-platform). Under the hood, they all use the `dotnet` tool. You can also experiment online, for example, at [dotnetfiddle.net](https://dotnetfiddle.net/) or [sharplab.io](https://sharplab.io/).
+> Popular Integrated Development Environments (IDEs) for C# include Visual Studio (Windows), Visual Studio Code (cross-platform), and JetBrains Rider (cross-platform). Under the hood, they all use the same .NET SDK (and MSBuild). You can also experiment online, for example, at [dotnetfiddle.net](https://dotnetfiddle.net/) or [sharplab.io](https://sharplab.io/).
 
 ## Basic Tools
 
@@ -110,7 +110,7 @@ int year = DateTime.Now.Year;
 Console.WriteLine($"Hello, {name}! The year is {year}.");
 ```
 
-The `$"..."` construct is **string interpolation**, a simple way to format text using variable values. It is a mechanism similar to `std::format` introduced in C++20 ([`std::format`](https://en.cppreference.com/w/cpp/utility/format/format)).
+The `$"..."` construct is **string interpolation**, a simple way to format text using variable values. It is a mechanism similar to [`std::format`](https://en.cppreference.com/w/cpp/utility/format/format) introduced in C++20.
 
 ### The `string` Type
 

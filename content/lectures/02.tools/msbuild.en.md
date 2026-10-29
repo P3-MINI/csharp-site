@@ -59,7 +59,7 @@ Below is an MSBuild project file, `HelloMSBuild.proj`, that compiles this applic
   
   <Target Name="Clean">
     <Message Text="Cleaning..." Importance="high" />
-    <Delete Files="$(OutputPath)/$(OutputName)" />
+    <Delete Files="$(OutputPath)$(OutputName)" />
     <Delete Files="@(CppSource->'$(OutputPath)%(filename).o')" />
     <RemoveDir Directories="$(OutputPath)" />
   </Target>
@@ -95,7 +95,7 @@ In MSBuild files, to reference the values of defined properties and items, a spe
 
 *   **`$()` for Properties:** To get the value of a property, use its name inside parentheses `$(PropertyName)`. For example, `$(OutputName)` in the example above will be replaced by `program`.
 
-*   **`@()` for Items:** To get a list of values from items, use the name of the item group inside parentheses `@(ItemGroupName)`. For example, `@(CppSource)` will be replaced by a list of all files (e.g., `main.cpp;log.cpp`).
+*   **`@()` for Items:** To get a list of values from items, use the item type (the name of the item element, e.g., `CppSource`) inside parentheses `@(ItemType)`. For example, `@(CppSource)` will be replaced by a list of all files (e.g., `main.cpp;log.cpp`).
 
 ### Metadata and Item Transformations
 
@@ -135,7 +135,7 @@ Let's say we have a list of C++ files and we want to define a different language
 </ItemGroup>
 
 <Target Name="Compile">
-  <Message Text="Compiling @(CppSource) using standard %(CppSource.LanguageStandard)..." />
+  <Message Text="Compiling @(CppSource) using standard %(CppSource.LanguageStandard)..." Importance="high" />
 </Target>
 ```
 
@@ -150,7 +150,7 @@ MSBuild divided the items into two batches (groups) and executed the task for ea
 
 #### Item Transformations
 
-Transformations allow converting one list of items into another, using metadata. The transformation syntax is `'@(ItemGroup -> '%(Metadata)')'`. Optionally, we can also provide an alternative separator character (the default is ';'): `'@(ItemGroup -> '%(Metadata)', '_')'`.
+Transformations allow converting one list of items into another, using metadata. The transformation syntax is `@(ItemType -> '%(Metadata)')`. Optionally, we can also provide an alternative separator (the default is `;`): `@(ItemType -> '%(Metadata)', '_')`.
 
 **Example:**
 
@@ -162,7 +162,7 @@ Let's say we want to transform a list of `CppSource` source files into a list of
 </ItemGroup>
 
 <Target Name="ListObjectFiles">
-  <Message Text="Object files: @(CppSource -> '%(Filename).o')" />
+  <Message Text="Object files: @(CppSource -> '%(Filename).o')" Importance="high" />
 </Target>
 ```
 
@@ -182,15 +182,17 @@ The `ListObjectFiles` target will display: `Object files: main.o;utils.o`.
     dotnet build <project_file_name>
     ```
     If there is only one project file in the directory, you can omit its name.
+    On Linux and macOS, MSBuild is available only as part of the .NET SDK, i.e., as `dotnet msbuild` (the standalone `msbuild` command comes with Visual Studio or Build Tools for Visual Studio on Windows).
 
 *   **Selecting a specific target:**
     ```bash
     msbuild <project_file_name> /t:<target_name>
     ```
-    The `dotnet build` command does not have a direct switch for running custom targets. However, you can use the `dotnet msbuild` command for this purpose, which is part of the .NET SDK and works similarly to `msbuild`.
+    The `dotnet build` command does not have a dedicated option for selecting targets, but it passes MSBuild switches such as `/t` on to MSBuild (and runs the restore first). You can also use the `dotnet msbuild` command, which is part of the .NET SDK and works similarly to `msbuild`.
     ```bash
     msbuild <project_file_name> /t:<target_name>
     dotnet msbuild <project_file_name> /t:<target_name>
+    dotnet build <project_file_name> /t:<target_name>
     ```
     For standard operations like `clean` or `publish`, it is recommended to use the dedicated `dotnet` commands:
     ```bash
@@ -223,7 +225,7 @@ The order is as follows:
 
 3.  **`DefaultTargets` attribute:** If no targets are specified on the command line, MSBuild will run the targets defined in this attribute of the `<Project>` element.
 
-4.  **First target in the file:** If `InitialTargets`, `DefaultTargets` are not defined and no targets are specified on the command line, MSBuild will execute the first target it encounters in the project file.
+4.  **First target in the file:** If `DefaultTargets` is not defined and no targets are specified on the command line, MSBuild will execute (after the `InitialTargets`) the first target it encounters in the project file.
 
 After determining the initial targets, MSBuild uses the following attributes to recursively build the dependency tree and determine the final order:
 
@@ -323,21 +325,21 @@ The following example shows a typical project file, created with the command `do
 </Project>
 ```
 
-This file, although much shorter, contains all the necessary logic to build a simple console application - it imports it from `Microsoft.NET.Sdk`. These imported files can be found in the .NET SDK installation directory. On Windows, this is typically `C:\Program Files\dotnet\sdk\[version]\Sdks\`, and on Linux `/usr/share/dotnet/sdk/[version]/Sdks/`.  We'll be working with such files for the rest of the semester. Working with them mainly involves **editing the properties and items defined in the SDK and hooking into existing targets**.
+This file, although much shorter, contains all the necessary logic to build a simple console application - it imports it from `Microsoft.NET.Sdk`. These imported files can be found in the .NET SDK installation directory. On Windows, this is typically `C:\Program Files\dotnet\sdk\[version]\Sdks\`, and on Linux, e.g., `/usr/share/dotnet/sdk/[version]/Sdks/` (the exact location depends on the installation method; `dotnet --list-sdks` shows it).  We'll be working with such files for the rest of the semester. Working with them mainly involves **editing the properties and items defined in the SDK and hooking into existing targets**.
 
 ### Properties Defined in the SDK
 
 Properties control the entire build flow. Some of them, which are changed most frequently:
 
-* **`TargetFramework`**: Specifies the target version of the .NET framework (e.g., net8.0). It influences which language version can be used in the project and subsequent compatibility with other programs.
+* **`TargetFramework`**: Specifies the target version of the .NET framework (e.g., `net10.0`). It influences which language version can be used in the project and subsequent compatibility with other programs.
 * **`OutputType`**: The type of the output file, `Exe` (application) or `Library` (library).
 * **`Nullable`**: Enables or disables the `Nullable Reference Types` feature in C#. It is most often set to `enable`.
 * **`LangVersion`**: The language version; it can also be set independently of `TargetFramework`.
-* **`CodeAnalysisTreatWarningsAsErrors`**: Causes all compiler warnings to be treated as errors.
+* **`TreatWarningsAsErrors`**: Causes all compiler warnings to be treated as errors.
 * **`NoWarn`**: A list of warning codes (e.g., 'CS1591') that the compiler should ignore.
 * **`RollForward`**: Controls how the application chooses the runtime version when the exact target framework version is not found (e.g., `LatestMajor` allows it to run on newer major versions).
 
-More complete list of properties can be found in the [documentation](https://learn.microsoft.com/dotnet/core/project-sdk/msbuild-props).
+A more complete list of properties can be found in the [documentation](https://learn.microsoft.com/dotnet/core/project-sdk/msbuild-props).
 
 ### Predefined Items from the SDK
 
@@ -350,7 +352,7 @@ SDK-style projects define many items. Here are some of them:
 *   **`ProjectReference`**: References to other projects.
 *   **`PackageReference`**: References to NuGet packages.
 
-A full list of popular items can be found here: [Common MSBuild project items](https://learn.microsoft.com/visualstudio/msbuild/common-msbuild-project-items).
+A list of common items can be found here: [Common MSBuild project items](https://learn.microsoft.com/visualstudio/msbuild/common-msbuild-project-items).
 
 ### Logging and Diagnosing Problems
 
@@ -363,9 +365,9 @@ MSBuild offers logging options that are invaluable when diagnosing build problem
     ```
     Possible values are `q[uiet]`, `m[inimal]`, `n[ormal]`, `d[etailed]`, and `diag[nostic]`.
 
-*   **Logging to a file:**
+*   **Logging to a file** (the argument has to be quoted, because `;` separates commands in shells such as bash or PowerShell):
     ```bash
-    msbuild /flp:LogFile=build.log;Verbosity=diagnostic
-    dotnet build /flp:LogFile=build.log;Verbosity=diagnostic
+    msbuild "/flp:LogFile=build.log;Verbosity=diagnostic"
+    dotnet build "/flp:LogFile=build.log;Verbosity=diagnostic"
     ```
     This command will save the logs to the `build.log` file.
