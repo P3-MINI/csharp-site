@@ -101,6 +101,38 @@ class Book
 
 If there is no defined constructors, parameterless constructor is generated automatically.
 
+### Primary Constructors (C# 12)
+
+Since C# 12, constructor parameters can be declared directly after the name of a class or struct. Parameters of such a *primary constructor* are in scope in the whole body of the type: they can be used to initialize fields and properties, or directly in members.
+
+```csharp
+public class Account(string owner, decimal balance)
+{
+    public string Owner { get; } = owner;                     // initializes a property
+
+    public Account(string owner) : this(owner, 0) { }         // must call the primary constructor
+
+    public void Deposit(decimal amount) => balance += amount; // captured parameter
+    public override string ToString() => $"{Owner}: {balance}";
+}
+
+public class SavingsAccount(string owner, decimal rate) : Account(owner) // calls the base class constructor
+{
+    public decimal Rate => rate;
+}
+```
+
+- Every other constructor must call the primary constructor (directly or indirectly) using `this(...)`, and a class with a primary constructor does not get an implicit parameterless constructor.
+- The base class constructor is called directly in the type declaration: `: Account(owner)`.
+- Unlike in [records]({{< ref "/lectures/05.csharp-features/records" >}}), primary constructor parameters of classes and structs **do not become properties**. If a parameter is used in a member (like `balance` above), the compiler captures it in a hidden private field. It is still a parameter, though: it can be modified, it cannot be accessed through `this`, and it is not visible outside the type.
+
+```csharp
+var account = new Account("Alice", 100);
+account.Deposit(50);
+Console.WriteLine(account);            // Alice: 150
+// Console.WriteLine(account.balance); // Compilation error
+```
+
 ## Deconstructors
 
 Deconstructors are used to reverse the assignment of fields back to the variables.
