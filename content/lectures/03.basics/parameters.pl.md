@@ -75,7 +75,7 @@ static void Multiply(in Matrix4 a,
 
 ## Zmienna liczba parametrów (`params`)
 
-Słówko kluczowe `params` pozwala przekazać zmienną liczbę parametrów do metody. Może zostać użyte tylko do ostatniego parametru tylko w postaci tablicy jednowymiarowej. Kompilator sam niejawnie tworzy z podanych parametrów w miejscu `params` tablicę.
+Słowo kluczowe `params` pozwala przekazać do metody zmienną liczbę argumentów. Może zostać użyte tylko przy ostatnim parametrze. Tradycyjnie jego typem jest tablica jednowymiarowa (od C# 13 dozwolone są również inne typy kolekcji); kompilator sam niejawnie tworzy tablicę z argumentów podanych w miejscu parametru `params`.
 
 ```csharp
 var s1 = Concat("The", "Quick", "Brown", "Fox");
@@ -89,6 +89,30 @@ static string Concat(string str, params string[] strings)
     foreach (string s in strings)
         sb.Append(s);
     return sb.ToString();
+}
+```
+
+### Kolekcje `params` (C# 13)
+
+Od C# 13 parametr `params` może być również typu `Span<T>`, `ReadOnlySpan<T>`, typu interfejsu kolekcji (np. `IEnumerable<T>`, `IReadOnlyList<T>`, `IList<T>`) albo typu kolekcji (np. `List<T>`). Najbardziej przydatny jest `params ReadOnlySpan<T>` (`ReadOnlySpan<T>` to widok tylko do odczytu na ciągły obszar pamięci): kompilator może umieścić argumenty na stosie, więc - w przeciwieństwie do `params T[]` - przy każdym wywołaniu nie jest alokowana tablica na stercie. Jeżeli istnieją oba przeciążenia, kompilator wybiera wersję ze spanem. Od .NET 9 wiele metod biblioteki standardowej (np. `string.Join`, `string.Concat`, `Path.Combine`, `Task.WhenAll`) ma takie przeciążenia, więc istniejący kod pozbywa się tych alokacji po samej ponownej kompilacji.
+
+```csharp
+Console.WriteLine(Sum(1, 2, 3)); // 6
+Console.WriteLine(Sum());        // 0
+PrintAll("a", "b", "c");         // a, b, c
+PrintAll(["x", "y"]);            // x, y - a collection can also be passed directly
+
+static int Sum(params ReadOnlySpan<int> numbers) // no array is allocated
+{
+    int sum = 0;
+    foreach (int n in numbers)
+        sum += n;
+    return sum;
+}
+
+static void PrintAll(params IEnumerable<string> items)
+{
+    Console.WriteLine(string.Join(", ", items));
 }
 ```
 
