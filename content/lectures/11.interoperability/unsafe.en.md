@@ -82,7 +82,7 @@ public unsafe struct Node
     public Node* Next;
     public int Value;
 
-    public Node* Find(Node* head, int value)
+    public static Node* Find(Node* head, int value)
     {
         while (head != null)
         {
@@ -99,7 +99,7 @@ public unsafe struct Node
 > [!WARNING]
 > In C#, the pointer symbol (`*`) is an integral part of the pointer *type*, not a modifier of the variable name, as in C/C++.
 > 
-> ```
+> ```csharp
 > int* p1, p2, p3;     // OK: p1, p2, p3 ARE int*
 > int *p1, *p2, *p3;   // Invalid in C#
 > ```
@@ -108,7 +108,7 @@ public unsafe struct Node
 
 The *Garbage Collector* can move objects in memory at any time to defragment the heap. If we take the address of a managed object (e.g., an array) and the *GC* moves it, the pointer will become invalid.
 
-The `fixed` statement "pins" the object in memory, preventing the GC from moving it for the duration of the block. Pointers obtained in a `fixed` statement are read-only. Object pinning should be as short as possible, as it has a negative impact on runtime performance. Memory should also not be allocated on the heap while objects are pinned.
+The `fixed` statement "pins" the object in memory, preventing the GC from moving it for the duration of the block. A pointer declared in a `fixed` statement is read-only (it cannot be reassigned, but the memory it points to can be modified), which is why the example below iterates using a separate pointer. Object pinning should be as short as possible, as it has a negative impact on runtime performance. Memory should also not be allocated on the heap while objects are pinned.
 
 ```csharp
 public static unsafe void ConvertToGrayscale(int[,] image)
@@ -152,7 +152,7 @@ unsafe
 ```
 
 > [!WARNING]
-> Yes, strings can be modified this way. However, such modification is unsafe. Strings in C# are interned, meaning all variables and literals with the same content point to the same string in memory.
+> Yes, strings can be modified this way. However, such modification is unsafe: it breaks the immutability of strings that the whole platform relies on (e.g., hash codes, dictionary keys). Moreover, string literals in C# are interned, meaning all literals with the same content point to the same string in memory - modifying one of them modifies all of them.
 
 ## `stackalloc`
 
@@ -168,7 +168,6 @@ unsafe
 {
     int* ptr = stackalloc int[100];
 }
-
 ```
 
 > [!TIP]
@@ -212,7 +211,7 @@ public unsafe struct Matrix4f
 
 ## Function pointers (C# 9.0)
 
-A function pointer `delegate*` is a pointer type that allows storing a **raw memory address** where the machine code of a function is located. Compared to delegates, function pointers do not cause heap allocations. It is simply the equivalent of function pointers from `C/C++`. Only the address of a static method can be assigned to a function pointer.
+A function pointer `delegate*` is a pointer type that allows storing a **raw memory address** where the machine code of a function is located. Compared to delegates, function pointers do not cause heap allocations. It is the equivalent of function pointers from `C/C++`. Only the address of a static method can be assigned to a function pointer. By default, `delegate*` uses the managed calling convention, so it can only be called from C#. Function pointers passed to or obtained from native code are declared as `delegate* unmanaged` (see [P/Invoke]({{< ref "/lectures/11.interoperability/pinvoke" >}})).
 
 ```csharp
 public unsafe class Program
@@ -238,8 +237,8 @@ NativeMemory (introduced in .NET 6) is a static class used for allocating memory
 - `AllocZeroed` ≈ `calloc`
 - `Realloc` ≈ `realloc`
 - `Free` ≈ `free`
-- `Fill`, `Clear` ≈ `memset`
-- `Copy` ≈ `memcpy`
+- `Fill`, `Clear` ≈ `memset` (.NET 7)
+- `Copy` ≈ `memcpy` (.NET 7)
 
 **Memory allocated in this way must be manually freed.**
 
@@ -270,7 +269,7 @@ public unsafe class Program
 }
 ```
 
-> In older .NET versions, the `Marshal` class can be used, which provides similar functionality.
+> In older .NET versions, the `Marshal` class can be used, which provides similar functionality (`Marshal.AllocHGlobal`, `Marshal.FreeHGlobal`).
 
 ## The `sizeof` operator
 
@@ -279,7 +278,7 @@ Normally, the `sizeof` operator works only for simple types. In an unsafe contex
 ```csharp
 unsafe
 {
-    Console.WriteLine($"Sizeof {nameof(Vector3)}: {sizeof(Vector3)}");
+    Console.WriteLine($"Sizeof {nameof(Vector3)}: {sizeof(Vector3)}"); // Sizeof Vector3: 12
 }
 
 struct Vector3
