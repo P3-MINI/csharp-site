@@ -10,7 +10,7 @@ Rekord to specjalny rodzaj klasy, przeznaczony do pracy z niezmiennymi danymi. P
 public record Person(string FirstName, string LastName);
 ```
 
-Kompilator w miejsce rekordu wygeneruje nam klasę `Person` wraz z właściwościami *init-only*, konstruktorem, dekonstruktorem, operatorami porównania oraz nadpisanymi metodami `Equals`, `GetHashCode` i `ToString`.
+Kompilator w miejsce rekordu wygeneruje nam klasę `Person` wraz z właściwościami *init-only*, konstruktorem, dekonstruktorem, operatorami równości (`==`, `!=`) oraz nadpisanymi metodami `Equals`, `GetHashCode` i `ToString`.
 
 {{% details title="Klasa `Person` wygenerowana przez kompilator" open=false %}}
 ```csharp
@@ -156,20 +156,20 @@ public class Person : IEquatable<Person>
 
 ### Semantyka porównania
 
-Rekordy implementują porównywanie przez wartość, podobnie jak krotki. Metoda `Equals` i operatory porównania sprawdzają po kolei czy wszystkie właściwości są sobie równe.
+Rekordy implementują porównywanie przez wartość, podobnie jak krotki. Metoda `Equals` oraz operatory `==` i `!=` sprawdzają, czy oba obiekty mają ten sam typ w czasie wykonania, a następnie porównują po kolei wszystkie ich pola instancyjne (w tym pola przechowujące wartości właściwości).
 
 ```csharp
-public record Person(string FirstName, string LastName, int Age);
-
 var john = new Person("John", "Doe", 30);
 var doe = new Person("John", "Doe", 30);
 
-Console.WriteLine($"Person: {john == doe}"); // True
+Console.WriteLine($"Person: {john == doe}"); // Person: True
+
+public record Person(string FirstName, string LastName, int Age);
 ```
 
 ### Nieniszcząca mutacja (*Non-destructive mutation*)
 
-Obiekty rekordów są niezmienne. Wyrażenie `with` umożliwia tworzenie nowej instancji rekordu, która jest kopią istniejącej, ale ze zmienionymi wybranymi właściwościami. Pod spodem mechanizm ten opiera się na specjalnym, wygenerowanym przez kompilator konstruktorze kopiującym (np. `protected Person(Person original)`), który tworzy płytką kopię obiektu przed zastosowaniem zmian.
+Obiekty rekordów są zazwyczaj niezmienne (właściwości pozycyjne `record class` są *init-only*). Wyrażenie `with` umożliwia tworzenie nowej instancji rekordu, która jest kopią istniejącej, ale ze zmienionymi wybranymi właściwościami. Pod spodem mechanizm ten opiera się na specjalnym, wygenerowanym przez kompilator konstruktorze kopiującym (np. `protected Person(Person original)`), który tworzy płytką kopię obiektu przed zastosowaniem zmian.
 
 ```csharp
 var john = new Person("John", "Doe", 30);
@@ -179,7 +179,7 @@ Console.WriteLine(john); // Person { FirstName = John, LastName = Doe, Age = 30 
 Console.WriteLine(jane); // Person { FirstName = Jane, LastName = Doe, Age = 0 }
 ```
 
-### `struct record` (C# 10)
+### `record struct` (C# 10)
 
 Od C# 10 możemy również tworzyć rekordy typu bezpośredniego. Kompilator dla `record struct` wygeneruje mutowalną strukturę, a dla `readonly record struct` niemutowalną.
 
@@ -227,7 +227,7 @@ Tworzy się je za pomocą słowa kluczowego `new` i inicjalizatora obiektów:
 var anon = new { Name = "Alice", Age = 23 };
 ```
 
-Kompilator automatycznie wygeneruje klasę, która posiada publiczne, niemodyfikowalne właściwości, konstruktor oraz przeciążenia `Equals`, `GetHashCode` i `ToString`.
+Kompilator automatycznie wygeneruje klasę, która posiada publiczne, niemodyfikowalne właściwości, konstruktor oraz nadpisane metody `Equals`, `GetHashCode` i `ToString`.
 
 {{% details title="Klasa anonimowa wygenerowana przez kompilator" open=false %}}
 ```csharp
@@ -292,13 +292,13 @@ internal sealed class <>f__AnonymousType0<<Name>j__TPar, <Age>j__TPar>
 ```
 {{% /details %}}
 
-Podobnie jak dla rekordów klasy anonimowe są porównywane przez wartość, oraz wspierają nieniszczącą mutację.
+Podobnie jak rekordy, klasy anonimowe są porównywane przez wartość (metodą `Equals` - w przeciwieństwie do rekordów nie przeciążają operatora `==`, więc `==` porównuje referencje) i wspierają nieniszczącą mutację (`with`).
 
 > Najważniejszym ograniczeniem typów anonimowych jest ich zasięg lokalny. Nie można ich użyć jako typu zwracanego przez metodę ani jako parametru, ponieważ nie mają nazwy, do której można by się odwołać. Są one przeznaczone wyłącznie do tymczasowego użytku wewnątrz jednej metody.
 
 ### Nazwy właściwości
 
-Możemy jawnie nadać nazwy właściwości. Jeżeli tego nie zrobimy, kompilator spróbuje nazwę wydedukować na podstawie nazwy przekazanego pola lub właściwości.
+Możemy jawnie nadać nazwy właściwości. Jeżeli tego nie zrobimy, kompilator spróbuje nazwę wydedukować na podstawie nazwy zmiennej, pola lub właściwości użytej do inicjalizacji.
 
 ```csharp
 int age = 23;
