@@ -37,19 +37,19 @@ The underlying type can be any integer type that can 'accommodate' all the const
 
 ## Conversion between numeric types
 
-An enumeration type can be explicitly cast to and from its corresponding numeric type. The value zero can be implicitly assigned to an enumeration type:
+An enumeration type can be explicitly cast to and from its corresponding numeric type. Only the constant `0` can be implicitly converted to an enumeration type:
 
 ```csharp
 int i = (int) BorderSide.Top; // requires explicit cast
 BorderSide side = (BorderSide) i; // requires explicit cast
-BorderSide side = 0; // might assign 0 implicitly
+side = 0;                         // 0 is converted implicitly
 ```
 
 ## Operations on enumeration types
 
-The enumeration type supports operations using bitwise (`~`, `^`, `&`, `|`), arithmetic (`+`, `-`, `++`, `--`, `+=`, `-=`), and comparison (`!=`, `==`, `<=`, `>=`, `<`, `>`) operators.
+The enumeration type supports operations using bitwise (`~`, `^`, `&`, `|`), arithmetic (`+`, `-`, `++`, `--`, `+=`, `-=`; an integer can be added to or subtracted from an enumeration value, and subtracting two enumeration values yields their underlying type), and comparison (`!=`, `==`, `<=`, `>=`, `<`, `>`) operators.
 
-Due to conversion and operator operations, an enumeration type can go beyond its allowed range. Therefore, when checking possible values, we should expect an invalid value.
+Due to conversions and operators, an enumeration value can go beyond the range of its defined constants. Therefore, when checking possible values, we should expect an invalid value.
 
 ```csharp
 BorderSide side = BorderSide.Bottom;
@@ -61,7 +61,7 @@ else if (side == BorderSide.Top) {}
 else if (side == BorderSide.Bottom) {}
 else
 {
-    throw new ArgumentException($"Enum value out of bounds: {side}")
+    throw new ArgumentException($"Enum value out of bounds: {side}");
 }
 ```
 
@@ -90,10 +90,10 @@ To check if an enumeration value contains any of the options, we use bitwise ope
 
 ```csharp
 BorderSides allButTop = BorderSides.All ^ BorderSides.Top;
-Console.WriteLine((allButTop & BorderSides.Left) != 0);
-Console.WriteLine((allButTop & BorderSides.Right) != 0);
-Console.WriteLine((allButTop & BorderSides.Top) != 0);
-Console.WriteLine((allButTop & BorderSides.Bottom) != 0);
+Console.WriteLine((allButTop & BorderSides.Left) != 0);   // True
+Console.WriteLine((allButTop & BorderSides.Right) != 0);  // True
+Console.WriteLine((allButTop & BorderSides.Top) != 0);    // False
+Console.WriteLine((allButTop & BorderSides.Bottom) != 0); // True
 
-Console.WriteLine(allButTop);
+Console.WriteLine(allButTop); // LeftRight, Bottom
 ```
