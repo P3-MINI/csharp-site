@@ -249,7 +249,42 @@ if (openWith.Remove("doc"))
 }
 ```
 
-> If we want the dictionary to be sorted by keys, there is also the `SortedDictionary<TKey, TValue>` implementation, which provides this. It is the equivalent of `std::map` from C++, internally using red-black trees.
+> If we want the dictionary to be sorted by keys, there is also the `SortedDictionary<TKey, TValue>` implementation, which provides this. It is the equivalent of `std::map` from C++, internally using red-black trees, so lookup, insertion, and removal take O(log n) time. A similar collection, `SortedList<TKey, TValue>`, keeps the pairs in sorted arrays instead - it uses less memory, but insertion and removal take O(n) time.
+
+##### The `OrderedDictionary<TKey, TValue>` Class (.NET 9)
+
+Since .NET 9, there is also `OrderedDictionary<TKey, TValue>` - a dictionary that preserves the insertion order of its elements and additionally allows accessing them by index (`GetAt`, `SetAt`, `Insert`, `IndexOf`, `RemoveAt`). Previously, only the non-generic `System.Collections.Specialized.OrderedDictionary` was available.
+
+```csharp
+var steps = new OrderedDictionary<string, int>
+{
+    ["one"] = 1,
+    ["two"] = 2
+};
+steps.Insert(0, "zero", 0);
+steps.Add("three", 3);
+// steps contains [zero, 0], [one, 1], [two, 2], [three, 3] - in this order
+
+KeyValuePair<string, int> second = steps.GetAt(1); // [one, 1]
+int index = steps.IndexOf("two"); // 2
+```
+
+##### Alternate Lookup (.NET 9)
+
+A `Dictionary<string, TValue>` (or a `HashSet<string>`) can also be searched using a key of a different type - most often `ReadOnlySpan<char>`, which avoids allocating a new string for each lookup (a string is created only when a new key is added). Such a view of the collection is obtained with the `GetAlternateLookup<TAlternateKey>()` method. It requires a comparer that supports the alternate key type - the default string comparer and `StringComparer.Ordinal`/`StringComparer.OrdinalIgnoreCase` do.
+
+```csharp
+var counts = new Dictionary<string, int>();
+var lookup = counts.GetAlternateLookup<ReadOnlySpan<char>>();
+
+ReadOnlySpan<char> text = "to be or not to be";
+foreach (Range range in text.Split(' '))
+{
+    ReadOnlySpan<char> word = text[range]; // no string allocation
+    lookup[word] = lookup.TryGetValue(word, out int count) ? count + 1 : 1;
+}
+// counts contains [to, 2], [be, 2], [or, 1], [not, 1]
+```
 
 ### The `ISet<T>` Interface
 
@@ -287,6 +322,61 @@ Of these, only `LinkedList<T>` implements `ICollection<T>`. `Queue<T>` and `Stac
 
 > It is also worth mentioning `BitArray` from the `System.Collections` namespace. It is a specialized, **non-generic** collection that allows for the efficient storage and manipulation of an array of bits (true/false values), using only one bit for each value.
 
+Since .NET 9, `PriorityQueue<TElement, TPriority>` also has a `Remove` method, which removes a given element (found in O(n) time) and returns it along with its priority. Since the queue does not support changing the priority of an element in place, it can be done by removing the element and enqueuing it again:
+
+```csharp
+var tasks = new PriorityQueue<string, int>();
+tasks.Enqueue("write report", 2);
+tasks.Enqueue("fix bug", 1);
+tasks.Enqueue("drink coffee", 3);
+
+// The report has become urgent - change its priority.
+if (tasks.Remove("write report", out _, out _))
+{
+    tasks.Enqueue("write report", 0);
+}
+
+while (tasks.TryDequeue(out string? task, out int priority))
+{
+    Console.WriteLine($"{priority}: {task}");
+}
+// 0: write report
+// 1: fix bug
+// 3: drink coffee
+```
+
+### Read-Only and Frozen Collections
+
+Next to the interfaces of modifiable collections, there are read-only interfaces: `IReadOnlyCollection<T>` (`Count`), `IReadOnlyList<T>` (read-only indexer), `IReadOnlyDictionary<TKey, TValue>` and, since .NET 5, `IReadOnlySet<T>` (`Contains` and the methods checking relationships between sets). They are implemented by the standard collections (`List<T>`, `Dictionary<TKey, TValue>`, `HashSet<T>`, ...), so they are a good choice for parameters and return types when the code should only read the collection.
+
+The `System.Collections.ObjectModel` namespace provides wrappers implementing these interfaces: `ReadOnlyCollection<T>` (returned, e.g., by `List<T>.AsReadOnly()`), `ReadOnlyDictionary<TKey, TValue>` and, since .NET 9, `ReadOnlySet<T>`. Such a wrapper is only a read-only **view**: it does not copy the elements, so changes made to the underlying collection are visible through it.
+
+```csharp
+using System.Collections.ObjectModel;
+
+var set = new HashSet<int> { 1, 2 };
+var readOnlySet = new ReadOnlySet<int>(set);
+// readOnlySet.Add(3); // Compilation error: ReadOnlySet<T> has no Add method
+set.Add(3);
+Console.WriteLine(readOnlySet.Count); // 3 - the change is visible through the view
+```
+
+Truly unmodifiable collections are provided by the `System.Collections.Immutable` namespace (`ImmutableList<T>`, `ImmutableDictionary<TKey, TValue>`, ... - "modifying" operations return a new collection) and, since .NET 8, by `System.Collections.Frozen`: `FrozenDictionary<TKey, TValue>` and `FrozenSet<T>`. Frozen collections are created once from existing data (`ToFrozenDictionary()`, `ToFrozenSet()`). Their creation is relatively expensive, because the internal structure is optimized for the particular set of keys, but lookups are then typically faster than in `Dictionary<TKey, TValue>` and `HashSet<T>`. They are well suited for data created once (e.g., at application startup) and read many times afterwards.
+
+```csharp
+using System.Collections.Frozen;
+
+FrozenSet<string> keywords = new[] { "if", "else", "while", "for" }.ToFrozenSet();
+FrozenDictionary<string, int> httpCodes = new Dictionary<string, int>
+{
+    ["OK"] = 200,
+    ["Not Found"] = 404
+}.ToFrozenDictionary();
+
+Console.WriteLine(keywords.Contains("while")); // True
+Console.WriteLine(httpCodes["Not Found"]); // 404
+```
+
 ### Collection Initializers
 
 This syntax, available for a long time, requires the use of `new` and curly braces `{...}`. The compiler translates it into a series of `Add` method calls or insertions via an indexer (since C# 6.0).
@@ -322,4 +412,13 @@ int[] numbers2 = [4, 5, 6, 7, 8];
 // Spread operator `..` to concatenate collections.
 SortedSet<int> combined = [9, ..numbers1, ..numbers2, 10];
 // 'combined' contains { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } in order without repetitions
+```
+
+The target type can also be an interface (e.g., `IEnumerable<T>`, `IReadOnlyList<T>`) - the compiler then chooses a suitable implementation - or a span. However, a collection expression has no type of its own, so the target type must be known:
+
+```csharp
+IEnumerable<int> sequence = [1, 2, 3];
+ReadOnlySpan<char> vowels = ['a', 'e', 'i', 'o', 'u'];
+List<string> empty = [];
+// var numbers3 = [1, 2, 3]; // Compilation error: there is no target type for the collection expression
 ```

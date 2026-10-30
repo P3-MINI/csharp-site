@@ -249,7 +249,42 @@ if (openWith.Remove("doc"))
 }
 ```
 
-> Jeżeli zależy nam żeby słownik był posortowany po kluczach, to istnieje również implementacja `SortedDictionary<TKey, TValue>`, która nam to zapewnia. To odpowiednik `std::map` z C++, wewnętrznie używający drzew czerwono-czarnych.
+> Jeżeli zależy nam, żeby słownik był posortowany po kluczach, to istnieje również implementacja `SortedDictionary<TKey, TValue>`, która nam to zapewnia. To odpowiednik `std::map` z C++, wewnętrznie używający drzew czerwono-czarnych, więc wyszukiwanie, wstawianie i usuwanie zajmują czas O(log n). Podobna kolekcja, `SortedList<TKey, TValue>`, przechowuje pary w posortowanych tablicach - zużywa mniej pamięci, ale wstawianie i usuwanie zajmują czas O(n).
+
+##### Klasa `OrderedDictionary<TKey, TValue>` (.NET 9)
+
+Od .NET 9 dostępny jest także `OrderedDictionary<TKey, TValue>` - słownik, który zachowuje kolejność dodawania elementów i dodatkowo pozwala na dostęp do nich po indeksie (`GetAt`, `SetAt`, `Insert`, `IndexOf`, `RemoveAt`). Wcześniej dostępny był tylko niegeneryczny `System.Collections.Specialized.OrderedDictionary`.
+
+```csharp
+var steps = new OrderedDictionary<string, int>
+{
+    ["one"] = 1,
+    ["two"] = 2
+};
+steps.Insert(0, "zero", 0);
+steps.Add("three", 3);
+// steps contains [zero, 0], [one, 1], [two, 2], [three, 3] - in this order
+
+KeyValuePair<string, int> second = steps.GetAt(1); // [one, 1]
+int index = steps.IndexOf("two"); // 2
+```
+
+##### Alternatywne wyszukiwanie (.NET 9)
+
+`Dictionary<string, TValue>` (lub `HashSet<string>`) można przeszukiwać także za pomocą klucza innego typu - najczęściej `ReadOnlySpan<char>`, co pozwala uniknąć alokacji nowego stringa przy każdym wyszukiwaniu (string jest tworzony dopiero przy dodawaniu nowego klucza). Taki widok kolekcji uzyskujemy metodą `GetAlternateLookup<TAlternateKey>()`. Wymaga ona komparatora, który obsługuje alternatywny typ klucza - obsługują go domyślny komparator stringów oraz `StringComparer.Ordinal`/`StringComparer.OrdinalIgnoreCase`.
+
+```csharp
+var counts = new Dictionary<string, int>();
+var lookup = counts.GetAlternateLookup<ReadOnlySpan<char>>();
+
+ReadOnlySpan<char> text = "to be or not to be";
+foreach (Range range in text.Split(' '))
+{
+    ReadOnlySpan<char> word = text[range]; // no string allocation
+    lookup[word] = lookup.TryGetValue(word, out int count) ? count + 1 : 1;
+}
+// counts contains [to, 2], [be, 2], [or, 1], [not, 1]
+```
 
 ### Interfejs `ISet<T>`
 
@@ -287,7 +322,62 @@ Spośród nich tylko `LinkedList<T>` implementuje `ICollection<T>`. `Queue<T>` i
 
 > Warto również wspomnieć o `BitArray` z przestrzeni nazw `System.Collections`. Jest to specjalistyczna, **niegeneryczna** kolekcja, która pozwala na efektywne przechowywanie i manipulowanie tablicą bitów (wartości `true`/`false`), używając tylko jednego bitu na każdą wartość.
 
-### Inicjalizatory Kolekcji
+Od .NET 9 `PriorityQueue<TElement, TPriority>` ma także metodę `Remove`, która usuwa wskazany element (wyszukiwany w czasie O(n)) i zwraca go wraz z jego priorytetem. Ponieważ kolejka nie pozwala na zmianę priorytetu elementu w miejscu, można to zrobić, usuwając element i dodając go ponownie:
+
+```csharp
+var tasks = new PriorityQueue<string, int>();
+tasks.Enqueue("write report", 2);
+tasks.Enqueue("fix bug", 1);
+tasks.Enqueue("drink coffee", 3);
+
+// The report has become urgent - change its priority.
+if (tasks.Remove("write report", out _, out _))
+{
+    tasks.Enqueue("write report", 0);
+}
+
+while (tasks.TryDequeue(out string? task, out int priority))
+{
+    Console.WriteLine($"{priority}: {task}");
+}
+// 0: write report
+// 1: fix bug
+// 3: drink coffee
+```
+
+### Kolekcje tylko do odczytu i kolekcje zamrożone
+
+Obok interfejsów kolekcji modyfikowalnych istnieją interfejsy tylko do odczytu: `IReadOnlyCollection<T>` (`Count`), `IReadOnlyList<T>` (indeksator tylko do odczytu), `IReadOnlyDictionary<TKey, TValue>` oraz, od .NET 5, `IReadOnlySet<T>` (`Contains` i metody sprawdzające relacje między zbiorami). Implementują je standardowe kolekcje (`List<T>`, `Dictionary<TKey, TValue>`, `HashSet<T>`, ...), dlatego dobrze sprawdzają się jako typy parametrów i wartości zwracanych, gdy kod ma kolekcję jedynie odczytywać.
+
+Przestrzeń nazw `System.Collections.ObjectModel` dostarcza implementujące te interfejsy opakowania: `ReadOnlyCollection<T>` (zwracane np. przez `List<T>.AsReadOnly()`), `ReadOnlyDictionary<TKey, TValue>` oraz, od .NET 9, `ReadOnlySet<T>`. Takie opakowanie jest jedynie **widokiem** tylko do odczytu: nie kopiuje elementów, więc zmiany wprowadzone w kolekcji źródłowej są przez nie widoczne.
+
+```csharp
+using System.Collections.ObjectModel;
+
+var set = new HashSet<int> { 1, 2 };
+var readOnlySet = new ReadOnlySet<int>(set);
+// readOnlySet.Add(3); // Compilation error: ReadOnlySet<T> has no Add method
+set.Add(3);
+Console.WriteLine(readOnlySet.Count); // 3 - the change is visible through the view
+```
+
+Naprawdę niemodyfikowalne kolekcje dostarcza przestrzeń nazw `System.Collections.Immutable` (`ImmutableList<T>`, `ImmutableDictionary<TKey, TValue>`, ... - operacje „modyfikujące” zwracają nową kolekcję) oraz, od .NET 8, `System.Collections.Frozen`: `FrozenDictionary<TKey, TValue>` i `FrozenSet<T>`. Kolekcje zamrożone tworzy się jednorazowo z istniejących danych (`ToFrozenDictionary()`, `ToFrozenSet()`). Ich tworzenie jest stosunkowo kosztowne, bo wewnętrzna struktura jest optymalizowana pod konkretny zbiór kluczy, za to wyszukiwanie jest potem zazwyczaj szybsze niż w `Dictionary<TKey, TValue>` i `HashSet<T>`. Dobrze nadają się do danych tworzonych raz (np. przy starcie aplikacji) i wielokrotnie potem odczytywanych.
+
+```csharp
+using System.Collections.Frozen;
+
+FrozenSet<string> keywords = new[] { "if", "else", "while", "for" }.ToFrozenSet();
+FrozenDictionary<string, int> httpCodes = new Dictionary<string, int>
+{
+    ["OK"] = 200,
+    ["Not Found"] = 404
+}.ToFrozenDictionary();
+
+Console.WriteLine(keywords.Contains("while")); // True
+Console.WriteLine(httpCodes["Not Found"]); // 404
+```
+
+### Inicjalizatory kolekcji
 
 Ta składnia, dostępna od dawna, wymaga użycia `new` oraz nawiasów klamrowych `{...}`. Kompilator tłumaczy ją na serię wywołań metody `Add` lub wstawiania za pomocą indeksatora (od C# 6.0).
 
@@ -322,4 +412,13 @@ int[] numbers2 = [4, 5, 6, 7, 8];
 // Spread operator `..` to concatenate collections.
 SortedSet<int> combined = [9, ..numbers1, ..numbers2, 10];
 // 'combined' contains { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } in order without repetitions
+```
+
+Typem docelowym może być także interfejs (np. `IEnumerable<T>`, `IReadOnlyList<T>`) - kompilator wybiera wtedy odpowiednią implementację - lub span. Wyrażenie kolekcji nie ma jednak własnego typu, więc typ docelowy musi być znany:
+
+```csharp
+IEnumerable<int> sequence = [1, 2, 3];
+ReadOnlySpan<char> vowels = ['a', 'e', 'i', 'o', 'u'];
+List<string> empty = [];
+// var numbers3 = [1, 2, 3]; // Compilation error: there is no target type for the collection expression
 ```
