@@ -64,6 +64,9 @@ We can run the application immediately:
 dotnet run
 ```
 
+> [!TIP]
+> Since .NET 10, a single `.cs` file can also be run directly, without creating a project: `dotnet run hello.cs` (see [file-based apps]({{< ref "/lectures/02.tools/msbuild#file-based-apps" >}})).
+
 In older project templates, the same code would look like this:
 
 ```csharp
