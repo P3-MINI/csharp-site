@@ -10,7 +10,7 @@ Concurrent access to resources requires the use of synchronization mechanisms to
 Available mechanisms can be divided into four main categories:
 
 -   **Exclusive locking** - guarantees that only one thread has access to the resource at a given time.
-    - `lock` statement
+    - `lock` statement (`Monitor`, or `System.Threading.Lock` since C# 13/.NET 9)
     - `Mutex`
     - `SpinLock`
 -   **Non-exclusive locking** - limits concurrency

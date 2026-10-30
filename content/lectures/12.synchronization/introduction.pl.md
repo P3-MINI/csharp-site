@@ -10,7 +10,7 @@ Współbieżny dostęp do zasobów wymaga stosowania mechanizmów synchronizacji
 Dostępne mechanizmy można podzielić na cztery główne kategorie:
 
 -   **Blokowanie wyłączne** (*Exclusive locking*) - gwarantuje, że tylko jeden wątek ma dostęp do zasobu w danym momencie.
-    - instrukcja `lock`
+    - instrukcja `lock` (`Monitor` lub, od C# 13/.NET 9, `System.Threading.Lock`)
     - `Mutex`
     - `SpinLock`
 -   **Blokowanie współdzielone** (*Non-exclusive locking*) - ogranicza równoległość
