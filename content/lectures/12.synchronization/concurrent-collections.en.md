@@ -19,10 +19,10 @@ The `System.Collections.Concurrent` namespace contains collections optimized for
 *   **`ConcurrentBag<T>`**: An unordered multi-set of elements.
 
 > [!INFO]
-> Iterating over a concurrent collection while it is being modified by another thread may include both already removed and newly added values, but it will not result in an exception being thrown.
+> Iterating over a concurrent collection while it is being modified by another thread never results in an exception being thrown. The enumerators of `ConcurrentQueue<T>`, `ConcurrentStack<T>`, and `ConcurrentBag<T>` work on a snapshot taken when the enumeration starts, whereas enumerating a `ConcurrentDictionary<TKey, TValue>` is not a snapshot - it may include both already removed and newly added values.
 
 > [!INFO]
-> `ConcurrentQueue`, `ConcurrentStack`, and `ConcurrentBag` internally use linked lists. In `ConcurrentBag<T>`, each thread gets its own private list, making element retrieval very fast and race-free, provided that each thread does not retrieve more elements than it has added.
+> Internally, `ConcurrentStack<T>` is a linked list, and `ConcurrentQueue<T>` is a linked list of array segments. In `ConcurrentBag<T>`, each thread gets its own private local queue, making adding and retrieving elements very fast and contention-free, provided that each thread does not retrieve more elements than it has added (otherwise, it has to "steal" elements from the queues of other threads).
 
 ## `IProducerConsumerCollection`
 
@@ -31,6 +31,7 @@ The `System.Collections.Concurrent` namespace contains collections optimized for
 ```csharp
 public interface IProducerConsumerCollection<T> : IEnumerable<T>, ICollection
 {
+    void CopyTo(T[] array, int index);
     bool TryAdd(T item);
     bool TryTake(out T item);
     T[] ToArray();
@@ -48,7 +49,7 @@ It is implemented by `ConcurrentQueue<T>`, `ConcurrentStack<T>`, and `Concurrent
 
 ### Example
 
-In the following example, a producer adds numbers to the collection, and a consumer retrieves them. Thanks to `GetConsumingEnumerable()`, the consumer can easily iterate over the elements as long as the producer has not signaled the end of adding (`CompleteAdding`).
+In the following example, a producer adds numbers to the collection, and a consumer retrieves them. Thanks to `GetConsumingEnumerable()`, the consumer can easily iterate over the elements until the producer signals the end of adding (`CompleteAdding`) and all remaining elements have been consumed.
 
 ```csharp
 var blockingCollection = new BlockingCollection<int>(boundedCapacity: 5);
@@ -58,7 +59,7 @@ Task producer = Task.Run(() =>
     for (int i = 0; i < 10; i++)
     {
         Console.WriteLine($"Producing: {i}");
-        blockingCollection.Add(i); // Can block, if full
+        blockingCollection.Add(i); // Can block if full
         Thread.Sleep(500);
     }
     blockingCollection.CompleteAdding(); // Signal end of data

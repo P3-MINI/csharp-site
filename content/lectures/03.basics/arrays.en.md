@@ -51,6 +51,20 @@ Range lastTwoRange = ^2..;
 int[] lastTwo = primes[lastTwoRange];
 ```
 
+## Collection Expressions (C# 12)
+
+Since C# 12, an array can also be created with a *collection expression* - a list of elements in square brackets. Unlike the `{ ... }` initializer, which can only be used in a declaration (elsewhere `new[] { ... }` is needed), a collection expression can be used anywhere an array is expected, e.g., as a method argument or a return value. However, it has no type of its own, so the target type must be known (`var x = [1, 2];` does not compile). The *spread element* `..` inserts all elements of another collection (anything that can be iterated with `foreach`). The same syntax works for other collections as well, e.g., `List<int> list = [1, 2, 3];` - more on this in the [Collections]({{< ref "/lectures/06.collections/collections" >}}) lecture.
+
+```csharp
+int[] empty = [];
+int[] small = [1, 2, 3];
+int[] combined = [0, ..small, ..small[1..], 4]; // [0, 1, 2, 3, 2, 3, 4]
+PrintAll([5, 6, 7]); // collection expression as a method argument
+// PrintAll({5, 6, 7}); // Compilation error: new[] {5, 6, 7} would be needed here
+
+static void PrintAll(int[] numbers) => Console.WriteLine(string.Join(", ", numbers));
+```
+
 ## Rectangular Arrays
 
 Rectangular arrays are declared using a `,` to specify each dimension. Just like one-dimensional arrays, they can be initialized by explicitly providing a list of elements. The `GetLength(int)` method returns the length of the array along the `i`-th dimension (starting from 0).

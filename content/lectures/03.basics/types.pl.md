@@ -10,11 +10,11 @@ W C# istnieją trzy kategorie typów, które definiują, jak dane są przechowyw
 - **Typy referencyjne** (*reference types*)
 - **Typy wskaźnikowe** (*pointer types*)
 
-Na razie skupimy się głównie na dwóch pierwszych kategoriach, które stanowią fundament programowania w C#.
+Na razie skupimy się głównie na dwóch pierwszych kategoriach, które stanowią fundament programowania w C#. Typy wskaźnikowe, używane głównie w kodzie `unsafe` i przy współpracy z kodem niezarządzanym, wykraczają poza podstawowy zakres tego materiału.
 
 ## Typy bezpośrednie (*value types*)
 
-Zmienne typów bezpośrednich przechowują swoje wartości bezpośrednio w miejscu alokacji, **najczęściej na stosie**.
+Zmienne typów bezpośrednich przechowują swoje wartości bezpośrednio w miejscu alokacji, **najczęściej na stosie**. Oznacza to, że każda zmienna ma własną, niezależną kopię danych.
 
 **Wbudowane typy bezpośrednie:**
 - Typy numeryczne (np. `int`, `uint`, `float`, `double`, `decimal`)
@@ -22,12 +22,12 @@ Zmienne typów bezpośrednich przechowują swoje wartości bezpośrednio w miejs
 - `bool`
 
 **Niestandardowe typy bezpośrednie:**
-- `struct` (struktury)
+- `struct` (struktury, w tym `record struct`)
 - `enum` (typy wyliczeniowe)
 
 ## Typy referencyjne (*reference types*)
 
-Zmienne typów referencyjnych przechowują **referencję** (adres) do obiektu, który znajduje się na **stercie**.
+Zmienne typów referencyjnych przechowują **referencję** (adres) do obiektu, który znajduje się na **stercie**. Sama zmienna (np. zmienna lokalna) zwykle znajduje się na stosie, ale wskazuje na dane w innym miejscu.
 
 **Wbudowane typy referencyjne:**
 - `string`
@@ -35,7 +35,9 @@ Zmienne typów referencyjnych przechowują **referencję** (adres) do obiektu, k
 - Tablice (np. `int[]`, `string[]`)
 
 **Niestandardowe typy referencyjne:**
-- `class` (klasy)
+- `class` (klasy, w tym `record`)
+- `interface` (interfejsy)
+- `delegate` (delegaty)
 
 ## Semantyka przypisania
 
@@ -127,7 +129,7 @@ graph TD
 
 ## Wartości `null`
 
-- **Typy bezpośrednie** z założenia nie mogą przyjmować wartości `null`, ponieważ zawsze muszą zawierać konkretną wartość (np. `int` domyślnie inicjalizowany jest jako `0`). Próba przypisania `null` zakończy się błędem kompilacji.
+- **Typy bezpośrednie** z założenia nie mogą przyjmować wartości `null`, ponieważ zawsze muszą zawierać konkretną wartość (np. `int` domyślnie inicjalizowany jest jako `0`). Próba przypisania `null` zakończy się błędem kompilacji. (Do przechowywania „braku wartości” w typie bezpośrednim służy osobny *nullowalny typ bezpośredni* `T?`, np. `int?` – zobacz [Nullowalność]({{< ref "/lectures/05.csharp-features/nullable" >}}).)
 - **Typy referencyjne** mogą przechowywać `null`, co oznacza, że zmienna nie wskazuje na żaden obiekt.
 
 ```csharp
@@ -189,4 +191,4 @@ public class Person { public string Name; public int Age; }
 ```
 
 - W przypadku `ModifyValueType`, metoda operuje na w pełni niezależnej kopii struktury `Point`. Zmiany są niewidoczne na zewnątrz.
-- W przypadku `ModifyReferenceType`, metoda otrzymuje kopię referencji, która wskazuje na ten sam obiekt `Person`. Zmiana właściwości `Name` jest trwała, ponieważ modyfikuje współdzielony obiekt. Gdybyśmy jednak przypisali do parametru `person` nową instancję (`new Person(...)`), wpłynęłoby to tylko na lokalną kopię referencji, a oryginalna zmienna poza metodą nadal wskazywałaby na pierwotny obiekt.
+- W przypadku `ModifyReferenceType`, metoda otrzymuje kopię referencji, która wskazuje na ten sam obiekt `Person`. Zmiana pola `Name` jest trwała, ponieważ modyfikuje współdzielony obiekt. Gdybyśmy jednak przypisali do parametru `person` nową instancję (`new Person(...)`), wpłynęłoby to tylko na lokalną kopię referencji, a oryginalna zmienna poza metodą nadal wskazywałaby na pierwotny obiekt.

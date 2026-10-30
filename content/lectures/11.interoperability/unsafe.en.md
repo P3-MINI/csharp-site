@@ -82,7 +82,7 @@ public unsafe struct Node
     public Node* Next;
     public int Value;
 
-    public Node* Find(Node* head, int value)
+    public static Node* Find(Node* head, int value)
     {
         while (head != null)
         {
@@ -99,7 +99,7 @@ public unsafe struct Node
 > [!WARNING]
 > In C#, the pointer symbol (`*`) is an integral part of the pointer *type*, not a modifier of the variable name, as in C/C++.
 > 
-> ```
+> ```csharp
 > int* p1, p2, p3;     // OK: p1, p2, p3 ARE int*
 > int *p1, *p2, *p3;   // Invalid in C#
 > ```
@@ -108,7 +108,7 @@ public unsafe struct Node
 
 The *Garbage Collector* can move objects in memory at any time to defragment the heap. If we take the address of a managed object (e.g., an array) and the *GC* moves it, the pointer will become invalid.
 
-The `fixed` statement "pins" the object in memory, preventing the GC from moving it for the duration of the block. Pointers obtained in a `fixed` statement are read-only. Object pinning should be as short as possible, as it has a negative impact on runtime performance. Memory should also not be allocated on the heap while objects are pinned.
+The `fixed` statement "pins" the object in memory, preventing the GC from moving it for the duration of the block. A pointer declared in a `fixed` statement is read-only (it cannot be reassigned, but the memory it points to can be modified), which is why the example below iterates using a separate pointer. Object pinning should be as short as possible, as it has a negative impact on runtime performance. Memory should also not be allocated on the heap while objects are pinned.
 
 ```csharp
 public static unsafe void ConvertToGrayscale(int[,] image)
@@ -152,7 +152,7 @@ unsafe
 ```
 
 > [!WARNING]
-> Yes, strings can be modified this way. However, such modification is unsafe. Strings in C# are interned, meaning all variables and literals with the same content point to the same string in memory.
+> Yes, strings can be modified this way. However, such modification is unsafe: it breaks the immutability of strings that the whole platform relies on (e.g., hash codes, dictionary keys). Moreover, string literals in C# are interned, meaning all literals with the same content point to the same string in memory - modifying one of them modifies all of them.
 
 ## `stackalloc`
 
@@ -168,7 +168,6 @@ unsafe
 {
     int* ptr = stackalloc int[100];
 }
-
 ```
 
 > [!TIP]
@@ -192,6 +191,29 @@ unsafe
 > }
 > ```
 
+### `Span<T>`
+
+`Span<T>` (and its read-only counterpart `ReadOnlySpan<T>`) is a `ref struct` representing a contiguous region of memory: an array (or a part of it), memory allocated with `stackalloc`, or unmanaged memory (see `NativeMemory` below). It provides bounds-checked access without an `unsafe` context, so a single method accepting a span can work with any kind of memory.
+
+Since C# 14, the conversions from `T[]` to `Span<T>` and `ReadOnlySpan<T>`, from `Span<T>` to `ReadOnlySpan<T>` and from `string` to `ReadOnlySpan<char>` are built into the language (*implicit span conversions*). Previously, they were ordinary user-defined conversion operators, which the compiler does not consider, e.g., for extension method receivers or generic type inference. Now, extension methods for spans from the `MemoryExtensions` class can be called directly on arrays:
+
+```csharp
+int[] array = [1, 2, 3, 4];
+Span<int> onStack = stackalloc int[] { 1, 2, 3, 4 };
+
+Console.WriteLine(Sum(array));   // 10 (int[] -> ReadOnlySpan<int>)
+Console.WriteLine(Sum(onStack)); // 10 (Span<int> -> ReadOnlySpan<int>)
+Console.WriteLine(array.StartsWith([1, 2])); // True (C# 14)
+
+static int Sum(ReadOnlySpan<int> values)
+{
+    int sum = 0;
+    foreach (int value in values)
+        sum += value;
+    return sum;
+}
+```
+
 ## Fixed-size buffers
 
 The `fixed` keyword can also be used to declare an array directly within a struct, ensuring that the data is embedded linearly in the struct's memory layout, instead of being a reference to a separate object on the heap.
@@ -210,9 +232,45 @@ public unsafe struct Matrix4f
 }
 ```
 
+### Inline arrays (C# 12)
+
+Fixed-size buffers have limitations: they require an `unsafe` context, the element type must be a primitive type (e.g., `int`, `float`, `char`), and indexing is not bounds-checked. Since C# 12 (.NET 8), the same memory layout can be obtained in safe code with an *inline array* - a struct marked with the `[InlineArray(length)]` attribute that contains exactly one field. The runtime repeats this field `length` times.
+
+```csharp
+using System.Runtime.CompilerServices;
+
+[InlineArray(16)]
+public struct Float16
+{
+    private float _element0;
+}
+
+public struct Matrix4f
+{
+    // Stored inline, like a fixed-size buffer, but no unsafe code is needed.
+    public Float16 Elements;
+
+    public float this[int row, int col]
+    {
+        get => Elements[row * 4 + col];
+        set => Elements[row * 4 + col] = value;
+    }
+}
+```
+
+An inline array can be indexed (with bounds checking), iterated with `foreach` and converted to `Span<T>` or `ReadOnlySpan<T>`. Its element type can be any type, including reference types. The memory layout is the same as that of a C array, so structs containing inline arrays of blittable elements can also be passed to native code (like fixed-size buffers).
+
+```csharp
+var matrix = new Matrix4f();
+matrix[1, 2] = 5;
+Span<float> elements = matrix.Elements;
+Console.WriteLine(elements.Length); // 16
+matrix[4, 0] = 1; // IndexOutOfRangeException
+```
+
 ## Function pointers (C# 9.0)
 
-A function pointer `delegate*` is a pointer type that allows storing a **raw memory address** where the machine code of a function is located. Compared to delegates, function pointers do not cause heap allocations. It is simply the equivalent of function pointers from `C/C++`. Only the address of a static method can be assigned to a function pointer.
+A function pointer `delegate*` is a pointer type that allows storing a **raw memory address** where the machine code of a function is located. Compared to delegates, function pointers do not cause heap allocations. It is the equivalent of function pointers from `C/C++`. Only the address of a static method can be assigned to a function pointer. By default, `delegate*` uses the managed calling convention, so it can only be called from C#. Function pointers passed to or obtained from native code are declared as `delegate* unmanaged` (see [P/Invoke]({{< ref "/lectures/11.interoperability/pinvoke" >}})).
 
 ```csharp
 public unsafe class Program
@@ -238,8 +296,8 @@ NativeMemory (introduced in .NET 6) is a static class used for allocating memory
 - `AllocZeroed` ≈ `calloc`
 - `Realloc` ≈ `realloc`
 - `Free` ≈ `free`
-- `Fill`, `Clear` ≈ `memset`
-- `Copy` ≈ `memcpy`
+- `Fill`, `Clear` ≈ `memset` (.NET 7)
+- `Copy` ≈ `memcpy` (.NET 7)
 
 **Memory allocated in this way must be manually freed.**
 
@@ -270,7 +328,7 @@ public unsafe class Program
 }
 ```
 
-> In older .NET versions, the `Marshal` class can be used, which provides similar functionality.
+> In older .NET versions, the `Marshal` class can be used, which provides similar functionality (`Marshal.AllocHGlobal`, `Marshal.FreeHGlobal`).
 
 ## The `sizeof` operator
 
@@ -279,7 +337,7 @@ Normally, the `sizeof` operator works only for simple types. In an unsafe contex
 ```csharp
 unsafe
 {
-    Console.WriteLine($"Sizeof {nameof(Vector3)}: {sizeof(Vector3)}");
+    Console.WriteLine($"Sizeof {nameof(Vector3)}: {sizeof(Vector3)}"); // Sizeof Vector3: 12
 }
 
 struct Vector3

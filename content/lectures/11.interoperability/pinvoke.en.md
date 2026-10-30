@@ -43,7 +43,9 @@ NativeMethods.MessageBox(nint.Zero, "Hello world!", "Info", 0);
 
 Since .NET 7, the `[LibraryImport]` attribute has been introduced, which uses *Source Generators* instead of runtime code generation (like `DllImport`). This is a more performant solution. Using `LibraryImport` instead of `DllImport` is recommended for new projects.
 
-The method must be `static` and marked as `partial` so the generator can add the implementation.
+The method must be `static` and marked as `partial` so the generator can add the implementation (the containing type must be `partial` too). The generated code uses pointers, so the project must also enable `AllowUnsafeBlocks` (otherwise the build fails with error `SYSLIB1062`).
+
+Unlike `DllImport`, `LibraryImport` does not assume any default marshalling for `string` and `bool` - it has to be specified explicitly (e.g., `StringMarshalling` or `[MarshalAs]`), otherwise the build fails with error `SYSLIB1051`. It also does not search for the `A`/`W`-suffixed variants of WinAPI function names, so the exact name `MessageBoxW` (the UTF-16 version) must be given.
 
 ```csharp
 public partial class NativeMethods
@@ -86,8 +88,10 @@ Marshalling is the process of converting data types between managed and unmanage
 
 ### Blittable and Non-blittable Types
 
-* **Blittable types**: Types that have the same representation in memory in both managed and unmanaged code (e.g., `byte`, `int`, `float`, `nint`, arrays of blittable types, value types consisting of blittable types). They do not require additional conversion.
-* **Non-blittable types**: Types that require conversion (e.g., `bool`, `string`).
+* **Blittable types**: Types that have the same representation in memory in both managed and unmanaged code (e.g., `byte`, `int`, `float`, `nint`, one-dimensional arrays of blittable types, value types consisting of blittable types). They do not require additional conversion.
+* **Non-blittable types**: Types that require conversion (e.g., `bool`, `char`, `string`).
+
+For example, `bool` has no single native representation: in C++ it occupies 1 byte, while the Win32 type `BOOL` (the default for `DllImport`) is a 4-byte `int`. Hence the `[MarshalAs(UnmanagedType.U1)]` attribute below:
 
 ```cpp
 extern "C" EXPORT int Foo(unsigned char c, float x, Bar* bar, bool b);
@@ -155,7 +159,7 @@ const char16_t *GetUnicodeString()
 }
 ```
 
-The easiest way to capture a return value on the C# side is as a pointer. All memory handles are represented in C# as `IntPtr` or, since `C# 9`, as `nint` (an alias for `System.IntPtr`). This type represents a pointer with a size dependent on the processor architecture.
+The easiest way to capture a return value on the C# side is as a pointer. All memory handles are represented in C# as `IntPtr` or, since `C# 9`, as `nint` (since `C# 11` simply an alias for `System.IntPtr`). This type represents a pointer with a size dependent on the processor architecture.
 
 ```csharp
 [LibraryImport("StringsCpp")]
@@ -165,7 +169,7 @@ public static partial nint GetAnsiString();
 public static partial nint GetUnicodeString();
 ```
 
-Then, to recover the string from such a pointer, we can use the helper methods `Marshal.PtrToStringAnsi` or `Marshal.PtrToStringUni`.
+Then, to recover the string from such a pointer, we can use the helper methods `Marshal.PtrToStringAnsi`, `Marshal.PtrToStringUTF8` or `Marshal.PtrToStringUni`.
 
 ```csharp
 string? ansi = Marshal.PtrToStringAnsi(GetAnsiString());
@@ -173,6 +177,9 @@ string? unicode = Marshal.PtrToStringUni(GetUnicodeString());
 Console.WriteLine($"Ansi string: {ansi}");
 Console.WriteLine($"Unicode string: {unicode}");
 ```
+
+> [!WARNING]
+> The return type could also be declared as `string`, but then the marshaller takes ownership of the returned buffer and frees it after the conversion (with `CoTaskMemFree` on Windows, `free` on *Unix*). Here this would mean freeing a static string literal, which crashes the process (`free(): invalid pointer`). Returning `nint` leaves the memory management to us.
 
 #### As an Input/Output Parameter
 
@@ -203,7 +210,7 @@ void Encode(char *text)
 }
 ```
 
-The easiest way is to pass a character array (`byte[]` or `char[]` depending on the encoding). In the example below, we assume UTF-8 encoding (compatible with ASCII).
+The easiest way is to pass a character array (`byte[]` or `char[]` depending on the encoding). In the example below, we assume UTF-8 encoding (compatible with ASCII). The native function expects a null-terminated string, so the array must end with `'\0'` - `ToArray()` on a `u8` literal does not copy the terminator.
 
 ```csharp
 [LibraryImport("StringsCpp")]
@@ -211,9 +218,9 @@ public static partial void Encode([In, Out] byte[] str);
 ```
 
 ```csharp
-byte[] arr = "Initial content"u8.ToArray();
+byte[] arr = "Initial content\0"u8.ToArray();
 Encode(arr);
-Console.WriteLine($"Encoded: {Encoding.UTF8.GetString(arr)}");
+Console.WriteLine($"Encoded: {Encoding.UTF8.GetString(arr, 0, arr.Length - 1)}"); // Encoded: Vavgvny pbagrag
 ```
 
 > [!INFO]
@@ -242,9 +249,11 @@ struct Color
 };
 ```
 
-To pass a structure from/to native code, you must define its equivalent in C# and use the `[StructLayout]` attribute if necessary. This attribute has one positional parameter `LayoutKind`, which can take one of two values:
+To pass a structure from/to native code, you must define its equivalent in C# and use the `[StructLayout]` attribute if necessary. This attribute has one positional parameter `LayoutKind`, which can take one of three values:
 * **Sequential**: Fields are laid out in memory in the order of declaration (default behavior for `struct`).
 * **Explicit**: Allows you to manually specify the offset of each field using the `[FieldOffset]` attribute. Used to create union equivalents.
+* **Auto**: The runtime chooses the layout (default for `class`). Such types cannot be passed to native code.
+
 The optional `Pack` parameter also allows specifying field *alignment*.
 
 ```csharp
@@ -296,7 +305,7 @@ We can pass C# methods to unmanaged code as function pointers or delegates.
 ```cpp
 typedef void (*Callback)(int value);
 
-extern "C" void Count(int from, int to, Callback callback);
+extern "C" EXPORT void Count(int from, int to, Callback callback);
 
 void Count(int from, int to, Callback callback)
 {
@@ -310,14 +319,30 @@ void Count(int from, int to, Callback callback)
 public delegate void Callback(int value);
     
 [LibraryImport("CallbacksCpp")]
-private static partial void Count(int from , int to, Callback callback);
+private static partial void Count(int from, int to, Callback callback);
 
 [LibraryImport("CallbacksCpp")]
-private static unsafe partial void Count(int from, int to, delegate* <int, void> callback);
+private static unsafe partial void Count(int from, int to, delegate* unmanaged<int, void> callback);
+```
+
+A delegate (e.g., a lambda) is converted by the marshaller into a native function pointer. A function pointer passed to native code must be declared as `unmanaged` - an ordinary `delegate*` uses the managed calling convention, which native code cannot use. Only the address of a static method marked with the `[UnmanagedCallersOnly]` attribute can be assigned to it. Such a method cannot be called directly from C#, and exceptions must not escape from it.
+
+```csharp
+static unsafe void Main()
+{
+    Count(1, 101, i => Console.WriteLine(i));
+    Count(1, 101, &FizzBuzz);
+}
+
+[UnmanagedCallersOnly]
+static void FizzBuzz(int i)
+{
+    // ...
+}
 ```
 
 > [!WARNING]
-> The Garbage Collector does not see references held by unmanaged code. If you pass a delegate to a native function that uses it later (asynchronously), you must ensure that the delegate is not collected by the *GC* (e.g., by assigning it to a static field).
+> The Garbage Collector does not see references held by unmanaged code. If you pass a delegate to a native function that uses it later (asynchronously), you must ensure that the delegate is not collected by the *GC* (e.g., by assigning it to a static field). A pointer to a static `[UnmanagedCallersOnly]` method does not have this problem.
 
 > [!INFO]
 > Example:  

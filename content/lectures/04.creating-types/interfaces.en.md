@@ -7,12 +7,12 @@ weight: 50
 
 Interfaces are similar to abstract classes, but with a key difference: **they define a contract of behaviors and cannot define state (instance fields)**. An analogous structure from C++ would be a class where all members are pure virtual methods.
 
-- Members of an interface can include methods, properties, events, and indexers. Since C# 8, they can also contain static members (including constants) and default method implementations.
+- Members of an interface can include methods, properties, events, and indexers. Since C# 8, they can also contain static members (including constants) and default implementations of members.
 - Interfaces **cannot contain instance fields**.
-- Members are implicitly public and abstract.
+- Members are implicitly public; members without an implementation are implicitly abstract.
 - Classes and structs support implementing multiple interfaces.
 
-A interface definition looks as follows, here is an example of the `IEnumerator` interface from the `System.Collections` namespace:
+An interface definition looks as follows; here is an example of the `IEnumerator` interface from the `System.Collections` namespace:
 
 ```csharp
 public interface IEnumerator
@@ -167,9 +167,9 @@ public interface ILogger
 }
 ```
 
-### Static inheritance (C# 11)
+### Static abstract and virtual members (C# 11)
 
-Starting from C# 11 interfaces allow to define inherit static members - normally as in C++ static members are not inherited. Members in interfaces can be marked `virtual` and `abstract`, then they can be inherited similarly as in instance members in class inheritance.
+Normally, as in C++, static members cannot be virtual. Starting from C# 11, static members of interfaces can be marked `abstract` or `virtual`. Every implementing type must then provide its own implementation of a `static abstract` member, and may provide one for a `static virtual` member (otherwise the default implementation from the interface is used).
 
 ```csharp
 public interface IDescriptable
@@ -187,5 +187,17 @@ public class Cat : IDescriptable
 public class Book : IDescriptable
 {
     public static string Description => "It's a book";
+}
+```
+
+Such members cannot be accessed through the interface name (`IDescriptable.Description` does not compile), but only through a generic type parameter constrained to the interface. This is the mechanism behind generic math, e.g., the `IComparisonOperators<T, T, bool>` constraint used on the [Generics]({{< ref "/lectures/04.creating-types/generics" >}}) page.
+
+```csharp
+PrintDescription<Cat>();  // It's a cat (Mammal)
+PrintDescription<Book>(); // It's a book (General)
+
+static void PrintDescription<T>() where T : IDescriptable
+{
+    Console.WriteLine($"{T.Description} ({T.Category})");
 }
 ```

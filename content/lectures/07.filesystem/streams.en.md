@@ -20,7 +20,7 @@ Console.WriteLine($"Can Seek: {stream.CanSeek}");
 
 ## Working with Streams
 
-Streams provide methods similar in their operation to those from the POSIX API. The main difference is how exceptions are handled. In C#, stream-related methods throw errors using exceptions inheriting from `IOException`.
+Streams provide methods similar in their operation to those from the POSIX API. The main difference is how errors are handled. Instead of returning error codes (and setting `errno`), stream-related methods in C# throw exceptions — mostly `IOException` and its subclasses (e.g., `FileNotFoundException`), but also others, e.g., `UnauthorizedAccessException` (no permissions) or `NotSupportedException` (an operation not supported by the given stream).
 
 > Working with a "raw stream" is usually inconvenient/unadvisable; it's better to do it through [stream adapters]({{< ref "#stream-adapters" >}}) or by using the [file facade]({{< ref "#facade" >}}).
 
@@ -46,7 +46,7 @@ while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
 
 ### Writing
 
-Analogously, the method `void Write(byte[] buffer, int offset, int count)` has analogous parameters to the `write` function from the POSIX API.
+Similarly, the method `void Write(byte[] buffer, int offset, int count)` has analogous parameters to the `write` function from the POSIX API.
 
 ```csharp
 using Stream stream = new FileStream("lorem.txt", FileMode.Create);
@@ -78,7 +78,7 @@ stream.Seek(offset: -10, SeekOrigin.Current);
 
 ### Flushing and Closing Streams
 
-Data that we write to a stream is usually not immediately saved to the destination (file, network, etc.). I/O operations are often buffered, either by the operating system or another mechanism. To force the buffers to be written, we use the `Flush` method on the stream. Closing a stream automatically flushes it. We close a stream with the `Dispose` or `Close` method. Both methods are equivalent and do the same thing.
+Data that we write to a stream is usually not immediately saved to the destination (file, network, etc.). I/O operations are often buffered, either by the operating system or another mechanism. To force the stream's buffers to be written, we use the `Flush` method on the stream. `Flush` passes the data buffered by the stream object on to the operating system; it does not guarantee that the OS has physically written it to the disk. For that, `FileStream` provides the `Flush(flushToDisk: true)` overload (an equivalent of `fsync`). Closing a stream automatically flushes it. We close a stream with the `Dispose` or `Close` method. Both methods are equivalent and do the same thing.
 
 It is best to use the `using` statement — it causes the resources associated with it to be automatically released at the end of the block by calling the `Dispose` method. This avoids errors related to unclosed resources.
 
@@ -138,7 +138,7 @@ FileStream fs1 = new FileStream("file1.txt", FileMode.OpenOrCreate, FileAccess.R
 // File façade methods:
 FileStream fs2 = File.Create("file2.txt");
 FileStream fs3 = File.OpenRead("file3.txt");
-FileStream fs4 = File.OpenWrite("file4.txt");
+FileStream fs4 = File.OpenWrite("file4.txt"); // FileMode.OpenOrCreate - does not truncate an existing file!
 FileStream fs5 = File.Open("file5.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
 ```
 
@@ -196,7 +196,7 @@ The `File` class provides a facade, which is a simplified interface that provide
    const string logFile = "log.txt";
    for (int i = 0; i < 100; i++)
    {
-       File.AppendAllText(logFile, $"[Info] This is a log entry no. {i}");
+       File.AppendAllText(logFile, $"[Info] This is a log entry no. {i}{Environment.NewLine}");
    }
    ```
 
@@ -251,6 +251,8 @@ classDiagram
 
 `BufferedStream` adds buffering to a stream. It wraps another stream (e.g., FileStream) and maintains a buffer in memory (e.g., 4KB). If we try to read a smaller amount of bytes from it, `BufferedStream` will actually read 4KB from the file at once and write them to an internal buffer, from which we will read until the buffer is exhausted. The same would apply to writing. Reading from and writing to RAM is much faster than file operations on disk, and buffering minimizes the number of costly I/O operations.
 
+> `FileStream` already has its own internal buffer (4 KB by default, configurable with the `bufferSize` constructor parameter), so wrapping it in a `BufferedStream` brings little benefit, unless we need a larger buffer. `BufferedStream` is most useful for streams without their own buffering, e.g., `NetworkStream`.
+
 ```csharp
 // Write 100K bytes to a file:
 File.WriteAllBytes("file.bin", new byte [100_000]);
@@ -265,7 +267,7 @@ Console.WriteLine(fs.Position); // 20000
 
 ### Compression
 
-The standard library provides three compression methods represented by the stream decorators `GZipStream`, `DeflateStream`, `BrotliStream`. When we wrap a stream in, for example, `GZipStream` and write data to it, `GZipStream` first compresses this data before passing it on to the wrapped stream. During reads, the process is reversed: `GzipStream` reads compressed data from the wrapped stream and decompresses it before returning it.
+The standard library provides compression stream decorators `DeflateStream`, `ZLibStream` (.NET 6), `GZipStream`, and `BrotliStream`. The first three use the same Deflate algorithm and differ only in the format of the header and footer (raw Deflate, zlib, gzip); `BrotliStream` uses the Brotli algorithm. When we wrap a stream in, for example, `GZipStream` and write data to it, `GZipStream` first compresses this data before passing it on to the wrapped stream. During reads, the process is reversed: `GZipStream` reads compressed data from the wrapped stream and decompresses it before returning it.
 
 1. Compression
 
@@ -325,7 +327,7 @@ The biggest advantage over the POSIX API is stream adapters. For streams, we hav
 
 ### Text Adapters
 
-Text adapters add the ability to read and write characters, words, and entire lines of text to a stream. They allow operations such as `string? ReadLine()`, `string? ReadToEnd()`, `void WriteLine(string str)`, `void Write(string str)`.
+Text adapters add the ability to read and write characters, strings, and entire lines of text to a stream. They allow operations such as `string? ReadLine()`, `string? ReadToEnd()`, `void WriteLine(string str)`, `void Write(string str)`.
 
 1. `StreamReader`
    ```csharp
@@ -340,7 +342,7 @@ Text adapters add the ability to read and write characters, words, and entire li
 
 2. `StreamWriter`
    ```csharp
-   using FileStream fs = File.OpenWrite("fizzbuzz.txt");
+   using FileStream fs = File.Create("fizzbuzz.txt");
    using StreamWriter sw = new StreamWriter(fs);
 
    for (int i = 1; i <= 100; i++)
@@ -363,7 +365,7 @@ Binary adapters, in turn, are used when working with binary data. These adapters
 
 1. `BinaryWriter`
    ```csharp
-   using FileStream fs = File.OpenWrite("player.bin");
+   using FileStream fs = File.Create("player.bin");
    using BinaryWriter bw = new BinaryWriter(fs);
    
    Player player = new Player("Bob", 100, 2500, 10, new Vector2(48.5f, 32.5f));

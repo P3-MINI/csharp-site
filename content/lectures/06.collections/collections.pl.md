@@ -10,12 +10,12 @@ Kolekcje wbudowane w bibliotekę standardową C# są posegregowane w różnych p
 * **System.Collections** - zawiera niegeneryczne kolekcje, używające typu `object` do przechowywania obiektów
 * **System.Collections.Generic** - najczęściej używane, generyczne kolekcje, nimi będziemy się zajmować
 * **System.Collections.Concurrent** - generyczne kolekcje, bezpieczne wielowątkowo
-* **System.Collections.Immutable** - generyczne kolekcje, nie pozwalające na modyfikację
+* **System.Collections.Immutable** - generyczne kolekcje, niepozwalające na modyfikację
 * **System.Collections.ObjectModel** - dostarcza szablony dla własnych kolekcji
 
 ## Hierarchia kolekcji
 
-Bazą dla wszystkich kolekcji jest interfejs `IEnumerable<T>`, który jedynie gwarantuje, że po obiekcie można się przeiterować. Może to być nieskończona sekwencja, na bieżąco generowanych elementów.
+Bazą dla wszystkich kolekcji jest interfejs `IEnumerable<T>`, który jedynie gwarantuje, że po obiekcie można się przeiterować. Może to być nieskończona sekwencja generowanych na bieżąco elementów.
 
 `ICollection<T>` rozszerza `IEnumerable<T>` i reprezentuje modyfikowalną skończoną kolekcję.
 
@@ -32,6 +32,7 @@ IEnumerable~T~ --> ICollection~T~
 ICollection~T~ --> IList~T~
 ICollection~T~ --> IDictionary~TKey, TValue~ : implements<br>ICollection&ltKeyValuePair&ltTKey,TValue&gt&gt
 ICollection~T~ --> ISet~T~
+IEnumerable~T~ ..> IEnumerator~T~ : GetEnumerator()
 class IEnumerable~T~{
     <<interface>>
 }
@@ -52,7 +53,7 @@ class ISet~T~{
 }
 ```
 
-### Interfejs ICollection<T>
+### Interfejs `ICollection<T>`
 
 `ICollection<T>` reprezentuje modyfikowalną skończoną kolekcję, w której można dodawać i usuwać elementy. Rozszerza możliwość iteracji o podstawowe operacje dodawania i usuwania elementów, sprawdzania ich liczby (`Count`) oraz czy dany element znajduje się w kolekcji (`Contains`).
 
@@ -69,7 +70,7 @@ public interface ICollection<T> : IEnumerable<T>
 }
 ```
 
-### Interfejs IList<T>
+### Interfejs `IList<T>`
 
 Interfejs listy dodatkowo wprowadza możliwość odwoływania się do elementów za pomocą indeksu.
 
@@ -83,7 +84,7 @@ public interface IList<T> : ICollection<T>
 }
 ```
 
-#### Klasa List<T>
+#### Klasa `List<T>`
 
 Najpopularniejszą konkretną implementacją tego interfejsu jest `List<T>`. Pod spodem jest to dynamicznie rozszerzana tablica, podobnie jak typ `std::vector` z C++. Klasa `List<T>` dodatkowo dostarcza kilka przydatnych metod: `Sort`, `BinarySearch`, `Find`.
 
@@ -120,11 +121,11 @@ planets.Clear();
 Console.WriteLine($"\nNumber of planets after clearing: {planets.Count}");
 ```
 
-> `Array` również implementuje interfejs `IList<T>`. Metody `Add`, `Remove`, `Insert` i `RemoveAt` rzucają wyjątkiem `NotSupportedException`, jako że są to operacje które zmieniają rozmiar kolekcji.
+> Tablice (`T[]`) również implementują interfejs `IList<T>`. Metody `Add`, `Remove`, `Insert`, `RemoveAt` i `Clear` rzucają wyjątkiem `NotSupportedException`, jako że są to operacje, które zmieniają rozmiar kolekcji.
 
-### Interfejs IDictionary<TKey, TValue>
+### Interfejs `IDictionary<TKey, TValue>`
 
-Słowniki są kolekcjami par klucz-wartość, w których klucze są unikalne. Interfejs słownika dostarcza dwóch właściwości, które pozwalają na dostęp do kolekcji tylko kluczy `Keys` lub tylko wartości `Values`. Najczęściej praca ze słownikiem polega na używaniu indeksatora. Możemy go używać zarówno do dodawania nowych wartości, aktualizowania obecnych oraz pobierania już istniejących wartości. Dostęp do wartości, której nie ma w słowniku, rzuca wyjątkiem `KeyNotFoundException`, dlatego jeżeli nie jesteśmy pewni czy wartość istnieje lepiej użyć metody `TryGetValue`. Wstawianie nowej lub aktualizacja wartości za pomocą indeksatora zawsze się udaje. Metoda `Add` z kolei, jeżeli wartość już jest w słowniku, to rzuca wyjątkiem `ArgumentException`.
+Słowniki są kolekcjami par klucz-wartość, w których klucze są unikalne. Interfejs słownika dostarcza dwóch właściwości, które pozwalają na dostęp do kolekcji tylko kluczy (`Keys`) lub tylko wartości (`Values`). Najczęściej praca ze słownikiem polega na używaniu indeksatora. Możemy go używać do dodawania nowych wartości, aktualizowania obecnych oraz pobierania już istniejących wartości. Dostęp do wartości, której nie ma w słowniku, rzuca wyjątkiem `KeyNotFoundException`, dlatego jeżeli nie jesteśmy pewni, czy klucz istnieje, lepiej użyć metody `TryGetValue`. Wstawianie nowej lub aktualizacja wartości za pomocą indeksatora zawsze się udaje. Metoda `Add` z kolei rzuca wyjątkiem `ArgumentException`, jeżeli klucz już jest w słowniku.
 
 ```csharp
 public interface IDictionary<TKey, TValue> : ICollection<KeyValuePair<TKey, TValue>>
@@ -139,7 +140,7 @@ public interface IDictionary<TKey, TValue> : ICollection<KeyValuePair<TKey, TVal
 }
 ```
 
-#### Klasa Dictionary<TKey, TValue>
+#### Klasa `Dictionary<TKey, TValue>`
 
 Najczęściej używaną implementacją słownika jest `Dictionary<TKey, TValue>`. Jego wewnętrzną implementacją jest tablica mieszająca (*hash table*), co odpowiadałoby typowi `std::unordered_map` z C++. W C# każdy obiekt posiada metodę `Equals` i `GetHashCode`, dzięki czemu jest kandydatem na bycie kluczem w takim słowniku. Oczywiście te metody muszą być odpowiednio zaimplementowane, żeby `Dictionary<TKey, TValue>` działał poprawnie. 
 
@@ -147,7 +148,7 @@ Najczęściej używaną implementacją słownika jest `Dictionary<TKey, TValue>`
   - Odwrotna zasada nie musi być spełniona.
 - `GetHashCode` i `Equals` powinny być implementowane razem
 - `GetHashCode` i `Equals` powinny używać tych samych pól
-- Hash klucza nie może się zmieniać, pola, których używa `GetHashCode` powinny być niezmienne.
+- Hash klucza nie może się zmieniać - pola, których używa `GetHashCode`, powinny być niezmienne.
 
 Przykład poprawnej implementacji `GetHashCode` i `Equals`:
 
@@ -250,7 +251,7 @@ if (openWith.Remove("doc"))
 
 > Jeżeli zależy nam żeby słownik był posortowany po kluczach, to istnieje również implementacja `SortedDictionary<TKey, TValue>`, która nam to zapewnia. To odpowiednik `std::map` z C++, wewnętrznie używający drzew czerwono-czarnych.
 
-### Interfejs ISet<T>
+### Interfejs `ISet<T>`
 
 Interfejs `ISet<T>` reprezentuje zbiór w matematycznym sensie. Przechowuje on wyłącznie unikalne elementy - duplikaty są automatycznie ignorowane. Metoda `Add` zwraca `true`, jeśli element został dodany, a `false`, jeśli element już istniał w zbiorze. Reszta metod w zbiorze to operacje mnogościowe lub sprawdzające relacje między zbiorami.
 
@@ -271,16 +272,18 @@ public interface ISet<T> : ICollection<T>
 }
 ```
 
-Najpopularniejszą implementacją tego interfejsu jest klasa `HashSet<T>`, działająca w oparciu o tablicę mieszającą (tak jak `Dictionary`) i `SortedSet<T>`, działająca w oparciu o drzewa czerwono-czarne (tak jak `SortedDictionary`).
+Najpopularniejszymi implementacjami tego interfejsu są klasy `HashSet<T>`, działająca w oparciu o tablicę mieszającą (tak jak `Dictionary`), i `SortedSet<T>`, działająca w oparciu o drzewa czerwono-czarne (tak jak `SortedDictionary`).
 
 ### Inne kolekcje
 
-Poza głównymi gałęziami hierarchii, istnieją inne ważne kolekcje, które **bezpośrednio implementują `ICollection<T>`**, nie będąc listą, słownikiem ani zbiorem:
+Poza głównymi gałęziami hierarchii istnieją inne ważne kolekcje, które nie są listą, słownikiem ani zbiorem:
 
-- `LinkedList<T>` - Generyczna lista dwukierunkowa. W przeciwieństwie do `List<T>`, jest zoptymalizowana pod kątem częstego dodawania i usuwania elementów w dowolnym miejscu listy, ponieważ nie wymaga to przesuwania kolejnych elementów.
+- `LinkedList<T>` - Generyczna lista dwukierunkowa. W przeciwieństwie do `List<T>`, jest zoptymalizowana pod kątem częstego dodawania i usuwania elementów w dowolnym miejscu listy, ponieważ nie wymaga to przesuwania kolejnych elementów (mając referencję do węzła `LinkedListNode<T>`, operacje te wykonujemy w czasie O(1)).
 - `Queue<T>` - Implementuje kolejkę **FIFO** (First-In, First-Out), wewnętrznie używając **dynamicznie rozszerzanej tablicy**. Główne metody to `Enqueue` (dodaje na końcu) i `Dequeue` (pobiera z początku).
 - `Stack<T>` - Implementuje stos **LIFO** (Last-In, First-Out), również wewnętrznie używając **dynamicznie rozszerzanej tablicy**. Główne metody to `Push` (dodaje na wierzch) i `Pop` (pobiera z wierzchu).
-- `PriorityQueue<TElement, TPriority>` - Implementuje kolejkę priorytetową, w której elementy są pobierane na podstawie przypisanego priorytetu, a nie w kolejności FIFO. Główne metody to `Enqueue` i `Dequeue`.
+- `PriorityQueue<TElement, TPriority>` - Implementuje kolejkę priorytetową, w której elementy są pobierane na podstawie przypisanego priorytetu, a nie w kolejności FIFO. Główne metody to `Enqueue` i `Dequeue`. Jest to kopiec typu min: jako pierwszy pobierany jest element o **najmniejszej** wartości priorytetu (w przeciwieństwie do `std::priority_queue` z C++, który domyślnie zwraca element największy).
+
+Spośród nich tylko `LinkedList<T>` implementuje `ICollection<T>`. `Queue<T>` i `Stack<T>` implementują `IReadOnlyCollection<T>` (a więc i `IEnumerable<T>`), ale nie `ICollection<T>` - elementy można dodawać i usuwać tylko na ich końcach, więc nie udostępniają metod `Add` i `Remove`. Z kolei `PriorityQueue<TElement, TPriority>` nie implementuje nawet `IEnumerable<T>` - jej elementy można przejrzeć (w nieokreślonej kolejności) za pomocą właściwości `UnorderedItems`.
 
 > Warto również wspomnieć o `BitArray` z przestrzeni nazw `System.Collections`. Jest to specjalistyczna, **niegeneryczna** kolekcja, która pozwala na efektywne przechowywanie i manipulowanie tablicą bitów (wartości `true`/`false`), używając tylko jednego bitu na każdą wartość.
 
@@ -289,8 +292,10 @@ Poza głównymi gałęziami hierarchii, istnieją inne ważne kolekcje, które *
 Ta składnia, dostępna od dawna, wymaga użycia `new` oraz nawiasów klamrowych `{...}`. Kompilator tłumaczy ją na serię wywołań metody `Add` lub wstawiania za pomocą indeksatora (od C# 6.0).
 
 ```csharp
+// Initializer for a List<T>
 var numbers = new List<int> { 1, 2, 3 };
 
+// Initializer for a Dictionary<TKey, TValue> (using pairs)
 var cityPopulations = new Dictionary<string, int>
 {
     { "Tokyo", 37_000_000 },
@@ -305,7 +310,7 @@ var cityPopulationsByIndexer = new Dictionary<string, int>
 };
 ```
 
-### Wyrażenia Kolekcji (C# 12)
+### Wyrażenia kolekcji (C# 12)
 
 Począwszy od C# 12, wprowadzono nową, jeszcze bardziej zwięzłą składnię znaną jako **wyrażenia kolekcji**. Jest to cukier składniowy używający nawiasów kwadratowych `[...]`, który pozwala na przypisanie elementów do kolekcji w prosty sposób. Kompilator sam domyśla się jak wstawić podane elementy do kolekcji.
 

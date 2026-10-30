@@ -86,7 +86,9 @@ Ograniczenia określają, jakie typy mogą być użyte jako parametr typu.
 > Jeśli nie wiesz lub nie pamiętasz, czym jest nullowalność i co oznacza w języku C#, możesz sprawdzić [tutaj](https://csharp.mini.pw.edu.pl/pl/lectures/05.csharp-features/nullable/) oraz [tutaj](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/null-safety/).
 
 Choć podobne do szablonów z C++, typy generyczne różnią się w dwóch kluczowych kwestiach:
-1. Podczas kompilacji, w CIL tworzona jest tylko jedna wersja typu generycznego. Konkretna instancja jest tworzona w czasie wykonywania (JIT), przy pierwszym użyciu. Szablony są natomiast tworzone w trakcies kompilacji, z jedną kopią kodu maszynowego na każdy użyty typ.
+
+1. Podczas kompilacji, w CIL tworzona jest tylko jedna wersja typu generycznego. Konkretna instancja jest tworzona w czasie wykonywania (JIT), przy pierwszym użyciu. Szablony są natomiast tworzone w trakcie kompilacji, z jedną kopią kodu maszynowego na każdy użyty typ.
+
 2. Są one ściśle sprawdzane już przy definicji typu generycznego, podczas gdy szablony są weryfikowane głównie podczas pierwszego użycia (z pewnymi różnicami zależnymi od kompilatora).
 
 Dlatego w pierwszym przykładzie na górze strony musieliśmy użyć `where T : IComparable<T>`, podczas gdy w C++, choć moglibyśmy użyć konceptu takiego jak `requires std::totally_order<T>`, nie jest to konieczne.

@@ -177,7 +177,8 @@ git branch -v
 # * master a7f3d48 Copied hi.txt
 ```
 
-Technically, branches are files in the `.git/refs/heads/` folder that store the SHA1 of the commit they name:
+Technically, branches are files in the `.git/refs/heads/` folder that store the SHA1 of the commit they name
+(git may also pack them into a single `.git/packed-refs` file):
 
 ```shell
 cat .git/refs/heads/master
@@ -192,7 +193,7 @@ git branch feature a7f3d48
 git branch -v
 #   feature a7f3d48 Copied hi.txt
 # * master  a7f3d48 Copied hi.txt
-ls -l .git/refs/heads
+ls .git/refs/heads
 # feature master
 ```
 
@@ -354,7 +355,6 @@ git status
 # 
 # no changes added to commit (use "git add" and/or "git commit -a")
 git diff
-# git diff
 # diff --git a/empty.txt b/empty.txt
 # index e69de29..4d0c7d7 100644
 # --- a/empty.txt
@@ -386,14 +386,14 @@ git diff --cached
 ```
 
 `git diff --cached` shows the difference between the index and the `HEAD` state.
-When a file is added to the index, new `blob` and `tree` objects are created, which will later
-be saved in the new commit.
+When a file is added to the index, a new `blob` object with its content is created. The `tree` objects
+are created only by `git commit`.
 
 You can now change the state of the working directory again, resulting in `HEAD != index != workdir`:
 
 ```shell
 echo "hey!" > empty.txt
-# git status
+git status
 # On branch master
 # Changes to be committed:
 #   (use "git restore --staged <file>..." to unstage)
@@ -453,7 +453,7 @@ It does not change the state of the working directory or the index.
 
 ```shell
 git reset --soft HEAD^
-# git status
+git status
 # On branch master
 # Changes to be committed:
 #   (use "git restore --staged <file>..." to unstage)
@@ -563,7 +563,7 @@ One parent is always `HEAD`, the other is what we specified in the argument.
 The integration was automatic because the changes were not conflicting.
 
 To merge changes, git uses an algorithm known as _three-way merge_. It takes into account
-three states of the working directory: two from the merged commits (`HEAD -> development` -> `5e11eea` and `master` -> `401c27f`)
+three states of the working directory: two from the merged commits (`HEAD -> feature` -> `5e11eea` and `master` -> `401c27f`)
 and their nearest common ancestor: the fork point `a7f3d48`.
 
 ```mermaid
@@ -571,8 +571,8 @@ graph LR
     classDef commit fill: #f9a825, stroke: #333, stroke-width: 2px, font-weight: bold, rx: 2px, ry: 2px
     classDef new fill: #90EE90, stroke: #333, stroke-width: 2px, font-weight: bold, rx: 2px, ry: 2px
     classDef ref fill: #add8e6, stroke: none, color: #000, font-family: monospace, font-size: 12px, padding: 2px, rx: 5px, ry: 5px;
-    development:::ref --> A
-%%  development:::ref -.-> M
+    feature:::ref --> A
+%%  feature:::ref -.-> M
     A["5e11eea<br>'Feature Hi!'"]:::commit
     B["401c27f<br>'Hi!'"]:::commit
     C["a7f3d48<br>'Hi!'"]:::commit
@@ -609,12 +609,12 @@ graph LR
     classDef commit fill: #f9a825, stroke: #333, stroke-width: 2px, font-weight: bold, rx: 2px, ry: 2px
     classDef new fill: #90EE90, stroke: #333, stroke-width: 2px, font-weight: bold, rx: 2px, ry: 2px
     classDef ref fill: #add8e6, stroke: none, color: #000, font-family: monospace, font-size: 12px, padding: 2px, rx: 5px, ry: 5px;
-    development:::ref --> A
-%%  development:::ref -.-> M
+    feature:::ref --> A
+%%  feature:::ref -.-> M
     A["5e11eea<br>'Feature Hi!'"]:::commit
-    B["401c27f<br>'Master Hi!'"]:::commit
+    B["Masterized hi.txt<br>'Master Hi!'"]:::commit
     C["a7f3d48<br>'Hi!'"]:::commit
-    M["1296142<br>???"]:::new
+    M["merge<br>???"]:::new
     A --> C
     B --> C
     M --> A
@@ -659,10 +659,12 @@ they will be consistent across all repositories.
 
 The addresses of remote repositories must be configured in the local repository in the `.git/config` file
 using the `git remote` command. For learning purposes, you can point to another directory
-on the same machine as a remote.
+on the same machine as a remote. The examples below continue from the state of the repository
+at the end of the Reset section (before the merges).
 
 ```shell
 mkdir origin && cd origin
+# Initial branch other than master: git refuses to push to the branch checked out in a non-bare repository
 git init --initial-branch=main
 ```
 
@@ -674,14 +676,14 @@ git remote add origin ../origin
 When cloning a repository, git automatically adds a remote
 named `origin` pointing to the location from which we are cloning.
 
-There are only 4 commands that communicate with a remote repository:
+The basic commands that communicate with a remote repository are:
 
 *   `git clone`
 *   `git fetch`
 *   `git pull`
 *   `git push`
 
-Everything else does not touch the remote copy in any way.
+The other commands discussed here do not touch the remote copy in any way.
 
 `git push` updates remote references.
 It causes the branch in the remote repository corresponding to the local branch
