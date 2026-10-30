@@ -229,6 +229,25 @@ for (int i = 0; i < 1_000_000; i++)
 }
 ```
 
+### `UnsafeAccessor` (.NET 8)
+
+Reflection is often used only to access a private member of a type that we cannot modify (e.g., in tests or serializers). Since .NET 8, this can be done without reflection, using the `[UnsafeAccessor]` attribute. We declare a `static extern` method, and the runtime provides its body, which accesses the given member directly, so such a call is as fast as a regular one:
+
+```csharp
+Person person = new Person("Alice", "Smith", DateTime.Now.AddYears(-21));
+ref string id = ref PersonAccessors.Id(person); // a reference to the private field
+id = id.Substring(0, 8);
+Console.WriteLine(PersonAccessors.Id(person));
+
+static class PersonAccessors
+{
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_id")]
+    public static extern ref string Id(Person person);
+}
+```
+
+The first parameter specifies the type whose member is accessed (for instance members, it is the object used as `this`). Other kinds of members (`UnsafeAccessorKind`) are `StaticField`, `Method`, `StaticMethod`, and `Constructor`. Members of generic types and generic methods are supported since .NET 9. Unlike reflection, the accessed member must be known at compile time, so the trimming and Native AOT analysis ([see below]({{< ref "#reflection-trimming-and-native-aot" >}})) does not report warnings for such code.
+
 ## Reflection on an Assembly
 
 You can call `GetTypes` or `GetType` on an assembly to get information about the types it contains. An assembly can be obtained using one of four static methods:
@@ -257,6 +276,25 @@ foreach (var type in assembly.GetTypes())
 > [!INFO]
 > Source code:
 > {{< filetree dir="lectures/reflection/Reflection" >}}
+
+## Generic Types
+
+`typeof` can also be applied to an unbound (open) generic type, e.g., `typeof(List<>)`. Unlike C++ templates, which are instantiated only at compile time, such a generic type definition can be closed with concrete type arguments at runtime using `MakeGenericType` (and similarly, a generic method using `MethodInfo.MakeGenericMethod`). The number after the backtick in the type's name is the number of its type parameters.
+
+```csharp
+Type open = typeof(Dictionary<,>);
+Console.WriteLine(open.IsGenericTypeDefinition); // True
+Console.WriteLine(open.Name);                    // Dictionary`2
+
+Type closed = open.MakeGenericType(typeof(string), typeof(int));
+Console.WriteLine(closed == typeof(Dictionary<string, int>)); // True
+Console.WriteLine(string.Join(", ", closed.GetGenericArguments().Select(t => t.Name))); // String, Int32
+var dict = (IDictionary<string, int>)Activator.CreateInstance(closed)!;
+
+Console.WriteLine(nameof(Dictionary<,>));        // Dictionary (C# 14)
+```
+
+Since C# 14, `nameof` also accepts unbound generic types, e.g., `nameof(List<>)` returns `"List"`.
 
 ## Custom Attributes
 
@@ -349,3 +387,54 @@ public static class Program
 > [!INFO]
 > Source code:
 > {{< filetree dir="lectures/reflection/Benchmark" >}}
+
+### Generic Attributes (C# 11)
+
+Since C# 11, attribute classes can be generic. Instead of passing a type as an argument (`[Validator(typeof(EmailValidator))]`), it can be passed as a type argument, so the compiler can check its constraints:
+
+```csharp
+[AttributeUsage(AttributeTargets.Property)]
+public class ValidatorAttribute<T> : Attribute where T : IValidator, new()
+{
+    public IValidator CreateValidator() => new T();
+}
+
+public class User
+{
+    [Validator<EmailValidator>]
+    public string Email { get; set; } = "";
+}
+
+public interface IValidator { bool IsValid(object? value); }
+public class EmailValidator : IValidator
+{
+    public bool IsValid(object? value) => value is string s && s.Contains('@');
+}
+```
+
+The type argument must be fully known at compile time — e.g., `[Validator<T>]` using a type parameter `T` of the enclosing generic type is an error (`CS8968`).
+
+## Reflection, Trimming, and Native AOT
+
+When an application is published with trimming (`<PublishTrimmed>`) or compiled ahead of time to native code (Native AOT, `<PublishAot>`, .NET 7+), the compiler statically analyzes the code and removes types and members that appear to be unused. Members used only through reflection (e.g., found by a name read from a configuration file) may then be missing at runtime. That's why the trim analyzer reports warnings (`IL2026`, `IL2057`, `IL2075`, …) for reflection code that it cannot analyze. File-based apps (`dotnet run app.cs`, .NET 10) have Native AOT enabled by default, so these warnings show up there as well.
+
+Such code can be annotated with attributes from the `System.Diagnostics.CodeAnalysis` namespace:
+
+* `[DynamicallyAccessedMembers]` - tells the trimmer which members of a type passed as a `Type` (parameter, field, return value) will be accessed through reflection, so that they are preserved;
+* `[RequiresUnreferencedCode]`, `[RequiresDynamicCode]` - mark a method as incompatible with trimming / Native AOT; the warning is then reported at its call sites.
+
+```csharp
+static void PrintMethods(
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type)
+{
+    foreach (MethodInfo method in type.GetMethods()) // OK: public methods are preserved
+    {
+        Console.WriteLine(method.Name);
+    }
+}
+
+PrintMethods(typeof(Person));                     // OK: the trimmer keeps public methods of Person
+PrintMethods(Type.GetType(Console.ReadLine()!)!); // warning IL2057: the type is unknown at compile time
+```
+
+That's why many libraries replace reflection with [source generators]({{< ref "/lectures/13.others/source-generators" >}}), which generate the needed code at compile time (e.g., `System.Text.Json`, `[GeneratedRegex]`).

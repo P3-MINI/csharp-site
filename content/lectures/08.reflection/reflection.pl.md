@@ -229,6 +229,25 @@ for (int i = 0; i < 1_000_000; i++)
 }
 ```
 
+### `UnsafeAccessor` (.NET 8)
+
+Refleksji często używa się tylko po to, żeby dostać się do prywatnej składowej typu, którego nie możemy zmodyfikować (np. w testach lub serializatorach). Od .NET 8 można to zrobić bez refleksji, za pomocą atrybutu `[UnsafeAccessor]`. Deklarujemy metodę `static extern`, a jej ciało dostarcza *runtime* — odwołuje się ono bezpośrednio do wskazanej składowej, więc takie wywołanie jest tak samo szybkie jak zwykłe:
+
+```csharp
+Person person = new Person("Alice", "Smith", DateTime.Now.AddYears(-21));
+ref string id = ref PersonAccessors.Id(person); // a reference to the private field
+id = id.Substring(0, 8);
+Console.WriteLine(PersonAccessors.Id(person));
+
+static class PersonAccessors
+{
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_id")]
+    public static extern ref string Id(Person person);
+}
+```
+
+Pierwszy parametr określa typ, do którego składowej się odwołujemy (dla składowych instancyjnych jest to obiekt używany jako `this`). Pozostałe rodzaje składowych (`UnsafeAccessorKind`) to `StaticField`, `Method`, `StaticMethod` i `Constructor`. Składowe typów generycznych i metody generyczne są wspierane od .NET 9. W odróżnieniu od refleksji składowa musi być znana w czasie kompilacji, dlatego analiza pod kątem trimmingu i Native AOT ([patrz niżej]({{< ref "#refleksja-a-trimming-i-native-aot" >}})) nie zgłasza dla takiego kodu ostrzeżeń.
+
 ## Refleksja nad assembly
 
 Na assembly można wywołać `GetTypes` lub `GetType`, żeby uzyskać informacje o typach, które się w nim znajdują. Pobrać assembly można za pomocą jednej z czterech statycznych metod:
@@ -257,6 +276,25 @@ foreach (var type in assembly.GetTypes())
 > [!INFO]
 > Kod źródłowy:
 > {{< filetree dir="lectures/reflection/Reflection" >}}
+
+## Typy generyczne
+
+Operator `typeof` można też zastosować do niezwiązanego (otwartego) typu generycznego, np. `typeof(List<>)`. W odróżnieniu od szablonów C++, które są konkretyzowane wyłącznie w czasie kompilacji, taką definicję typu generycznego można w czasie wykonania zamknąć konkretnymi argumentami typu za pomocą `MakeGenericType` (a metodę generyczną analogicznie za pomocą `MethodInfo.MakeGenericMethod`). Liczba po znaku `` ` `` w nazwie typu to liczba jego parametrów typu.
+
+```csharp
+Type open = typeof(Dictionary<,>);
+Console.WriteLine(open.IsGenericTypeDefinition); // True
+Console.WriteLine(open.Name);                    // Dictionary`2
+
+Type closed = open.MakeGenericType(typeof(string), typeof(int));
+Console.WriteLine(closed == typeof(Dictionary<string, int>)); // True
+Console.WriteLine(string.Join(", ", closed.GetGenericArguments().Select(t => t.Name))); // String, Int32
+var dict = (IDictionary<string, int>)Activator.CreateInstance(closed)!;
+
+Console.WriteLine(nameof(Dictionary<,>));        // Dictionary (C# 14)
+```
+
+Od C# 14 operator `nameof` przyjmuje także niezwiązane typy generyczne, np. `nameof(List<>)` zwraca `"List"`.
 
 ## Własne atrybuty
 
@@ -349,3 +387,54 @@ public static class Program
 > [!INFO]
 > Kod źródłowy:
 > {{< filetree dir="lectures/reflection/Benchmark" >}}
+
+### Atrybuty generyczne (C# 11)
+
+Od C# 11 klasy atrybutów mogą być generyczne. Zamiast przekazywać typ jako argument (`[Validator(typeof(EmailValidator))]`), można go przekazać jako argument typu, dzięki czemu kompilator może sprawdzić jego ograniczenia:
+
+```csharp
+[AttributeUsage(AttributeTargets.Property)]
+public class ValidatorAttribute<T> : Attribute where T : IValidator, new()
+{
+    public IValidator CreateValidator() => new T();
+}
+
+public class User
+{
+    [Validator<EmailValidator>]
+    public string Email { get; set; } = "";
+}
+
+public interface IValidator { bool IsValid(object? value); }
+public class EmailValidator : IValidator
+{
+    public bool IsValid(object? value) => value is string s && s.Contains('@');
+}
+```
+
+Argument typu musi być w pełni znany w czasie kompilacji — np. `[Validator<T>]` z parametrem typu `T` otaczającego typu generycznego jest błędem (`CS8968`).
+
+## Refleksja a trimming i Native AOT
+
+Gdy aplikacja jest publikowana z przycinaniem (*trimming*, `<PublishTrimmed>`) lub kompilowana z wyprzedzeniem do kodu natywnego (Native AOT, `<PublishAot>`, .NET 7+), kompilator statycznie analizuje kod i usuwa typy oraz składowe, które wyglądają na nieużywane. Składowe używane wyłącznie przez refleksję (np. wyszukiwane po nazwie wczytanej z pliku konfiguracyjnego) mogą wtedy nie istnieć w czasie wykonania. Dlatego analizator zgłasza ostrzeżenia (`IL2026`, `IL2057`, `IL2075`, …) dla kodu z refleksją, którego nie potrafi przeanalizować. Aplikacje jednoplikowe (*file-based apps*, `dotnet run app.cs`, .NET 10) mają domyślnie włączone Native AOT, więc te ostrzeżenia pojawiają się także w nich.
+
+Taki kod można oznaczyć atrybutami z przestrzeni nazw `System.Diagnostics.CodeAnalysis`:
+
+* `[DynamicallyAccessedMembers]` - informuje trimmer, które składowe typu przekazanego jako `Type` (parametr, pole, wartość zwracana) będą używane przez refleksję, dzięki czemu zostaną zachowane;
+* `[RequiresUnreferencedCode]`, `[RequiresDynamicCode]` - oznaczają metodę jako niekompatybilną z trimmingiem / Native AOT; ostrzeżenie jest wtedy zgłaszane w miejscach jej wywołania.
+
+```csharp
+static void PrintMethods(
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type)
+{
+    foreach (MethodInfo method in type.GetMethods()) // OK: public methods are preserved
+    {
+        Console.WriteLine(method.Name);
+    }
+}
+
+PrintMethods(typeof(Person));                     // OK: the trimmer keeps public methods of Person
+PrintMethods(Type.GetType(Console.ReadLine()!)!); // warning IL2057: the type is unknown at compile time
+```
+
+Dlatego wiele bibliotek zastępuje refleksję [generatorami źródeł]({{< ref "/lectures/13.others/source-generators" >}}), które generują potrzebny kod w czasie kompilacji (np. `System.Text.Json`, `[GeneratedRegex]`).
