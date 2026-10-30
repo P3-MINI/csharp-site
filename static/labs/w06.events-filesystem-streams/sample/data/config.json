@@ -1,0 +1,6 @@
+{
+  "station": "Warsaw - Koszykowa",
+  "location": { "latitude": 52.2221, "longitude": 21.0071 },
+  "intervalMinutes": 10,
+  "sensors": [ "temperature", "humidity", "pressure" ]
+}
