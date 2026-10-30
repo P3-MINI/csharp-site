@@ -87,6 +87,90 @@ public class Person
 }
 ```
 
+### Options
+
+The serializer is configured with a `JsonSerializerOptions` object. Its defaults are rather strict and differ from those of `Newtonsoft.Json`: property names are written exactly as declared in C#, they are matched **case-sensitively** during deserialization, fields are ignored (unless `IncludeFields` is set), and comments, trailing commas, and numbers written as strings are not accepted. JSON properties that do not match any member are silently skipped:
+
+```csharp
+public record User(string Name, int Age);
+```
+
+```csharp
+string json = """{"name":"Ann","age":"25"}""";
+User? p1 = JsonSerializer.Deserialize<User>(json);
+// User { Name = , Age = 0 }
+User? p2 = JsonSerializer.Deserialize<User>(json, JsonSerializerOptions.Web);
+// User { Name = Ann, Age = 25 }
+Console.WriteLine(JsonSerializer.Serialize(p2, JsonSerializerOptions.Web));
+// {"name":"Ann","age":25}
+```
+
+Predefined read-only instances are available as static properties: `JsonSerializerOptions.Default`, `JsonSerializerOptions.Web` (.NET 9; camelCase names, case-insensitive matching, and numbers readable from strings – the defaults of ASP.NET Core), and `JsonSerializerOptions.Strict` (.NET 10, described below).
+
+> [!TIP]
+> A `JsonSerializerOptions` instance caches the metadata of serialized types. Create it once and reuse it (e.g., store it in a `static readonly` field) instead of creating a new instance for every call.
+
+By default, the deserializer is lenient towards incomplete or invalid input. Newer versions of .NET added options that make it stricter:
+
+- `RespectNullableAnnotations` (.NET 9) – nullable reference type annotations are enforced: deserializing `null` into a non-nullable property or constructor parameter (e.g., `string`) throws a `JsonException`, and so does serializing `null` from such a property.
+- `RespectRequiredConstructorParameters` (.NET 9) – a missing JSON property for a constructor parameter without a default value throws a `JsonException` (by default, the parameter gets the `default` value). Members marked with the `required` modifier or the `[JsonRequired]` attribute are always required.
+- `AllowDuplicateProperties = false` (.NET 10) – an object with a repeated property name throws a `JsonException`. By default, the last value wins, which can be abused when different parts of a system interpret the same document differently.
+- `UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow` (.NET 8) – JSON properties that do not match any member throw a `JsonException` instead of being skipped.
+
+The `JsonSerializerOptions.Strict` preset (.NET 10) enables all of the above (and keeps case-sensitive matching). Each of the following calls succeeds with the default options but throws a `JsonException` with `Strict`:
+
+```csharp
+var strict = JsonSerializerOptions.Strict;
+JsonSerializer.Deserialize<User>("""{"Name":"Ann"}""", strict);
+// JSON deserialization for type 'User' was missing required properties including: 'Age'.
+JsonSerializer.Deserialize<User>("""{"Name":null,"Age":25}""", strict);
+// The constructor parameter 'Name' on type 'User' doesn't allow null values. (...)
+JsonSerializer.Deserialize<User>("""{"Name":"Ann","Name":"Bob","Age":25}""", strict);
+// Duplicate property 'Name' encountered during deserialization of type 'User'.
+JsonSerializer.Deserialize<User>("""{"Name":"Ann","Age":25,"Email":"ann@example.com"}""", strict);
+// The JSON property 'Email' could not be mapped to any .NET member contained in type 'User'.
+```
+
+### Polymorphism
+
+By default, an object is serialized according to its declared type (the type argument or the type of the property), not its runtime type. Serializing a derived object through a base-class reference loses the derived class's properties – much like object slicing in C++ – and an abstract type cannot be deserialized at all, as the serializer does not know which class to instantiate. Since .NET 7, the base type can list its allowed derived types with `[JsonDerivedType]`. The serializer then writes a **type discriminator** (the `$type` property by default; `[JsonPolymorphic]` allows changing its name) and uses it during deserialization:
+
+```csharp
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "kind")]
+[JsonDerivedType(typeof(Circle), "circle")]
+[JsonDerivedType(typeof(Rectangle), "rectangle")]
+public abstract record Shape;
+public record Circle(double Radius) : Shape;
+public record Rectangle(double Width, double Height) : Shape;
+```
+
+```csharp
+Shape[] shapes = [new Circle(1.5), new Rectangle(2, 3)];
+string json = JsonSerializer.Serialize(shapes);
+// [{"kind":"circle","Radius":1.5},{"kind":"rectangle","Width":2,"Height":3}]
+Shape[]? deserialized = JsonSerializer.Deserialize<Shape[]>(json);
+// deserialized[0] is Circle { Radius = 1.5 }
+```
+
+Only the listed types are allowed: serializing an unlisted derived type throws a `NotSupportedException`, and an unknown discriminator value throws a `JsonException`. The discriminator must be the first property of the JSON object, unless `AllowOutOfOrderMetadataProperties` (.NET 9) is enabled. The allow-list is a deliberate security measure – `Newtonsoft.Json` offers `TypeNameHandling`, which writes full .NET type names into JSON; used with untrusted input, it lets an attacker make the deserializer instantiate unexpected types, a well-known source of vulnerabilities.
+
+### Source Generation
+
+Reflection-based serialization inspects types at run time, which costs startup time and memory, and is incompatible with trimming and Native AOT compilation – in such applications (including .NET 10 file-based apps, `dotnet run app.cs`, which enable `PublishAot` by default), it is disabled altogether. The alternative is the **source generator**: a `partial` class deriving from `JsonSerializerContext` lists the serialized types with `[JsonSerializable]`, and the compiler generates their serialization metadata and code at build time:
+
+```csharp
+[JsonSerializable(typeof(Forecast))]
+[JsonSourceGenerationOptions(WriteIndented = true)]
+internal partial class ForecastContext : JsonSerializerContext;
+```
+
+```csharp
+string json = JsonSerializer.Serialize(forecast, ForecastContext.Default.Forecast);
+Forecast? deserialized = JsonSerializer.Deserialize(json, ForecastContext.Default.Forecast);
+```
+
+`ForecastContext.Default.Forecast` is a generated `JsonTypeInfo<Forecast>` object. Alternatively, the context can be assigned to `JsonSerializerOptions.TypeInfoResolver`, so that calls taking options also work without reflection.
+
 ## Newtonsoft.Json
 
 Serialization is performed using the static `JsonConvert` class.
