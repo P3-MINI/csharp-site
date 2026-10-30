@@ -58,6 +58,54 @@ public partial class User
 }
 ```
 
+### Inne składowe częściowe (C# 13, C# 14)
+
+Od C# 13 (.NET 9) częściowe mogą być również właściwości i indeksery, a C# 14 (.NET 10) dodaje częściowe konstruktory instancji i częściowe zdarzenia. Podobnie jak w przypadku metod częściowych, jedna część to *deklaracja definiująca* (sama sygnatura), a druga to *deklaracja implementująca*, która jest zawsze wymagana. Daje to generatorom nowe punkty zaczepienia: programista deklaruje składową, a generator dostarcza jej implementację.
+
+```csharp
+// Written by the programmer
+public partial class User
+{
+    public partial User(string name);           // C# 14: partial constructor
+    public partial string Name { get; set; }    // C# 13: partial property
+    public partial event EventHandler? Changed; // C# 14: partial event
+}
+
+// Generated code (e.g., by a generator implementing change notifications)
+public partial class User
+{
+    private string _name = "";
+    private EventHandler? _changed;
+
+    public partial User(string name) => _name = name;
+
+    public partial string Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            _changed?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public partial event EventHandler? Changed
+    {
+        add => _changed += value;
+        remove => _changed -= value;
+    }
+}
+```
+
+Ograniczenia: deklaracja definiująca właściwości częściowej wygląda jak właściwość automatyczna (`{ get; set; }`), natomiast implementująca nie może być właściwością automatyczną. Tylko deklaracja implementująca konstruktora częściowego może mieć inicjalizator `this(...)`/`base(...)`. Deklaracja definiująca zdarzenia częściowego wygląda jak zwykła deklaracja zdarzenia (bez akcesorów), a implementująca musi zawierać akcesory `add` i `remove`.
+
+Od .NET 9 atrybut `[GeneratedRegex]` można stosować także do właściwości częściowej:
+
+```csharp
+[GeneratedRegex(".*@.*\\..*")]
+private static partial Regex EmailRegex { get; } // .NET 9+: generated property
+```
+
 ## Generatory źródeł (*Source Generators*)
 
 Generatory źródeł to mechanizm kompilatora wprowadzony wraz z C# 9.0 i .NET 5 (od .NET 6 zastąpiony wydajniejszymi generatorami przyrostowymi, *Incremental Generators* - pierwotny interfejs `ISourceGenerator` jest obecnie przestarzały), który umożliwia inspekcję kodu użytkownika lub innych plików podczas kompilacji i generowanie na ich podstawie nowych plików źródłowych. Jest to forma metaprogramowania w czasie kompilacji.

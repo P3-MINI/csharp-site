@@ -58,6 +58,54 @@ public partial class User
 }
 ```
 
+### Other Partial Members (C# 13, C# 14)
+
+Starting with C# 13 (.NET 9), properties and indexers can also be partial, and C# 14 (.NET 10) adds partial instance constructors and partial events. As with partial methods, one part is the *defining declaration* (signature only) and the other is the *implementing declaration*, which is always required. This gives generators new hooks: the programmer declares a member, and the generator provides its implementation.
+
+```csharp
+// Written by the programmer
+public partial class User
+{
+    public partial User(string name);           // C# 14: partial constructor
+    public partial string Name { get; set; }    // C# 13: partial property
+    public partial event EventHandler? Changed; // C# 14: partial event
+}
+
+// Generated code (e.g., by a generator implementing change notifications)
+public partial class User
+{
+    private string _name = "";
+    private EventHandler? _changed;
+
+    public partial User(string name) => _name = name;
+
+    public partial string Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            _changed?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public partial event EventHandler? Changed
+    {
+        add => _changed += value;
+        remove => _changed -= value;
+    }
+}
+```
+
+Restrictions: the defining declaration of a partial property looks like an auto-property (`{ get; set; }`), while the implementing one cannot be an auto-property. Only the implementing declaration of a partial constructor can have a `this(...)`/`base(...)` initializer. The defining declaration of a partial event looks like a field-like event, and the implementing one must provide `add` and `remove` accessors.
+
+Since .NET 9, `[GeneratedRegex]` can also be applied to a partial property:
+
+```csharp
+[GeneratedRegex(".*@.*\\..*")]
+private static partial Regex EmailRegex { get; } // .NET 9+: generated property
+```
+
 ## Source Generators
 
 Source Generators are a compiler mechanism introduced together with C# 9.0 and .NET 5 (since .NET 6 superseded by the more efficient *Incremental Generators* - the original `ISourceGenerator` interface is now deprecated) that enables inspection of user code or other files during compilation and generation of new source files based on them. It is a form of compile-time metaprogramming.
