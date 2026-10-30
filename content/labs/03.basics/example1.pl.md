@@ -1,10 +1,10 @@
 ---
-title: "2025/2025"
+title: "2025/2026"
 weight: 10
 bookHidden: "true"
 ---
 
-# Zadanie Laboraotryjne - Podstawy C#
+# Zadanie laboratoryjne - Podstawy C#
 
 ## Kod początkowy
 
@@ -12,7 +12,7 @@ bookHidden: "true"
 > **Graphs**
 > {{< filetree dir="labs/lab03/student/Graphs" >}}
 
-### Wprowadzenie do Grafów
+### Wprowadzenie do grafów
 
 Graf to struktura danych, która składa się ze zbioru **wierzchołków** oraz zbioru **krawędzi**, które łączą pary wierzchołków. Grafy są używane do modelowania relacji między obiektami i są szeroko stosowane w różnych dziedzinach, takich jak sieci społecznościowe, systemy map i nawigacji, sieci komputerowe i inne.
 
@@ -38,8 +38,8 @@ Ten etap koncentruje się na stworzeniu podstawowej struktury grafu i dwóch ró
   * Zadeklaruj następujące metody abstrakcyjne:
     * publiczną `List<int> GetOutVertices(int vertex);` - zwraca listę sąsiadów wierzchołka `vertex`
     * publiczną `void AddEdge(int from, int to);` - dodaje skierowaną krawędź do grafu
-  * Zaimplementuj publiczną metodę `void Display()`, która wypisuje informacje o sąsiedztwie grafu na konsolę. Wynik dla każdego wierzchołka powinien być w formacie `wierzchołek -> [sasiad1,sasiad2,...]`, na przykład:
-    ```
+  * Zaimplementuj publiczną metodę `void Display()`, która wypisuje informacje o sąsiedztwie grafu na konsolę. Wynik dla każdego wierzchołka powinien być w formacie `wierzchołek -> [sąsiad1,sąsiad2,...]`, na przykład:
+    ```text
     0 -> [1,2]
     1 -> [3]
     2 -> []
@@ -49,12 +49,12 @@ Ten etap koncentruje się na stworzeniu podstawowej struktury grafu i dwóch ró
 * **1.2. Implementacja listy sąsiedztwa (2 punkty)**
   * Stwórz publiczną klasę `AdjacencyListGraph` dziedziczącą po `Graph`.
   * Powinna mieć publiczny konstruktor `AdjacencyListGraph(int vertexCount)`.
-  * Zaimplementuj metody `GetOutVertices` i `AddEdge` używając `List<int>[]` do przechowywania struktury grafu.
+  * Zaimplementuj metody `GetOutVertices` i `AddEdge`, używając `List<int>[]` do przechowywania struktury grafu.
 
 * **1.3. Implementacja macierzy sąsiedztwa (2 punkty)**
   * Stwórz publiczną klasę `AdjacencyMatrixGraph` dziedziczącą po `Graph`.
   * Powinna mieć publiczny konstruktor `AdjacencyMatrixGraph(int vertexCount)`.
-  * Zaimplementuj metody `GetOutVertices` i `AddEdge` używając `bool[,]` do przechowywania struktury grafu.
+  * Zaimplementuj metody `GetOutVertices` i `AddEdge`, używając `bool[,]` do przechowywania struktury grafu.
 
 ### **Etap 2: Przechodzenie grafu i wyszukiwanie ścieżki (5 punktów)**
 
@@ -66,8 +66,8 @@ Przeszukiwanie w głąb (DFS) to algorytm do przechodzenia lub przeszukiwania st
   * Dodaj publiczną metodę `void DepthFirstSearch(int start, IVertexVisitor visitor)` do abstrakcyjnej klasy `Graph`.
   * Metoda ta powinna implementować algorytm DFS rekurencyjnie.
   * Przechodzenie powinno zaczynać się od wierzchołka `start`.
-  * Przed zejściem rekurencyjnym, metoda powinna wywołać metodę `PreVisit` z interfejsu `IVertexVisitor`
-  * Po zejściu rekurencyjnym, metoda powinna wywołać metodę `PostVisit` z interfejsu `IVertexVisitor`
+  * Po wejściu do wierzchołka (przed rekurencyjnymi wywołaniami dla jego sąsiadów) metoda powinna wywołać dla niego metodę `PreVisit` z interfejsu `IVertexVisitor`.
+  * Przy opuszczaniu wierzchołka (po rekurencyjnych wywołaniach dla jego sąsiadów) metoda powinna wywołać dla niego metodę `PostVisit` z interfejsu `IVertexVisitor`.
   * Metoda może używać metody pomocniczej, na przykład `DepthFirstSearchRecursive(int vertex, bool[] visited, IVertexVisitor visitor)`.
     * Użyj tablicy `bool[] visited`, aby oznaczać i pomijać już odwiedzone wierzchołki.
 

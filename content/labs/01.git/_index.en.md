@@ -103,7 +103,7 @@ A newly created file that has not yet been added to the repository is in the `un
 
 After modifying a tracked file in the working directory, the file enters the `modified` state.
 
-The staging area can be thought of as a waiting room. To tell solid Git which changes we want to include in the next commit, we use:
+The staging area can be thought of as a waiting room. To tell Git which changes we want to include in the next commit, we use:
 
 ```bash
 git add <file_name>
@@ -285,7 +285,7 @@ git push
 
 When working in a team, other programmers will push their changes to the remote repository. To update our local project, we can use one of two commands:
 
-- `git fetch` - only downloads information about new commits from the server and does not modify our working files. This is a safe solution when we only want to look around and check, for example using `git log`, what other people have been working on without integrating their code into ours.
+- `git fetch` - only downloads new commits from the server and does not modify our working files. This is a safe solution when we only want to look around and check, for example using `git log`, what other people have been working on without integrating their code into ours.
     
 - `git pull` - the most commonly used command for downloading changes. It effectively combines `git fetch` with `git merge`: it downloads the changes and immediately attempts to merge them with our local branch.
     
@@ -583,7 +583,7 @@ Before merging branches, it is worth checking which branch we are currently on a
 
 There are also other ways to combine branches.
 
-**Merge** combines the histories of two branches while preserving all previous commits.
+**Merge** combines the histories of two branches while preserving all previous commits. Its advantage is that the full history is preserved, but with many branches it can lead to a less readable and more complicated commit history.
 
 **Squash merge** combines all changes from a branch into a single commit. This makes the history of the main branch simpler, but individual commits from the merged branch are no longer visible there.
 

@@ -7,7 +7,7 @@ weight: 30
 
 Zakres tego laboratorium obejmuje podstawy języka C# (składnia, system typów, typy podstawowe, tablice, parametry) oraz tworzenie własnych typów (klasy, struktury, interfejsy, dziedziczenie, typy wyliczeniowe). 
 
-Jako że znasz już język C++, wiele konstrukcji w C# wyda Ci się znajomych. Przed rozpoczęciem zadania, omówimy najważniejsze różnice i zagadnienia. Przede wszystkim w C# nie rozdzielamy deklaracji od implementacji (brak podziału na pliki nagłówkowe `.h` i źródłowe `.cpp`) – cały kod klas i struktur definiuje się bezpośrednio w plikach `.cs`.
+Jako że znasz już język C++, wiele konstrukcji w C# wyda Ci się znajomych. Przed rozpoczęciem zadania omówimy najważniejsze różnice i zagadnienia. Przede wszystkim w C# nie rozdzielamy deklaracji od implementacji (brak podziału na pliki nagłówkowe `.h` i źródłowe `.cpp`) – cały kod klas i struktur definiuje się bezpośrednio w plikach `.cs`.
 
 ### Przestrzenie nazw
 
@@ -121,7 +121,7 @@ Console.WriteLine(p); // Output: [1, 2, 3]
 
 ## Zadanie 1 - Śledzenie promieni
 
-W ramach tego zadania stworzysz prostą aplikację do śledzenia promieni. Zadanie to opiera się na materiałach z książki [Raytracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html). Będzie się ona składała z pojedynczego projektu - aplikacji wykonywalnej.
+W ramach tego zadania stworzysz prostą aplikację do śledzenia promieni. Zadanie to opiera się na materiałach z książki [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html). Będzie się ona składała z pojedynczego projektu - aplikacji wykonywalnej.
 
 Śledzenie promieni (ang. *ray tracing*) to technika generowania obrazów. W metodzie tej rzucamy promienie od obserwatora (kamery) przez każdy piksel rzutni w głąb sceny. Następnie algorytm sprawdza, z jakimi obiektami przecina się dany promień i na tej podstawie oblicza kolor piksela.
 
@@ -188,7 +188,7 @@ dotnet run > image.ppm
 > ![Stage 1 Render]({{< relurl "/labs/w03.basics/Raytracer.01/image.jpg" >}})
 > {{< filetree dir="labs/w03.basics/Raytracer.01" >}}
 
-### Etap 2: Kamera i Promienie
+### Etap 2: Kamera i promienie
 
 W tym etapie rozbudujemy strukturę `Vector3` oraz stworzymy mechanizm wirtualnej kamery i strukturę promienia (`Ray`).
 
@@ -209,7 +209,7 @@ W pliku `Vector3.cs` zaimplementuj:
 4. Statyczną metodę `Cross()` do obliczania iloczynu wektorowego.
 5. Metodę `Normalize()`, która znormalizuje wektor.
 
-#### Struktura Promienia (Ray)
+#### Struktura promienia (Ray)
 
 Każdy wypuszczony z kamery promień to półprosta, którą można opisać funkcją {{< katex >}}P(t) = A + t \cdot b{{< /katex >}}, gdzie {{< katex >}}A{{< /katex >}} to początek promienia (Origin), {{< katex >}}b{{< /katex >}} to jego kierunek (Direction), a parametr {{< katex >}}t{{< /katex >}} oznacza dystans przebyty wzdłuż tego kierunku.
 
@@ -218,7 +218,7 @@ Utwórz nową strukturę `Ray` (plik `Ray.cs`) i zdefiniuj w niej:
 - Konstruktor przyjmujący i przypisujący ich wartości początkowe.
 - Metodę `Vector3 At(float t)`, wyznaczającą wartość funkcji {{< katex >}}P(t){{< /katex >}} (pozycję punktu na promieniu w przestrzeni) dla danego parametru {{< katex >}}t{{< /katex >}}.
 
-#### Klasa Kamery
+#### Klasa kamery
 
 Będziemy posługiwali się modelem kamery, w którym wypuszczamy promienie z pozycji obserwatora prosto, przepuszczając je przez piksele wirtualnego ekranu (rzutni) zawieszonego przed kamerą.
 
@@ -287,7 +287,7 @@ Utwórz plik `HitInfo.cs` ze strukturą przechowującą wynik uderzenia:
 > [!IMPORTANT]
 > #### Interfejsy w C#
 > 
-> Interfejsy to abstrakcyjne typy definiujące kontrakt, czyli zbiór metod i właściwości, które klasa musi zaimplementować. Nie posiadają one własnego stanu (pól) ani implementacji. W naszym programie każdy obiekt, w który może uderzyć promień, będzie implementował wspólny interfejs, co pozwoli na polimorficzną obsługę różnych kształtów na scenie.
+> Interfejsy to abstrakcyjne typy definiujące kontrakt, czyli zbiór metod i właściwości, które klasa musi zaimplementować. Nie mogą posiadać własnego stanu (pól instancji) i zazwyczaj nie zawierają implementacji (od C# 8 interfejsy mogą dostarczać domyślne implementacje metod, ale nie będziemy z tego korzystać). W naszym programie każdy obiekt, w który może uderzyć promień, będzie implementował wspólny interfejs, co pozwoli na polimorficzną obsługę różnych kształtów na scenie.
 
 > [!IMPORTANT]
 > #### Modyfikator "out"

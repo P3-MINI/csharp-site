@@ -8,7 +8,7 @@ public class Program {
     public static void Main() {
         var t0 = new DateTime(2026, 10, 10, 10, 0, 0);
         var log = new SensorLog();
-        log.LoadFromCsv("..\\..\\..\\readings.csv");
+        log.LoadFromCsv(Path.Combine(AppContext.BaseDirectory, "readings.csv"));
 
         // =============================================================
 
@@ -29,7 +29,7 @@ public class Program {
 
         int maxCount = 5;
         int count = 0;
-        foreach (var r in T2.Repeat("tmp", 1.1, 3, t0)) {
+        foreach (var r in T2.Repeat("tmp", 1.1, 5, t0)) {
             if (count++ >= maxCount) { break; }
             Console.WriteLine($"  {r.Sensor}={r.Value:F2}@{r.At:HH:mm}");
         }
@@ -98,8 +98,8 @@ public class Program {
         Show("pair-asc", [new("a", 1.0, t0), new("a", 2.0, t0)]);
         Show("pair-desc", [new("a", 2.0, t0), new("a", 1.0, t0)]);
         Show("pair-eq", [new("a", 1.0, t0), new("a", 1.0, t0)]);
-        Show("starts-high", [new("a", 150.0, t0), new("a", 10.0, t0)]);
-        Show("ends-low", [new("a", 10.0, t0), new("a", -5.0, t0)]);
+        Show("starts-high", [new("a", 150.0, t0), new("a", 10.0, t0), new("a", 20.0, t0)]);
+        Show("ends-low", [new("a", 10.0, t0), new("a", 20.0, t0), new("a", -5.0, t0)]);
         Show("other", [new("a", 10.0, t0), new("a", 20.0, t0), new("a", 30.0, t0)]);
 
         // =============================================================

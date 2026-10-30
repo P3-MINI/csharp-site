@@ -30,7 +30,7 @@ public class Box<T> {
 // TODO 3 
 // =============================================================
 
-public class Shelf<T> /* add missing interfaces and constrains here */ {
+public class Shelf<T> /* add missing interfaces and constraints here */ {
     public int Space { get; init; } = 5;
     private int _current = 0;
     private T?[] _items;

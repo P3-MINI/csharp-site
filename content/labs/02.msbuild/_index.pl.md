@@ -19,15 +19,16 @@ W narzędziach .NET korzystamy między innymi z:
 Większa aplikacja .NET może składać się z kilku oddzielnych projektów. Każdy projekt możemy potraktować jako pojedynczy element większej aplikacji. Jeden projekt może odpowiadać na przykład za logikę programu, a drugi za testy jednostkowe. Każdy z tych projektów posiada własny plik `.csproj`, który opisuje między innymi sposób budowania projektu oraz jego zależności.
 
 Do pogrupowania projektów należących do jednej aplikacji służy **solucja**. Solucja określa, które projekty są ze sobą logicznie powiązane, ale sama nie definiuje zależności pomiędzy nimi. 
+
 ## .NET CLI
 
-Podczas pracy z .NET nie jesteśmy ograniczeni do akcji dostępnych w Visual Studio czy Riderze. Często aplikacje budowane są w środowiskach serwerowych bez interfejsu graficznego (np. w procesach CI/CD (ang. *Continous Integragion and Continous Delivery*)). Z tego powodu musisz wiedzieć, jak wykonać te operacje bezpośrednio z terminala. 
+Podczas pracy z .NET nie jesteśmy ograniczeni do akcji dostępnych w Visual Studio czy Riderze. Często aplikacje budowane są w środowiskach serwerowych bez interfejsu graficznego (np. w procesach CI/CD (ang. *Continuous Integration and Continuous Delivery*)). Z tego powodu musisz wiedzieć, jak wykonać te operacje bezpośrednio z terminala. 
 
-Służy do tego **.NET CLI**. Listę dostępnych poleceń możemy wyświetlić za pomocą polecenia `dotnet --help`. Pomoc do poszczególnych poleceń możemy wyświetlić za pomocą komendy: `dotnet <komenda> --help`
+Służy do tego **.NET CLI**. Listę dostępnych poleceń możemy wyświetlić za pomocą polecenia `dotnet --help`. Pomoc do poszczególnych poleceń możemy wyświetlić za pomocą komendy: `dotnet <komenda> --help`.
 
 Za jego pomocą możemy wykonywać różne operacje na projekcie. Na przykład możemy zbudować projekt za pomocą `dotnet build`, a za pomocą `dotnet run` możemy zbudować i uruchomić naszą aplikację. Z kolei `dotnet test` buduje projekty testowe i uruchamia znajdujące się w nich testy.
 
-W kolejnych częściach laboratorium wykorzystamy .NET CLI między innymi do utworzenia solucja, dodania do niego kilku projektów, zbudowania aplikacji oraz uruchomienia testów jednostkowych.
+W kolejnych częściach laboratorium wykorzystamy .NET CLI między innymi do utworzenia solucji, dodania do niej kilku projektów, zbudowania aplikacji oraz uruchomienia testów jednostkowych.
 
 ### Tworzenie solucji
 
@@ -37,7 +38,7 @@ Nową solucję możemy utworzyć za pomocą polecenia:
 dotnet new sln -n <SolutionName>
 ```
 
-Polecenie `dotnet new` tworzy nowy element na podstawie jednego z szablonów dostępnych w .NET SDK. W tym przypadku używamy szablonu `sln`, przeznaczonego do tworzenia solucji. 
+Polecenie `dotnet new` tworzy nowy element na podstawie jednego z szablonów dostępnych w .NET SDK. W tym przypadku używamy szablonu `sln`, przeznaczonego do tworzenia solucji. Od .NET 10 tworzy on plik `<SolutionName>.slnx` w nowym, opartym na XML formacie solucji (starsze wersje SDK tworzyły pliki `.sln`).
 
 ### Tworzenie biblioteki
 
@@ -59,12 +60,13 @@ Przykładowo możemy utworzyć klasę odpowiedzialną za podstawowe operacje na 
 
 ```csharp
 namespace GeometryTools.Lib; 
+
 public static class RectangleUtils 
 { 
-	public static double CalculateArea(double width, double height)
-	{ 
-		return width * height; 
-	} 
+    public static double CalculateArea(double width, double height)
+    { 
+        return width * height; 
+    } 
 }
 ```
 
@@ -76,7 +78,7 @@ Poprawność kompilacji biblioteki możemy sprawdzić za pomocą:
 dotnet build GeometryTools.Lib
 ```
 
-### Dodawanie projektu do Solucji
+### Dodawanie projektu do solucji
 
 Utworzenie projektu w tym samym katalogu, co plik rozwiązania, nie powoduje automatycznego dodania go do solucji. 
 
@@ -95,12 +97,14 @@ dotnet sln list
 Wówczas na liście powinien pojawić się:
 
 ```text
-<LibraryName>.Lib
+Project(s)
+----------
+<LibraryName>.Lib/<LibraryName>.Lib.csproj
 ```
 
 ### Tworzenie projektu aplikacji konsolowej
 
-Aby utworzyć aplikację konsolową możesz skorzystać z:
+Aby utworzyć aplikację konsolową, możesz skorzystać z:
 
 ```bash
 dotnet new console -n <ProjectName>.App
@@ -116,7 +120,7 @@ dotnet sln add <ProjectName>.App
 
 Jeżeli kod jednego projektu będzie korzystał z klas znajdujących się w innym projekcie, musimy ręcznie zdefiniować taką zależność. 
 
-Aby dodać referencję do innego projektu można skorzystać z:
+Aby dodać referencję do innego projektu, można skorzystać z:
 
 ```bash
 dotnet add <Project> reference <ReferencedProject>
@@ -128,9 +132,9 @@ Wówczas `<Project>` będzie mógł korzystać z kodu znajdującego się w `<Ref
 
 Po dodaniu referencji możemy skorzystać w aplikacji konsolowej z publicznych klas znajdujących się w bibliotece.
 
-Na przykład, jeśli biblioteka posiada przestrzeń nazw `GeometryTools.Lib` możemy ją zaimportować na początku naszej aplikacji:
+Na przykład, jeśli biblioteka posiada przestrzeń nazw `GeometryTools.Lib`, możemy ją zaimportować na początku naszej aplikacji:
 
-```cs
+```csharp
 using GeometryTools.Lib;
 ```
 
@@ -149,7 +153,7 @@ dotnet run --project GeometryTools.App
 
 ### Budowanie projektu
 
-Kod źródłowy C# przed uruchomieniem musi zostać skompilowany. Do kompilacji całej solucji służy polecenie `dotnet build`. Jeśli natomiast chcemy skompilować tylko konkretny projekt to możemy skorzystać z `dotnet build <NazwaProjektu>`. 
+Kod źródłowy C# przed uruchomieniem musi zostać skompilowany. Do kompilacji całej solucji służy polecenie `dotnet build`. Jeśli natomiast chcemy skompilować tylko konkretny projekt, możemy skorzystać z `dotnet build <NazwaProjektu>`. 
 Podczas budowania uwzględniane są również zależności, dzięki czemu projekty są budowane w odpowiedniej kolejności.
 
 ## Zadanie 1 - Konwerter temperatur
@@ -164,7 +168,7 @@ Wykonaj w tym celu następujące kroki:
 - Zbuduj całą solucję, a następnie uruchom aplikację konsolową.
 
 >[!Warning]
->Rozwiąż to zadanie zarówno z poziomu terminala, korzystając z .NET CLI, jak i również w wybranym IDE, Takim jak Visual Studio lub Rider.
+>Rozwiąż to zadanie zarówno z poziomu terminala, korzystając z .NET CLI, jak i również w wybranym IDE, takim jak Visual Studio lub Rider.
 
 ## MSBuild i pliki `.csproj`
 
@@ -189,10 +193,9 @@ Przykładowy plik projektu aplikacji konsolowej może wyglądać następująco:
   </PropertyGroup>
 
 </Project>
-
 ```
 
-Sekcja `ItemGroup` przechowuje elementy powiązane z projektem na przykład `ProjectReference`, natomiast `PropertyGroup` zawiera właściwości projektu. 
+Sekcja `ItemGroup` przechowuje elementy powiązane z projektem, na przykład `ProjectReference`, natomiast `PropertyGroup` zawiera właściwości projektu. 
 
 Polecenia wykonywane za pomocą .NET CLI często modyfikują właśnie plik `.csproj`. Przykładowo dodanie referencji do innego projektu powoduje dopisanie odpowiedniego `ProjectReference`. 
 
@@ -234,36 +237,37 @@ Do zbioru **Items** odwołujemy się za pomocą:
 
 Skorzystaliśmy już z **Itemów** przy dodawaniu referencji do projektu:
 ```xml
-  <ItemGroup>
+<ItemGroup>
     <ProjectReference Include="..\GeometryTools.Lib\GeometryTools.Lib.csproj" />
-  </ItemGroup>
+</ItemGroup>
 ```
 ### Targets
 
 **Target** opisuje konkretny etap procesu wykonywanego przez MSBuild. Projekt może zawierać wiele takich **Targetów**, z których każdy odpowiada za określone zadanie. **Targety** mogą również deklarować zależności między sobą:
 ```xml
 <Target Name="Prepare">
-    <Message Text="Preparing..." />
+    <Message Text="Preparing..." Importance="high" />
 </Target>
 
 <Target Name="BuildApplication" DependsOnTargets="Prepare">
-    <Message Text="Building..." />
+    <Message Text="Building..." Importance="high" />
 </Target>
 ```
 
-Uruchomienie `BuildApplication` spowoduje najpierw wykonanie **Targetu** `Prepare`. Aby uruchomić target możemy skorzystać z komendy `dotnet msbuild -target:BuildApplication`.
+Uruchomienie `BuildApplication` spowoduje najpierw wykonanie **Targetu** `Prepare`. Aby uruchomić target, możemy skorzystać z komendy `dotnet msbuild -target:BuildApplication` wywołanej w katalogu projektu.
 
 ### Tasks
 
-Sam **Target** określa jedynie **etap procesu**. Konkretne czynności wykonywane podczas tego etapu nazywane są **Taskami**. Przykładowo, jeśli chcemy utworzyć katalog i wyświetlić informację o zakończeniu tej operacji możemy zrobić to w następujący sposób:
+Sam **Target** określa jedynie **etap procesu**. Konkretne czynności wykonywane podczas tego etapu nazywane są **Taskami**. Przykładowo, jeśli chcemy utworzyć katalog i wyświetlić informację o zakończeniu tej operacji, możemy zrobić to w następujący sposób:
 ```xml
 <Target Name="Prepare">
     <MakeDir Directories="build" />
-    <Message Text="Build directory prepared" />
+    <Message Text="Build directory prepared" Importance="high" />
 </Target>
 ```
 
-W tym przypadku `Prepare` jest targetem, natomiast `MakeDir` i `Message` będą **Taskami**. 
+W tym przypadku `Prepare` jest targetem, natomiast `MakeDir` i `Message` będą **Taskami**. Domyślnie komunikaty mają normalną ważność (`Importance`) i nie są wyświetlane przy domyślnym (minimalnym) poziomie szczegółowości `dotnet build`/`dotnet msbuild`, dlatego w powyższych przykładach ustawiamy `Importance="high"`.
+
 Oto kilka najpopularniejszych **Tasków** MSBuild:
 ```xml
 <Message />   <!-- wypisanie komunikatu -->
@@ -275,8 +279,10 @@ Oto kilka najpopularniejszych **Tasków** MSBuild:
 ### Debug i Release
 
 Projekt .NET może być budowany w różnych konfiguracjach. Najczęściej używane są:
+
 `Debug` - służący do pracy nad kodem.
-`Release` -  przeznaczony do budowania gotowej wersji programu. 
+
+`Release` - przeznaczony do budowania gotowej wersji programu. 
 
 Projekt możemy zbudować w wybranej konfiguracji za pomocą:
 
@@ -292,7 +298,7 @@ dotnet build -c Debug
 
 Aktualnie używana konfiguracja jest dostępna w MSBuild jako **Property**:
 
-```xml
+```text
 $(Configuration)
 ```
 
@@ -341,13 +347,13 @@ W .NET możemy korzystać z kilku frameworków do tworzenia testów jednostkowyc
 - NUnit
 - xUnit
 
-W tym laboratorium będziemy korzystać z **MSTest.**
+W tym laboratorium będziemy korzystać z **MSTest**.
 
 Projekt testowy jest budowany podobnie jak zwykła biblioteka. Powstały w ten sposób projekt jest później wejściem dla *test runnera*, który wyszukuje w takiej bibliotece metody oznaczone atrybutem `[TestMethod]` i je uruchamia.
 
 ### Tworzenie projektu testowego
 
-Do istniejącej solucji GeometryTools dodamy trzeci projekt, a następnie dodamy go do solucji i utworzymy referencję za pomocą komend:
+Do istniejącej solucji `GeometryTools` dodamy trzeci projekt, a następnie dodamy go do solucji i utworzymy referencję za pomocą komend:
 
 ```bash
 dotnet new mstest -n GeometryTools.Tests
@@ -361,7 +367,7 @@ Zwróć uwagę, że to **projekt testowy zależy od biblioteki**, a nigdy odwrot
 
 W nowo utworzonym projekcie znajdziesz przykładową klasę testową. W MSTest klasa zawierająca testy oznaczana jest atrybutem `[TestClass]`, natomiast poszczególne metody testowe atrybutem `[TestMethod]`.
 
-Możemy utworzyć test dla napisanej wcześniej metody CalculateArea:
+Możemy utworzyć test dla napisanej wcześniej metody `CalculateArea`:
 
 ```csharp
 using GeometryTools.Lib;
@@ -374,19 +380,19 @@ public sealed class RectangleUtilsTests
     [TestMethod]
     public void CalculateArea_ValidDimensions_ReturnsCorrectArea()
     {
-	    //Arrange
-	    double width = 5;
-	    double height = 4;
+        //Arrange
+        double width = 5;
+        double height = 4;
     
-	    //Act
+        //Act
         double result = RectangleUtils.CalculateArea(width, height);
 
-		//Assert
+        //Assert
         Assert.AreEqual(20, result, 1e-7);
     }
 }
 ```
-Test można uruchomić poleceniem `dotnet test`
+Test można uruchomić poleceniem `dotnet test`.
 
 Polecenie najpierw zbuduje odpowiednie projekty, a następnie uruchomi znalezione testy. 
 
@@ -443,7 +449,7 @@ Czasami pracę nad kodem zaczyna się od pisania testów jednostkowych, czyli de
 
 Rozszerz solucję `TemperatureConverter` z poprzedniego zadania o projekt zawierający testy jednostkowe.
 
-- Utwórz projekt `TemperatureConverter.Tests` wykorzystujący `MSTest` i dodaj go do rozwiązania.
+- Utwórz projekt `TemperatureConverter.Tests` wykorzystujący `MSTest` i dodaj go do solucji.
 - Dodaj odpowiednią referencję, aby projekt testowy mógł korzystać z `TemperatureConverter.Lib`.
 - Utwórz klasę `TemperatureUtilsTests`.
 - Napisz testy metody `CelsiusToFahrenheit` dla kilku charakterystycznych temperatur.
@@ -456,4 +462,4 @@ Rozszerz solucję `TemperatureConverter` z poprzedniego zadania o projekt zawier
 - Przywróć poprawną implementację i upewnij się, że wszystkie testy ponownie przechodzą.
 
 > [!Warning]
-> Rozwiąż to zadanie zarówno z poziomu terminala, korzystając z .NET CLI, jak i również w wybranym IDE, Takim jak Visual Studio lub Rider.
+> Rozwiąż to zadanie zarówno z poziomu terminala, korzystając z .NET CLI, jak i również w wybranym IDE, takim jak Visual Studio lub Rider.

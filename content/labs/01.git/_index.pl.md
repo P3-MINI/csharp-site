@@ -5,13 +5,13 @@ weight: 10
 
 ## Tutorial 1 - Git
 
-Przy tworzeniu małych projektów, pracując samodzielnie programiści często zapisywali historię swojego projektu w różnych folderach np. `v.1.0.0`, `v.1.0.1`, `v.1.0.2` itd. Nawet w przypadku takich małych samodzielnych projektów jest to koszmar. Nie da się łatwo sprawdzić, co dokładnie zmieniono między poszczególnymi folderami, a powrót do działającej wersji po zepsuciu czegoś nie jest prosty. 
+Przy tworzeniu małych projektów, pracując samodzielnie, programiści często zapisywali historię swojego projektu w różnych folderach np. `v.1.0.0`, `v.1.0.1`, `v.1.0.2` itd. Nawet w przypadku takich małych samodzielnych projektów jest to koszmar. Nie da się łatwo sprawdzić, co dokładnie zmieniono między poszczególnymi folderami, a powrót do działającej wersji po zepsuciu czegoś nie jest prosty. 
 
 W przypadku większych projektów takie rozwiązanie jest niemożliwe w utrzymaniu. Problem staje się jeszcze większy, gdy kilka osób pracuje nad jednym projektem. Dwie osoby mogą jednocześnie zmodyfikować te same pliki, a następnie trzeba ustalić, w jaki sposób połączyć ich zmiany. Ponadto o wiele ciężej przesyłać kod między członkami zespołu - czasem mogłoby to się sprowadzić do przesyłania do siebie kolejnych wersji projektu mailem. 
 
 Oba te problemy zostały rozwiązane poprzez **systemy kontroli wersji** (ang. VCS - Version Control System). Pozwalają one przechowywać historię zmian w projekcie, a także w wygodny sposób współpracować nad projektem.
 
-Jednym z najpopularniejszych systemów kontroli wersji jest **Git**. Pozwala on śledzić zmiany w plikach projektu, zapisywać kolejne etapy jego rozwoju oraz łączyć zmiany wprowadzane przez różnych programistów. Git działa lokalnie na komputerze i nie wymaga do działania GitHuba ani połączenia z Internetem. Nie należy mylić **Gita** z **Githubem**. GitHub to serwis internetowy, który udostępnia interfejs umożliwiający wygodne przechowywanie i współdzielenie repozytoriów Git, a Git to narzędzie służące do kontroli wersji. 
+Jednym z najpopularniejszych systemów kontroli wersji jest **Git**. Pozwala on śledzić zmiany w plikach projektu, zapisywać kolejne etapy jego rozwoju oraz łączyć zmiany wprowadzane przez różnych programistów. Git działa lokalnie na komputerze i nie wymaga do działania GitHuba ani połączenia z Internetem. Nie należy mylić **Gita** z **GitHubem**. GitHub to serwis internetowy, który udostępnia interfejs umożliwiający wygodne przechowywanie i współdzielenie repozytoriów Git, a Git to narzędzie służące do kontroli wersji. 
 
 Głównym elementem Gita jest **repozytorium** - baza danych, w której są zapisane różne wersje danego projektu zwane **commitami**, czyli migawki projektu wykonane w określonych momentach. Każdy commit zapisuje stan projektu w danej chwili i można łatwo odtworzyć wcześniejsze wersje.
 
@@ -23,23 +23,23 @@ Aby sprawdzić, czy Git jest zainstalowany i w jakiej wersji, używamy polecenia
 
 Następnie musimy ustawić swoją nazwę użytkownika oraz adres e-mail. Możemy tego dokonać za pomocą poleceń: `git config --global user.name <username>` oraz `git config --global user.email <email>`. Dane te są zapisywane przy commitach i pozwalają określić kto jest autorem danej zmiany. 
 
-Jeżeli zastanawiamy się, kto ostatnio zmienił daną linię kodu, możemy użyć komendy `git blame <nazwa_pliku>`. Pokaże to nam dla każdej linii autora, datę oraz commit. Jeśli pojawi się bug, `git blame` pomoże sprawdzić, komu wysłać wiadomość ,,Co tu się wydarzyło?". W praktyce jest to jednak narzędzie do śledzenia historii zmian, a nie do szukania winnych.
+Jeżeli zastanawiamy się, kto ostatnio zmienił daną linię kodu, możemy użyć komendy `git blame <nazwa_pliku>`. Pokaże to nam dla każdej linii autora, datę oraz commit. Jeśli pojawi się bug, `git blame` pomoże sprawdzić, komu wysłać wiadomość „Co tu się wydarzyło?”. W praktyce jest to jednak narzędzie do śledzenia historii zmian, a nie do szukania winnych.
 
 ### Pomoc w Git
 
 Nie musimy pamiętać wszystkich poleceń Gita ani dostępnych dla nich opcji. Git posiada wbudowany system pomocy, z którego możemy skorzystać bezpośrednio z terminala.
 
-Aby wyświetlić ogólną pomoc oraz listę najczęściej używanych poleceń, możemy użyć komendy `git help`
+Aby wyświetlić ogólną pomoc oraz listę najczęściej używanych poleceń, możemy użyć komendy `git help`.
 
 Jeżeli chcemy uzyskać szczegółowe informacje o konkretnym poleceniu, możemy skorzystać z `git <polecenie> --help`. Na przykład `git commit --help` wyświetli pełną dokumentację polecenia `git commit` wraz z opisem jego działania oraz dostępnych opcji.
 
-Jeżeli potrzebujemy jedynie skróconego opisu opcji danej funkcji, możemy wykorzystać komendę `git <polecenie> -h`.
+Jeżeli potrzebujemy jedynie skróconego opisu opcji danego polecenia, możemy wykorzystać komendę `git <polecenie> -h`.
 
 Wbudowana pomoc jest szczególnie przydatna, gdy nie pamiętamy dokładnej składni polecenia lub chcemy sprawdzić dostępne dla niego opcje.
 
 ### Tworzenie repozytorium
 
-Repozytorium w gicie możesz utworzyć za pomocą komendy `git init` w katalogu z plikami projektu, który chcesz dodać do kontroli wersji. Zostanie wówczas utworzony podkatalog `.git`, w którym będą znajdowały się wszystkie informacje potrzebne do kontroli wersji. Usunięcie tego folderu to nieodwracalna utrata historii projektu (choć same pliki robocze pozostaną nienaruszone). Robimy to tylko wtedy, gdy celowo chcemy odpiąć projekt od Gita.
+Repozytorium Gita możesz utworzyć za pomocą komendy `git init` w katalogu z plikami projektu, który chcesz dodać do kontroli wersji. Zostanie wówczas utworzony podkatalog `.git`, w którym będą znajdowały się wszystkie informacje potrzebne do kontroli wersji. Usunięcie tego folderu to nieodwracalna utrata historii projektu (choć same pliki robocze pozostaną nienaruszone). Robimy to tylko wtedy, gdy celowo chcemy odpiąć projekt od Gita.
 
 ## Pliki 
 
@@ -50,7 +50,7 @@ Pliki naszego projektu mogą znajdować się w jednym z czterech głównych stan
 - `committed`
 
 Nowo utworzony plik, który nie został dodany do repozytorium, znajduje się w stanie `untracked`. Oznacza to, że Git widzi plik w katalogu projektu, ale jeszcze go nie śledzi.
-Po zmodyfikowaniu plików w katalogu roboczym pliki przechodzą do stanu `modified`. Staging area to poczekalnia. Aby zasygnalizować sztywnemu Gitowi, które konkretnie zmiany chcemy zawrzeć w najbliższym commicie, używamy `git add <nazwa pliku>`. Plik wówczas zmieni swój stan na `staged`. Po dodaniu wszystkich plików możemy utworzyć commita w repozytorium za pomocą komendy `git commit -m <wiadomość commita>`. Wówczas pliki zostaną zatwierdzone w commicie. Jeśli chcemy przesłać lokalne commity do zdalnego repozytorium możemy skorzystać z komendy `git push`. 
+Po zmodyfikowaniu śledzonych plików w katalogu roboczym pliki przechodzą do stanu `modified`. Staging area to poczekalnia. Aby zasygnalizować Gitowi, które konkretnie zmiany chcemy zawrzeć w najbliższym commicie, używamy `git add <nazwa pliku>`. Plik wówczas zmieni swój stan na `staged`. Po dodaniu wszystkich plików możemy utworzyć commita w repozytorium za pomocą komendy `git commit -m "<wiadomość commita>"`. Wówczas pliki zostaną zatwierdzone w commicie. Jeśli chcemy przesłać lokalne commity do zdalnego repozytorium możemy skorzystać z komendy `git push`. 
 
 ### Sprawdzanie stanu repozytorium
 
@@ -72,7 +72,7 @@ Untracked files:
 
 Oznacza to, że Git widzi plik, ale jeszcze go nie śledzi.
 
-Możemy przygotować go do następnego commita za pomocą `git add program.py`
+Możemy przygotować go do następnego commita za pomocą `git add program.py`.
 Po ponownym wyświetleniu statusu plik powinien znaleźć się w sekcji:
 
 ```text
@@ -116,7 +116,7 @@ Przydatne mogą być również:
   
 ## Zdalne repozytoria 
 
-Jeśli chcielibyśmy współpracować z innymi programistami lub utworzyć kopię zapasową w chmurze możemy wykorzystać **Zdalne repozytorium**. Zazwyczaj będzie ono na serwisie hostingowym np. GitHubie. 
+Jeśli chcielibyśmy współpracować z innymi programistami lub utworzyć kopię zapasową w chmurze, możemy wykorzystać **zdalne repozytorium**. Zazwyczaj będzie ono na serwisie hostingowym np. GitHubie. 
 
 ### Tworzenie kluczy SSH
 
@@ -130,17 +130,17 @@ a następnie zatwierdzamy domyślną lokalizację.
 Klucz publiczny wyświetlamy komendą:
 `cat ~/.ssh/id_ed25519.pub`
 
-A następnie kopiujemy go na Githuba w zakładce Settings -> SSH and GPG keys -> New SSH Key.
+A następnie kopiujemy go na GitHuba w zakładce Settings -> SSH and GPG keys -> New SSH Key.
 
 ### Praca ze zdalnymi repozytoriami
 
 Często pracę zaczynamy od sklonowania repozytorium za pomocą komendy `git clone <link>`. Klonowanie to pobranie istniejącego repozytorium ze zdalnego serwera na nasz komputer. Kopiowane są nie tylko aktualne pliki projektu, ale również historia zmian zapisana w repozytorium. 
 
-Jeśli jednak mamy już projekt na komputerze i chcemy od zera zacząć śledzić jego zmiany za pomocą Gita, możemy utworzyć w jego folderze nowe repozytorium poleceniem `git init`
+Jeśli jednak mamy już projekt na komputerze i chcemy od zera zacząć śledzić jego zmiany za pomocą Gita, możemy utworzyć w jego folderze nowe repozytorium poleceniem `git init`.
 
 Następnie możemy dodać pliki do repozytorium i utworzyć pierwszy commit za pomocą komend:
 
-```
+```bash
 git add .
 git commit -m "Initial commit"
 ```
@@ -149,7 +149,7 @@ Komenda `git add .` dodaje do staging area wszystkie zmiany w plikach w obecnym 
 
 Jeżeli chcemy dodatkowo umieścić projekt w zdalnym repozytorium, np. na GitHubie, należy najpierw utworzyć tam puste repozytorium, a następnie połączyć je z lokalnym projektem:
 
-```
+```bash
 git remote add origin <link>
 git branch -M main
 git push -u origin main
@@ -161,14 +161,14 @@ Od tego momentu lokalne repozytorium jest połączone ze zdalnym i kolejne zmian
 
 Podczas pracy w zespole inni programiści będą przesyłać swoje zmiany do zdalnego repozytorium. Aby zaktualizować swój lokalny projekt, możesz użyć jednego z dwóch poleceń:
 
-- `git fetch` - jedynie pobiera informacje o nowych commitach z serwera, ale nie modyfikuje Twoich plików roboczych. To bezpieczne rozwiązanie, gdy chcesz tylko "rozejrzeć się" i sprawdzić (np. za pomocą git log), nad czym pracowali inni, bez integrowania ich kodu ze swoim.
-- `git pull` - to najczęściej używane polecenie do pobierania zmian. Działa jak połączenie `git fetch` oraz `git merge` - od razu pobiera zmiany i próbuje scalić je z Twoimi lokalnymi plikami.
+- `git fetch` - jedynie pobiera nowe commity z serwera, ale nie modyfikuje Twoich plików roboczych. To bezpieczne rozwiązanie, gdy chcesz tylko "rozejrzeć się" i sprawdzić (np. za pomocą `git log`), nad czym pracowali inni, bez integrowania ich kodu ze swoim.
+- `git pull` - to najczęściej używane polecenie do pobierania zmian. Działa jak połączenie `git fetch` oraz `git merge` - od razu pobiera zmiany i próbuje scalić je z Twoją lokalną gałęzią.
 
 Należy pamiętać, że jeśli ktoś inny zmodyfikował ten sam fragment kodu co Ty, podczas wykonywania `git pull` może pojawić się konflikt, który trzeba będzie rozwiązać ręcznie.
 
 ### Wyświetlanie historii commitów - `git log`
 
-Każdy utworzony commit zostaje zapisany w historii repozytorium. Historię tę możemy wyświetlić za pomocą polecenia `git log`
+Każdy utworzony commit zostaje zapisany w historii repozytorium. Historię tę możemy wyświetlić za pomocą polecenia `git log`.
 
 Dla każdego commita Git wyświetla między innymi:
 
@@ -187,7 +187,7 @@ Date:   Mon Sep 7 15:20:00 2026 +0200
     Dodanie obsługi logowania
 ```
 
-Przy większej liczbie commitów pełny wynik `git log` może być mało czytelny. Możemy wtedy użyć `git log --oneline`
+Przy większej liczbie commitów pełny wynik `git log` może być mało czytelny. Możemy wtedy użyć `git log --oneline`.
 
 Wówczas każdy commit zostanie przedstawiony w jednym wierszu, na przykład:
 
@@ -227,14 +227,14 @@ Do konkretnego commita możemy odwołać się za pomocą jego **hasha**. Możemy
 
 Przykładowo dla commitów:
 
-```
+```text
 a53f761 Dodanie logowania
 87bc120 Poprawienie formularza
 ```
 
 możemy później wykorzystać:
 
-```
+```bash
 git reset --soft 87bc120
 git revert a53f761
 ```
@@ -245,7 +245,7 @@ Commit możemy również wskazać za pomocą `HEAD` lub nazwy brancha, np. `main
 
 Wszystkie te wskazania możemy łączyć z notacją `~` oraz `^`, np.:
 
-```
+```text
 HEAD~1
 main~2
 a53f761^
@@ -261,16 +261,16 @@ Czasami twój projekt będzie zawierał pliki, które nie powinny być zapisywan
 Listę plików, których nie chcemy dodawać do repozytorium możemy zapisać w pliku `.gitignore`.
 
 Możemy ignorować:
-- pojedynczy plik np. `06-07.2026.log`
-- cały katalog np. `logs/`
-- Czy też wszystkie pliki o określonym rozszerzeniu np. `*.log`
+- pojedynczy plik, np. `06-07-2026.log`,
+- cały katalog, np. `logs/`,
+- czy też wszystkie pliki o określonym rozszerzeniu, np. `*.log`.
 
 Plik `.gitignore` jest częścią projektu i powinien zostać zcommitowany tak samo jak pozostałe pliki. Dzięki temu każdy programista współtworzący dany projekt będzie korzystał z tych samych zasad ignorowania plików.
 
 W praktyce `.gitignore` jest jednym z pierwszych plików, które warto przygotować podczas tworzenia nowego repozytorium.
 
 > [!WARNING]
-> Dodanie pliku do .gitignore zadziała tylko na pliki, których Git jeszcze NIE śledzi. Jeśli zacommitowałeś plik z hasłami, dodanie go do .gitignore nic nie da.
+> Dodanie pliku do `.gitignore` zadziała tylko na pliki, których Git jeszcze NIE śledzi. Jeśli zacommitowałeś plik z hasłami, dodanie go do `.gitignore` nie usunie go z historii repozytorium.
 >
 > Aby usunąć śledzony plik z repozytorium bez usuwania go z dysku, użyj:
 >
@@ -333,13 +333,13 @@ gitGraph
 
 Tutaj branch `login` został utworzony na podstawie commita B i rozwija się niezależnie od `main`.
 
-Za pomocą komendy `git branch` możemy wyświetlić listę wszystkich lokalnych gałęzi. Przy gałęzi, na której obecnie jesteśmy wyświetli się `*`.
+Za pomocą komendy `git branch` możemy wyświetlić listę wszystkich lokalnych gałęzi. Przy gałęzi, na której obecnie jesteśmy, wyświetli się `*`.
 
 Jeżeli chcemy rozpocząć pracę nad nową funkcjonalnością, możemy utworzyć dla niej osobny branch za pomocą komendy `git branch <nazwa>`.
 
 Na nowego brancha możemy się przełączyć za pomocą komendy `git switch <nazwa>`.  
 
-Aby przesłać commita na konkretnego brancha na Githubie korzystamy z `git push -u origin <nazwa_brancha>`. Możemy jednocześnie utworzyć nowego brancha i się na niego przełączyć korzystając z polecenia `git switch -c <nazwa>`.
+Aby przesłać commita na konkretnego brancha na GitHubie, korzystamy z `git push -u origin <nazwa_brancha>`. Możemy jednocześnie utworzyć nowego brancha i się na niego przełączyć, korzystając z polecenia `git switch -c <nazwa>`.
 
 W starszych tutorialach bardzo często spotkasz polecenie `git checkout`. Może ono służyć zarówno do przełączania branchy, jak i przywracania plików. W tym tutorialu korzystamy z nowszych, bardziej jednoznacznych poleceń: `git switch` do pracy z branchami oraz `git restore` do przywracania plików.
 
@@ -347,19 +347,23 @@ W starszych tutorialach bardzo często spotkasz polecenie `git checkout`. Może 
 
 Załóżmy, że na gałęzi `login` zakończyliśmy implementację logowania. Jeżeli chcemy, aby ta funkcjonalność znalazła się również na głównej gałęzi `main`, musimy połączyć obie gałęzie. 
 
-Komenda `git merge <nazwa gałęzi>` dołącza zmiany z gałęzi, której nazwę wpisaliśmy do gałęzi na której obecnie się znajdujemy. Na przykład jeśli będąc na gałęzi main wykonamy polecenie `git merge login` to wszystkie zmiany z gałęzi login zostaną dołączone do gałęzi main. Przed scaleniem branchy warto sprawdzić, na której gałęzi obecnie się znajdujemy oraz czy zcommitowaliśmy wszystkie zmiany.
+Komenda `git merge <nazwa gałęzi>` dołącza zmiany z gałęzi, której nazwę wpisaliśmy, do gałęzi, na której obecnie się znajdujemy. Na przykład jeśli będąc na gałęzi `main` wykonamy polecenie `git merge login`, to wszystkie zmiany z gałęzi `login` zostaną dołączone do gałęzi `main`. Przed scaleniem branchy warto sprawdzić, na której gałęzi obecnie się znajdujemy oraz czy zcommitowaliśmy wszystkie zmiany.
 
 Istnieją także inne sposoby na połączenie gałęzi. 
+
 **Merge** łączy historie dwóch branchy, zachowując wszystkie wcześniejsze commity. Zaletą jest przechowanie pełnej historii, ale przy dużej liczbie branchy może prowadzić do powstania mniej czytelnej i bardziej skomplikowanej historii commitów. 
+
 **Squash merge** łączy zmiany z danego brancha w jeden commit. Dzięki temu historia głównej gałęzi jest prostsza, ale nie widać w niej pojedynczych commitów. 
+
 **Rebase** przenosi commity z jednego brancha na koniec drugiego. Trzeba jednak pamiętać, że rebase zmienia historię commitów, dlatego należy używać go ostrożnie, szczególnie w przypadku zmian już udostępnionych innym osobom. 
 
 ### Konflikty 
 
-Jeżeli na dwóch branchach zmieniano różne fragmenty projektu, Git połączy te gałęzie bez problemu. Jednakże w sytuacjach, gdy doszło do zmian tej samej linii kodu lub np. jedna gałąź modyfikuje pewien fragment kodu, a druga go usuwa dochodzi do **konfliktu**.
+Jeżeli na dwóch branchach zmieniano różne fragmenty projektu, Git połączy te gałęzie bez problemu. Jednakże w sytuacjach, gdy doszło do zmian tej samej linii kodu lub np. jedna gałąź modyfikuje pewien fragment kodu, a druga go usuwa, dochodzi do **konfliktu**.
 
-Git w pliku, w którym doszło do konfliktu umieści znaczniki np.:
-```
+Git w pliku, w którym doszło do konfliktu, umieści znaczniki, np.:
+
+```text
 <<<<<<< HEAD 
 Console.WriteLine("Witaj!"); 
 ======= 
@@ -380,7 +384,7 @@ Pełny proces może wyglądać np. tak:
 5. `git commit`
 {{% /steps %}}
 
-Komenda `git merge --abort` przerywa obecny merge i przywraca repozytorium do stanu sprzed rozpoczęcia operacji. Jest to szczególnie przydatne, gdy konfliktów jest dużo i chcemy wrócić o wcześniejszego stanu.
+Komenda `git merge --abort` przerywa obecny merge i przywraca repozytorium do stanu sprzed rozpoczęcia operacji. Jest to szczególnie przydatne, gdy konfliktów jest dużo i chcemy wrócić do wcześniejszego stanu.
 
 ## Zadanie 2
 
@@ -403,17 +407,17 @@ Po zakończeniu:
 - prześlij końcową wersję projektu na GitHuba,
 - wyświetl historię wszystkich branchy (spróbuj użyć komendy `git log --oneline --graph --all`), aby sprawdzić, czy rozgałęzienie i moment scalenia są w niej dobrze widoczne.
 
-## Unscrewing the repo
+## Naprawianie błędów w repozytorium
 
 Błędy chodzą po ludziach - nie każda zmiana w projekcie okazuje się dobrym pomysłem. Na szczęście Git udostępnia kilka narzędzi pozwalających naprawić feralne zmiany.
 
 ### Napisałem coś złego i chcę odzyskać plik
 
-Załóżmy, że zmieniliśmy plik, ale uznaliśmy, że poprzednia wersja była jednak lepsza. Jeżeli zmian jeszcze nie zapisaliśmy w commicie możemy wrócić do wersji z poprzedniego commita za pomocą komendy `git restore <plik>`.
+Załóżmy, że zmieniliśmy plik, ale uznaliśmy, że poprzednia wersja była jednak lepsza. Jeżeli zmian jeszcze nie zapisaliśmy w commicie, możemy wrócić do wersji z poprzedniego commita za pomocą komendy `git restore <plik>`.
 
-### Przypadkiem zrobiłem git add
+### Przypadkiem zrobiłem `git add`
 
-Czasami wykonamy `git add .` i dopiero wtedy zauważymy, że nie wszystkie pliki powinny znaleźć się w tym commicie. Możemy usunąć plik ze staging area bez usuwania zmian w pliku za pomocą `git restore --staged <plik>`
+Czasami wykonamy `git add .` i dopiero wtedy zauważymy, że nie wszystkie pliki powinny znaleźć się w tym commicie. Możemy usunąć plik ze staging area bez usuwania zmian w pliku za pomocą `git restore --staged <plik>`.
 
 ### Commit jest dobry, tylko oczywiście zapomniałem jednego pliku
 
@@ -426,19 +430,20 @@ Polecenie `git reset` służy do cofania wskaźnika `HEAD` do wcześniejszego co
 * **`git reset --soft <commit>`** – cofa historię, ale zachowuje wszystkie zmiany i od razu umieszcza je w **staging area**. Przydatne, gdy np. zrobiliśmy commita za wcześnie i
 chcemy tylko dołożyć do niego kolejne pliki.
 * **`git reset --mixed <commit>`** (lub brak flagi) – cofa historię, zachowuje zmiany na dysku, ale wyciąga je ze staging area (wracają do stanu **modified**).
-* **`git reset --hard <commit>`** – cofa historię i **bezpowrotnie usuwa** wszystkie zmodyfikowane śledzone pliki. Twój folder z projektem staje się dokładną kopią wskazanego commita.
+* **`git reset --hard <commit>`** – cofa historię i **bezpowrotnie usuwa** wszystkie zmiany w śledzonych plikach. Twój folder z projektem staje się dokładną kopią wskazanego commita.
 
 > [!WARNING]
 > Flaga `--hard` trwale usuwa niezapisany kod. Pliki typu `untracked` nie są jednak przez nią usuwane.
 
 ### Commit był za wcześnie 
 
-Jeśli nie chcieliśmy jeszcze robić commita, ale nasz kod jest dobry, jednak brakuje jeszcze kawałka kodu możemy za pomocą polecenia `git reset --soft HEAD~1` cofnąć ostatni commit, pozostawiając jego zmiany w staging area.
+Jeśli nie chcieliśmy jeszcze robić commita, ale nasz kod jest dobry, jednak brakuje jeszcze kawałka kodu, możemy za pomocą polecenia `git reset --soft HEAD~1` cofnąć ostatni commit, pozostawiając jego zmiany w staging area.
+
 ### Zepsułem niescommitowane zmiany
 
-Jeśli nasz kod do niczego się nie nadaje i chcemy się cofnąć do poprzedniego commita możemy skorzystać z komendy `git reset --hard HEAD`. Polecenie to usuwa lokalne zmiany w śledzonych plikach oraz zmiany znajdujące się w staging area. Pliki `untracked` nie zostaną przez tę komendę usunięte. Jeśli chcemy całkowicie usunąć ostatni lokalny commit możemy skorzystać z `git reset --hard HEAD~1`.
+Jeśli nasz kod do niczego się nie nadaje i chcemy się cofnąć do ostatniego commita, możemy skorzystać z komendy `git reset --hard HEAD`. Polecenie to usuwa lokalne zmiany w śledzonych plikach oraz zmiany znajdujące się w staging area. Pliki `untracked` nie zostaną przez tę komendę usunięte. Jeśli chcemy całkowicie usunąć ostatni lokalny commit, możemy skorzystać z `git reset --hard HEAD~1`.
 
-### Wypchnąłem coś złego i ktoś zdążył to już pobrać.
+### Wypchnąłem coś złego i ktoś zdążył to już pobrać
 
 Załóżmy, że historia commitów wygląda następująco:
 
@@ -456,27 +461,31 @@ gitGraph
 
 Jeżeli `C` zawiera błąd, polecenie `git revert C` utworzy nowy commit `D`, który odwróci działanie commita `C`.
 
-## Zadanie 3.
+## Zadanie 3
 
 Utwórz prosty projekt C# oraz historię składającą się z kilku commitów. Następnie celowo doprowadź repozytorium do kolejnych problematycznych sytuacji.
 Twoim zadaniem jest rozwiązanie każdej z nich:
 
 **Sytuacja A - zepsuty plik**
+
 Wprowadziłeś wiele nieudanych zmian w `Program.cs` i chcesz całkowicie z nich zrezygnować. Zmiany nie zostały jeszcze zapisane w commicie.
 
 Przywróć ostatnią poprawną wersję pliku.
 
 **Sytuacja B - zły plik w staging area**
+
 Przygotowując następny commit, dodałeś do staging area plik, który nie powinien się w nim znaleźć. Sam plik oraz jego zawartość mają jednak pozostać na komputerze.
 
 Popraw zawartość staging area.
 
 **Sytuacja C - niekompletny commit**
+
 Utworzyłeś commit zawierający nową funkcjonalność, ale po chwili zauważyłeś, że jeden potrzebny plik nie został do niego dodany.
 
 Popraw ostatni commit bez tworzenia dodatkowego commita typu `fix`.
 
 **Sytuacja D - commit wykonany za wcześnie**
+
 Zmiany są poprawne, ale nie powinny być jeszcze zapisane jako commit. Cofnij ostatni commit, zachowując jego zawartość do dalszej pracy.
 
 **Sytuacja E - błędna zmiana na GitHubie**

@@ -26,7 +26,7 @@ Bez generyków:
 ```csharp
 ArrayList list = new ArrayList();
 list.Add(1);
-int x = (int)list.Get(0); // unboxing, runtime cast
+int x = (int)list[0]; // unboxing, runtime cast
 ```
 Z generykami:
 
@@ -83,13 +83,13 @@ Ograniczenia określają, jakie typy mogą być użyte jako parametr typu.
 | `where T : allows ref struct` | Pozwala na użycie struktur typu `ref`
 
 > [!NOTE]
-> Jeśli nie wiesz lub nie pamiętasz, czym jest nullowalność i co oznacza w języku C#, możesz sprawdzić [tutaj](https://csharp.mini.pw.edu.pl/pl/lectures/05.csharp-features/nullable/) oraz [tutaj](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/null-safety/).
+> Jeśli nie wiesz lub nie pamiętasz, czym jest nullowalność i co oznacza w języku C#, możesz sprawdzić [tutaj]({{< ref "/lectures/05.csharp-features/nullable" >}}) oraz [tutaj](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/null-safety/).
 
 Choć podobne do szablonów z C++, typy generyczne różnią się w dwóch kluczowych kwestiach:
 1. Podczas kompilacji, w CIL tworzona jest tylko jedna wersja typu generycznego. Konkretna instancja jest tworzona w czasie wykonywania (JIT), przy pierwszym użyciu. Szablony są natomiast tworzone w trakcie kompilacji, z jedną kopią kodu maszynowego na każdy użyty typ.
 2. Są one ściśle sprawdzane już przy definicji typu generycznego, podczas gdy szablony są weryfikowane głównie podczas pierwszego użycia (z pewnymi różnicami zależnymi od kompilatora).
 
-Dlatego w pierwszym przykładzie na górze strony musieliśmy użyć `where T : IComparable<T>`, podczas gdy w C++, choć moglibyśmy użyć konceptu takiego jak `requires std::totally_order<T>`, nie jest to konieczne.
+Dlatego w pierwszym przykładzie na górze strony musieliśmy użyć `where T : IComparable<T>`, podczas gdy w C++, choć moglibyśmy użyć konceptu takiego jak `requires std::totally_ordered<T>`, nie jest to konieczne.
 
 
 ### Ograniczenia można łączyć:
@@ -98,10 +98,10 @@ public class Box<T> where T : class, IEntity, new() {}
 ```
 
 ## Kowariancja i kontrawariancja
-Reguły wariancji ograniczają sposób używania parametrów generycznych i informują, czy można zastąpić `Generic<Derived>` przy pomocy `Generic<Base>` (kowariancja) lub odwrotnie (kontrawariancja). Są one głównie używane przy interfejsach i delegatach.
+Reguły wariancji ograniczają sposób używania parametrów generycznych i informują, czy w miejscu `Generic<Base>` można użyć `Generic<Derived>` (kowariancja), czy odwrotnie (kontrawariancja). Wariancję można deklarować wyłącznie w generycznych interfejsach i delegatach.
 
 ### Kowariancja (`out`)
-`out T` oznacza, że ​​`T` pojawia się tylko jako wynik (typ zwracany, parametr `out` lub właściwość tylko do odczytu).
+`out T` oznacza, że `T` pojawia się tylko jako wynik (typ zwracany lub właściwość tylko do odczytu; parametry `out` nie są dozwolone, ponieważ są przekazywane przez referencję).
 ```csharp
 public interface IProducer<out T>
 {
@@ -117,7 +117,7 @@ IEnumerable<object> objects = strings;
 ```
 
 ### Kontrawariancja (`in`)
-`in T` oznacza, że `T` występuje wyłącznie jako wejście (parametr, parametr `in` lub właściwość tylko do zapisu).
+`in T` oznacza, że `T` występuje wyłącznie jako wejście (parametr przekazywany przez wartość lub właściwość tylko do zapisu; parametry `ref`, `in` i `out` nie są dozwolone).
 ```csharp
 public interface IConsumer<in T>
 {
@@ -139,9 +139,9 @@ IComparer<string> strComparer = objComparer;
 | `Func<in T1, in T2, out TResult>` | Argumenty są kontrawariantne, wynik jest kowariantny |
 
 > [!NOTE]
-> `Action<T>` lub `Func<T, TResult>` to generyczne systemowe delegaty. Jeśli nie wiesz lub zapomniałeś, czym jest delegata i co oznacza w C#, możesz sprawdzić [tutaj](https://csharp.mini.pw.edu.pl/pl/lectures/05.csharp-features/delegates/) oraz [tutaj](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/).
+> `Action<T>` lub `Func<T, TResult>` to generyczne systemowe delegaty. Jeśli nie wiesz lub zapomniałeś, czym jest delegat i co oznacza w C#, możesz sprawdzić [tutaj]({{< ref "/lectures/05.csharp-features/delegates" >}}) oraz [tutaj](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/).
 
-Większość klas, tak jak `List<T>`, jest domyślnie niezmiennicza (inwariantna):
+Klasy, takie jak `List<T>`, są zawsze niezmiennicze (inwariantne):
 ```csharp
 List<string> strings = new();
 List<object> objects = strings; // compile error
@@ -181,7 +181,7 @@ List<string> strings = objects; // compile error
 - [Generics C# Programming Guide](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generic-type-parameters)
 
 ## Kolekcje
-Zanim wprowadzono generyki wraz z C# 2, przestrzeń nazw `System.Collections` oferowała szereg struktur danych, takich jak: `ArrayList`, `HashTable`, `SortedList`, `Queue`, `Stack` oraz `BitArray`. Ponieważ mogły one przechowywać jedynie obiekty typu `object`, wiązało się to z problemami takimi jak pakowanie (boxing) oraz rzutowanie typów w czasie wykonywania programu – o czym wspomniano na początku tego powtórzenia. Wraz z wprowadzeniem typów generycznych struktury te stały się przestarzałe (z wyjątkiem ostatniej z wymienionych). Z tego powodu skupimy się wyłącznie na kolekcjach dostępnych w przestrzeni nazw `System.Collections.Generic`, które zapewniają lepszą kontrolę typów oraz wyższą wydajność.
+Zanim wprowadzono generyki wraz z C# 2, przestrzeń nazw `System.Collections` oferowała szereg struktur danych, takich jak: `ArrayList`, `Hashtable`, `SortedList`, `Queue`, `Stack` oraz `BitArray`. Ponieważ mogły one przechowywać jedynie obiekty typu `object`, wiązało się to z problemami takimi jak pakowanie (boxing) oraz rzutowanie typów w czasie wykonywania programu – o czym wspomniano na początku tego powtórzenia. Wraz z wprowadzeniem typów generycznych struktury te stały się przestarzałe (z wyjątkiem ostatniej z wymienionych). Z tego powodu skupimy się wyłącznie na kolekcjach dostępnych w przestrzeni nazw `System.Collections.Generic`, które zapewniają lepszą kontrolę typów oraz wyższą wydajność.
 
 ### Ogólna hierarchia kolekcji
 ```mermaid
@@ -247,7 +247,7 @@ class ISet~T~ {
     +Overlaps(IEnumerable~T~ other) bool
 }
 ```
-Analogicznie istnieją również `IReadOnlyList<T>` oraz `IReadOnlyDictionary<TKey, TValue>`, które dziedziczą po `IReadOnlyCollection<T>`. Nie istnieje natomiast `IReadOnlySet<T>`.
+Analogicznie istnieją również `IReadOnlyList<T>`, `IReadOnlyDictionary<TKey, TValue>` oraz `IReadOnlySet<T>` (od .NET 5), które dziedziczą po `IReadOnlyCollection<T>` (w przypadku słowników `T` to `KeyValuePair<TKey, TValue>`).
 
 ### Kolekcje standardowe
 
@@ -261,8 +261,8 @@ Analogicznie istnieją również `IReadOnlyList<T>` oraz `IReadOnlyDictionary<TK
 | `HashSet<T>`| `ISet<T>` | — | `unordered_set<T>` |
 | `SortedSet<T>`| `ISet<T>` | — | `set<T>` |
 | `LinkedList<T>`| `ICollection<T>` | — | `list<T>` |  
-| `Queue<T>` | `ICollection<T>` | `Queue` | `queue<T>` |
-| `Stack<T>` |`ICollection<T>` | `Stack` | `stack<T>` |
+| `Queue<T>` | `IReadOnlyCollection<T>` | `Queue` | `queue<T>` |
+| `Stack<T>` |`IReadOnlyCollection<T>` | `Stack` | `stack<T>` |
 | `PriorityQueue<E,P>` | — | — | `priority_queue<T>` |
 | — | `ICollection` | `BitArray` | `bitset` |
 
@@ -276,7 +276,7 @@ Analogicznie istnieją również `IReadOnlyList<T>` oraz `IReadOnlyDictionary<TK
 Enumeratory to odpowiedniki iteratorów z C++ w języku C#. Jeśli spojrzymy na diagram hierarchii kolekcji, widać, że udostępniają one jedną właściwość oraz trzy metody, które służą do przeglądania kolekcji, pobierania wartości oraz przywracania stanu początkowego.
 
 > [!NOTE]
-> Jeśli nie wiesz lub nie pamiętasz, czym jest `IDisposable` i co oznacza w języku C#, możesz sprawdzić [tutaj](https://csharp.mini.pw.edu.pl/pl/lectures/05.csharp-features/disposable/).
+> Jeśli nie wiesz lub nie pamiętasz, czym jest `IDisposable` i co oznacza w języku C#, możesz sprawdzić [tutaj]({{< ref "/lectures/05.csharp-features/disposable" >}}).
 
 Każda kolekcja w C# (z wyjątkiem `PriorityQueue`) jest iterowalna i implementuje interfejs `IEnumerable<T>`. Oznacza to, że każda z nich musi implementować jedną metodę – `GetEnumerator()`. Jeśli kolekcja posiada enumerator, można w niej zastosować pętlę `foreach`:
 ```csharp
@@ -284,7 +284,7 @@ foreach (T item in collection) {
     // operation on the item
 }
 ```
-Pętla `foreach` to tzw. cukierek składniowy. Wewnętrznie pobiera enumerator i przechodzi po kolekcji pętlą `while`, aż metoda `MoveNext()` zwróci `false`. Ważne - ponieważ pętla `foreach` używa enumeratorów, elementy kolekcji są **tylko do odczytu**!
+Pętla `foreach` to tzw. lukier składniowy. Wewnętrznie pobiera enumerator i przechodzi po kolekcji pętlą `while`, aż metoda `MoveNext()` zwróci `false`. Ważne - ponieważ pętla `foreach` używa enumeratorów, zmienna iteracyjna jest **tylko do odczytu**!
 ```csharp
 int sum = 0;
 IEnumerable<int> collection = [1, 2, 3];
@@ -308,11 +308,11 @@ foreach (Value item in collection) {
 
 ### Dekonstrukcja krotek
 > [!NOTE]
-> Jeśli nie wiesz lub nie pamiętasz, czym są krotki i co oznaczają w języku C#, możesz sprawdzić [tutaj](https://csharp.mini.pw.edu.pl/pl/lectures/05.csharp-features/tuples/) oraz [tutaj](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples).
+> Jeśli nie wiesz lub nie pamiętasz, czym są krotki i co oznaczają w języku C#, możesz sprawdzić [tutaj]({{< ref "/lectures/05.csharp-features/tuples" >}}) oraz [tutaj](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples).
 
 Dekonstrukcja krotek może być wykorzystywana bezpośrednio w pętlach `foreach`:
 ```csharp
-    var dict = Dictionary<int, string> {{ 1, "1" }};
+    var dict = new Dictionary<int, string> { { 1, "1" } };
     string one = "";
 
     // without deconstruction
@@ -330,7 +330,7 @@ Dekonstrukcja krotek może być wykorzystywana bezpośrednio w pętlach `foreach
 ```
 
 ## Instrukcja `yield`
-Kolejny cukierek składniowy w języku C# to tzw. instrukcja `yield`, która pozwala tworzyć własne metody enumerujące z wykorzystaniem mechanizmu *leniwego obliczania* (ang. *lazy evaluation*):
+Kolejnym lukrem składniowym w języku C# jest instrukcja `yield`, która pozwala tworzyć własne metody enumerujące z wykorzystaniem mechanizmu *leniwego obliczania* (ang. *lazy evaluation*):
 ```csharp
 IEnumerable<int> TakeWhileEven(IEnumerable<int> numbers) {
     foreach (int n in numbers) {
@@ -350,7 +350,7 @@ IEnumerable<int> ProduceEvenNumbers(int upto) {
     }
 }
 ```
-Wewnętrznie, wywołanie metody korzystającej z instrukcji `yield` tworzy maszynę stanów, który przechowuje stan iteracji. Dlatego mówimy o *leniwym obliczaniu* – kolejna wartość jest pobierana lub generowana dopiero w momencie kolejnego wywołania. Do tego czasu wykonywanie kodu pozostaje wstrzymane.
+Wewnętrznie, wywołanie metody korzystającej z instrukcji `yield` tworzy maszynę stanów, która przechowuje stan iteracji. Dlatego mówimy o *leniwym obliczaniu* – kolejna wartość jest pobierana lub generowana dopiero w momencie kolejnego wywołania. Do tego czasu wykonywanie kodu pozostaje wstrzymane.
 
 Instrukcji `yield` można również użyć do implementacji enumeratorów:
 ```csharp
@@ -363,16 +363,16 @@ public readonly record struct Point3D(int X, int Y, int Z) {
 }
 ```
 > [!NOTE]
-> Jeśli nie wiesz lub nie pamiętasz, czym są obiekty typu `record` i co oznaczają w języku C#, możesz sprawdzić [tutaj](https://csharp.mini.pw.edu.pl/en/lectures/05.csharp-features/records/) oraz [tutaj](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record).
+> Jeśli nie wiesz lub nie pamiętasz, czym są obiekty typu `record` i co oznaczają w języku C#, możesz sprawdzić [tutaj]({{< ref "/lectures/05.csharp-features/records" >}}) oraz [tutaj](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record).
 
 
 ## Dodatkowe funkcjonalności
 ### Modyfikator `params`
-Zamiast przekazywać kolekcję jako argument, możesz użyć słowa kluczowego `params`, dzięki czemu kolekcja zostanie utworzona automatycznie. Możesz użyć tablicy `T[]`, struktur `Span<T>`, dowolnego interfejsu dziedziczącego po `IEnumerable<T>` lub obiektu, który implementuje ten interfejs, posiada konstruktor bezparametrowy oraz metodę `Add(T element)`.
+Zamiast przekazywać kolekcję jako argument, możesz użyć słowa kluczowego `params`, dzięki czemu kolekcja zostanie utworzona automatycznie. Możesz użyć tablicy `T[]`, struktur `Span<T>` i `ReadOnlySpan<T>`, jednego z interfejsów `IEnumerable<T>`, `IReadOnlyCollection<T>`, `IReadOnlyList<T>`, `ICollection<T>`, `IList<T>` lub typu, który implementuje `IEnumerable<T>`, posiada konstruktor bezparametrowy oraz metodę `Add(T element)`.
 ```csharp
 public void ParamsPrinter(params IEnumerable<int> ints) {
     foreach (int n in ints) {
-        System.Console.WriteLine($"{n} ");
+        System.Console.Write($"{n} ");
     }
 }
 
@@ -416,7 +416,7 @@ Wiele operacji na kolekcjach wymaga określenia porządku elementów:
 - `Array.BinarySearch`, `List<T>.BinarySearch`
 - `PriorityQueue<TElement, TPriority>`
 
-W takich przypadkach typ musi albo implementować interfejs `IComparable<T>`, albo musimy dostarczyć obiekt z kategorii `IComparer<T>`.
+W takich przypadkach typ musi albo implementować interfejs `IComparable<T>`, albo musimy dostarczyć obiekt implementujący `IComparer<T>`.
 ```csharp
 public interface IComparable<in T> {
     int CompareTo(T? other);
@@ -431,7 +431,7 @@ Jeśli chodzi o zwracaną wartość:
 - `0` – `this` i `other` są równe / `x` i `y` są równe (w kontekście porządkowania);
 - `> 0` – `this` znajduje się po `other` / `x` znajduje się po `y`.
 
-Typy proste, `string` oraz `enum` implementują interfejs `IComparable<T>` domyślnie.
+Typy proste oraz `string` implementują interfejs `IComparable<T>` domyślnie. Typy wyliczeniowe (`enum`) implementują jedynie niegeneryczny interfejs `IComparable`, ale `Comparer<T>.Default` i tak potrafi je porównywać.
 
 ```csharp
 // if I own Person and want them to be ordered by age
@@ -453,9 +453,10 @@ people.Sort();
 // if I don't own Person, but still need to order them by age in some collection
 public class PersonByAgeAscending : IComparer<Person> {
     public int Compare(Person? a, Person? b) {
-        if (a is null) return -1;
+        if (a is null) return b is null ? 0 : -1;
         if (b is null) return 1;
         return a.Age.CompareTo(b.Age);
+    }
 }
 
 List<Person> people = [ new("A", 30), new("B", 20) ];
@@ -468,12 +469,12 @@ Zamiast implementować interfejs `IComparer<T>`, można również dziedziczyć p
 > # Przykładowe zadania z kolekcji
 
 > ## Praca na danych z sensorów
-> ### TODO 1 — Napisz metodę z wykonującą *leniwe obliczenia*
+> ### TODO 1 — Napisz metodę wykonującą *leniwe obliczenia*
 > Zwróć wszystkie odczyty, których wartość (`Value`) mieści się w przedziale [min, max] (włącznie).
 > Użyj słowa kluczowego `yield`.
 >
 > ### TODO 2 — Napisz generator wykorzystujący *leniwe obliczanie*
-> Wygeneruj odczyty z pojedynczego sensora, zaczynając od wartości `value`.
+> Wygeneruj `count` odczytów z pojedynczego sensora, zaczynając od wartości `value`.
 > Wartość powinna wzrastać o 0,1 na minutę, a punkty czasowe powinny być oddalone od siebie o 2 minuty, począwszy od momentu `start`.
 > Użyj słowa kluczowego `yield`.
 > 
@@ -488,7 +489,7 @@ Zamiast implementować interfejs `IComparer<T>`, można również dziedziczyć p
 > - `double HighestValue`                     - najwyższa wartość zarejestrowana spośród wszystkich czujników
 > - `double LowestTemp`                       - najniższa zarejestrowana temperatura
 > - `string MostReadings`                     - nazwa czujnika, z którego pochodzi najwięcej odczytów
-> - `TimeSpan TotalDuration`                  - różnica czasu między pierwszym a ostatnim zarejestrowanym odczytem wogóle
+> - `TimeSpan TotalDuration`                  - różnica czasu między pierwszym a ostatnim zarejestrowanym odczytem w ogóle
 > - `IList<string> UniqueSensors`             - lista wszystkich nazw czujników bez duplikatów
 > - `IList<(string, double)> AverageReadings` - średnia wartość odczytów dla każdego czujnika
 > - `IList<(string, TimeSpan)> LargestGaps`   - największy odstęp czasowy między dwoma kolejnymi odczytami (w porządku chronologicznym) dla każdego czujnika
@@ -507,7 +508,8 @@ Zamiast implementować interfejs `IComparer<T>`, można również dziedziczyć p
 >
 > Użyj wzorców list i wycinków. Nie używaj `Count`, `IndexOf`, łańcuchów instrukcji `if`, indeksów itp.
 >
-> Wskazówka: użyj [wyrażenia `switch`](https://csharp.mini.pw.edu.pl/pl/lectures/03.basics/statements/).
+> Wskazówka: użyj [wyrażenia `switch`]({{< ref "/lectures/03.basics/statements" >}}).
+>
 > {{< filetree dir="labs/w04.collections-generics/Task2" >}}
 
 > ## Zaimplementuj bibliotekę macierzową
@@ -543,12 +545,11 @@ Zamiast implementować interfejs `IComparer<T>`, można również dziedziczyć p
 - [`yield` statement](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/yield)
 - [Collection expressions](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-12#collection-expressions)
 - [`Comparer<T>` Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.comparer-1?view=net-10.0)
-- [System.Collection.Generic Namespace](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic?view=net-10.0)
+- [System.Collections.Generic Namespace](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic?view=net-10.0)
 
 > [!IMPORTANT]
 > # Dodatkowe materiały na warsztaty
 > Materiały: {{< filetree dir="labs/w04.collections-generics/Lab/" >}}
-> Rozwiązania: {{< filetree dir="labs/w04.collections-generics/LabSolution" >}}
 
 
 

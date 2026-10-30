@@ -9,8 +9,8 @@ public record class Data(
     TimeSpan TotalDuration,                     // difference between first and last recorded reading
     IList<string> UniqueSensors,                // list of all sensor names without duplicates
     IList<(string, double)> AverageReadings,    // average reading per sensor
-    IList<(string, TimeSpan)> LargestGaps,      // a largest timespan between two consecutive readings (time order) per sensor
-    IList<(Reading, Reading)> SignChanges       // two consecutive readings (time order) having two differnet signs (first < second) 
+    IList<(string, TimeSpan)> LargestGaps,      // the largest timespan between two consecutive readings (time order) per sensor
+    IList<(Reading, Reading)> SignChanges       // two consecutive readings (time order) having two different signs (first < second) 
 );
 
 public class SensorLog {
