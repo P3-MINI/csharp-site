@@ -143,3 +143,14 @@ Console.WriteLine($"Coin flip: {(random.NextDouble() < 0.5 ? "heads" : "tails")}
 ```
 
 > Można łączyć interpolację stringów z innymi stylami literałów. Można interpolować literały dosłowne `$@"..."` oraz surowe `$"""..."""`.
+
+## Literały UTF-8 (C# 11)
+
+Typ `string` zawsze używa UTF-16, ale wiele protokołów i formatów plików (np. HTTP, JSON) używa UTF-8. Dodanie sufiksu `u8` do literału stringa sprawia, że kompilator koduje go w UTF-8 już w czasie kompilacji. Typem takiego literału jest `ReadOnlySpan<byte>` (widok tylko do odczytu na ciągły obszar pamięci) - nie powstaje żaden obiekt `string`, a tekst nie musi być konwertowany w czasie działania programu (jak przy `Encoding.UTF8.GetBytes(...)`). Jeżeli potrzebna jest tablica, można wywołać `ToArray()`. Literałów UTF-8 nie można interpolować ani deklarować jako `const`.
+
+```csharp
+ReadOnlySpan<byte> utf8 = "Zażółć"u8;
+Console.WriteLine(utf8.Length);     // 10 - 'ż', 'ó', 'ł' and 'ć' take 2 bytes each
+Console.WriteLine("Zażółć".Length); // 6 - number of UTF-16 code units
+byte[] bytes = "HTTP/1.1"u8.ToArray();
+```

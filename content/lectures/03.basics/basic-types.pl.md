@@ -161,6 +161,16 @@ char newLine = '\n';
 char copyright = '\u00A9';
 ```
 
+### Sekwencje ucieczki i `\e` (C# 13)
+
+Sekwencje ucieczki w litera\u0142ach `char` i `string` s\u0105 w wi\u0119kszo\u015Bci takie same jak w C++ (`\n`, `\t`, `\0`, `\\`, `\'`, `\"`, ...). Dodatkowo `\uXXXX` oznacza jednostk\u0119 kodow\u0105 UTF-16 podan\u0105 za pomoc\u0105 4 cyfr szesnastkowych. Od C# 13 istnieje r\u00F3wnie\u017C `\e` - znak ESC (U+001B), u\u017Cywany np. w sekwencjach ANSI steruj\u0105cych terminalem (kolory, pogrubienie tekstu). Wcze\u015Bniej trzeba by\u0142o pisa\u0107 `\u001b` lub `\x1b`; ta druga forma jest podatna na b\u0142\u0119dy, poniewa\u017C `\x` poch\u0142ania od 1 do 4 cyfr szesnastkowych.
+
+```csharp
+char escape = '\e'; // C# 13, the same as '\u001b'
+Console.WriteLine("\e[1mBold\e[0m and normal text"); // ANSI escape codes
+Console.WriteLine("\x1bCafe" == "\u1BCAfe"); // True - \x consumed 4 hex digits: \x1bCa
+```
+
 ## Klasa `Convert`
 
 Klasa `Convert` zawiera mnóstwo przydatnych metod do konwersji między typami. Daje możliwość konwersji między typami podstawowymi i stringami czy konwersji między typem `bool` a typami liczbowymi. Konwersje z użyciem tej klasy zaokrąglają liczby zmiennoprzecinkowe do najbliższej liczby całkowitej (w odróżnieniu od rzutowania, które obcina część ułamkową); wartości leżące dokładnie pośrodku są zaokrąglane do najbliższej liczby parzystej (tzw. *zaokrąglanie bankierskie*).
