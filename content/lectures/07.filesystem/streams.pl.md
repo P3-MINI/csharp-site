@@ -44,6 +44,18 @@ while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
 
 > Można też przeczytać pojedynczy bajt ze strumienia metodą `ReadByte`, ale nie jest to zbyt efektywne.
 
+Ponieważ `Read` może zwrócić mniej bajtów, niż żądaliśmy, odczyt bloku o znanym rozmiarze wymaga pętli. Od .NET 7 strumienie udostępniają do tego metody pomocnicze:
+
+```csharp
+using Stream stream = new FileStream("lorem.txt", FileMode.Open);
+
+byte[] header = new byte[16];
+stream.ReadExactly(header); // reads exactly 16 bytes, or throws EndOfStreamException
+
+byte[] buffer = new byte[256];
+int read = stream.ReadAtLeast(buffer, minimumBytes: 64); // reads at least 64 (at most 256) bytes
+```
+
 ### Zapis
 
 Podobnie metoda `void Write(byte[] buffer, int offset, int count)` ma analogiczne parametry do funkcji `write` z POSIX API.
@@ -75,6 +87,15 @@ stream.Seek(offset: 10, SeekOrigin.Begin);
 stream.Seek(offset: -10, SeekOrigin.End);
 stream.Seek(offset: -10, SeekOrigin.Current);
 ```
+
+> [!TIP]
+> Jeżeli potrzebujemy jedynie czytać lub pisać pod wskazanym przesunięciem (jak funkcje POSIX `pread`/`pwrite`), możemy użyć statycznej klasy `RandomAccess` (.NET 6). Operuje ona na uchwycie pliku i nie korzysta z bieżącej pozycji (ani jej nie zmienia), więc może być bezpiecznie używana przez wiele wątków jednocześnie:
+> ```csharp
+> using var handle = File.OpenHandle("lorem.txt", FileMode.Open);
+> byte[] buffer = new byte[16];
+> int read = RandomAccess.Read(handle, buffer, fileOffset: 100);
+> long length = RandomAccess.GetLength(handle);
+> ```
 
 ### Opróżnianie i zamykanie strumieni
 
@@ -321,6 +342,18 @@ W powyższym przykładzie dane, które zapisujemy, przechodzą przez następują
 data -> GZipStream (compression) -> BufferedStream (buffering) -> FileStream (disk write).
 ```
 
+Zwolnienie dekoratora (lub adaptera) zwalnia także opakowany przez niego strumień, więc wystarczy zwolnić najbardziej zewnętrzny obiekt łańcucha. Jeżeli opakowany strumień ma pozostać otwarty, należy przekazać do konstruktora `leaveOpen: true`. Warto też pamiętać, że strumienie kompresujące zapisują resztę skompresowanych danych (a w przypadku gzip także stopkę) dopiero przy zwolnieniu:
+
+```csharp
+using MemoryStream ms = new MemoryStream();
+using (GZipStream gz = new GZipStream(ms, CompressionMode.Compress, leaveOpen: true))
+{
+    gz.Write(new byte[1000]);
+} // Disposing gz writes the rest of the compressed data, but ms stays open
+
+Console.WriteLine($"Compressed size: {ms.Length} bytes"); // Compressed size: 29 bytes
+```
+
 ## Adaptery strumieni
 
 Największą przewagą nad API POSIX są adaptery strumieni. Dla strumieni mamy adaptery, które przystosowują strumienie do pracy z tekstem `StreamReader` i `StreamWriter`, i adaptery do pracy z danymi binarnymi `BinaryReader` i `BinaryWriter`. Adaptery również opakowują strumień, ale w odróżnieniu od dekoratorów nie są same w sobie strumieniami. Zazwyczaj przy pracy ze strumieniami na końcu łańcucha dekoratorów ląduje adapter.
@@ -358,6 +391,17 @@ Adaptery tekstu dodają do strumienia możliwość odczytu i zapisu znaków, nap
            sw.WriteLine(i);
    }
    ```
+
+Adaptery tekstu zamieniają znaki na bajty (i z powrotem) przy użyciu kodowania (`System.Text.Encoding`). Domyślnie `StreamWriter` oraz metody `File.WriteAll*` używają UTF-8 **bez** BOM (*byte order mark*). `StreamReader` rozpoznaje kodowanie po BOM, jeżeli dane się od niego zaczynają; w przeciwnym razie używa podanego kodowania (domyślnie UTF-8). Kodowanie można jawnie przekazać do konstruktorów oraz do metod fasady `File`:
+
+```csharp
+File.WriteAllText("a.txt", "zażółć");                   // UTF-8 without BOM: 10 bytes
+File.WriteAllText("b.txt", "zażółć", Encoding.UTF8);    // UTF-8 with BOM (EF BB BF): 13 bytes
+File.WriteAllText("c.txt", "zażółć", Encoding.Unicode); // UTF-16 LE with BOM (FF FE): 14 bytes
+
+using StreamReader sr = new StreamReader("c.txt");      // detects UTF-16 from the BOM
+Console.WriteLine(sr.ReadToEnd());                      // zażółć
+```
 
 ### Adaptery binarne
 
@@ -398,3 +442,11 @@ Z kolei adapterów binarnych używamy, gdy pracujemy z danymi binarnymi. Adapter
    
    Console.WriteLine(player);
    ```
+
+> [!NOTE]
+> `BinaryWriter` i `BinaryReader` zawsze używają kolejności bajtów **little-endian**, niezależnie od platformy. `string` jest zapisywany jako jego długość (liczba całkowita w kodowaniu 7-bitowym), a po niej bajty UTF-8 — dzięki temu `ReadString` wie, ile bajtów ma przeczytać. Do odczytu i zapisu danych w innym formacie (np. big-endian w protokołach sieciowych) służy klasa `BinaryPrimitives` z przestrzeni nazw `System.Buffers.Binary`:
+> ```csharp
+> Span<byte> bytes = stackalloc byte[4];
+> BinaryPrimitives.WriteInt32BigEndian(bytes, 100); // 00 00 00 64
+> int value = BinaryPrimitives.ReadInt32BigEndian(bytes);
+> ```
