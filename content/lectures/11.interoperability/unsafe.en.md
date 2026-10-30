@@ -347,3 +347,47 @@ struct Vector3
     public float Z { get; set; }
 }
 ```
+
+## `ref` fields and `scoped` (C# 11)
+
+Many scenarios that used to require pointers can be expressed with managed references (`ref`), which are safe: the compiler checks that a reference never outlives the data it points to, and the *GC* tracks them. Since C# 11, a `ref struct` (see [Structs]({{< ref "/lectures/04.creating-types/structs" >}})) can contain `ref` fields. This is how `Span<T>` itself is implemented - as a `ref` to the first element and a length.
+
+```csharp
+int x = 1;
+var r = new Ref<int>(ref x);
+r.Value = 42;
+Console.WriteLine(x); // 42
+
+public ref struct Ref<T>
+{
+    public ref T Value; // ref field
+
+    public Ref(ref T value) => Value = ref value;
+}
+```
+
+The `scoped` modifier (C# 11) limits the lifetime of a `ref` parameter, or of a `ref struct` parameter or local variable, to the current method: it cannot be returned or stored in a field. This allows the caller to pass references to local data, e.g., a buffer allocated with `stackalloc`:
+
+```csharp
+var reader = new Reader("Hello, world!");
+Span<char> buffer = stackalloc char[5];
+int count = reader.Read(buffer);
+Console.WriteLine(buffer[..count].ToString()); // Hello
+
+public ref struct Reader
+{
+    private ReadOnlySpan<char> _text;
+
+    public Reader(ReadOnlySpan<char> text) => _text = text;
+
+    // Without 'scoped', the call with a stackalloc buffer would not compile (error CS8350),
+    // because the method could store 'destination' in the '_text' field.
+    public int Read(scoped Span<char> destination)
+    {
+        int count = Math.Min(destination.Length, _text.Length);
+        _text[..count].CopyTo(destination);
+        _text = _text[count..];
+        return count;
+    }
+}
+```

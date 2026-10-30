@@ -347,3 +347,47 @@ struct Vector3
     public float Z { get; set; }
 }
 ```
+
+## Pola `ref` i `scoped` (C# 11)
+
+Wiele scenariuszy, które kiedyś wymagały wskaźników, można wyrazić za pomocą zarządzanych referencji (`ref`), które są bezpieczne: kompilator pilnuje, aby referencja nie przeżyła danych, na które wskazuje, a *GC* je śledzi. Od C# 11 `ref struct` (zob. [Struktury]({{< ref "/lectures/04.creating-types/structs" >}})) może zawierać pola `ref`. W ten sposób zaimplementowany jest sam `Span<T>` - jako `ref` do pierwszego elementu i długość.
+
+```csharp
+int x = 1;
+var r = new Ref<int>(ref x);
+r.Value = 42;
+Console.WriteLine(x); // 42
+
+public ref struct Ref<T>
+{
+    public ref T Value; // ref field
+
+    public Ref(ref T value) => Value = ref value;
+}
+```
+
+Modyfikator `scoped` (C# 11) ogranicza czas życia parametru `ref` albo parametru lub zmiennej lokalnej typu `ref struct` do bieżącej metody: nie można go zwrócić ani zapisać w polu. Dzięki temu wywołujący może przekazać referencje do danych lokalnych, np. bufora zaalokowanego przez `stackalloc`:
+
+```csharp
+var reader = new Reader("Hello, world!");
+Span<char> buffer = stackalloc char[5];
+int count = reader.Read(buffer);
+Console.WriteLine(buffer[..count].ToString()); // Hello
+
+public ref struct Reader
+{
+    private ReadOnlySpan<char> _text;
+
+    public Reader(ReadOnlySpan<char> text) => _text = text;
+
+    // Without 'scoped', the call with a stackalloc buffer would not compile (error CS8350),
+    // because the method could store 'destination' in the '_text' field.
+    public int Read(scoped Span<char> destination)
+    {
+        int count = Math.Min(destination.Length, _text.Length);
+        _text[..count].CopyTo(destination);
+        _text = _text[count..];
+        return count;
+    }
+}
+```
