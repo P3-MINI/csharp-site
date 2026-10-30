@@ -82,6 +82,30 @@ private static partial void Hello();
 > 
 > **C#** {{< filetree dir="lectures/interoperability/HelloCSharp" >}}
 
+### Wyszukiwanie bibliotek i `NativeLibrary`
+
+Nazwę biblioteki podaje się bez przedrostka i rozszerzenia. Środowisko uruchomieniowe dodaje rozszerzenie właściwe dla platformy (`.dll`, `.so`, `.dylib`), a na systemach *Unix* próbuje też przedrostka `lib`, więc `"HelloCpp"` odnajduje `HelloCpp.dll` na Windowsie, `libHelloCpp.so` na Linuksie i `libHelloCpp.dylib` na macOS. Domyślnie biblioteka jest szukana w katalogu aplikacji (katalogu assembly) oraz w standardowych lokalizacjach systemowych.
+
+Bibliotekę można też załadować ręcznie za pomocą klasy `NativeLibrary` (.NET Core 3.0), która jest odpowiednikiem `dlopen`/`dlsym` (`LoadLibrary`/`GetProcAddress` na Windowsie). Adres wyeksportowanej funkcji można następnie wywołać przez niezarządzany wskaźnik na funkcję (zob. [Kontekst niebezpieczny]({{< ref "/lectures/11.interoperability/unsafe" >}})):
+
+```csharp
+unsafe
+{
+    nint library = NativeLibrary.Load("HelloCpp", typeof(Program).Assembly, null);
+    try
+    {
+        var hello = (delegate* unmanaged<void>)NativeLibrary.GetExport(library, "Hello");
+        hello(); // Hello from C++
+    }
+    finally
+    {
+        NativeLibrary.Free(library);
+    }
+}
+```
+
+Metoda `NativeLibrary.SetDllImportResolver` pozwala zastąpić sposób wyszukiwania bibliotek używanych przez deklaracje `DllImport`/`LibraryImport` danego assembly, np. aby wybrać plik biblioteki w zależności od platformy.
+
 ## Marshalling
 
 Marshalling to proces konwersji typów danych między kodem zarządzanym a niezarządzanym.
