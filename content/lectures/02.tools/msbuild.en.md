@@ -317,7 +317,7 @@ The following example shows a typical project file, created with the command `do
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -353,6 +353,30 @@ SDK-style projects define many items. Here are some of them:
 *   **`PackageReference`**: References to NuGet packages.
 
 A list of common items can be found here: [Common MSBuild project items](https://learn.microsoft.com/visualstudio/msbuild/common-msbuild-project-items).
+
+### Solution Files
+
+Larger applications consist of many projects (e.g., an application, libraries, tests). They are grouped in a **solution** file, which IDEs open and which can be passed to `dotnet build` or `msbuild` to build all its projects at once. Historically, solutions used the text-based `.sln` format, which is hard to read and edit by hand. Since .NET 10, `dotnet new sln` creates a solution in the new XML-based **`.slnx`** format by default:
+
+```bash
+dotnet new sln -n Shop
+dotnet new console -o Shop.App
+dotnet new classlib -o Shop.Core
+dotnet sln add Shop.App Shop.Core
+dotnet add Shop.App reference Shop.Core
+dotnet build
+```
+
+The resulting `Shop.slnx` file simply lists the projects:
+
+```xml
+<Solution>
+  <Project Path="Shop.App/Shop.App.csproj" />
+  <Project Path="Shop.Core/Shop.Core.csproj" />
+</Solution>
+```
+
+An existing `.sln` file can be converted with `dotnet sln migrate`. Afterwards, the old `.sln` file should be removed – if a directory contains more than one project or solution file, `dotnet build` requires specifying which one to use (error `MSB1011`). A solution in the old format can still be created with `dotnet new sln --format sln`.
 
 ### Logging and Diagnosing Problems
 
