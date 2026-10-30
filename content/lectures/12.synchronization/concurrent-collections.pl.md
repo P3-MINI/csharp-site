@@ -80,3 +80,47 @@ Task.WaitAll(producer, consumer);
 > [!INFO]
 > Kod źródłowy:
 > {{< filetree dir="lectures/synchronization/BlockingCollectionExample" >}}
+
+## Kanały (*Channels*)
+
+Przestrzeń nazw `System.Threading.Channels` (wbudowana w .NET od wersji .NET Core 3.0) udostępnia `Channel<T>` - nowoczesną, **asynchroniczną** alternatywę dla `BlockingCollection<T>`. Kanał ma dwa końce: `Writer` (`ChannelWriter<T>`), z którego korzystają producenci, oraz `Reader` (`ChannelReader<T>`), z którego korzystają konsumenci. Zamiast blokować wątki, obie strony czekają asynchronicznie:
+
+*   **Producent**: `WriteAsync` czeka (`await`), jeśli kanał o ograniczonej pojemności (`Channel.CreateBounded<T>`) jest pełny. `Channel.CreateUnbounded<T>()` tworzy kanał bez limitu pojemności.
+*   **Konsument**: `ReadAsync` czeka na pojawienie się elementu. `ReadAllAsync()` zwraca [asynchroniczną sekwencję]({{< ref "/lectures/09.concurrency/asynchronous-streams" >}}) (`IAsyncEnumerable<T>`), która kończy się, gdy producent wywoła `Writer.Complete()`, a wszystkie pozostałe elementy zostaną odczytane.
+
+### Przykład
+
+Poprzedni przykład przepisany z użyciem kanału:
+
+```csharp
+var channel = Channel.CreateBounded<int>(capacity: 5);
+
+Task producer = Task.Run(async () =>
+{
+    for (int i = 0; i < 10; i++)
+    {
+        Console.WriteLine($"Producing: {i}");
+        await channel.Writer.WriteAsync(i); // Waits asynchronously if full
+        await Task.Delay(500);
+    }
+    channel.Writer.Complete(); // Signal end of data
+});
+
+Task consumer = Task.Run(async () =>
+{
+    await foreach (var item in channel.Reader.ReadAllAsync())
+    {
+        Console.WriteLine($"Consuming: {item}");
+        await Task.Delay(1000);
+    }
+});
+
+await Task.WhenAll(producer, consumer);
+```
+
+> [!TIP]
+> W nowym kodzie, zwłaszcza asynchronicznym, warto wybierać `Channel<T>` zamiast `BlockingCollection<T>` - oczekiwanie nie blokuje wątków z puli. Kanały o ograniczonej pojemności można też skonfigurować (`BoundedChannelOptions.FullMode`) tak, aby zamiast czekać, odrzucały najstarszy lub najnowszy element, a opcje `SingleReader`/`SingleWriter` pozwalają użyć szybszych implementacji.
+
+> [!INFO]
+> Kod źródłowy:
+> {{< filetree dir="lectures/synchronization/ChannelExample" >}}
