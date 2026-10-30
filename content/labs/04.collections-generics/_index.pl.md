@@ -458,6 +458,7 @@ public class PersonByAgeAscending : IComparer<Person> {
         if (a is null) return -1;
         if (b is null) return 1;
         return a.Age.CompareTo(b.Age);
+    }
 }
 
 List<Person> people = [ new("A", 30), new("B", 20) ];
