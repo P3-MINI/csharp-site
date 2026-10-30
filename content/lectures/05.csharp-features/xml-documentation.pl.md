@@ -8,7 +8,7 @@ Dokumentacja XML w C# to specjalny rodzaj komentarzy, które umieszczasz bezpoś
 
 ```xml
 <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
