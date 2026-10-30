@@ -94,3 +94,33 @@ Directives can also be used to generate compilation warnings and errors, which i
     Console.WriteLine("This code will generate a warning message if DEMO is defined.");
 #endif
 ```
+
+## File-based Apps (.NET 10)
+
+Since .NET 10, a single `.cs` file can be built and run without a project file (`dotnet run app.cs`). Project settings are then given in the file itself, using `#:` directives placed at the top of the file, before any code:
+
+- `#:package Name@Version` - adds a NuGet package reference,
+- `#:property Name=Value` - sets an MSBuild property,
+- `#:sdk Name` - selects the project SDK (`Microsoft.NET.Sdk` by default),
+- `#:project path` - references another project.
+
+On Unix-like systems, the first line of the file can also be a *shebang* (`#!`), which allows running the file directly, like a script (the file must use `LF` line endings and must not start with a BOM). An example `hello.cs` file:
+
+```csharp
+#!/usr/bin/env dotnet
+#:package Humanizer@3.0.10
+#:property PublishAot=false
+
+using Humanizer;
+
+Console.WriteLine($"Hello, {(args.Length > 0 ? args[0] : "world")}!");
+Console.WriteLine(TimeSpan.FromMinutes(90).Humanize(2)); // 1 hour, 30 minutes
+```
+
+```bash
+dotnet run hello.cs -- Alice  # Hello, Alice!
+chmod +x hello.cs
+./hello.cs Alice              # Hello, Alice!
+```
+
+These directives are only allowed in file-based apps - in a regular project they cause a compilation error. The `dotnet project convert hello.cs` command converts such a file into a regular project with a `.csproj` file. The workflow of file-based apps is described in more detail in the [MSBuild]({{< ref "/lectures/02.tools/msbuild" >}}) lecture.
