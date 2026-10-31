@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MiniDI.Demo/MiniDI.Demo.csproj" />
+  <Project Path="MiniDI.Generator/MiniDI.Generator.csproj" />
+  <Project Path="MiniDI.Tests/MiniDI.Tests.csproj" />
+  <Project Path="MiniDI/MiniDI.csproj" />
+</Solution>
