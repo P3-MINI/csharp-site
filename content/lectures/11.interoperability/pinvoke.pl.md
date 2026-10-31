@@ -322,6 +322,30 @@ private static partial void PrintHex(Color a);
 > 
 > **C#** {{< filetree dir="lectures/interoperability/StructsCSharp" >}}
 
+### Wyłączenie marshallingu w środowisku uruchomieniowym (.NET 7)
+
+Od .NET 7 wbudowany marshalling realizowany przez środowisko uruchomieniowe można wyłączyć dla całego assembly atrybutem `[assembly: DisableRuntimeMarshalling]`. Metody `DllImport` i niezarządzane wskaźniki na funkcje akceptują wtedy tylko typy proste, wskaźniki i struktury niezarządzane, które są przekazywane dokładnie tak, jak są ułożone w pamięci (np. `bool` jako 1 bajt, `char` jako 2 bajty). Parametry `ref`/`out`, typy zarządzane (np. `string`, tablice) i `SetLastError` kończą się wyjątkiem `MarshalDirectiveException`. Wszystkie pozostałe konwersje pozostawia się kodowi generowanemu przez `LibraryImport`, który z kolei może wtedy przekazywać struktury z polami typu `bool` i `char` (w przeciwnym razie zgłasza błąd `SYSLIB1051`). Dzięki temu cały marshalling jest jawny i widoczny już na etapie kompilacji.
+
+```csharp
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+[assembly: DisableRuntimeMarshalling]
+
+public struct Data
+{
+    public int Value;
+    public bool Flag; // 1 byte, like C++ bool
+}
+
+public static partial class NativeMethods
+{
+    // Without DisableRuntimeMarshalling: error SYSLIB1051
+    [LibraryImport("Library")]
+    public static partial void Process(Data data);
+}
+```
+
 ## Przekazywanie funkcji
 
 Możemy przekazywać metody C# do kodu niezarządzanego jako wskaźniki na funkcje lub delegaty.
