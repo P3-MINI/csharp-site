@@ -18,6 +18,9 @@ Przestrzeń nazw `System.Collections.Concurrent` zawiera kolekcje zoptymalizowan
 *   **`ConcurrentStack<T>`**: Bezpieczny stos LIFO.
 *   **`ConcurrentBag<T>`**: Nieuporządkowany multizbiór elementów.
 
+> [!WARNING]
+> `ConcurrentDictionary` gwarantuje atomowość operacji na swoim wewnętrznym stanie, ale nie przekazanych mu delegatów. Funkcja `valueFactory` metody `GetOrAdd` oraz delegaty `AddOrUpdate` są wywoływane **poza** wewnętrznymi blokadami, więc przy rywalizacji mogą zostać wywołane kilka razy dla tego samego klucza (zapisany zostanie tylko jeden wynik). Powinny więc być szybkie i pozbawione efektów ubocznych; jeśli wartość musi zostać utworzona dokładnie raz, warto przechowywać w słowniku obiekty `Lazy<TValue>`.
+
 > [!INFO]
 > Iteracja po współbieżnej kolekcji podczas równoczesnej modyfikacji przez inny wątek nigdy nie kończy się rzuceniem wyjątku. Enumeratory `ConcurrentQueue<T>`, `ConcurrentStack<T>` i `ConcurrentBag<T>` działają na migawce (*snapshot*) wykonanej w chwili rozpoczęcia iteracji, natomiast iteracja po `ConcurrentDictionary<TKey, TValue>` nie jest migawką - może zawierać zarówno już usunięte, jak i nowo dodane wartości.
 

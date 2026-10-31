@@ -169,3 +169,23 @@ Jest to mechanizm zmiennych warunkowych (powiązany z `lock`).
 *   `Monitor.PulseAll(obj)`: Budzi wszystkie czekające wątki.
 
 Jest to mechanizm bardziej niskopoziomowy niż `EventWaitHandle` i wymaga przebywania wewnątrz sekcji `lock`. Zazwyczaj użycie `EventWaitHandle` jest wystarczające i prostsze.
+
+> [!WARNING]
+> Wątek obudzony przez `Pulse` kontynuuje działanie dopiero wtedy, gdy wątek wywołujący `Pulse` zwolni blokadę, a obudzony wątek ponownie ją zajmie - do tego czasu warunek może już nie być spełniony. Ponadto impuls nie jest zapamiętywany: jeśli żaden wątek nie czeka, zostaje utracony (inaczej niż w `AutoResetEvent`). Dlatego `Wait` należy zawsze wywoływać w pętli, która ponownie sprawdza warunek (podobnie jak `std::condition_variable::wait` w C++):
+> ```csharp
+> // Consumer
+> lock (_locker)
+> {
+>     while (_queue.Count == 0)   // Re-check the condition after waking up
+>         Monitor.Wait(_locker);
+>     item = _queue.Dequeue();
+> }
+>
+> // Producer
+> lock (_locker)
+> {
+>     _queue.Enqueue(item);
+>     Monitor.Pulse(_locker);
+> }
+> ```
+
