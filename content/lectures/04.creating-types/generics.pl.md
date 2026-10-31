@@ -139,6 +139,14 @@ Można definiować wiele parametrów generycznych:
 class Test<T, U, W>;
 ```
 
+Nazwa typu generycznego bez argumentów typowych, np. `Stack<>` lub `Dictionary<,>`, oznacza *niezwiązany typ generyczny* (*unbound generic type*). Można go użyć w operatorze `typeof` (np. na potrzeby refleksji), a od C# 14 również w `nameof`. Wcześniej `nameof` wymagał podania jakichś argumentów typowych, mimo że nie mają one wpływu na wynik:
+
+```csharp
+Console.WriteLine(typeof(Dictionary<,>)); // System.Collections.Generic.Dictionary`2[TKey,TValue]
+Console.WriteLine(nameof(Dictionary<,>)); // Dictionary
+Console.WriteLine(nameof(List<int>));     // List
+```
+
 ## Metody generyczne
 
 Metody również mogą wprowadzać parametry generyczne:

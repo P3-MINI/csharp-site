@@ -139,6 +139,14 @@ You can define multiple generic parameters:
 class Test<T, U, W>;
 ```
 
+A generic type name without type arguments, e.g., `Stack<>` or `Dictionary<,>`, denotes an *unbound generic type*. It can be used in the `typeof` operator (e.g., for reflection) and, since C# 14, also in `nameof`. Previously, `nameof` required specifying some type arguments, even though they do not affect the result:
+
+```csharp
+Console.WriteLine(typeof(Dictionary<,>)); // System.Collections.Generic.Dictionary`2[TKey,TValue]
+Console.WriteLine(nameof(Dictionary<,>)); // Dictionary
+Console.WriteLine(nameof(List<int>));     // List
+```
+
 ## Generic Methods
 
 Methods can also introduce generic parameters:
