@@ -155,26 +155,28 @@ List<string> strings = objects; // compile error
 > [!IMPORTANT]
 > ## Przykładowe zadanie z generyków
 
-> ### TODO 1 — Zaimplementuj generyczną klasę NumBox
-> Klasa powinna dziedziczyć po klasie `Box` i działać na dowolnym typie liczbowym.
-> Powinna zawierać konstruktor i operator dodawania:
-> 
-> `public static NumBox<T> operator+(NumBox<T> a, NumBox<T> b)`, który zwraca sumę wartości (a.Value + b.Value)
-> 
-> ### TODO 2 — Zaimplementuj klasę StringBox
-> Klasa powinna dziedziczyć po klasie `Box` i działać tylko na ciągach znaków.
-> Klasa powinna zawierać konstruktor i operator dodawania:
-> 
-> `public static StringBox operator +(StringBox a, StringBox b)`, który zwraca połączony ciąg znaków (a.Value + ";" + b.Value)
-> 
-> ### TODO 3 — Dokończ implementację klasy Shelf
-> Klasa powinna implementować interfejsy `IAdder<T>` i `ITaker<T>`:
-> 
-> `public bool Add(T val)` — jeśli półka jest pełna, zwraca `false`; w przeciwnym razie dodaje pudełko na końcu `_items` i zwraca `true`
-> 
-> `public T? Take()` — pobiera i zwraca ostatnie pudełko z półki, jeśli to możliwe; w przeciwnym razie zwraca `null`
-> 
-> {{< filetree dir="labs/w04.collections-generics/Task1" >}}
+{{% details "TASK 1" false %}}
+### 1. Zaimplementuj generyczną klasę NumBox
+Klasa powinna dziedziczyć po klasie `Box` i działać na dowolnym typie liczbowym.
+Powinna zawierać konstruktor i operator dodawania:
+- `public static NumBox<T> operator+(NumBox<T> a, NumBox<T> b)`,\
+który zwraca sumę wartości (a.Value + b.Value)
+
+### 2. Zaimplementuj klasę StringBox
+Klasa powinna dziedziczyć po klasie `Box` i działać tylko na ciągach znaków.
+Klasa powinna zawierać konstruktor i operator dodawania:
+- `public static StringBox operator +(StringBox a, StringBox b)`,\
+który zwraca połączony ciąg znaków (a.Value + ";" + b.Value)
+
+### 3. Dokończ implementację klasy Shelf
+Klasa powinna implementować interfejsy `IAdder<T>` i `ITaker<T>`:
+- `public bool Add(T val)` — jeśli półka jest pełna, zwraca `false`;\
+w przeciwnym razie dodaje pudełko na końcu `_items` i zwraca `true`
+- `public T? Take()` — pobiera i zwraca ostatnie pudełko z półki,\
+jeśli to możliwe; w przeciwnym razie zwraca `null` 
+
+{{< filetree dir="labs/w04.collections-generics/Task1" >}}
+{{% /details %}}
 
 ## Więcej na ten temat:
 - [Boxing and Unboxing](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing)
@@ -468,78 +470,83 @@ people.Sort(new PersonByAgeAscending());
 Zamiast implementować interfejs `IComparer<T>`, można również dziedziczyć po klasie `Comparer<T>` i nadpisać metodę `int Compare(T? x, T? y)`, co zwykle jest zalecane.
 
 > [!IMPORTANT]
-> # Przykładowe zadania z kolekcji
+> ## Przykładowe zadania z kolekcji
 
-> ## Praca na danych z sensorów
-> ### TODO 1 — Napisz metodę z wykonującą *leniwe obliczenia*
-> Zwróć wszystkie odczyty, których wartość (`Value`) mieści się w przedziale [min, max] (włącznie).
-> Użyj słowa kluczowego `yield`.
->
-> ### TODO 2 — Napisz generator wykorzystujący *leniwe obliczanie*
-> Wygeneruj odczyty z pojedynczego sensora, zaczynając od wartości `value`.
-> Wartość powinna wzrastać o 0,1 na minutę, a punkty czasowe powinny być oddalone od siebie o 2 minuty, począwszy od momentu `start`.
-> Użyj słowa kluczowego `yield`.
-> 
-> ### TODO 3 — Zaimplementuj klasę porównującą dziedziczącą po `Comparer<Reading>`
-> Uporządkuj odczyty według:
-> 1. Nazwy czujnika (rosnąco)
-> 2. Następnie według zarejestrowanej wartości (malejąco)
-> 3. Następnie według czasu rejestracji (rosnąco)
->
-> ### TODO 4 — Podsumuj dane z czujników
-> Zwróć:
-> - `double HighestValue`                     - najwyższa wartość zarejestrowana spośród wszystkich czujników
-> - `double LowestTemp`                       - najniższa zarejestrowana temperatura
-> - `string MostReadings`                     - nazwa czujnika, z którego pochodzi najwięcej odczytów
-> - `TimeSpan TotalDuration`                  - różnica czasu między pierwszym a ostatnim zarejestrowanym odczytem wogóle
-> - `IList<string> UniqueSensors`             - lista wszystkich nazw czujników bez duplikatów
-> - `IList<(string, double)> AverageReadings` - średnia wartość odczytów dla każdego czujnika
-> - `IList<(string, TimeSpan)> LargestGaps`   - największy odstęp czasowy między dwoma kolejnymi odczytami (w porządku chronologicznym) dla każdego czujnika
-> - `IList<(Reading, Reading)> SignChanges`   - pary kolejnych odczytów (w porządku chronologicznym), które mają różne znaki (pierwszy < drugi)
->
-> ### TODO 5 — Dopasowywanie wzorców (pattern matching)
-> Przeanalizuj listę odczytów i zwróć odpowiednią etykietę:
-> - "empty"        jeśli liczba odczytów wynosi 0
-> - "single"       jeśli jest dokładnie 1 odczyt
-> - "pair-asc"     jeśli są dokładnie 2 odczyty, a wartości są rosnące (v1 < v2)
-> - "pair-desc"    jeśli są dokładnie 2 odczyty, a wartości są malejące (v1 > v2)
-> - "pair-eq"      jeśli są dokładnie 2 odczyty, a wartości są równe
-> - "starts-high"  jeśli pierwszy odczyt ma wartość > 100
-> - "ends-low"     jeśli ostatni odczyt ma wartość < 0
-> - "other"        w pozostałych przypadkach
->
-> Użyj wzorców list i wycinków. Nie używaj `Count`, `IndexOf`, łańcuchów instrukcji `if`, indeksów itp.
->
-> Wskazówka: użyj [wyrażenia `switch`](https://csharp.mini.pw.edu.pl/pl/lectures/03.basics/statements/).
-> {{< filetree dir="labs/w04.collections-generics/Task2" >}}
+{{% details "TASK 2" false %}}
+## Praca na danych z sensorów
+### 1. Napisz metodę z wykonującą *leniwe obliczenia*
+Zwróć wszystkie odczyty, których wartość (`Value`) mieści się w przedziale [min, max] (włącznie).
+Użyj słowa kluczowego `yield`.
 
-> ## Zaimplementuj bibliotekę macierzową
-> ### 1. Zapoznaj się z klasą `Matrix<T>` w pliku `Matrix.cs`
-> ### 2. W pliku `DenseMatrix.cs` zaimplementuj metody klasy `DenseMatrix<T>`:
-> - `public DenseMatrix(int rows, int columns, T[]? values = null)`
-> - `public static DenseMatrix<T> Identity(int size)`
-> - `public static DenseMatrix<T> operator +(DenseMatrix<T> a, DenseMatrix<T> b)`
-> - `public static DenseMatrix<T> operator -(DenseMatrix<T> a, DenseMatrix<T> b)`
-> - `public static DenseMatrix<T> operator *(DenseMatrix<T> a, T scalar)`
-> - `public static DenseMatrix<T> operator *(T scalar, DenseMatrix<T> a)`
-> - `public static DenseMatrix<T> operator *(DenseMatrix<T> a, DenseMatrix<T> b)`
-> - `public DenseMatrix<T> Clone()`
-> 
-> **oraz wszelkie inne wymagane metody.**
-> ### 3. W pliku `SparseMatrix.cs` zaimplementuj metody klasy `SparseMatrix<T>`:
-> - `public SparseMatrix(int rows, int columns, T[]? values = null)`
-> - `public static SparseMatrix<T> Identity(int size)`
-> - `public static SparseMatrix<T> operator +(SparseMatrix<T> a, SparseMatrix<T> b)`
-> - `public static SparseMatrix<T> operator -(SparseMatrix<T> a, SparseMatrix<T> b)`
-> - `public static SparseMatrix<T> operator *(SparseMatrix<T> a, T scalar)`
-> - `public static SparseMatrix<T> operator *(T scalar, SparseMatrix<T> a)`
-> - `public static SparseMatrix<T> operator *(SparseMatrix<T> a, SparseMatrix<T> b)`
-> - `public SparseMatrix<T> Clone()`
-> 
-> **oraz wszelkie inne wymagane metody.**
-> 
-> Student: {{< filetree dir="labs/w04.collections-generics/Task3/Student" >}}
-> Solution: {{< filetree dir="labs/w04.collections-generics/Task3/Solution" >}}
+### 2. Napisz generator wykorzystujący *leniwe obliczanie*
+Wygeneruj odczyty z pojedynczego sensora, zaczynając od wartości `value`.
+Wartość powinna wzrastać o 0,1 na minutę, a punkty czasowe powinny być oddalone od siebie o 2 minuty, począwszy od momentu `start`.
+Użyj słowa kluczowego `yield`.
+
+### 3. Zaimplementuj klasę porównującą dziedziczącą po `Comparer<Reading>`
+Uporządkuj odczyty według:
+1. Nazwy czujnika (rosnąco)
+2. Następnie według zarejestrowanej wartości (malejąco)
+3. Następnie według czasu rejestracji (rosnąco)
+
+### 4. Podsumuj dane z czujników
+Zwróć:
+- `double HighestValue`                     - najwyższa wartość zarejestrowana spośród wszystkich czujników
+- `double LowestTemp`                       - najniższa zarejestrowana temperatura
+- `string MostReadings`                     - nazwa czujnika, z którego pochodzi najwięcej odczytów
+- `TimeSpan TotalDuration`                  - różnica czasu między pierwszym a ostatnim zarejestrowanym odczytem wogóle
+- `IList<string> UniqueSensors`             - lista wszystkich nazw czujników bez duplikatów
+- `IList<(string, double)> AverageReadings` - średnia wartość odczytów dla każdego czujnika
+- `IList<(string, TimeSpan)> LargestGaps`   - największy odstęp czasowy między dwoma kolejnymi odczytami (w porządku chronologicznym) dla każdego czujnika
+- `IList<(Reading, Reading)> SignChanges`   - pary kolejnych odczytów (w porządku chronologicznym), które mają różne znaki (pierwszy < drugi)
+
+### 5. Dopasowywanie wzorców (pattern matching)
+Przeanalizuj listę odczytów i zwróć odpowiednią etykietę:
+- "empty"        jeśli liczba odczytów wynosi 0
+- "single"       jeśli jest dokładnie 1 odczyt
+- "pair-asc"     jeśli są dokładnie 2 odczyty, a wartości są rosnące (v1 < v2)
+- "pair-desc"    jeśli są dokładnie 2 odczyty, a wartości są malejące (v1 > v2)
+- "pair-eq"      jeśli są dokładnie 2 odczyty, a wartości są równe
+- "starts-high"  jeśli pierwszy odczyt ma wartość > 100
+- "ends-low"     jeśli ostatni odczyt ma wartość < 0
+- "other"        w pozostałych przypadkach
+
+Użyj wzorców list i wycinków. Nie używaj `Count`, `IndexOf`, łańcuchów instrukcji `if`, indeksów itp.
+
+Wskazówka: użyj [wyrażenia `switch`](https://csharp.mini.pw.edu.pl/pl/lectures/03.basics/statements/).
+{{< filetree dir="labs/w04.collections-generics/Task2" >}}
+{{% /details %}}
+
+{{% details "TASK 3" false %}}
+## Zaimplementuj bibliotekę macierzową
+### 1. Zapoznaj się z klasą `Matrix<T>` w pliku `Matrix.cs`
+### 2. W pliku `DenseMatrix.cs` zaimplementuj metody klasy `DenseMatrix<T>`:
+- `public DenseMatrix(int rows, int columns, T[]? values = null)`
+- `public static DenseMatrix<T> Identity(int size)`
+- `public static DenseMatrix<T> operator +(DenseMatrix<T> a, DenseMatrix<T> b)`
+- `public static DenseMatrix<T> operator -(DenseMatrix<T> a, DenseMatrix<T> b)`
+- `public static DenseMatrix<T> operator *(DenseMatrix<T> a, T scalar)`
+- `public static DenseMatrix<T> operator *(T scalar, DenseMatrix<T> a)`
+- `public static DenseMatrix<T> operator *(DenseMatrix<T> a, DenseMatrix<T> b)`
+- `public DenseMatrix<T> Clone()`
+ 
+**oraz wszelkie inne wymagane metody.**
+
+### 3. W pliku `SparseMatrix.cs` zaimplementuj metody klasy `SparseMatrix<T>`:
+- `public SparseMatrix(int rows, int columns, T[]? values = null)`
+- `public static SparseMatrix<T> Identity(int size)`
+- `public static SparseMatrix<T> operator +(SparseMatrix<T> a, SparseMatrix<T> b)`
+- `public static SparseMatrix<T> operator -(SparseMatrix<T> a, SparseMatrix<T> b)`
+- `public static SparseMatrix<T> operator *(SparseMatrix<T> a, T scalar)`
+- `public static SparseMatrix<T> operator *(T scalar, SparseMatrix<T> a)`
+- `public static SparseMatrix<T> operator *(SparseMatrix<T> a, SparseMatrix<T> b)`
+- `public SparseMatrix<T> Clone()`
+
+**oraz wszelkie inne wymagane metody.**
+
+Student: {{< filetree dir="labs/w04.collections-generics/Task3/Student" >}}
+Solution: {{< filetree dir="labs/w04.collections-generics/Task3/Solution" >}}
+{{% /details %}}
 
 ## Więcej na ten temat:
 - [Iterators](https://learn.microsoft.com/en-us/dotnet/csharp/iterators)
@@ -548,10 +555,10 @@ Zamiast implementować interfejs `IComparer<T>`, można również dziedziczyć p
 - [`Comparer<T>` Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.comparer-1?view=net-10.0)
 - [System.Collection.Generic Namespace](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic?view=net-10.0)
 
-> [!IMPORTANT]
-> # Dodatkowe materiały na warsztaty
-> Materiały: {{< filetree dir="labs/w04.collections-generics/Lab/" >}}
-> Rozwiązania: {{< filetree dir="labs/w04.collections-generics/LabSolution" >}}
+{{% details "**Dodatkowe materiały na warsztaty**" false %}}
+Materiały: {{< filetree dir="labs/w04.collections-generics/Lab/" >}}
+Rozwiązanie: {{< filetree dir="labs/w04.collections-generics/LabSolution" >}}
+{{% /details %}}
 
 
 
