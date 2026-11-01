@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!-- File name of the native library on the current operating system -->
+  <PropertyGroup>
+    <NativeLibName Condition="$([MSBuild]::IsOSPlatform('Windows'))">imgfilter.dll</NativeLibName>
+    <NativeLibName Condition="$([MSBuild]::IsOSPlatform('OSX'))">libimgfilter.dylib</NativeLibName>
+    <NativeLibName Condition="'$(NativeLibName)' == ''">libimgfilter.so</NativeLibName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <NativeSource Include="native/*.c;native/*.h" />
+  </ItemGroup>
+
+  <!-- Compile the C library into the output directory, next to ImageFilters.dll.
+       Inputs/Outputs: the target is skipped when the library is up to date. -->
+  <Target Name="BuildNative" AfterTargets="Build" Inputs="@(NativeSource)" Outputs="$(OutDir)$(NativeLibName)">
+    <Exec Condition="!$([MSBuild]::IsOSPlatform('Windows'))"
+          Command="cc -std=c11 -O2 -Wall -shared -fPIC -fvisibility=hidden -o &quot;$(OutDir)$(NativeLibName)&quot; native/imgfilter.c" />
+    <!-- Requires cl.exe on PATH: run dotnet build/run from the "x64 Native Tools Command Prompt for VS" -->
+    <Exec Condition="$([MSBuild]::IsOSPlatform('Windows'))"
+          Command="cl /nologo /O2 /W3 /LD native\imgfilter.c /Fo&quot;$(IntermediateOutputPath)imgfilter.obj&quot; /Fe&quot;$(OutDir)$(NativeLibName)&quot;" />
+  </Target>
+
+</Project>
