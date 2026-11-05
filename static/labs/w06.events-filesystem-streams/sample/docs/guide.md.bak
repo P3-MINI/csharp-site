@@ -1,0 +1,13 @@
+# User Guide
+
+This guide describes how to install, configure and maintain the weather
+station. It assumes that the sensors are already connected to the board
+and that the board runs the logger service.
+
+## Installation
+
+The logger is a single service started automatically when the board boots.
+It reads the configuration file, opens the sensors and starts writing the
+measurements to a CSV file. Every line of the file contains a timestamp,
+the sensor identifier and the measured values.
+
