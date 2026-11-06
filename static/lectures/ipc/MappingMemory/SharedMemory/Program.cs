@@ -45,7 +45,7 @@ public class Program
     
     public static void Reader()
     {
-        Mutex mutex = Mutex.OpenExisting(MutexName);
+        using Mutex mutex = Mutex.OpenExisting(MutexName);
         mutex.WaitOne();
         using var mmf = MemoryMappedFile.CreateFromFile(ShmFile, FileMode.Open);
         using var accessor = mmf.CreateViewAccessor();
@@ -104,7 +104,7 @@ public class Program
 
     public static void Reader()
     {
-        Mutex mutex = Mutex.OpenExisting(MutexName);
+        using Mutex mutex = Mutex.OpenExisting(MutexName);
         mutex.WaitOne();
         using var mmf = MemoryMappedFile.OpenExisting(MapName);
         using var accessor = mmf.CreateViewAccessor();

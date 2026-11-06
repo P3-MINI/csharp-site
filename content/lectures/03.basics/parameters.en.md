@@ -60,24 +60,29 @@ static void GetFirstAndLastNames(string name,
 The `in` modifier also works similarly; the difference here is that the passed parameter becomes read-only within the method body.
 
 ```csharp
-Matrix4 A = Matrix.CreateRotationX(90.0f);
-Matrix4 B = Matrix.CreateRotationY(45.0f);
+using System.Numerics;
+
+Matrix4x4 A = Matrix4x4.CreateRotationX(MathF.PI / 2);
+Matrix4x4 B = Matrix4x4.CreateRotationY(MathF.PI / 4);
 Multiply(in A, in B, out var result);
 Console.WriteLine(result);
 
-static void Multiply(in Matrix4 a,
-                     in Matrix4 b,
-                     out Matrix4 result)
+static void Multiply(in Matrix4x4 a,
+                     in Matrix4x4 b,
+                     out Matrix4x4 result)
 {
-    /**/
+    // a = Matrix4x4.Identity; // Compilation error: 'a' is read-only
+    result = a * b;
 }
 ```
 
 ## Variable Number of Parameters (`params`)
 
-The `params` keyword allows a variable number of arguments to be passed to a method. It can only be used for the last parameter and must be a single-dimensional array. The compiler implicitly creates an array from the arguments provided for the `params` parameter.
+The `params` keyword allows a variable number of arguments to be passed to a method. It can only be used for the last parameter. Traditionally, its type is a single-dimensional array (since C# 13, other collection types are allowed as well); the compiler implicitly creates an array from the arguments provided for the `params` parameter.
 
 ```csharp
+using System.Text;
+
 var s1 = Concat("The", "Quick", "Brown", "Fox");
 var s2 = Concat("Jumps", "Over", "The", "Lazy", "Dog");
 Console.WriteLine(Concat(s1, s2));
@@ -92,14 +97,38 @@ static string Concat(string str, params string[] strings)
 }
 ```
 
+### `params` Collections (C# 13)
+
+Since C# 13, the type of a `params` parameter can also be `Span<T>`, `ReadOnlySpan<T>`, a collection interface (e.g., `IEnumerable<T>`, `IReadOnlyList<T>`, `IList<T>`) or a collection type (e.g., `List<T>`). The most useful is `params ReadOnlySpan<T>` (`ReadOnlySpan<T>` is a read-only view of a contiguous region of memory): the compiler can place the arguments on the stack, so - unlike with `params T[]` - no array is allocated on the heap on each call. If both overloads exist, the compiler prefers the span one. Since .NET 9, many library methods (e.g., `string.Join`, `string.Concat`, `Path.Combine`, `Task.WhenAll`) have such overloads, so existing code avoids these allocations just by being recompiled.
+
+```csharp
+Console.WriteLine(Sum(1, 2, 3)); // 6
+Console.WriteLine(Sum());        // 0
+PrintAll("a", "b", "c");         // a, b, c
+PrintAll(["x", "y"]);            // x, y - a collection can also be passed directly
+
+static int Sum(params ReadOnlySpan<int> numbers) // no array is allocated
+{
+    int sum = 0;
+    foreach (int n in numbers)
+        sum += n;
+    return sum;
+}
+
+static void PrintAll(params IEnumerable<string> items)
+{
+    Console.WriteLine(string.Join(", ", items));
+}
+```
+
 ## Optional Parameters and Named Arguments
 
 Parameters in C# can have default values. The default value must be a compile-time constant. All default parameters must be defined after any required parameters. If there is a need to omit some optional parameters, you can specify which ones you want to assign a value to by using named arguments.
 
 ```csharp
-public void ExampleMethod(int required,
-                          string optionalstr = "default",
-                          int optionalint = 10) {}
+void ExampleMethod(int required,
+                   string optionalstr = "default",
+                   int optionalint = 10) {}
 ExampleMethod(3, "parameter", 7);
 ExampleMethod(3, "parameter");
 ExampleMethod(3);

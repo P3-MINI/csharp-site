@@ -37,9 +37,9 @@ To throw an exception, we use the `throw` statement followed by an exception obj
 ```csharp
 public static void ValidateInput(string input, int maxLength)
 {
-    if (string.IsNullOrWhiteSpace(input))
+    if (input is null)
     {
-        throw new ArgumentNullException(nameof(input), "Input cannot be null or empty.");
+        throw new ArgumentNullException(nameof(input), "Input cannot be null.");
     }
 
     if (input.Length > maxLength)
@@ -72,6 +72,9 @@ catch (Exception e)
     throw;
 }
 ```
+
+> [!WARNING]
+> `throw;` re-throws the caught exception and preserves its original stack trace. Writing `throw e;` instead would also throw the same object, but its stack trace would be reset to the current `catch` block, losing information about where the error actually occurred.
 
 ## Exception Filters
 
@@ -116,9 +119,9 @@ public class InvalidOrderException : Exception
 }
 ```
 
-## The `finally`
+## The `finally` Block
 
-A `finally` block can be attached to a `try-catch` block. The code within such a block will always execute, regardless of the circumstances under which the `try` block is exited. The main use of the `finally` block is to release resources such as file streams, database connections, or network resources.
+A `finally` block can be attached to a `try-catch` block. The code within such a block will always execute, regardless of the circumstances under which the `try` block is exited (normally, via `return`/`break`, or because of an exception). It is skipped only when the whole process is terminated abruptly, e.g., by `Environment.FailFast` or a stack overflow. The main use of the `finally` block is to release resources such as file streams, database connections, or network resources.
 
 ```csharp
 FileStream? fs = null;

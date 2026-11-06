@@ -37,7 +37,7 @@ Console.WriteLine($"Is completed: {task.IsCompleted}");
 
 ## Returning values from a task
 
-The `Task<TResult>.Run(Func<TResult> func)` method lets you create tasks that return a value. The `Result` property blocks until the task completes and then retrieves its value.
+The `Task.Run<TResult>(Func<TResult> function)` method lets you create tasks that return a value (`Task<TResult>`). The `Result` property blocks until the task completes and then retrieves its value.
 
 ```csharp
 Task<int> task1 = Task.Run(() => CountPrimes(1_000_000, 1_000_000));
@@ -46,7 +46,7 @@ Console.WriteLine("Started two tasks counting primes");
 Console.WriteLine($"Primes(1'000'000, 2'000'000): {task1.Result}");
 Console.WriteLine($"Primes(2'000'000, 3'000'000): {task2.Result}");
 
-private static int CountPrimes(int from, int count)
+static int CountPrimes(int from, int count)
 {
     return Enumerable.Range(from, count).Count(n =>
     {
@@ -67,7 +67,7 @@ private static int CountPrimes(int from, int count)
 
 ## Exceptions in tasks
 
-Unlike with threads, unhandled exceptions in a task do not cause the application to terminate immediately. Exceptions are captured and re-thrown when you wait for the task or access its result. Captured exceptions are wrapped in an `AggregateException`.
+Unlike with threads, unhandled exceptions in a task do not cause the application to terminate. Exceptions are captured and re-thrown when you wait for the task or access its result. Captured exceptions are wrapped in an `AggregateException`. If an exception is never observed, it is silently ignored (at most, the `TaskScheduler.UnobservedTaskException` event is raised when the task is garbage-collected).
 
 ```csharp
 class Program

@@ -4,18 +4,18 @@ title: "Formatowanie"
 
 # Formatowanie
 
-Wszystkie typy w .NET posiadają metodę `ToString()`, ale czasami jej podstawowa wersja jest niewystarczająca. Czasami potrzebujemy mechanizmu, który pozwoli precyzyjnie kontrolować tekstową reprezentację obiektu - na przykład, aby wyświetlić liczbę jako walutę, albo sformatować datę według określonego wzorca.
+Wszystkie typy w .NET posiadają metodę `ToString()`, ale czasami jej podstawowa wersja jest niewystarczająca. Czasami potrzebujemy mechanizmu, który pozwoli precyzyjnie kontrolować tekstową reprezentację obiektu - na przykład, aby wyświetlić liczbę jako walutę albo sformatować datę według określonego wzorca.
 
 Do tego właśnie służy system formatowania oparty o interfejs `IFormattable`.
 
 ## Interfejs `IFormattable`
 
-Jest on zaimplementowany przez wszystkie typy proste, numeryczne, oraz `DateTime`. Definiuje on jedną wersję metody `ToString`:
+Jest on zaimplementowany przez wszystkie typy numeryczne, typy daty i czasu (`DateTime`, `DateTimeOffset`, `TimeSpan`, …), `Guid` oraz typy wyliczeniowe (ale nie przez `bool` ani `string`). Definiuje on jedną wersję metody `ToString`:
 
 ```csharp
 public interface IFormattable
 {
-    string ToString(string format, IFormatProvider formatProvider);
+    string ToString(string? format, IFormatProvider? formatProvider);
 }
 ```
 
@@ -49,10 +49,10 @@ var date = new DateTime(2025, 12, 25);
 
 // Assuming current culture is pl-PL
 Console.WriteLine($"Price: {price:C}"); // Output: Price: 1 250,50 zł
-Console.WriteLine($"Date: {date:D}");   // Output: Date: 25 grudnia 2025
+Console.WriteLine($"Date: {date:D}");   // Output: Date: czwartek, 25 grudnia 2025
 ```
 
-> Od .NETa 6 możemy też interpolować `string`i przy użyciu wybranego dostawcy formatu, z pomocą statycznej metody `string.Create`:
+> Od .NET 6 możemy też interpolować `string`i przy użyciu wybranego dostawcy formatu, za pomocą statycznej metody `string.Create`:
 > 
 > ```csharp
 > string.Create(culture, $"{date,23}{number,20:N3}");
@@ -106,7 +106,7 @@ Implementacja interfejsu `IFormattable` dla własnych typów dodaje do tego typu
 Na przykład, dla typu `Temperature` można zdefiniować formaty:
 * `"C"` - stopnie Celsjusza
 * `"F"` - stopnie Fahrenheita
-* `"K"` - Kelwiny 
+* `"K"` - kelwiny 
 
 ```csharp
 using System.Globalization;
@@ -118,7 +118,7 @@ public class Temperature : IFormattable
     public Temperature(decimal temperature)
     {
         if (temperature < -273.15m)
-            throw new ArgumentOutOfRangeException($"{temperature} is less than absolute zero.");
+            throw new ArgumentOutOfRangeException(nameof(temperature), $"{temperature} is less than absolute zero.");
         this.temp = temperature;
     }
 
@@ -133,12 +133,12 @@ public class Temperature : IFormattable
         return ToString("G", CultureInfo.CurrentCulture);
     }
 
-    public string ToString(string format)
+    public string ToString(string? format)
     {
         return ToString(format, CultureInfo.CurrentCulture);
     }
 
-    public string ToString(string format, IFormatProvider provider)
+    public string ToString(string? format, IFormatProvider? provider)
     {
         if (String.IsNullOrEmpty(format)) format = "G";
         if (provider == null) provider = CultureInfo.CurrentCulture;
@@ -182,7 +182,7 @@ To najczęściej używane formaty, które pokrywają większość typowych zasto
 | `D`          | Dziesiętny       | `(123).ToString("D5")`      | `00123`         |
 | `F`          | Stałoprzecinkowy | `(1234.567).ToString("F2")` | `1234.57`       |
 | `N`          | Liczba           | `(1234.567).ToString("N2")` | `1,234.57`      |
-| `P`          | Procent          | `(0.123).ToString("P1")`    | `12.3 %`        |
+| `P`          | Procent          | `(0.123).ToString("P1")`    | `12.3%`         |
 | `X`          | Szesnastkowy     | `(255).ToString("X")`       | `FF`            |
 
 > [!NOTE]
@@ -223,7 +223,7 @@ Podobnie jak przy liczbach, mamy do dyspozycji formaty standardowe i niestandard
 
 ### Własne formaty daty i czasu
 
-| Specyfikator | Opis                          | Przykład (dla `2025-11-23 14:30:05`)  | Wynik             |
+| Specyfikator | Opis                          | Przykład (dla `2025-11-23 14:30:05`)  | Wynik (`en-US`)   |
 | :----------- | :---------------------------- | :------------------------------------ | :---------------- |
 | `dd`         | Dzień miesiąca (01-31).       | `date.ToString("dd")`                 | `23`              |
 | `dddd`       | Pełna nazwa dnia tygodnia.    | `date.ToString("dddd")`               | `Sunday`          |
@@ -238,6 +238,8 @@ Podobnie jak przy liczbach, mamy do dyspozycji formaty standardowe i niestandard
 
 ```csharp
 DateTime date = new DateTime(2025, 11, 23, 14, 30, 5);
+
+// Assuming current culture is en-US
 Console.WriteLine(date.ToString("dddd, dd MMMM yyyy")); // Output: Sunday, 23 November 2025
 Console.WriteLine(date.ToString("yyyy-MM-dd HH:mm:ss")); // Output: 2025-11-23 14:30:05
 ```

@@ -19,7 +19,7 @@ Implementing the interface involves releasing the resources within the `Dispose`
 
 ## The `using` statement
 
-The `using` statement ensures that the `Dispose` method is always called on an object when control leaves the scope of the statement. The `using` statement comes in two variants: with and without a `{}` block. We can use the `using` statement with anything that implements `IDisposable`:
+The `using` statement ensures that the `Dispose` method is always called on an object when control leaves the scope of the statement. The `using` statement comes in two variants: with a `{}` block and without it (the latter is called a *using declaration* and is available since C# 8). We can use the `using` statement with anything that implements `IDisposable`:
 
 ```csharp
 using (Stream fs = new FileStream("file.txt", FileMode.Open))
@@ -88,25 +88,29 @@ public class Logger : IDisposable
 ```
 
 The semantics of `IDisposable` objects should be as follows:
-- After the `Dispose` method is called, calling methods or other properties should throw an `ObjectDisposedException`.
-- Calling the `Dispose` method multiple times does not cause an error.
-- A disposable object (one that implements IDisposable) should also dispose of all disposable objects it owns.
+- After the `Dispose` method is called, calling its other methods or properties should throw an `ObjectDisposedException`.
+- Calling the `Dispose` method multiple times should not cause an error.
+- A disposable object (one that implements `IDisposable`) should also dispose of all disposable objects it owns.
 
 ## Calling `Dispose` from a finalizer
 
-Sometimes a class directly manages an unmanaged resource (e.g., a raw file handle from a C++ library). In such a case, we should implement a finalizer as a "safeguard". It will run if the user forgets to call `Dispose()`, preventing a resource leak.
+Sometimes a class directly manages an unmanaged resource (e.g., a raw file handle from a C++ library). In such a case, we should implement a finalizer as a "safeguard". It will run if the user forgets to call `Dispose()`, preventing a resource leak. A class that owns only managed objects (such as the `StreamWriter` above) should not have a finalizer – these objects take care of their own resources.
 
 The *Garbage collector* is responsible for calling the finalizer, but we never know when or in what order objects will be released.
 
 ```csharp
+using System.Runtime.InteropServices;
+
 public class Logger : IDisposable
 {
     private StreamWriter sw;
+    private IntPtr buffer; // Unmanaged memory owned directly by this object
     private bool disposed = false;
 
     public Logger(string path)
     {
         sw = new StreamWriter(path, append: true);
+        buffer = Marshal.AllocHGlobal(1024);
     }
 
     public void Log(string message) 
@@ -138,6 +142,8 @@ public class Logger : IDisposable
         }
 
         // Release unmanaged resources owned by just this object.
+        Marshal.FreeHGlobal(buffer);
+        buffer = IntPtr.Zero;
         disposed = true;
     }
 
@@ -145,4 +151,7 @@ public class Logger : IDisposable
 }
 ```
 
-> In the `Dispose(false)` block (i.e., in the call path from the finalizer), we should **ONLY** release unmanaged resources, that is, those that the Garbage Collector does not release and only those that we are the direct owner of. Unmanaged resources include, for example, memory allocated from a C++ library, a database connection, or a file handle.
+> In the `Dispose(false)` block (i.e., in the call path from the finalizer), we should **ONLY** release unmanaged resources, that is, those that the Garbage Collector does not release and only those that we are the direct owner of. Unmanaged resources include, for example, memory allocated from a C++ library or raw (`IntPtr`) handles to files, sockets or database connections. We must not touch other managed objects there (e.g., by calling `sw.Dispose()`) – they may have already been finalized.
+
+> [!TIP]
+> In modern .NET, writing a finalizer by hand is rarely necessary. Instead of storing a raw handle in an `IntPtr` field, it is better to wrap it in a class derived from [`SafeHandle`]({{< ref "/lectures/11.interoperability/pinvoke#safehandle" >}}), which has its own finalizer. A class that owns a `SafeHandle` then only needs the simple `Dispose` implementation shown earlier.

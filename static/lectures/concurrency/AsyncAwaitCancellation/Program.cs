@@ -34,7 +34,7 @@ class Program
             }
 
             return primes;
-        });
+        }, token);
     }
 
     static bool IsPrime(int number)

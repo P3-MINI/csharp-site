@@ -10,7 +10,7 @@ In C#, there are three categories of types that define how data is stored in mem
 - **Reference types**
 - **Pointer types**
 
-For the purposes of this course, we will focus mainly on the first two categories, which form the foundation of programming in C#. Pointer types, used primarily in unmanaged code, are beyond the basic scope of this material.
+For the purposes of this course, we will focus mainly on the first two categories, which form the foundation of programming in C#. Pointer types, used primarily in `unsafe` code and for interoperability with unmanaged code, are beyond the basic scope of this material.
 
 ## Value Types
 
@@ -22,12 +22,12 @@ Variables of value types store their values directly in their allocated location
 - `bool`
 
 **User-defined value types:**
-- `struct`
+- `struct` (including `record struct`)
 - `enum`
 
 ## Reference Types
 
-Variables of reference types store a **reference** (address) to an object that is located on the **heap**. The variable itself resides on the stack, but it points to data in another location.
+Variables of reference types store a **reference** (address) to an object that is located on the **heap**. The variable itself (e.g., a local variable) usually resides on the stack, but it points to data in another location.
 
 **Built-in reference types:**
 - `string`
@@ -35,7 +35,9 @@ Variables of reference types store a **reference** (address) to an object that i
 - Arrays (e.g., `int[]`, `string[]`)
 
 **User-defined reference types:**
-- `class`
+- `class` (including `record`)
+- `interface`
+- `delegate`
 
 ## Assignment Semantics
 
@@ -127,7 +129,7 @@ graph TD
 
 ## Null Values
 
-- **Value types** by design cannot be `null`, as they must always contain a specific value (e.g., an `int` is initialized to `0` by default). Attempting to assign `null` will result in a compilation error.
+- **Value types** by design cannot be `null`, as they must always contain a specific value (e.g., an `int` is initialized to `0` by default). Attempting to assign `null` will result in a compilation error. (To store "no value" in a value type, a separate *nullable value type* `T?`, e.g. `int?`, is used – see [Nullability]({{< ref "/lectures/05.csharp-features/nullable" >}}).)
 - **Reference types** can store `null`, which means the variable does not point to any object.
 
 ```csharp
@@ -190,4 +192,4 @@ public class Person { public string Name; public int Age; }
 ```
 
 - In the case of `ModifyValueType`, the method operates on a completely independent copy of the `Point` struct. The changes are not visible outside.
-- In the case of `ModifyReferenceType`, the method receives a copy of the reference, which points to the same `Person` object. The change to the `Name` property is permanent because it modifies the shared object. However, if we were to assign a new instance (`new Person(...)`) to the `person` parameter, it would only affect the local copy of the reference, and the original variable outside the method would still point to the original object.
+- In the case of `ModifyReferenceType`, the method receives a copy of the reference, which points to the same `Person` object. The change to the `Name` field is permanent because it modifies the shared object. However, if we were to assign a new instance (`new Person(...)`) to the `person` parameter, it would only affect the local copy of the reference, and the original variable outside the method would still point to the original object.

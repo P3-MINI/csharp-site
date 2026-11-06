@@ -19,10 +19,10 @@ Przestrzeń nazw `System.Collections.Concurrent` zawiera kolekcje zoptymalizowan
 *   **`ConcurrentBag<T>`**: Nieuporządkowany multizbiór elementów.
 
 > [!INFO]
-> Iteracja po współbieżnej kolekcji podczas równoczesnej modyfikacji przez inny wątek, może zawierać zarówno już usunięte, jak i nowo dodane wartości, ale nie skończy się rzuceniem wyjątku.
+> Iteracja po współbieżnej kolekcji podczas równoczesnej modyfikacji przez inny wątek nigdy nie kończy się rzuceniem wyjątku. Enumeratory `ConcurrentQueue<T>`, `ConcurrentStack<T>` i `ConcurrentBag<T>` działają na migawce (*snapshot*) wykonanej w chwili rozpoczęcia iteracji, natomiast iteracja po `ConcurrentDictionary<TKey, TValue>` nie jest migawką - może zawierać zarówno już usunięte, jak i nowo dodane wartości.
 
 > [!INFO]
-> `ConcurrentQueue`, `ConcurrentStack`, `ConcurrentBag` używają wewnętrznie list dwukierunkowych. W `ConcurrentBag<T>`, każdy wątek otrzymuje swoją własną prywatną listę, dzięki czemu pobieranie elementu jest bardzo szybkie i bez wyścigów, pod warunkiem, że każdy wątek nie pobiera więcej elementów niż włożył.
+> Wewnętrznie `ConcurrentStack<T>` jest listą jednokierunkową, a `ConcurrentQueue<T>` - listą segmentów tablicowych. W `ConcurrentBag<T>` każdy wątek otrzymuje swoją własną prywatną kolejkę lokalną, dzięki czemu dodawanie i pobieranie elementów jest bardzo szybkie i odbywa się bez rywalizacji, pod warunkiem że wątek nie pobiera więcej elementów, niż włożył (w przeciwnym razie musi "podkradać" elementy z kolejek innych wątków).
 
 ## `IProducerConsumerCollection`
 
@@ -31,6 +31,7 @@ Przestrzeń nazw `System.Collections.Concurrent` zawiera kolekcje zoptymalizowan
 ```csharp
 public interface IProducerConsumerCollection<T> : IEnumerable<T>, ICollection
 {
+    void CopyTo(T[] array, int index);
     bool TryAdd(T item);
     bool TryTake(out T item);
     T[] ToArray();
@@ -48,7 +49,7 @@ Jest on implementowany przez `ConcurrentQueue<T>`, `ConcurrentStack<T>` oraz `Co
 
 ### Przykład
 
-W poniższym przykładzie producent dodaje liczby do kolekcji, a konsument je pobiera. Dzięki `GetConsumingEnumerable()`, konsument może łatwo iterować po elementach tak długo, jak producent nie zgłosi zakończenia (`CompleteAdding`).
+W poniższym przykładzie producent dodaje liczby do kolekcji, a konsument je pobiera. Dzięki `GetConsumingEnumerable()`, konsument może łatwo iterować po elementach aż do momentu, gdy producent zgłosi zakończenie dodawania (`CompleteAdding`), a wszystkie pozostałe elementy zostaną pobrane.
 
 ```csharp
 var blockingCollection = new BlockingCollection<int>(boundedCapacity: 5);
@@ -58,7 +59,7 @@ Task producer = Task.Run(() =>
     for (int i = 0; i < 10; i++)
     {
         Console.WriteLine($"Producing: {i}");
-        blockingCollection.Add(i); // Can block, if full
+        blockingCollection.Add(i); // Can block if full
         Thread.Sleep(500);
     }
     blockingCollection.CompleteAdding(); // Signal end of data
@@ -79,3 +80,47 @@ Task.WaitAll(producer, consumer);
 > [!INFO]
 > Kod źródłowy:
 > {{< filetree dir="lectures/synchronization/BlockingCollectionExample" >}}
+
+## Kanały (*Channels*)
+
+Przestrzeń nazw `System.Threading.Channels` (wbudowana w .NET od wersji .NET Core 3.0) udostępnia `Channel<T>` - nowoczesną, **asynchroniczną** alternatywę dla `BlockingCollection<T>`. Kanał ma dwa końce: `Writer` (`ChannelWriter<T>`), z którego korzystają producenci, oraz `Reader` (`ChannelReader<T>`), z którego korzystają konsumenci. Zamiast blokować wątki, obie strony czekają asynchronicznie:
+
+*   **Producent**: `WriteAsync` czeka (`await`), jeśli kanał o ograniczonej pojemności (`Channel.CreateBounded<T>`) jest pełny. `Channel.CreateUnbounded<T>()` tworzy kanał bez limitu pojemności.
+*   **Konsument**: `ReadAsync` czeka na pojawienie się elementu. `ReadAllAsync()` zwraca [asynchroniczną sekwencję]({{< ref "/lectures/09.concurrency/asynchronous-streams" >}}) (`IAsyncEnumerable<T>`), która kończy się, gdy producent wywoła `Writer.Complete()`, a wszystkie pozostałe elementy zostaną odczytane.
+
+### Przykład
+
+Poprzedni przykład przepisany z użyciem kanału:
+
+```csharp
+var channel = Channel.CreateBounded<int>(capacity: 5);
+
+Task producer = Task.Run(async () =>
+{
+    for (int i = 0; i < 10; i++)
+    {
+        Console.WriteLine($"Producing: {i}");
+        await channel.Writer.WriteAsync(i); // Waits asynchronously if full
+        await Task.Delay(500);
+    }
+    channel.Writer.Complete(); // Signal end of data
+});
+
+Task consumer = Task.Run(async () =>
+{
+    await foreach (var item in channel.Reader.ReadAllAsync())
+    {
+        Console.WriteLine($"Consuming: {item}");
+        await Task.Delay(1000);
+    }
+});
+
+await Task.WhenAll(producer, consumer);
+```
+
+> [!TIP]
+> W nowym kodzie, zwłaszcza asynchronicznym, warto wybierać `Channel<T>` zamiast `BlockingCollection<T>` - oczekiwanie nie blokuje wątków z puli. Kanały o ograniczonej pojemności można też skonfigurować (`BoundedChannelOptions.FullMode`) tak, aby zamiast czekać, odrzucały najstarszy lub najnowszy element, a opcje `SingleReader`/`SingleWriter` pozwalają użyć szybszych implementacji.
+
+> [!INFO]
+> Kod źródłowy:
+> {{< filetree dir="lectures/synchronization/ChannelExample" >}}

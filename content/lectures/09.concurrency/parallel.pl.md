@@ -7,14 +7,14 @@ weight: 50
 
 Klasa `Parallel` (z przestrzeni nazw `System.Threading.Tasks`) jest jednym z elementów biblioteki TPL (*Task Parallel Library*), która pozwala na pisanie kodu współbieżnego w prosty sposób, abstrahując od zarządzania wątkami.
 
-Klasa `Parallel` zawiera trzy metody:
+Klasa `Parallel` zawiera trzy podstawowe metody:
 
 * `Parallel.Invoke` - pozwala na współbieżne wykonanie wielu delegatów typu `Action`
 * `Parallel.For` - równoległy odpowiednik pętli `for`
 * `Parallel.ForEach` - równoległy odpowiednik pętli `foreach`
 
-1. W przypadku każdej z tych metod, praca jest efektywnie partycjonowana na kilka zadań i uruchamiana współbieżnie na puli wątków.
-2. Metody z klasy `Parallel` są blokujące, aż do momentu wykonania całej pracy.
+1. W przypadku każdej z tych metod praca jest efektywnie partycjonowana na kilka zadań i uruchamiana współbieżnie na puli wątków.
+2. Te metody są blokujące aż do momentu wykonania całej pracy.
 3. Jeżeli w czasie wykonania jednej z operacji wystąpił wyjątek, to `Parallel` zbierze wszystkie wyjątki i zgłosi je w postaci jednego `AggregateException`.
 
 > [!NOTE]
@@ -99,12 +99,15 @@ public class Program
 }
 ```
 
+> [!NOTE]
+> Iteracje nie są wykonywane po kolei, dlatego linie są wypisywane w niedeterministycznej kolejności.
+
 ### Przerwanie pętli
 
-Metody `For` i `Foreach` zawierają przeciążenie, które wystawia `ParallelLoopState` w delegacie. Za jego pomocą pętle można przerwać wcześnie.
+Metody `For` i `ForEach` zawierają przeciążenie, które wystawia `ParallelLoopState` w delegacie. Za jego pomocą pętle można przerwać wcześnie.
 
 * `ParallelLoopState.Break()` zapewnia, że zostaną wykonane wszystkie iteracje, które są aktualnie przetwarzane, oraz wszystkie iteracje o niższym indeksie niż ta, dla której wywołano `Break()`. Dalsze iteracje o wyższych indeksach nie będą rozpoczynane.
-* `ParallelLoopState.Stop()` natychmiast wstrzymuje pracę wszystkich wątków
+* `ParallelLoopState.Stop()` sygnalizuje, że pętla powinna zakończyć się jak najszybciej: żadne kolejne iteracje (niezależnie od indeksu) nie będą rozpoczynane. Iteracje, które już trwają, nie są przerywane, ale mogą sprawdzić właściwość `IsStopped` i zakończyć się wcześniej.
 
 ```csharp
 public static ParallelLoopResult For(
@@ -205,6 +208,30 @@ public class Program
     }
 }
 ```
+
+## Parallel.ForEachAsync i Parallel.ForAsync
+
+`Parallel.For` i `Parallel.ForEach` blokują wątek wywołujący i są przeznaczone do pracy synchronicznej (obliczeniowej). Do operacji asynchronicznych (np. wejścia-wyjścia) służą ich asynchroniczne odpowiedniki: `Parallel.ForEachAsync` (.NET 6) i `Parallel.ForAsync` (.NET 8). Ich ciałem jest asynchroniczny delegat, który przyjmuje element (lub indeks) oraz `CancellationToken` i zwraca `ValueTask`. Metody te zwracają `Task`, który kończy się, gdy zakończą się wszystkie iteracje. Domyślnie współbieżnie wykonuje się co najwyżej `Environment.ProcessorCount` iteracji; można to zmienić za pomocą obiektu `ParallelOptions` (opisanego poniżej). Poniższy przykład pobiera pliki z listy `urls` z poprzedniego przykładu:
+
+```csharp
+using HttpClient httpClient = new HttpClient();
+
+await Parallel.ForEachAsync(urls, async ((string url, string output) tuple, CancellationToken token) =>
+{
+    byte[] content = await httpClient.GetByteArrayAsync(tuple.url, token);
+    await File.WriteAllBytesAsync(tuple.output, content, token);
+    Console.WriteLine($"{tuple.output} downloaded successfully.");
+});
+
+await Parallel.ForAsync(0, 10, async (i, token) =>
+{
+    await Task.Delay(1000, token); // e.g., an asynchronous I/O operation
+    Console.WriteLine(i);
+});
+```
+
+> [!WARNING]
+> Nie należy przekazywać lambdy `async` do `Parallel.For` ani `Parallel.ForEach`. Zostałaby ona przekształcona w delegat `async void`, przez co pętla zakończyłaby się, nie czekając na zakończenie operacji asynchronicznych.
 
 ## ParallelOptions
 

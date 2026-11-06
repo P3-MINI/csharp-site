@@ -30,12 +30,12 @@ public partial class User
 }
 ```
 
-Jednak słowo kluczowe `partial` pozwala nam przede wszystkim na oddzielenie kodu napisanego przez człowieka od kodu wygenerowanego automatycznie przez kompilator za pomocą generatorów. Najczęściej korzystają z tego systemy UI (np. WPF, WinForms), które na podstawie plików opisujących wygląd (np. `.xaml`) generują kod inicjalizujący komponenty. Poza tym można tego mechanizmu używać do generacji powtarzalnego kodu (np. `ToString()`), automatycznej implementacji interfejsów, generowaniu kodu sprawdzającego wyrażenie regularne lub serializującego typy na podstawie atrybutów.
+Jednak słowo kluczowe `partial` pozwala nam przede wszystkim na oddzielenie kodu napisanego przez człowieka od kodu wygenerowanego automatycznie (np. przez generatory źródeł lub inne narzędzia budowania). Najczęściej korzystają z tego systemy UI (np. WPF, WinForms), które na podstawie plików opisujących wygląd (np. `.xaml`) generują kod inicjalizujący komponenty. Poza tym można tego mechanizmu używać do generacji powtarzalnego kodu (np. `ToString()`), automatycznej implementacji interfejsów, generowania kodu sprawdzającego wyrażenia regularne lub serializującego typy na podstawie atrybutów.
 
 ### Zasady scalania
 
-Podczas łączenia części typu, kompilator stosuje ścisłe reguły:
-*   **Modyfikatory:** Wszystkie części muszą mieć zgodne modyfikatory dostępu. Jeśli w jednej części użyjesz `abstract` lub `sealed`, cała klasa taka się staje.
+Podczas łączenia części typu kompilator stosuje ścisłe reguły:
+*   **Modyfikatory:** Wszystkie części, które podają modyfikator dostępu, muszą podawać ten sam (część może go też pominąć). Jeśli w jednej części użyjesz `abstract` lub `sealed`, cała klasa taka się staje.
 *   **Interfejsy i Atrybuty:** Są sumowane. Jeśli różne pliki implementują różne interfejsy, klasa wynikowa implementuje je wszystkie.
 *   **Klasa bazowa:** Jeśli jest podana, musi być identyczna w każdej części (lub pominięta).
 
@@ -45,8 +45,8 @@ Warto pamiętać, że aby generator mógł rozszerzyć klasę napisaną przez pr
 
 Metody częściowe pozwalają zadeklarować sygnaturę metody w jednym pliku, a implementację w innym. Działają one w dwóch trybach:
 
-1.  **Opcjonalne:** Jeśli metoda zwraca `void`, jest prywatna i nie ma parametrów `out`, jej implementacja jest opcjonalna. Jeśli nie zostanie dostarczona, kompilator całkowicie usuwa wywołanie metody z kodu wynikowego.
-2.  **Wymagane (C# 9.0+):** Jeśli metoda ma modyfikator dostępu (np. `public`) lub zwraca wartość, implementacja **musi** zostać dostarczona (zazwyczaj przez generator).
+1.  **Opcjonalne:** Jeśli metoda nie ma modyfikatora dostępu (jest wtedy niejawnie prywatna), zwraca `void` i nie ma parametrów `out`, jej implementacja jest opcjonalna. Jeśli nie zostanie dostarczona, kompilator całkowicie usuwa wywołanie metody z kodu wynikowego.
+2.  **Wymagane (C# 9.0+):** Jeśli metoda ma jawny modyfikator dostępu (np. `public`, ale również `private`), implementacja **musi** zostać dostarczona (zazwyczaj przez generator). Modyfikator dostępu jest obowiązkowy, jeśli metoda zwraca wartość lub ma parametry `out`.
 
 ```csharp
 public partial class User
@@ -60,7 +60,7 @@ public partial class User
 
 ## Generatory źródeł (*Source Generators*)
 
-Generatory źródeł to mechanizm kompilatora wprowadzony w C# 9.0 (znacznie ulepszony w nowszych wersjach jako *Incremental Generators*), który umożliwia inspekcję kodu użytkownika lub innych plików podczas kompilacji i generowanie na ich podstawie nowych plików źródłowych. Jest to forma metaprogramowania w czasie kompilacji.
+Generatory źródeł to mechanizm kompilatora wprowadzony wraz z C# 9.0 i .NET 5 (od .NET 6 zastąpiony wydajniejszymi generatorami przyrostowymi, *Incremental Generators* - pierwotny interfejs `ISourceGenerator` jest obecnie przestarzały), który umożliwia inspekcję kodu użytkownika lub innych plików podczas kompilacji i generowanie na ich podstawie nowych plików źródłowych. Jest to forma metaprogramowania w czasie kompilacji.
 
 W przeciwieństwie do refleksji, generatory źródeł integrują się bezpośrednio z procesem kompilacji. Generator najpierw analizuje istniejący kod i pliki. Na podstawie analizy generator tworzy tekstowy kod źródłowy C#. Wygenerowany kod jest dodawany do procesu kompilacji jako "wirtualne" pliki i kompilowany razem z resztą projektu.
 
@@ -70,7 +70,7 @@ Generatory mogą dodawać nowy kod, ale nie mogą modyfikować istniejącego. Dl
 
 Generator jest biblioteką .NET Standard 2.0, która implementuje interfejs `IIncrementalGenerator`. Musi być oznaczona atrybutem `[Generator]`.
 
-Poniżej znajduje się przykład bardziej zaawansowanego generatora, który implementuje wzorzec **Builder** dla dowolnej klasy oznaczonej atrybutem `[GenerateBuilder]`. Generator analizuje publiczne właściwości klasy i tworzy dla nich metody `With...`.
+Poniżej znajduje się przykład bardziej zaawansowanego generatora, który implementuje wzorzec **Builder** dla dowolnej klasy oznaczonej atrybutem `[GenerateBuilder]`. Generator analizuje publiczne, niestatyczne właściwości klasy, które mają akcesor `set`, i tworzy dla nich metody `With...`.
 
 ```csharp
 using Microsoft.CodeAnalysis;
@@ -121,7 +121,8 @@ namespace BuilderGenerator
 
             var properties = symbol.GetMembers()
                 .OfType<IPropertySymbol>()
-                .Where(p => !p.IsReadOnly && p.DeclaredAccessibility == Accessibility.Public && p.SetMethod != null)
+                .Where(p => !p.IsStatic && !p.IsIndexer && p.DeclaredAccessibility == Accessibility.Public &&
+                            p.SetMethod is { IsInitOnly: false })
                 .Select(p => new PropertyModel(
                     p.Name, 
                     p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) 
@@ -148,8 +149,8 @@ namespace BuilderGenerator
                 code.StartBlock();
             }
 
-            // Generate partial class
-            code.AppendLine($"public partial class {model.ClassName}");
+            // Generate partial class (accessibility is taken from the user's declaration)
+            code.AppendLine($"partial class {model.ClassName}");
             using (code.Block())
             {
                 code.AppendLine($"public static Builder CreateBuilder() => new Builder();");
@@ -189,6 +190,13 @@ namespace BuilderGenerator
 }
 ```
 
+Metoda `Initialize` nie generuje kodu bezpośrednio - jedynie buduje *potok* (*pipeline*) transformacji, który kompilator wykonuje, zapamiętując wyniki pośrednie (w IDE potok jest uruchamiany niemal po każdym naciśnięciu klawisza):
+
+*   `RegisterPostInitializationOutput` dodaje kod niezależny od kodu użytkownika - tutaj atrybut znacznikowy.
+*   `SyntaxProvider.ForAttributeWithMetadataName` (dostępna od Roslyn 4.3) wyszukuje deklaracje oznaczone atrybutem o podanej, w pełni kwalifikowanej nazwie. Jest znacznie wydajniejsza niż `CreateSyntaxProvider`, które sprawdza każdy węzeł składni, ponieważ kompilator analizuje tylko deklaracje z atrybutem o pasującej nazwie. Tani `predicate` filtruje węzły składni, a `transform` ma dostęp do modelu semantycznego i symbolu (`TargetSymbol`).
+*   `transform` zwraca prosty model (`ClassModel`) z równością wartościową. Dzięki temu generator korzysta z zapamiętanych wyników i generuje kod ponownie tylko wtedy, gdy model się zmieni - dlatego modele nie powinny zawierać węzłów składni ani symboli.
+*   `RegisterSourceOutput` tworzy pliki źródłowe na podstawie modeli.
+
 Aby użyć takiego generatora w projekcie aplikacji, musimy dodać go jako `Analyzer`. Dzięki temu możemy korzystać z wygenerowanych builderów do tworzenia obiektów, mimo że sami ich nie napisaliśmy.
 
 ```xml
@@ -215,7 +223,7 @@ namespace App
     {
         static void Main()
         {
-            // Method CreateBuilder() and Builder class was generated:
+            // The CreateBuilder() method and the Builder class were generated:
             var user = User.CreateBuilder()
                 .WithFirstName("John")
                 .WithLastName("Doe")
@@ -230,9 +238,16 @@ namespace App
 > Kod źródłowy:
 > {{< filetree dir="lectures/other/source-generators" >}}
 
+> [!TIP]
+> Aby zobaczyć wygenerowane pliki, należy dodać `<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>` do projektu aplikacji - zostaną one zapisane w katalogu `obj/<konfiguracja>/<docelowy framework>/generated/`. Środowiska IDE (Visual Studio, Rider) pokazują też wygenerowane pliki wśród zależności projektu (w węźle analizatorów/generatorów źródeł); można do nich przechodzić i debugować je jak zwykły kod.
+
 ### Zastosowania w platformie .NET
 
 *   **`System.Text.Json`**: Generuje kod serializacji w czasie kompilacji, co pozwala na pracę bez użycia refleksji (istotne dla AOT - *Ahead-of-Time compilation*).
 *   **`System.Text.RegularExpressions` (.NET 7+)**: Atrybut `[GeneratedRegex]` generuje zoptymalizowany kod C# realizujący logikę wyrażenia regularnego, zamiast interpretować je w czasie wykonywania.
 *   **Współdziałanie (`[LibraryImport]`, .NET 7+)**: Generuje kod marshalingu (przekazywania danych) dla P/Invoke, zastępując generowane dynamicznie stuby w `[DllImport]`.
 *   **Logowanie (`[LoggerMessage]`)**: Pozwala na generowanie silnie typowanych, wysokowydajnych metod logowania, które unikają kosztownego parsowania szablonów i boksowania argumentów w czasie działania programu.
+
+### Interceptory (*Interceptors*)
+
+Generatory nie mogą modyfikować istniejącego kodu, ale kompilator oferuje ograniczony mechanizm przekierowywania wywołań - *interceptory*. Wygenerowana metoda oznaczona atrybutem `[InterceptsLocation]` zastępuje w czasie kompilacji wywołanie w konkretnym miejscu kodu użytkownika (generatory uzyskują to miejsce za pomocą `SemanticModel.GetInterceptableLocation`). Korzystają z nich np. minimalne API ASP.NET Core (z Native AOT) oraz generator wiązania konfiguracji, aby zastąpić wywołania oparte na refleksji wygenerowanym kodem. Interceptory wprowadzono jako funkcję eksperymentalną w .NET 8 (C# 12); według [dokumentacji Roslyn](https://github.com/dotnet/roslyn/blob/main/docs/features/interceptors.md) są stabilne od SDK .NET 9.0.2xx (Microsoft Learn wciąż opisuje je jako eksperymentalne). Projekt musi jawnie na nie zezwolić, wymieniając przestrzenie nazw, które mogą zawierać interceptory, we właściwości `<InterceptorsNamespaces>`.

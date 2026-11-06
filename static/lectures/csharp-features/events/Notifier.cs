@@ -1,7 +1,7 @@
 namespace ShopEvents;
 
 /// <summary>
-/// Simulates a store notifier that listens to product stock changes.
+/// Simulates a store notifier that listens to product price changes.
 /// This class is an event subscriber.
 /// </summary>
 public class Notifier
