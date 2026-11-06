@@ -89,7 +89,7 @@ Choć podobne do szablonów z C++, typy generyczne różnią się w dwóch klucz
 1. Podczas kompilacji, w CIL tworzona jest tylko jedna wersja typu generycznego. Konkretna instancja jest tworzona w czasie wykonywania (JIT), przy pierwszym użyciu. Szablony są natomiast tworzone w trakcies kompilacji, z jedną kopią kodu maszynowego na każdy użyty typ.
 2. Są one ściśle sprawdzane już przy definicji typu generycznego, podczas gdy szablony są weryfikowane głównie podczas pierwszego użycia (z pewnymi różnicami zależnymi od kompilatora).
 
-Dlatego w pierwszym przykładzie na górze strony musieliśmy użyć `where T : IComparable<T>`, podczas gdy w C++, choć moglibyśmy użyć konceptu takiego jak `requires std::totally_order<T>`, nie jest to konieczne.
+Dlatego w pierwszym przykładzie na górze strony musieliśmy użyć `where T : IComparable<T>`, podczas gdy w C++, choć moglibyśmy użyć konceptu takiego jak `requires std::totally_ordered<T>`, nie jest to konieczne.
 
 
 ### Ograniczenia można łączyć:
@@ -181,7 +181,7 @@ List<string> strings = objects; // compile error
 - [Generics C# Programming Guide](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generic-type-parameters)
 
 ## Kolekcje
-Zanim wprowadzono generyki wraz z C# 2, przestrzeń nazw `System.Collections` oferowała szereg struktur danych, takich jak: `ArrayList`, `HashTable`, `SortedList`, `Queue`, `Stack` oraz `BitArray`. Ponieważ mogły one przechowywać jedynie obiekty typu `object`, wiązało się to z problemami takimi jak pakowanie (boxing) oraz rzutowanie typów w czasie wykonywania programu – o czym wspomniano na początku tego powtórzenia. Wraz z wprowadzeniem typów generycznych struktury te stały się przestarzałe (z wyjątkiem ostatniej z wymienionych). Z tego powodu skupimy się wyłącznie na kolekcjach dostępnych w przestrzeni nazw `System.Collections.Generic`, które zapewniają lepszą kontrolę typów oraz wyższą wydajność.
+Zanim wprowadzono generyki wraz z C# 2, przestrzeń nazw `System.Collections` oferowała szereg struktur danych, takich jak: `ArrayList`, `Hashtable`, `SortedList`, `Queue`, `Stack` oraz `BitArray`. Ponieważ mogły one przechowywać jedynie obiekty typu `object`, wiązało się to z problemami takimi jak pakowanie (boxing) oraz rzutowanie typów w czasie wykonywania programu – o czym wspomniano na początku tego powtórzenia. Wraz z wprowadzeniem typów generycznych struktury te stały się przestarzałe (z wyjątkiem ostatniej z wymienionych). Z tego powodu skupimy się wyłącznie na kolekcjach dostępnych w przestrzeni nazw `System.Collections.Generic`, które zapewniają lepszą kontrolę typów oraz wyższą wydajność.
 
 ### Ogólna hierarchia kolekcji
 ```mermaid
@@ -247,7 +247,7 @@ class ISet~T~ {
     +Overlaps(IEnumerable~T~ other) bool
 }
 ```
-Analogicznie istnieją również `IReadOnlyList<T>` oraz `IReadOnlyDictionary<TKey, TValue>`, które dziedziczą po `IReadOnlyCollection<T>`. Nie istnieje natomiast `IReadOnlySet<T>`.
+Analogicznie istnieją również `IReadOnlyList<T>`, `IReadOnlyDictionary<TKey, TValue>` oraz `IReadOnlySet<T>`, które dziedziczą po `IReadOnlyCollection<T>`.
 
 ### Kolekcje standardowe
 
@@ -284,7 +284,7 @@ foreach (T item in collection) {
     // operation on the item
 }
 ```
-Pętla `foreach` to tzw. cukierek składniowy. Wewnętrznie pobiera enumerator i przechodzi po kolekcji pętlą `while`, aż metoda `MoveNext()` zwróci `false`. Ważne - ponieważ pętla `foreach` używa enumeratorów, elementy kolekcji są **tylko do odczytu**!
+Pętla `foreach` to tzw. cukierek składniowy. Wewnętrznie pobiera enumerator i przechodzi po kolekcji pętlą `while`, aż metoda `MoveNext()` zwróci `false`. Ważne - ponieważ pętla `foreach` używa enumeratorów, zmienna iteracyjna jest **tylko do odczytu**!
 ```csharp
 int sum = 0;
 IEnumerable<int> collection = [1, 2, 3];
@@ -312,7 +312,7 @@ foreach (Value item in collection) {
 
 Dekonstrukcja krotek może być wykorzystywana bezpośrednio w pętlach `foreach`:
 ```csharp
-    var dict = Dictionary<int, string> {{ 1, "1" }};
+    var dict = new Dictionary<int, string> {{ 1, "1" }};
     string one = "";
 
     // without deconstruction
@@ -350,7 +350,7 @@ IEnumerable<int> ProduceEvenNumbers(int upto) {
     }
 }
 ```
-Wewnętrznie, wywołanie metody korzystającej z instrukcji `yield` tworzy maszynę stanów, który przechowuje stan iteracji. Dlatego mówimy o *leniwym obliczaniu* – kolejna wartość jest pobierana lub generowana dopiero w momencie kolejnego wywołania. Do tego czasu wykonywanie kodu pozostaje wstrzymane.
+Wewnętrznie, wywołanie metody korzystającej z instrukcji `yield` tworzy maszynę stanów, która przechowuje stan iteracji. Dlatego mówimy o *leniwym obliczaniu* – kolejna wartość jest pobierana lub generowana dopiero w momencie kolejnego wywołania. Do tego czasu wykonywanie kodu pozostaje wstrzymane.
 
 Instrukcji `yield` można również użyć do implementacji enumeratorów:
 ```csharp
@@ -368,7 +368,7 @@ public readonly record struct Point3D(int X, int Y, int Z) {
 
 ## Dodatkowe funkcjonalności
 ### Modyfikator `params`
-Zamiast przekazywać kolekcję jako argument, możesz użyć słowa kluczowego `params`, dzięki czemu kolekcja zostanie utworzona automatycznie. Możesz użyć tablicy `T[]`, struktur `Span<T>`, dowolnego interfejsu dziedziczącego po `IEnumerable<T>` lub obiektu, który implementuje ten interfejs, posiada konstruktor bezparametrowy oraz metodę `Add(T element)`.
+Zamiast przekazywać kolekcję jako argument, możesz użyć słowa kluczowego `params`, dzięki czemu kolekcja zostanie utworzona automatycznie. Możesz użyć tablicy `T[]`, struktur `Span<T>`, dowolnego interfejsu dziedziczącego po `IEnumerable<T>` lub typu, który implementuje ten interfejs, posiada konstruktor bezparametrowy oraz metodę `Add(T element)`.
 ```csharp
 public void ParamsPrinter(params IEnumerable<int> ints) {
     foreach (int n in ints) {
@@ -453,6 +453,7 @@ people.Sort();
 // if I don't own Person, but still need to order them by age in some collection
 public class PersonByAgeAscending : IComparer<Person> {
     public int Compare(Person? a, Person? b) {
+        if (ReferenceEquals(a, b)) return 0;
         if (a is null) return -1;
         if (b is null) return 1;
         return a.Age.CompareTo(b.Age);
@@ -488,7 +489,7 @@ Zamiast implementować interfejs `IComparer<T>`, można również dziedziczyć p
 > - `double HighestValue`                     - najwyższa wartość zarejestrowana spośród wszystkich czujników
 > - `double LowestTemp`                       - najniższa zarejestrowana temperatura
 > - `string MostReadings`                     - nazwa czujnika, z którego pochodzi najwięcej odczytów
-> - `TimeSpan TotalDuration`                  - różnica czasu między pierwszym a ostatnim zarejestrowanym odczytem wogóle
+> - `TimeSpan TotalDuration`                  - różnica czasu między pierwszym a ostatnim zarejestrowanym odczytem w ogóle
 > - `IList<string> UniqueSensors`             - lista wszystkich nazw czujników bez duplikatów
 > - `IList<(string, double)> AverageReadings` - średnia wartość odczytów dla każdego czujnika
 > - `IList<(string, TimeSpan)> LargestGaps`   - największy odstęp czasowy między dwoma kolejnymi odczytami (w porządku chronologicznym) dla każdego czujnika
@@ -543,7 +544,7 @@ Zamiast implementować interfejs `IComparer<T>`, można również dziedziczyć p
 - [`yield` statement](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/yield)
 - [Collection expressions](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-12#collection-expressions)
 - [`Comparer<T>` Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.comparer-1?view=net-10.0)
-- [System.Collection.Generic Namespace](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic?view=net-10.0)
+- [System.Collections.Generic Namespace](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic?view=net-10.0)
 
 > [!IMPORTANT]
 > # Dodatkowe materiały na warsztaty

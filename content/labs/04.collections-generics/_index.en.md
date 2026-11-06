@@ -64,7 +64,7 @@ class C6<S> : A {}      // correct
 class C7<S> : B<int> {} // correct
 class C8<S,T> : B<T> {} // correct
 ```
-Try to analayze it yourself.
+Try to analyze it yourself.
 
 ## Constraints
 Constraints restrict what types can be used as type parameter.
@@ -99,7 +99,7 @@ public class Box<T> where T : class, IEntity, new() {}
 ```
 
 ## Covariance and contravariance
-Variance rules restric how generic parameters can be used and tell you whether you can substitute a `Generic<Derived>` for a `Generic<Base>` (covariance) or vice versa (contravariance). They are mostly used with interfaces and delegates.
+Variance rules restrict how generic parameters can be used and tell you whether you can substitute a `Generic<Derived>` for a `Generic<Base>` (covariance) or vice versa (contravariance). They are mostly used with interfaces and delegates.
 
 ### Covariance (`out`)
 `out T` means `T` only appears as an output (return type, `out` parameter or get-only property).
@@ -110,7 +110,7 @@ public interface IProducer<out T>
     void Consume(T t); // not allowed, because T would be in input position
 }
 ```
-You can use a more derived type where a less derived one is expected. Consider example with covariant interface `IEnumerable<out T>`:
+You can use a more derived type where a less derived one is expected. Consider an example with the covariant interface `IEnumerable<out T>`:
 
 ```csharp
 IEnumerable<string> strings = new List<string>();
@@ -140,7 +140,7 @@ IComparer<string> strComparer = objComparer;
 | `Func<in T1, in T2, out TResult>` | Args are contravariant, result is covariant |
 
 > [!NOTE]
-> `Action<T>` or `Func<T, TResult>` are system generic delegates. If you don't know or forgot what delegate is and means in C# you may head [here](https://csharp.mini.pw.edu.pl/en/lectures/05.csharp-features/delegates/) and [here](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/).
+> `Action<T>` or `Func<T, TResult>` are system generic delegates. If you don't know or forgot what a delegate is and means in C# you may head [here](https://csharp.mini.pw.edu.pl/en/lectures/05.csharp-features/delegates/) and [here](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/).
 
 Most classes, like `List<T>`, are by default invariant:
 ```csharp
@@ -155,16 +155,16 @@ List<string> strings = objects; // compile error
 > ## Generics example task
 
 > ### TODO 1 - Implement generic NumBox class
-> The class should derieve from `Box` class and work on any number type
-> It should contain a constructor and additon operator:
+> The class should derive from `Box` class and work on any number type
+> It should contain a constructor and addition operator:
 > 
 > `public static NumBox<T> operator+(NumBox<T> a, NumBox<T> b)` that returns a sum of values (a.Value + b.Value)
 > 
 > ### TODO 2 - Implement StringBox class
-> The class should derieve from `Box` class, that will work only on strings
-> The class should contain a constructor and additon operator:
+> The class should derive from `Box` class, that will work only on strings
+> The class should contain a constructor and addition operator:
 > 
-> `public static StringBox operator +(StringBox a, StringBox b)` that return concatanated string (a.Value + ";" + b.Value)
+> `public static StringBox operator +(StringBox a, StringBox b)` that return concatenated string (a.Value + ";" + b.Value)
 > 
 > ### TODO 3 - Finish implementing Shelf class
 > The class should implement `IAdder<T>` and `ITaker<T>` interfaces:
@@ -180,7 +180,7 @@ List<string> strings = objects; // compile error
 - [Generics C# Programming Guide](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generic-type-parameters)
 
 ## Collections
-Before introducing generics in C# 2, the `System.Collections` provided a couple of data structures such as: `ArrayList`, `HashTable`, `SortedList`, `Queue`, `Stack` and `BitArray`. Because they can only store `objects`, they cause problems such as boxing and runtime casting, shown in the beginning of this tutorial. Therefore, with introduction of generics, they became obsolete (excluding the last one). Because of that, we will only focus on collections found in `System.Collections.Generic`, which ensure better type control and provide higher performance.
+Before generics were introduced in C# 2, the `System.Collections` provided a couple of data structures such as: `ArrayList`, `Hashtable`, `SortedList`, `Queue`, `Stack` and `BitArray`. Because they can only store `objects`, they cause problems such as boxing and runtime casting, shown in the beginning of this tutorial. Therefore, with introduction of generics, they became obsolete (excluding the last one). Because of that, we will only focus on collections found in `System.Collections.Generic`, which ensure better type control and provide higher performance.
 
 ### General collections hierarchy
 ```mermaid
@@ -246,7 +246,7 @@ class ISet~T~ {
     +Overlaps(IEnumerable~T~ other) bool
 }
 ```
-By analogy there is also `IReadyOnlyList<T>` and `IReadOnlyDictionary<TKey, TValue>`, that both inherit from `IReadOnlyCollection<T>`. There is no `IReadOnlySet<T>`.
+By analogy there are also `IReadOnlyList<T>`, `IReadOnlyDictionary<TKey, TValue>` and `IReadOnlySet<T>`, that all inherit from `IReadOnlyCollection<T>`.
 
 ### Standard collections
 
@@ -266,13 +266,13 @@ By analogy there is also `IReadyOnlyList<T>` and `IReadOnlyDictionary<TKey, TVal
 | — | `ICollection` | `BitArray` | `bitset` |
 
 #### Notes:
-- `BitArray` is an only non-geneneric collection without more modern generic equivalent;
+- `BitArray` is the only non-generic collection without more modern generic equivalent;
 - `OrderedDictionary<K,V>` has no direct STL-equivalent - it is a hashtable with additional array keeping the insertion order;
 - `SortedList<K,V>` has no direct STL-equivalent - it is a key-ordered array, that uses binary search for lookup;
 - `PriorityQueue<E,P>` is not enumerable, hence it doesn't implement any interface. It is however, like any reference type in C#, an `object`.
 
 ## Enumerables and `foreach` loops
-Enumerators in C# are an equivalent of C++ iterators. If you look at the collections hierarchy graph, you can see that they expose one property and three methods, used for traversing collections, getting values and returning them to inital state. 
+Enumerators in C# are an equivalent of C++ iterators. If you look at the collections hierarchy graph, you can see that they expose one property and three methods, used for traversing collections, getting values and returning them to initial state. 
 
 > [!NOTE]
 > If you don't know or forgot what IDisposable is and means in C# you may head [here](https://csharp.mini.pw.edu.pl/en/lectures/05.csharp-features/disposable/).
@@ -283,7 +283,7 @@ foreach (T item in collection) {
     // operation on the item
 }
 ```
-`foreach` loop in a syntactic sugar. Internally, it takes the enumerator and traverses the collection using `while` loop until `MoveNext()` method returns `false`. Important note - because `foreach` loop uses enumerators, the elements of the collection are **read-only**! 
+`foreach` loop in a syntactic sugar. Internally, it takes the enumerator and traverses the collection using `while` loop until `MoveNext()` method returns `false`. Important note - because `foreach` loop uses enumerators, the iteration variable is **read-only**! 
 ```csharp
 int sum = 0;
 IEnumerable<int> collection = [1, 2, 3];
@@ -367,7 +367,7 @@ public readonly record struct Point3D(int X, int Y, int Z) {
 
 ## Additonal features
 ### `params` modifier
-Instead of passing a collection as an argument, you can use `params` keyword to have the collection created automatically. You can use array `T[]`, `Span<T>`, any interface that derives from `IEnumerable<T>` or any object that implements it and has both parameterless constructor and `Add(T element)` method.
+Instead of passing a collection as an argument, you can use `params` keyword to have the collection created automatically. You can use array `T[]`, `Span<T>`, any interface that derives from `IEnumerable<T>` or any type that implements it and has both parameterless constructor and `Add(T element)` method.
 ```csharp
 public void ParamsPrinter(params IEnumerable<int> ints) {
     foreach (int n in ints) {
@@ -382,7 +382,7 @@ ParamsPrinter(1, 2, 3);
 You can only use one `params` keyword in a method declaration and the parameter with the `params` keyword must be the last one.
 
 ### Collection expressions
-Spread element `..` introduced C# 12 allows you to easily concatanate any **enumerable** collection:
+Spread element `..` introduced in C# 12 allows you to easily concatenate any **enumerable** collection:
 ```csharp
 List<int> a = [1, 2, 3, 4, 5];
 int[] b = [4, 5, 6, 7, 8];
@@ -452,6 +452,7 @@ people.Sort();
 // if I don't own Person, but still need to order them by age in some collection
 public class PersonByAgeAscending : IComparer<Person> {
     public int Compare(Person? a, Person? b) {
+        if (ReferenceEquals(a, b)) return 0;
         if (a is null) return -1;
         if (b is null) return 1;
         return a.Age.CompareTo(b.Age);
@@ -473,10 +474,10 @@ Instead of implementing `IComparer<T>` you can also just derive from `Comparer<T
 > 
 > ### TODO 2 — Write a lazy-evaluated factory
 > Produce readings from a single sensor, starting at `value`
-> and increasing by 0.1/minute, timestamped 2 minute apart starting at `start`.
+> and increasing by 0.1/minute, timestamped 2 minutes apart starting at `start`.
 > Use `yield` keyword.
 > 
-> ### TODO 3 — Implement comparer derieved from `Comparer<Reading>`
+> ### TODO 3 — Implement comparer derived from `Comparer<Reading>`
 > Order readings by:
 > 1. Sensor name (ascending)
 > 2. Then by recorded value (descending)
@@ -490,8 +491,8 @@ Instead of implementing `IComparer<T>` you can also just derive from `Comparer<T
 > - `TimeSpan TotalDuration`                  - difference between first and last recorded reading
 > - `IList<string> UniqueSensors`             - list of all sensor names without duplicates
 > - `IList<(string, double)> AverageReadings` - average reading per sensor
-> - `IList<(string, TimeSpan)> LargestGaps`   - a largest timespan between two consecutive readings (time order) per sensor
-> - `IList<(Reading, Reading)> SignChanges`   - two consecutive readings (time order) having two differnet signs (first < second) 
+> - `IList<(string, TimeSpan)> LargestGaps`   - the largest timespan between two consecutive readings (time order) per sensor
+> - `IList<(Reading, Reading)> SignChanges`   - two consecutive readings (time order) having two different signs (first < second) 
 >
 > ### TODO 5 — Pattern matching
 > Inspect a list of readings and return a short label:
@@ -546,7 +547,7 @@ Instead of implementing `IComparer<T>` you can also just derive from `Comparer<T
 - [System.Collection.Generic Namespace](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic?view=net-10.0)
 
 > [!IMPORTANT]
-> # Additonal materials for workshop
+> # Additional materials for the workshop
 > Materials: {{< filetree dir="labs/w04.collections-generics/Lab" >}}
 > Solutions: {{< filetree dir="labs/w04.collections-generics/LabSolution" >}}
 
