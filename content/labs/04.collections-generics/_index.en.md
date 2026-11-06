@@ -157,26 +157,19 @@ List<string> strings = objects; // compile error
 ### 1. Implement generic NumBox class
 The class should derieve from `Box` class and work on any number type
 It should contain a constructor and additon operator:
-- `public static NumBox<T> operator+(NumBox<T> a, NumBox<T> b)`\ that returns a sum of values (a.Value + b.Value)
+- `public static NumBox<T> operator+(NumBox<T> a, NumBox<T> b)` that returns a sum of values (a.Value + b.Value)
 
-> ### TODO 1 - Implement generic NumBox class
-> The class should derive from `Box` class and work on any number type
-> It should contain a constructor and addition operator:
-> 
-> `public static NumBox<T> operator+(NumBox<T> a, NumBox<T> b)` that returns a sum of values (a.Value + b.Value)
-> 
-> ### TODO 2 - Implement StringBox class
-> The class should derive from `Box` class, that will work only on strings
-> The class should contain a constructor and addition operator:
-> 
-> `public static StringBox operator +(StringBox a, StringBox b)` that return concatenated string (a.Value + ";" + b.Value)
-> 
-> ### TODO 3 - Finish implementing Shelf class
-> The class should implement `IAdder<T>` and `ITaker<T>` interfaces:
-> - `public bool Add(T val)` - if shelf is full returns `false`, otherwise adds box at the end of `_items` and returns `true`
-> - `public T? Take()` - takes and returns last box from shelf if possible, otherwise returns `null`
-> 
-> {{< filetree dir="labs/w04.collections-generics/Task1" >}}
+### 2. Implement StringBox class
+The class should derive from `Box` class, that will work only on strings
+The class should contain a constructor and addition operator:
+- `public static StringBox operator +(StringBox a, StringBox b)` that return concatenated string (a.Value + ";" + b.Value)
+
+### 3. Finish implementing Shelf class
+The class should implement `IAdder<T>` and `ITaker<T>` interfaces:
+- `public bool Add(T val)` - if shelf is full returns `false`, otherwise adds box at the end of `_items` and returns `true`
+- `public T? Take()` - takes and returns last box from shelf if possible, otherwise returns `null`
+{{< filetree dir="labs/w04.collections-generics/Task1" >}}
+{{% /details %}}
 
 ## Read more:
 - [Boxing and Unboxing](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing)
@@ -316,7 +309,7 @@ foreach (Value item in collection) {
 
 Tuple deconstruction can be used in `foreach` loops:
 ```csharp
-    var dict = Dictionary<int, string> {{ 1, "1" }};
+    var dict = new Dictionary<int, string> {{ 1, "1" }};
     string one = "";
 
     // without deconstruction
@@ -471,50 +464,33 @@ Instead of implementing `IComparer<T>` you can also just derive from `Comparer<T
 
 > [!IMPORTANT]
 > ## Collections example tasks
+{{% details "TASK 2" false %}}
+## Working with sensor data
+### 1. Write a lazy-evaluated method
+Return every reading whose `Value` is within [min, max] inclusive.
+Use `yield` keyword.
+ 
+### 2. Write a lazy-evaluated factory
+Produce readings from a single sensor, starting at `value`
+and increasing by 0.1/minute, timestamped 2 minutes apart starting at `start`.
+Use `yield` keyword.
 
-> ## Working with sensor data
-> ### TODO 1 — Write a lazy-evaluated method
-> Return every reading whose `Value` is within [min, max] inclusive.
-> Use `yield` keyword.
-> 
-> ### TODO 2 — Write a lazy-evaluated factory
-> Produce readings from a single sensor, starting at `value`
-> and increasing by 0.1/minute, timestamped 2 minutes apart starting at `start`.
-> Use `yield` keyword.
-> 
-> ### TODO 3 — Implement comparer derived from `Comparer<Reading>`
-> Order readings by:
-> 1. Sensor name (ascending)
-> 2. Then by recorded value (descending)
-> 3. Then by time recorded (ascending)
->
-> ### TODO 4 — Summarize sensor data
-> Return:
-> - `double HighestValue`                     - highest recorded value across all sensors
-> - `double LowestTemp`                       - lowest recorded temperature
-> - `string MostReadings`                     - name of the sensor with most readings
-> - `TimeSpan TotalDuration`                  - difference between first and last recorded reading
-> - `IList<string> UniqueSensors`             - list of all sensor names without duplicates
-> - `IList<(string, double)> AverageReadings` - average reading per sensor
-> - `IList<(string, TimeSpan)> LargestGaps`   - the largest timespan between two consecutive readings (time order) per sensor
-> - `IList<(Reading, Reading)> SignChanges`   - two consecutive readings (time order) having two different signs (first < second) 
->
-> ### TODO 5 — Pattern matching
-> Inspect a list of readings and return a short label:
-> - "empty"        if there are 0 readings
-> - "single"       if there is 1 reading
-> - "pair-asc"     if there are exactly 2 and values are ascending (v1 < v2)
-> - "pair-desc"    if there are exactly 2 and values are descending (v1 > v2)
-> - "pair-eq"      if there are exactly 2 and values are equal
-> - "starts-high"  if it starts with a value > 100
-> - "ends-low"     if it ends with a value < 0
-> - "other"        otherwise
-> 
-> Use slice patterns. Do not use `Count` / `IndexOf` / if-chains / indices etc.
-> 
-> Hint: use [switch expression](https://csharp.mini.pw.edu.pl/en/lectures/03.basics/statements/)
-> 
-> {{< filetree dir="labs/w04.collections-generics/Task2" >}}
+### 3. Implement comparer derived from `Comparer<Reading>`
+Order readings by:
+1. Sensor name (ascending)
+2. Then by recorded value (descending)
+3. Then by time recorded (ascending)
+
+### 4. Summarize sensor data
+Return:
+- `double HighestValue`                     - highest recorded value across all sensors
+- `double LowestTemp`                       - lowest recorded temperature
+- `string MostReadings`                     - name of the sensor with most readings
+- `TimeSpan TotalDuration`                  - difference between first and last recorded reading
+- `IList<string> UniqueSensors`             - list of all sensor names without duplicates
+- `IList<(string, double)> AverageReadings` - average reading per sensor
+- `IList<(string, TimeSpan)> LargestGaps`   - the largest timespan between two consecutive readings (time order) per sensor
+- `IList<(Reading, Reading)> SignChanges`   - two consecutive readings (time order) having two different signs (first < second) 
 
 ### 5. Pattern matching
 Inspect a list of readings and return a short label:
@@ -568,12 +544,12 @@ Solution: {{< filetree dir="labs/w04.collections-generics/Task3/Solution" >}}
 - [`yield` statement](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/yield)
 - [Collection expressions](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-12#collection-expressions)
 - [`Comparer<T>` Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.comparer-1?view=net-10.0)
-- [System.Collection.Generic Namespace](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic?view=net-10.0)
+- [System.Collections.Generic Namespace](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic?view=net-10.0)
 
-> [!IMPORTANT]
-> # Additional materials for the workshop
-> Materials: {{< filetree dir="labs/w04.collections-generics/Lab" >}}
-> Solutions: {{< filetree dir="labs/w04.collections-generics/LabSolution" >}}
+{{% details "**Materials for the workshop**" false %}}
+Materials: {{< filetree dir="labs/w04.collections-generics/Lab" >}}
+Solution: {{< filetree dir="labs/w04.collections-generics/LabSolution" >}}
+{{% /details %}}
 
 
 
