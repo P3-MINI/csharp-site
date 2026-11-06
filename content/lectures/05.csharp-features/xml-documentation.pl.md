@@ -17,8 +17,8 @@ Dokumentacja XML w C# to specjalny rodzaj komentarzy, które umieszczasz bezpoś
 
 Głównym celem dokumentacji XML jest ułatwienie zrozumienia i używania kodu, zarówno przez innych deweloperów, jak i przez narzędzia.
 
-1. **IntelliSense i podpowiedzi w IDE**: Środowiska programistyczne (IDE) takie jak *Visual Studio*, *Visual Studio Code* czy *Rider*, używają dokumentacji XML do wyświetlania podpowiedzi, opisów parametrów itp.
-2. **Generowanie dokumentacji**: Plik XML może być użyty przez zewnętrzne narzędzia (np. `DocFX`, `Sandcastle`, `doxygen`) do automatycznego generowania, dokumentacji (np. w formie stron HTML).
+1. **IntelliSense i podpowiedzi w IDE**: Środowiska programistyczne (IDE), takie jak *Visual Studio*, *Visual Studio Code* czy *Rider*, używają dokumentacji XML do wyświetlania podpowiedzi, opisów parametrów itp.
+2. **Generowanie dokumentacji**: Plik XML (lub komentarze w kodzie źródłowym) może być użyty przez zewnętrzne narzędzia (np. `DocFX`, `Sandcastle`, `doxygen`) do automatycznego generowania dokumentacji (np. w formie stron HTML).
 3. **Utrzymywalność kodu**: Zachęca deweloperów do dokumentowania publicznych interfejsów swojego kodu, co poprawia jego zrozumienie i ułatwia utrzymanie w przyszłości.
 
 Dokumentację XML pisze się za pomocą `///` (dla komentarzy jednoliniowych) lub `/** ... */` (dla komentarzy wieloliniowych), umieszczonych bezpośrednio nad deklaracją składowej (klasy, metody, właściwości, pola, zdarzenia, elementu enum itp.).
@@ -34,9 +34,9 @@ public abstract class Matrix;
 > Przykładowy projekt z dokumentacją:
 > {{< filetree dir="lectures/csharp-features/xml-documentation" >}}
 
-## Znaki specjalne XMLa
+## Znaki specjalne XML-a
 
-Tylko 5 znaków wymaga uciekania specjalnymi sekwencjami:
+XML definiuje 5 predefiniowanych sekwencji ucieczki dla znaków specjalnych (w tekście dokumentacji `<` i `&` zawsze trzeba zastąpić sekwencją):
 
 | Znak | Sekwencja |
 |:---:|:---:|
@@ -56,17 +56,17 @@ Tylko 5 znaków wymaga uciekania specjalnymi sekwencjami:
 
 `summary` zawiera krótki, zwięzły opis typu lub składowej:
 
-```csharp
-/// <summary>
-/// description
-/// </summary>
+```xml
+<summary>
+description
+</summary>
 ```
 
-`remarks` zawiera bardziej szczegółowe informacje, uwagi, kontekst użycia.:
-```csharp
-/// <remarks>
-/// description
-/// </remarks>
+`remarks` zawiera bardziej szczegółowe informacje, uwagi lub kontekst użycia:
+```xml
+<remarks>
+description
+</remarks>
 ```
 
 ## Dokumentacja metod
@@ -76,7 +76,7 @@ Tylko 5 znaków wymaga uciekania specjalnymi sekwencjami:
 <returns>description</returns>
 ```
 
-`param` opisuje paramter metody:
+`param` opisuje parametr metody:
 ```xml
 <param name="name">description</param>
 ```
@@ -155,7 +155,7 @@ Dokumentacja elementu może zostać odziedziczona z typu bazowego lub interfejsu
 <inheritdoc [cref=""] [path=""]/>
 ```
 
-Lub zapożyczona z innego pliku xml:
+Lub dołączona z innego pliku XML:
 
 ```xml
 <include file='filename' path='tagpath[@name="id"]' />
@@ -163,7 +163,7 @@ Lub zapożyczona z innego pliku xml:
 
 ## Linki
 
-Możemy w tekście dokumentacji zamieszczać linki do innych składowych lub dowolny adres url:
+Możemy w tekście dokumentacji zamieszczać linki do innych składowych lub dowolnych adresów URL:
 
 ```xml
 <see cref="member"/>
@@ -175,8 +175,8 @@ Możemy w tekście dokumentacji zamieszczać linki do innych składowych lub dow
 <see langword="keyword"/>
 ```
 
-> cref = code reference
-> href = hyperlink reference (url)
+> - `cref` = code reference
+> - `href` = hyperlink reference (URL)
 
 Znacznik `seealso` zostanie umieszczony we własnym akapicie:
 
@@ -193,18 +193,18 @@ Znacznik `typeparam` opisuje parametry generyczne:
 <typeparam name="TResult">description</typeparam>
 ```
 
-Żeby odnieść się do typu generycznego używamy znaków `{}` zamiast `<>`:
+Żeby odnieść się do typu generycznego, używamy znaków `{}` zamiast `<>`:
 ```xml
 <see cref="Foo{T,U}"/>
 ```
 
 ## Generowanie dokumentacji
 
-Z wygenerowanego przez kompilatora pliku xml, można dalej generować bardziej przyjazne formaty dokumentacji, takie jak pliki `pdf`, strony `HTML`, pliki pomocy `CHM`, czy strony manuala (*manpages*).
+Z dokumentacji XML można dalej generować bardziej przyjazne formaty dokumentacji, takie jak pliki `pdf`, strony `HTML`, pliki pomocy `CHM`, czy strony manuala (*manpages*).
 
 ### Doxygen
 
-Doxygen najlepiej działa, gdy wskażemy mu bezpośrednio katalog z plikami źródłowymi `.cs`. Samodzielnie je sparsuje i wyciągnie z nich komentarze XML. To lepsze podejście niż podawanie mu samego pliku `.xml`, `Doxygen` może wtedy zbudować dodatkowe diagramy, np. grafy wywołań funkcji.
+Doxygen nie korzysta z pliku `.xml` wygenerowanego przez kompilator - wskazujemy mu bezpośrednio katalog z plikami źródłowymi `.cs`. Samodzielnie je sparsuje i wyciągnie z nich komentarze XML, dzięki czemu może też zbudować dodatkowe diagramy, np. grafy wywołań funkcji.
 
 Najpierw trzeba wygenerować plik konfiguracyjny `Doxyfile` w katalogu projektu:
 

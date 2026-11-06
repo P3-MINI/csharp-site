@@ -5,7 +5,7 @@ weight: 20
 
 # Exclusive Locking
 
-Exclusive locking is a synchronization mechanism ensuring that only one thread has access to a protected resource (critical section) at any given time. Other threads attempting to access the resource are suspended until the lock is released.
+Exclusive locking is a synchronization mechanism ensuring that only one thread has access to a protected resource (critical section) at any given time. Other threads attempting to access the resource must wait (they are blocked or spin) until the lock is released.
 
 ## The `lock` Statement
 
@@ -21,12 +21,17 @@ lock(lockObject)
 The `lock` statement is translated as follows:
 
 ```csharp
-Monitor.Enter(lockObject);
+object __lockObj = lockObject;
+bool __lockWasTaken = false;
 try
 {
+    Monitor.Enter(__lockObj, ref __lockWasTaken);
     statement(s);
 }
-finally { Monitor.Exit(lockObject); }
+finally
+{
+    if (__lockWasTaken) Monitor.Exit(__lockObj);
+}
 ```
 
 It is a very fast mechanism if there is no contention. In case of contention, the thread is blocked by the operating system. The `lock` statement works only within a single process. Furthermore, as mentioned in the introduction, a memory barrier is inserted before and after the `lock` block.
@@ -56,7 +61,7 @@ Console.WriteLine($"Counter Value: {counter}");
 > {{< filetree dir="lectures/synchronization/LocksDemo" >}}
 
 > [!NOTE] 
-> Starting from C# 13, it is recommended to use the `Lock` object in the `lock` statement, or use the `Lock` type directly.
+> Starting from C# 13 and .NET 9, it is recommended to use an object of the `System.Threading.Lock` type in the `lock` statement, or to use the `Lock` type directly.
 > If the lock object is of type `Lock`, the `lock` statement translates as follows:
 > ```csharp
 > Lock.Scope scope = lockObject.EnterScope();
@@ -87,11 +92,20 @@ Console.WriteLine($"Counter Value: {counter}");
 > Console.WriteLine($"Counter Value: {counter}");
 > ```
 
+> [!WARNING]
+> The compiler uses `Lock.EnterScope()` only when it knows statically that the expression is of type `Lock`. If a `Lock` object is converted to another type (e.g., `object`), the `lock` statement falls back to `Monitor` - the compiler reports this with warning CS9216 at the conversion:
+> ```csharp
+> Lock locker = new();
+> object o = locker; // warning CS9216
+> lock (o) { }       // Monitor.Enter/Exit, not Lock.EnterScope()
+> ```
+> Moreover, `Lock` has no equivalent of `Monitor.Wait`/`Monitor.Pulse` (see [Signaling]({{< ref "/lectures/12.synchronization/signaling" >}})), so a condition variable still requires locking on an ordinary object. Like `Monitor`, `Lock` is reentrant and has thread affinity: it must be released by the thread that acquired it. That is why `await` is not allowed inside a `lock` block, and a `Lock.Scope` (a `ref struct`) cannot be preserved across `await` (error CS4007).
+
 ## Mutex
 
 The `System.Threading.Mutex` class is a synchronization primitive operating at the operating system kernel level.
 
-It can be named, which allows for thread synchronization between different processes (e.g., preventing a second instance of an application from starting). It is significantly slower than the `lock` statement (up to 50x slower) due to the need for context switching to the kernel.
+It can be named, which allows for thread synchronization between different processes (e.g., preventing a second instance of an application from starting). It is significantly slower than the `lock` statement (even without contention, typically tens of times slower), because it is a heavyweight, kernel-level object.
 
 ```csharp
 int counter = 0, times = 1_000_000;

@@ -153,6 +153,11 @@ List<string> strings = objects; // compile error
 ```
 > [!IMPORTANT]
 > ## Generics example task
+{{% details "TASK 1" false %}}
+### 1. Implement generic NumBox class
+The class should derieve from `Box` class and work on any number type
+It should contain a constructor and additon operator:
+- `public static NumBox<T> operator+(NumBox<T> a, NumBox<T> b)`\ that returns a sum of values (a.Value + b.Value)
 
 > ### TODO 1 - Implement generic NumBox class
 > The class should derive from `Box` class and work on any number type
@@ -465,7 +470,7 @@ people.Sort(new PersonByAgeAscending());
 Instead of implementing `IComparer<T>` you can also just derive from `Comparer<T>` and override the `int Compare(T? x, T? y)` method, which is usually advised.
 
 > [!IMPORTANT]
-> # Collections example tasks
+> ## Collections example tasks
 
 > ## Working with sensor data
 > ### TODO 1 — Write a lazy-evaluated method
@@ -511,33 +516,52 @@ Instead of implementing `IComparer<T>` you can also just derive from `Comparer<T
 > 
 > {{< filetree dir="labs/w04.collections-generics/Task2" >}}
 
-> ## Implementing matrix library
-> ### 1. Familiarize yourself with `Matrix<T>` class from `Matrix.cs`
-> ### 2. In `DenseMatrix.cs` implement following methods of `DenseMatrix<T>` class:
-> - `public DenseMatrix(int rows, int columns, T[]? values = null)`
-> - `public static DenseMatrix<T> Identity(int size)`
-> - `public static DenseMatrix<T> operator +(DenseMatrix<T> a, DenseMatrix<T> b)`
-> - `public static DenseMatrix<T> operator -(DenseMatrix<T> a, DenseMatrix<T> b)`
-> - `public static DenseMatrix<T> operator *(DenseMatrix<T> a, T scalar)`
-> - `public static DenseMatrix<T> operator *(T scalar, DenseMatrix<T> a)`
-> - `public static DenseMatrix<T> operator *(DenseMatrix<T> a, DenseMatrix<T> b)`
-> - `public DenseMatrix<T> Clone()`
-> 
-> **and any other required methods.**
-> ### 3. In `SparseMatrix.cs` implement following methods fo `SparseMatrix<T>` class:
-> - `public SparseMatrix(int rows, int columns, T[]? values = null)`
-> - `public static SparseMatrix<T> Identity(int size)`
-> - `public static SparseMatrix<T> operator +(SparseMatrix<T> a, SparseMatrix<T> b)`
-> - `public static SparseMatrix<T> operator -(SparseMatrix<T> a, SparseMatrix<T> b)`
-> - `public static SparseMatrix<T> operator *(SparseMatrix<T> a, T scalar)`
-> - `public static SparseMatrix<T> operator *(T scalar, SparseMatrix<T> a)`
-> - `public static SparseMatrix<T> operator *(SparseMatrix<T> a, SparseMatrix<T> b)`
-> - `public SparseMatrix<T> Clone()`
-> 
-> **and any other required methods.**
-> 
-> Student: {{< filetree dir="labs/w04.collections-generics/Task3/Student" >}}
-> Solution: {{< filetree dir="labs/w04.collections-generics/Task3/Solution" >}}
+### 5. Pattern matching
+Inspect a list of readings and return a short label:
+- "empty"        if there are 0 readings
+- "single"       if there is 1 reading
+- "pair-asc"     if there are exactly 2 and values are ascending (v1 < v2)
+- "pair-desc"    if there are exactly 2 and values are descending (v1 > v2)
+- "pair-eq"      if there are exactly 2 and values are equal
+- "starts-high"  if it starts with a value > 100
+- "ends-low"     if it ends with a value < 0
+- "other"        otherwise
+
+Use slice patterns. Do not use `Count` / `IndexOf` / if-chains / indices etc.
+ 
+Hint: use [switch expression](https://csharp.mini.pw.edu.pl/en/lectures/03.basics/statements/)
+ 
+{{< filetree dir="labs/w04.collections-generics/Task2" >}}
+{{% /details %}}
+
+{{% details "TASK 3" false %}}
+## Implementing matrix library
+### 1. Familiarize yourself with `Matrix<T>` class from `Matrix.cs`
+### 2. In `DenseMatrix.cs` implement following methods of `DenseMatrix<T>` class:
+- `public DenseMatrix(int rows, int columns, T[]? values = null)`
+- `public static DenseMatrix<T> Identity(int size)`
+- `public static DenseMatrix<T> operator +(DenseMatrix<T> a, DenseMatrix<T> b)`
+- `public static DenseMatrix<T> operator -(DenseMatrix<T> a, DenseMatrix<T> b)`
+- `public static DenseMatrix<T> operator *(DenseMatrix<T> a, T scalar)`
+- `public static DenseMatrix<T> operator *(T scalar, DenseMatrix<T> a)`
+- `public static DenseMatrix<T> operator *(DenseMatrix<T> a, DenseMatrix<T> b)`
+- `public DenseMatrix<T> Clone()`
+
+**and any other required methods.**
+### 3. In `SparseMatrix.cs` implement following methods fo `SparseMatrix<T>` class:
+- `public SparseMatrix(int rows, int columns, T[]? values = null)`
+- `public static SparseMatrix<T> Identity(int size)`
+- `public static SparseMatrix<T> operator +(SparseMatrix<T> a, SparseMatrix<T> b)`
+- `public static SparseMatrix<T> operator -(SparseMatrix<T> a, SparseMatrix<T> b)`
+- `public static SparseMatrix<T> operator *(SparseMatrix<T> a, T scalar)`
+- `public static SparseMatrix<T> operator *(T scalar, SparseMatrix<T> a)`
+- `public static SparseMatrix<T> operator *(SparseMatrix<T> a, SparseMatrix<T> b)`
+- `public SparseMatrix<T> Clone()`
+
+**and any other required methods.**
+Student: {{< filetree dir="labs/w04.collections-generics/Task3/Student" >}}
+Solution: {{< filetree dir="labs/w04.collections-generics/Task3/Solution" >}}
+{{% /details %}}
 
 ## Read more:
 - [Iterators](https://learn.microsoft.com/en-us/dotnet/csharp/iterators)

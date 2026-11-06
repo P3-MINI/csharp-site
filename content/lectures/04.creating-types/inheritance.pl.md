@@ -5,7 +5,7 @@ weight: 20
 
 # Dziedziczenie
 
-Dziedziczenie działa podobnie jak w C++. Mamy jeden tryb dziedziczenia, który odpowiadałby publicznemu dziedziczeniu z C++. W C# nie mamy wielodziedziczenia: możemy dziedziczyć tylko po jednej klasie na raz.
+Dziedziczenie działa podobnie jak w C++. Mamy jeden tryb dziedziczenia, który odpowiadałby publicznemu dziedziczeniu z C++. W C# nie mamy wielodziedziczenia: możemy dziedziczyć tylko po jednej klasie naraz.
 
 ```csharp
 public class Person
@@ -21,7 +21,7 @@ public class Student : Person
 }
 ```
 
-Tak jakbyśmy się spodziewali `Student`, to także `Person` posiada wszystko to co posiada klasa bazowa.
+Tak jak można się spodziewać, `Student` jest także `Person` i posiada wszystko, co posiada klasa bazowa.
 
 ```csharp
 Student alice = new Student() { FirstName = "Alice", 
@@ -33,18 +33,18 @@ Console.WriteLine($"{alice.FirstName} {alice.LastName}, {alice.Age}, {alice.Stud
 
 ## Polimorfizm
 
-Referencje są polimorficzne, można je traktować tak jakby były typu bazowego. Możemy przekazać obiekt klasy `Student` do metody, która akceptuje obiekt klasy bazowej - w końcu to jest to samo. Dzięki temu możemy pisać rozszerzalny kod, który operuje na typie ogólnym, nie zastanawiając się o konkretne implementacje.
+Referencje są polimorficzne, można je traktować tak, jakby były typu bazowego. Możemy przekazać obiekt klasy `Student` do metody, która akceptuje obiekt klasy bazowej - w końcu to jest to samo. Dzięki temu możemy pisać rozszerzalny kod, który operuje na typie ogólnym, nie przejmując się konkretnymi implementacjami.
 
 ```csharp
 Register(alice);
 
-public void Register(Person person)
+void Register(Person person)
 {
 // ...
 }
 ```
 
-Możemy także niejawnie rzutować typ podklasy, do typu bazowego. W drugą stronę wymaga to jawnego rzutowania i może zakończyć się wyjątkiem `InvalidCastException`.
+Możemy także niejawnie rzutować typ podklasy do typu bazowego. W drugą stronę wymaga to jawnego rzutowania i może zakończyć się wyjątkiem `InvalidCastException`.
 
 ```csharp
 Person person = alice; // Implicit cast
@@ -53,14 +53,14 @@ Student student = (Student)person; // Requires explicit cast
 
 ### Operator `as`
 
-Operator `as` działa podobnie do `dynamic_cast` z C++. Możemy go użyć, żeby wykonać rzutowanie w dół, które zwraca `null` jeżeli się ono nie powiedzie.
+Operator `as` działa podobnie do `dynamic_cast` z C++. Możemy go użyć, żeby wykonać rzutowanie w dół, które zwraca `null`, jeżeli się ono nie powiedzie.
 
 ```csharp
-Teacher teacher = alice as Teacher;
+Teacher? teacher = person as Teacher;
 
 if (teacher != null)
 {
-    Console.WriteLine("SAP ID: {teacher.SapID}");
+    Console.WriteLine($"SAP ID: {teacher.SapID}");
 }
 
 public class Teacher : Person
@@ -73,22 +73,22 @@ Są jednak lepsze sposoby na sprawdzenie typu.
 
 ### Operator `is`
 
-Generalnie operator `is` sprawdza, czy zmienna pasuje do *wzorca* i zwraca wynik w postaci boola. Jednym ze wzorców który nas interesuje jest wzorzec typu.
+Generalnie operator `is` sprawdza, czy zmienna pasuje do *wzorca*, i zwraca wynik typu `bool`. Jednym ze wzorców, które nas interesują, jest wzorzec typu.
 
 ```csharp
-if (alice is Teacher)
+if (person is Teacher)
 {
-    Teacher teacher = (Teacher)alice;
-    Console.WriteLine("SAP ID: {teacher.SapID}");
+    Teacher teacher = (Teacher)person;
+    Console.WriteLine($"SAP ID: {teacher.SapID}");
 }
 ```
 
 Dodatkowo we wzorcu typu możemy wprowadzić zmienną tego typu.
 
 ```csharp
-if (alice is Teacher teacher)
+if (person is Teacher teacher)
 {
-    Console.WriteLine("SAP ID: {teacher.SapID}");
+    Console.WriteLine($"SAP ID: {teacher.SapID}");
 }
 ```
 
@@ -143,7 +143,7 @@ public class Bike : Vehicle
 > ### `base`
 > Jeżeli chodzi o słowo kluczowe `base`, to ma ono tutaj dwa znaczenia. Możemy go użyć do:
 >
-> - Wywołania do metod nadpisanych
+> - Wywołania implementacji nadpisanych metod z klasy bazowej
 > - Wywołania konstruktora klasy bazowej
 >
 > Działa analogicznie do słówka `this`, ale dla klasy bazowej.
@@ -170,13 +170,13 @@ for (float time = 0.0f; time < 4.0f; time += dt)
 > **Kod źródłowy**
 > {{< filetree dir="lectures/creating-types/inheritance/Race" >}}
 
-Całość działa analogicznie jakby to działało w C++. Jeśli `vehicle` jest typu `Car`, to wywoła się `Car.Run`, jeżeli typu `Bike`, to wywoła się `Bike.Run`. Jeżeli typ nie nadpisałby tej metody to wywołałoby się `Vehicle.Run`. Jedyna kosmetyczna różnica jest taka, że w C# słówko `override` jest wymagane, jeżeli chcemy nadpisać wirtualną metodę - jeżeli tego nie zrobimy tylko ją przykryjemy i wygenerujemy ostrzeżenie kompilatora.
+Całość działa analogicznie jak w C++. Jeśli `vehicle` jest typu `Car`, to wywoła się `Car.Run`, jeżeli typu `Bike`, to wywoła się `Bike.Run`. Jeżeli typ nie nadpisałby tej metody, to wywołałoby się `Vehicle.Run`. Jedyna kosmetyczna różnica jest taka, że w C# słówko `override` jest wymagane, jeżeli chcemy nadpisać wirtualną metodę - jeżeli tego nie zrobimy, to tylko ją przykryjemy i wygenerujemy ostrzeżenie kompilatora.
 
 ## Klasy abstrakcyjne
 
-Klasy abstrakcyjne to klasy ze słówkiem kluczowym `abstract`. Nie możemy inicjalizować obiektów tej klasy, możemy w takiej klasie definiować abstrakcyjne składowe - czyli takie, które mają sygnaturę, ale nie mają implementacji. Mogą to być abstrakcyjne metody, właściwości, indeksery i zdarzenia. Jest to analogia do klas z C++, które mają zadeklarowane funkcje czysto wirtualne.
+Klasy abstrakcyjne to klasy ze słówkiem kluczowym `abstract`. Nie możemy tworzyć obiektów tej klasy, a możemy w takiej klasie definiować abstrakcyjne składowe - czyli takie, które mają sygnaturę, ale nie mają implementacji. Mogą to być abstrakcyjne metody, właściwości, indeksery i zdarzenia. Jest to analogia do klas z C++, które mają zadeklarowane funkcje czysto wirtualne.
 
-Zamiast dostarczać implementację metody `Vehicle.Run`, możemy zrobić ją abstrakcyjną. Wtedy, każda nieabstrakcyjna podklasa musi dostarczyć własną implementację.
+Zamiast dostarczać implementację metody `Vehicle.Run`, możemy zrobić ją abstrakcyjną. Wtedy każda nieabstrakcyjna podklasa musi dostarczyć własną implementację.
 
 ```csharp
 public abstract class Vehicle
@@ -253,13 +253,13 @@ public class Hider : Base
 
 ## `sealed`
 
-Słówko `sealed` zaaplikowane do metody powoduje, że nie można jej nadpisywać w podklasie. Nie znaczy to jednak że takiej metody nie można przykryć. Zaaplikowane dla klasy powoduje, że takiej klasy nie można dziedziczyć.
+Słówko `sealed` zaaplikowane do metody nadpisującej (`sealed override`) powoduje, że nie można jej dalej nadpisywać w podklasach. Nie znaczy to jednak, że takiej metody nie można przykryć. Zaaplikowane dla klasy powoduje, że takiej klasy nie można dziedziczyć.
 
 ## Konstruktory
 
-Konstruktory nie są dziedziczone. Klasa pochodna musi zdefiniować swój własny zestaw konstruktorów. 
+Konstruktory nie są dziedziczone. Klasa pochodna musi zdefiniować swój własny zestaw konstruktorów.
 
-Jeżeli pochodna musi także zadbać o inicjalizację klasy bazowej. W konstruktorze klasy pochodnej możemy użyć `base`, żeby wywołać któryś z konstruktorów klasy bazowej.
+Klasa pochodna musi także zadbać o inicjalizację klasy bazowej. W konstruktorze klasy pochodnej możemy użyć `base`, żeby wywołać któryś z konstruktorów klasy bazowej.
 
 ```csharp
 public class Base
@@ -287,13 +287,13 @@ public class Base
 public class Derived : Base
 {
     public int Y;
-    public Derived() => Y = 1; // Can skip implicit base call
+    public Derived() => Y = 1; // base() is called implicitly
 }
 ```
 
 ### Kolejność inicjalizacji
 
-1. Pola i właściwości klasy pochodnej
-2. Pola i właściwości klasy bazowej
-3. Konstruktor klasy bazowej
-4. Konstruktor klasy pochodnej
+1. Inicjalizatory pól i właściwości klasy pochodnej
+2. Inicjalizatory pól i właściwości klasy bazowej
+3. Ciało konstruktora klasy bazowej
+4. Ciało konstruktora klasy pochodnej

@@ -5,9 +5,9 @@ weight: 100
 
 # Przestrzenie nazw
 
-Przestrzenie nazw działają na tej samej zasadzie co w C++. Różnicą jest sposób wyłuskiwania elementów z przestrzeni nazw, w C# robi się to za pomocą operatora `.`. Poza tym mamy kilka sposobów definicji przestrzeni nazw.
+Przestrzenie nazw działają na tej samej zasadzie co w C++. Różnicą jest sposób wyłuskiwania elementów z przestrzeni nazw – w C# robi się to za pomocą operatora `.`. Poza tym mamy kilka sposobów definicji przestrzeni nazw.
 
-> Wyjątkiem jest globalna przestrzeń nazw z której wyłuskuje się elementy poprzez operator `global::`. W praktyce jest to jednak rzadko przydatne (wcale).
+> Wyjątkiem jest globalna przestrzeń nazw, z której wyłuskuje się elementy poprzez kwalifikator `global::`. W ręcznie pisanym kodzie jest to rzadko potrzebne – używa się go głównie w kodzie generowanym, aby uniknąć konfliktów nazw.
 
 ```csharp
 Outer.Middle.Inner.ClassA a;
@@ -27,10 +27,14 @@ namespace Outer.Middle.Inner
 {
     class ClassB {}
 }
+```
 
-namespace Outer.Middle.Inner; // Obowiązuje do końca pliku
+Przestrzeń nazw o zasięgu pliku (*file-scoped namespace*) obowiązuje do końca pliku. Musi poprzedzać wszystkie inne składowe pliku i nie można jej łączyć w tym samym pliku z przestrzeniami nazw definiowanymi blokowo (ani z instrukcjami najwyższego poziomu):
 
-class classC {}
+```csharp
+namespace Outer.Middle.Inner; // Applies to the end of the file
+
+class ClassC {}
 ```
 
 ## Dyrektywa `using`
@@ -51,7 +55,7 @@ namespace Outer.Middle.Inner
 
 ## Statyczne `using`
 
-Statyczne `using` **importuje typy**, a nie przestrzenie nazw. Efektem tego jest możliwość używania wszystkich statycznych członków klas, a w przypadku wyliczeń jego elementów, bez podawania pełnego kwalifikatora.
+Statyczne `using` **importuje typy**, a nie przestrzenie nazw. Efektem tego jest możliwość używania wszystkich statycznych członków klas, a w przypadku wyliczeń ich elementów, bez podawania pełnego kwalifikatora.
 
 ```csharp
 using static System.Console; // class
@@ -88,7 +92,7 @@ Można tę opcję wyłączyć ustawiając właściwość `ImplicitUsings` na `fa
 
 ## Aliasy typów
 
-Dyrektywy `using` można też używać do wprowadzania aliasu pojedynczego typu lub przestrzeni nazw, zamiast importowania wszystkiego z przestrzeni nazw. Przydatne wtedy gdy dwa typy kolidują w dwóch różnych przestrzeniach nazw, a chcemy używać obydwu, np. `Vector3` z `System.Numerics` i `Vector3` z zewnętrznej biblioteki. Od C# 12 możemy aliasować praktycznie dowolny typ, w tym tablice i krotki.
+Dyrektywy `using` można też używać do wprowadzania aliasu pojedynczego typu lub przestrzeni nazw, zamiast importowania wszystkiego z przestrzeni nazw. Przydatne wtedy, gdy dwa typy kolidują w dwóch różnych przestrzeniach nazw, a chcemy używać obydwu, np. `Vector3` z `System.Numerics` i `Vector3` z zewnętrznej biblioteki. Od C# 12 możemy aliasować praktycznie dowolny typ, w tym tablice i krotki.
 
 ```csharp
 using Vec3 = System.Numerics.Vector3;

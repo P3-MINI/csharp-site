@@ -11,12 +11,14 @@ Komunikacja za pomocą `TCP` w .NET opiera się na dwóch klasach: `TcpListener`
 
 ## Serwer
 
-Serwer nasłuchuje na przychodzące połączenia za pomocą `TcpListener`. Kiedy połączenie jest akceptowane (`AcceptTcpClientAsync`), tworzony jest obiekt `TcpClient` reprezentujący to połączenie. Serwer w przykładzie jest asynchroniczny i może obsługiwać wielu klientów jednocześnie. Dla każdego klienta tworzone jest osobne zadanie (`HandleClient`), które odczytuje komendy i wysyła odpowiedzi.
+Serwer nasłuchuje przychodzących połączeń za pomocą `TcpListener`. Kiedy połączenie jest akceptowane (`AcceptTcpClientAsync`), tworzony jest obiekt `TcpClient` reprezentujący to połączenie. Serwer w przykładzie jest asynchroniczny i może obsługiwać wielu klientów jednocześnie. Dla każdego klienta tworzone jest osobne zadanie (`HandleClient`), które odczytuje komendy i wysyła odpowiedzi.
 
 Po nawiązaniu połączenia, obie strony komunikują się za pomocą strumienia (`NetworkStream`), który jest "opakowany" w `StreamReader` i `StreamWriter` dla ułatwienia operacji tekstowych.
 
+TCP przesyła ciągły strumień bajtów i nie zachowuje granic wiadomości: dane zapisane jedną operacją mogą zostać odebrane w kilku częściach, a dane z kilku zapisów mogą zostać odebrane naraz. Dlatego protokół aplikacji musi określać, gdzie kończy się każda wiadomość (tzw. *framing*), np. za pomocą separatora (tutaj: znaku nowej linii) lub prefiksu zawierającego długość wiadomości.
+
 > [!WARNING]
-> Należy pamiętać, że `StreamReader` i `StreamWriter` wewnętrznie buforują dane. Najlepiej sprawdzają się w protokołach, w których wiadomości są tekstowe i każda z nich jest zakończona znakiem nowej linii. Może to prowadzić do problemów, jeśli protokół jest bardziej złożony. W takich przypadkach lepszym wyborem może być użycie `BinaryReader` i `BinaryWriter`, które dają precyzyjną kontrolę nad odczytem i zapisem danych do strumienia, nawet jeśli są to dane tekstowe.
+> Należy pamiętać, że `StreamReader` i `StreamWriter` wewnętrznie buforują dane. `StreamReader` może odczytać ze strumienia więcej bajtów niż zwracana linia – reszta czeka w jego buforze, więc po utworzeniu `StreamReader` cały dalszy odczyt musi odbywać się przez niego (bezpośredni odczyt ze strumienia pominąłby zbuforowane dane). `StreamWriter` wysyła dane dopiero przy opróżnieniu bufora, stąd `AutoFlush = true`. Najlepiej sprawdzają się w protokołach, w których wiadomości są tekstowe i każda z nich jest zakończona znakiem nowej linii. Jeśli protokół jest bardziej złożony (np. łączy dane tekstowe i binarne), lepszym wyborem może być użycie `BinaryReader` i `BinaryWriter`, które dają precyzyjną kontrolę nad odczytem i zapisem danych do strumienia, nawet jeśli są to dane tekstowe.
 
 Zdefiniowany "protokół" jest bardzo prosty - klient wysyła tekstowe komendy (`date`, `time`, `exit`), a serwer odsyła odpowiednią wiadomość. W rzeczywistych aplikacjach protokoły są często bardziej złożone i mogą opierać się na formatach takich jak `JSON` lub na strukturach binarnych.
 
@@ -32,13 +34,13 @@ public static class Program
     const int Port = 5000;
     public static async Task Main()
     {
-        CancellationTokenSource cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
         var ipEndPoint = new IPEndPoint(IPAddress.Any, Port);
         using var listener = new TcpListener(ipEndPoint);
         
         var waitForAnyKey = Task.Run(() =>
         {
-            Console.WriteLine("Wait any key to exit");
+            Console.WriteLine("Press any key to exit");
             Console.ReadKey(true);
             cts.Cancel();
         });

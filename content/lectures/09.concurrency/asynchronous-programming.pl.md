@@ -18,8 +18,8 @@ var result = await expression;
 statement(s);
 ```
 
-> [!NOTICE]
-> Wyrażenie (*expression*) jest najczęściej typu `Task` lub `Task<TResult>`. Jednakże każdy obiekt z metodą GetAwaiter zwracający *awaiter* zadowoli kompilator. Patrz: [await-anything](https://devblogs.microsoft.com/pfxteam/await-anything/).
+> [!NOTE]
+> Wyrażenie (*expression*) jest najczęściej typu `Task` lub `Task<TResult>`. Jednakże każdy obiekt z metodą `GetAwaiter` zwracającą *awaiter* zadowoli kompilator. Patrz: [await-anything](https://devblogs.microsoft.com/pfxteam/await-anything/).
 
 Transformacja ta obejmuje kilka kroków:
 
@@ -27,7 +27,7 @@ Transformacja ta obejmuje kilka kroków:
 2. `IsCompleted`: Wykonywana jest optymalizacja – jeśli operacja jest już zakończona, reszta kodu wykonuje się synchronicznie, bez przełączania wątków.
 3. Przechwycenie kontekstu: Jeśli operacja nie jest zakończona, `await` przechwytuje bieżący `SynchronizationContext`. Jest to kluczowe w aplikacjach UI, aby móc wrócić na główny wątek.
 4. `OnCompleted`: Rejestrowana jest "kontynuacja" – czyli reszta metody. Ten kod zostanie wywołany w przyszłości, gdy zadanie się zakończy.
-5. Powrót do kontekstu: Wewnątrz kontynuacji sprawdzany jest przechwycony kontekst. Jeśli istnieje (np. w aplikacji okienkowej), reszta kodu jest wywoływana (`Post`) do wykonania w miejscu wskazywanym przez kontekst synchronizacji. W przeciwnym razie kod jest wykonywany na wątku z puli.
+5. Powrót do kontekstu: Wewnątrz kontynuacji sprawdzany jest przechwycony kontekst. Jeśli istnieje (np. w aplikacji okienkowej), reszta kodu jest przekazywana (`Post`) do wykonania w miejscu wskazywanym przez kontekst synchronizacji. W przeciwnym razie kod jest wykonywany na wątku z puli.
 6. `GetResult()`: Na samym końcu wywoływana jest metoda `GetResult()`, która zwraca wynik operacji lub rzuca wyjątek, jeśli zadanie zakończyło się błędem.
 
 ```csharp
@@ -63,6 +63,20 @@ else
 > [!NOTE]
 > Zachowanie domyślnego przechwytywania kontekstu przez `await` można wyłączyć, używając `await expression.ConfigureAwait(false)`.
 
+Od .NET 8 typy `Task` i `Task<TResult>` mają również przeciążenie `ConfigureAwait(ConfigureAwaitOptions options)`, które przyjmuje kombinację flag:
+
+* `None` – kontekst nie jest przechwytywany (odpowiednik `ConfigureAwait(false)`),
+* `ContinueOnCapturedContext` – kontekst jest przechwytywany (odpowiednik `ConfigureAwait(true)`, czyli zachowania domyślnego),
+* `SuppressThrowing` – `await` nie rzuca wyjątku, jeśli zadanie zakończyło się błędem lub zostało anulowane; jego stan można sprawdzić później (obsługiwane tylko dla niegenerycznego `Task`),
+* `ForceYielding` – kontynuacja jest zawsze planowana asynchronicznie, nawet jeśli zadanie już się zakończyło (podobnie jak `await Task.Yield()`).
+
+```csharp
+Task task = Task.Run(() => throw new InvalidOperationException("Boom"));
+
+await task.ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+Console.WriteLine(task.Status); // Faulted
+```
+
 > [!INFO]
 > Przykład ilustrujący przełączanie wątków:
 > {{< filetree dir="lectures/concurrency/AsyncAwaitThreads" >}}
@@ -76,9 +90,10 @@ Metody asynchroniczne w C# są realizowane jako forma korutyn. Metoda asynchroni
 2. Instruuje kompilator, aby przekształcił metodę w maszynę stanów, która potrafi zarządzać zawieszaniem i wznawianiem swojego działania.
 
 * Słowo `async` samo w sobie nie tworzy nowego wątku. Samo oznaczenie metody jako `async` nie sprawia, że wykonuje się ona w tle. Metoda rozpoczyna swoje działanie synchronicznie na bieżącym wątku. Dopiero napotkanie `await` na operacji, która jeszcze się nie zakończyła, powoduje zawieszenie metody i zwolnienie wątku.
-* Typy zwracane: Metoda `async` musi zwracać jeden z trzech typów:
+* Typy zwracane: Metoda `async` zwraca jeden z następujących typów (asynchroniczne iteratory, zwracające `IAsyncEnumerable<T>`, są opisane w części [Asynchroniczne sekwencje]({{< ref "/lectures/09.concurrency/asynchronous-streams" >}})):
   * `Task`: Dla operacji asynchronicznych, które nie zwracają wartości.
   * `Task<TResult>`: Dla operacji, które po zakończeniu zwracają wartość typu TResult.
+  * `ValueTask` / `ValueTask<TResult>`: Lekkie struktury, które pozwalają uniknąć alokacji obiektu `Task`, gdy metoda często kończy się synchronicznie (np. zwraca zapamiętaną wcześniej wartość). Na taki wynik należy czekać tylko raz.
   * `void`: **Zalecane tylko dla obsługi zdarzeń** (np. `async void Button_Click(...)`). Użycie `async void` w innych miejscach jest złą praktyką, ponieważ utrudnia obsługę wyjątków i śledzenie zakończenia operacji.
 
 Poniższy przykład przedstawia **synchroniczne** wykonanie operacji. Metoda `GetPrimesCount()` używa `Thread.Sleep(1000)`, czyli wątek, który ją wywołał, zostaje zablokowany na jedną sekundę. Jeśli byłby to wątek UI, aplikacja przestałaby odpowiadać na ten czas.
@@ -125,7 +140,7 @@ async Task<int> GetPrimesCountAsync()
 
 ## Równoległość
 
-Programowanie asynchroniczne może być wykorzystane żeby osiągnąć równoległe wykonanie kodu.
+Programowanie asynchroniczne może być wykorzystane, żeby osiągnąć równoległe wykonanie kodu.
 
 ```csharp
 class Program
@@ -198,30 +213,49 @@ int[] primesCounts = await Task.WhenAll(task1, task2);
 ```csharp
 Task<int> task1 = CountPrimesAsync(0, 100);
 Task<int> task2 = CountPrimesAsync(100, 200);
-Task<int> task = await Task.WhenAny(task1, task2);
-Console.WriteLine($"Primes: {await task}");
+Task<int> completedTask = await Task.WhenAny(task1, task2);
+Console.WriteLine($"Primes: {await completedTask}");
 ```
 
 `Task.WhenAny` zwraca `Task<Task>` (lub `Task<Task<TResult>>`).
 * Zewnętrzny `Task` kończy się, gdy dowolne zadanie z kolekcji się zakończy.
-* Wynikiem zewnętrznego `Task`a jest ten wewnętrzny `Task,` który właśnie się zakończył. Trzeba go odpakować, aby dostać się do jego wyniku.
+* Wynikiem zewnętrznego `Task`a jest ten wewnętrzny `Task`, który właśnie się zakończył. Trzeba go odpakować (np. kolejnym `await`), aby dostać się do jego wyniku.
 
+### `Task.WhenEach`
+
+`Task.WhenEach` (.NET 9) zwraca asynchroniczną sekwencję (`IAsyncEnumerable<Task<TResult>>` lub `IAsyncEnumerable<Task>`), w której przekazane zadania pojawiają się w kolejności ich zakończenia. Pozwala to przetwarzać wyniki, gdy tylko są dostępne, bez wielokrotnego wywoływania `Task.WhenAny` i usuwania zakończonego zadania z listy.
+
+```csharp
+Task<int>[] tasks =
+[
+    CountPrimesAsync(0, 3_000_000),
+    CountPrimesAsync(3_000_000, 4_000_000),
+    CountPrimesAsync(4_000_000, 5_000_000)
+];
+
+await foreach (Task<int> completedTask in Task.WhenEach(tasks))
+{
+    Console.WriteLine($"Primes: {await completedTask}");
+}
+```
+
+Zwracane zadania są już zakończone, więc `await` od razu zwraca ich wynik (lub rzuca wyjątek, którym zakończyło się zadanie). Instrukcja `await foreach` jest opisana w części [Asynchroniczne sekwencje]({{< ref "/lectures/09.concurrency/asynchronous-streams" >}}).
 
 ## Anulowanie zadań
 
-Do anulowania zadań w służy mechanizm oparty na dwóch powiązanych ze sobą typach: `CancellationTokenSource` i `CancellationToken`.
+Do anulowania zadań służy mechanizm oparty na dwóch powiązanych ze sobą typach: `CancellationTokenSource` i `CancellationToken`.
 
 1. `CancellationTokenSource` – to obiekt, który tworzy tokeny `CancellationToken` i sygnalizuje anulowanie.
 2. `CancellationToken` – to struktura przekazywana do zadania. Zadanie używa go do sprawdzania, czy zażądano anulowania.
 
 Jak to działa?
 
-1. Tworzysz instancję `CancellationTokenSource`. Konstruktor przyjmuje opcjonalny parametr `int timeout`, jeżeli obecny, to anulowanie zostanie automatycznie zasygnalizowane po określonym czasie.
+1. Tworzysz instancję `CancellationTokenSource`. Jedno z przeciążeń konstruktora przyjmuje opóźnienie (`int millisecondsDelay` lub `TimeSpan delay`); jeżeli zostanie użyte, to anulowanie zostanie automatycznie zasygnalizowane po określonym czasie (to samo dla istniejącego źródła robi metoda `CancelAfter`).
 2. Z tego źródła pobierasz `CancellationToken` za pomocą właściwości `Token`.
-3. Przekazujesz ten token do zadania, które chcesz móc anulować.
+3. Przekazujesz ten token do zadania, które chcesz móc anulować. Jeżeli zadanie jest tworzone za pomocą `Task.Run`, przekaż token również jako jego drugi argument: wtedy zadanie anulowane tym tokenem kończy się w stanie `Canceled` (a nie `Faulted`), a jeśli anulowania zażądano wcześniej, zadanie w ogóle się nie rozpocznie.
 4. Wewnątrz zadania musisz okresowo sprawdzać stan tokenu. Najprostszym sposobem jest wywołanie metody `token.ThrowIfCancellationRequested()`. Rzuca ona wyjątek `OperationCanceledException`, jeśli anulowanie zostało zasygnalizowane. Alternatywnie można sprawdzić stan tokenu właściwością `token.IsCancellationRequested`.
 5. Aby zainicjować anulowanie, wywołujesz metodę `Cancel()` na obiekcie `CancellationTokenSource`.
-6. Gdy zadanie jest anulowane, oczekiwanie na nie (np. przez `Wait()` lub `await`) zakończy się wyjątkiem `OperationCanceledException`.
+6. Gdy zadanie jest anulowane, `await` na nim rzuca wyjątek `OperationCanceledException` (lub pochodny `TaskCanceledException`), natomiast `Wait()` i `Result` rzucają `AggregateException`, który go opakowuje.
 
 ```csharp
 class Program
@@ -258,7 +292,7 @@ class Program
             }
 
             return primes;
-        });
+        }, token);
     }
 
     static bool IsPrime(int number)

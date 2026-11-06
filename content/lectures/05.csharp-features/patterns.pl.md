@@ -7,7 +7,7 @@ title: "Wzorce"
 Wzorce (*patterns*) to mechanizm, który pozwala na sprawdzanie, czy dana zmienna lub wyrażenie ma określoną "postać".
 Wzorców można używać w następujących miejscach:
 
-* instrukcja `is`, sprawdza czy wyrażenie pasuje do wzorca, zwracając wynik w postaci `bool`a:
+* operator `is`, który sprawdza, czy wyrażenie pasuje do wzorca, i zwraca wynik w postaci `bool`a:
   ```csharp
   expression is pattern
   ```
@@ -21,10 +21,10 @@ bool IsWorkingDay(object date)
     if (date is DateTime dateTime)
     {
         if (dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
-            return true;
-        return false;
+            return false;
+        return true;
     }
-    return date is DateOnly {DayOfWeek: not (DayOfWeek.Saturday or DayOfWeek.Sunday)}
+    return date is DateOnly {DayOfWeek: not (DayOfWeek.Saturday or DayOfWeek.Sunday)};
 }
 ```
 
@@ -80,9 +80,9 @@ static decimal GetGroupTicketPrice(int visitorCount) => visitorCount switch
 };
 ```
 
-## Wzorzec porównania (C# 9.0)
+## Wzorce relacyjne (C# 9.0)
 
-Porównują wartość wyrażenia ze stałą za pomocą operatorów porównania (`<`, `>`, `<=`, `>=`)
+Porównują wartość wyrażenia ze stałą za pomocą operatorów relacyjnych (`<`, `>`, `<=`, `>=`).
 
 ```csharp
 static string GetCalendarSeason(DateTime date) => date.Month switch
@@ -97,7 +97,7 @@ static string GetCalendarSeason(DateTime date) => date.Month switch
 
 ## Wzorce logiczne (C# 9.0)
 
-Pozwalają łączyć inne wzorce za pomocą słów kluczowych and, or i not.
+Pozwalają łączyć inne wzorce za pomocą słów kluczowych `and`, `or` i `not`.
 
 ```csharp
 string? input = null;
@@ -111,7 +111,7 @@ c is (>= 'a' and <= 'z') or (>= 'A' and <= 'Z');
 
 ## Wzorce właściwości
 
-Sprawdza, czy obiekt nie jest null, a następnie dopasowuje wzorce do jego właściwości lub pól.
+Sprawdza, czy obiekt nie jest `null`, a następnie dopasowuje wzorce do jego właściwości lub pól.
 
 ```csharp
 static bool IsConferenceDay(DateTime date) 
@@ -131,9 +131,10 @@ static string TakeFive(object input) => input switch
     _ => throw new ArgumentException(),
 };
 ```
+
 ## Wzorzec pozycyjny
 
-Używany dla typów, które mają metodę `Deconstruct` (np. krotki (*tuple*) i rekordy). Dekonstruuje on obiekt i dopasowuje wzorce do jego składowych.
+Używany dla krotek (*tuple*) i typów, które mają metodę `Deconstruct` (np. rekordów pozycyjnych). Dekonstruuje on obiekt i dopasowuje wzorce do jego składowych.
 
 ```csharp
 public readonly struct Point
@@ -195,9 +196,9 @@ static decimal GetDiscountPercent(DayOfWeek? dayOfWeek) => dayOfWeek switch
 };
 ```
 
-## Wzorzec listy (C# 11)
+## Wzorce listy (C# 11)
 
-Pozwalają na dopasowywanie wzorców dla typów posiadających indeksator przyjmujący `int` i posiadający właściwość `Count` lub `Length` zwracającą `int`. Czyli na przykład dla list, tablic i stringów.
+Pozwalają na dopasowywanie wzorców dla typów posiadających indeksator przyjmujący `int` oraz właściwość `Count` lub `Length` zwracającą `int`. Czyli na przykład dla list, tablic i stringów.
 
 ```csharp
 int[] numbers = { 1, 2, 3 };
@@ -215,7 +216,7 @@ if (list is [var first, _, _])
 }
 ```
 
-We wzorcu listy można raz użyć wzorca `..` (*Slice pattern*), pasującego do reszty sekwencji. Można go łączyć ze wzorcem `var`, wprowadzając nową zmienną, lub wzorcem właściwości. Ten wzorzec wymaga implementacji od typu indeksera przyjmującego `Range` lub odpowiadającej metody `Slice`.
+We wzorcu listy można raz użyć wzorca `..` (*slice pattern*), pasującego do reszty sekwencji. Można go łączyć ze wzorcem `var`, wprowadzając nową zmienną, lub wzorcem właściwości. Jeżeli wzorzec `..` zawiera zagnieżdżony wzorzec (np. `.. var rest`), typ musi dodatkowo obsługiwać wycinanie - mieć indeksator przyjmujący `Range` lub odpowiadającą mu metodę `Slice`.
 
 ```csharp
 Console.WriteLine(new[]{ 1, 2, 3, 4 } is [>= 0, .., 2 or 4]);

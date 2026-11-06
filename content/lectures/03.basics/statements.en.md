@@ -56,7 +56,7 @@ void TellMeAboutTheObject(object obj)
 
 The `switch` expression is more concise and is used to return a single value based on pattern matching.
 
-In this case, every `case` must be handled; otherwise, the runtime throws an exception. The equivalent of `default` in a `switch` expression is the discard pattern `_`.
+In this case, all possible input values should be handled: the compiler issues a warning if the arms are not exhaustive, and if no arm matches at runtime, a `SwitchExpressionException` is thrown. The equivalent of `default` in a `switch` expression is the discard pattern `_`.
 
 ```csharp
 type variable = input expression switch

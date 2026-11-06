@@ -9,7 +9,7 @@ Platform Invoke (P/Invoke) to mechanizm pozwalający kodowi zarządzanemu (C#) n
 
 ## Atrybut `DllImport`
 
-Przykładowo chcemy wywołać funkcję z `user32.dll` z WinAPI:
+Przykładowo, jeśli chcemy wywołać funkcję z `user32.dll` z WinAPI:
 
 ```cpp
 int MessageBox(HWND hWnd, LPCTSTR lpText, LPCTSTR lpCaption, UINT uType);
@@ -43,7 +43,9 @@ NativeMethods.MessageBox(nint.Zero, "Hello world!", "Info", 0);
 
 Od wersji .NET 7 wprowadzono atrybut `[LibraryImport]`, który wykorzystuje generatory kodu źródłowego (*Source Generators*) zamiast generowania kodu w czasie wykonywania (jak `DllImport`). Jest to bardziej wydajne rozwiązanie. W nowych projektach zaleca się stosowanie `LibraryImport` zamiast `DllImport`.
 
-Metoda musi być statyczna i oznaczona jako `partial`, aby generator mógł dopisać implementację.
+Metoda musi być statyczna i oznaczona jako `partial`, aby generator mógł dopisać implementację (typ, w którym się znajduje, również musi być `partial`). Wygenerowany kod używa wskaźników, więc w projekcie trzeba też włączyć `AllowUnsafeBlocks` (w przeciwnym razie kompilacja kończy się błędem `SYSLIB1062`).
+
+W przeciwieństwie do `DllImport`, `LibraryImport` nie zakłada żadnego domyślnego sposobu marshallingu dla typów `string` i `bool` - trzeba go podać jawnie (np. przez `StringMarshalling` lub `[MarshalAs]`), w przeciwnym razie kompilacja kończy się błędem `SYSLIB1051`. Nie wyszukuje też wariantów nazw funkcji WinAPI z przyrostkiem `A`/`W`, dlatego trzeba podać dokładną nazwę `MessageBoxW` (wersja UTF-16).
 
 ```csharp
 public partial class NativeMethods
@@ -55,7 +57,7 @@ public partial class NativeMethods
 
 ## Wywołanie własnej biblioteki C++
 
-Najważniejsze jest użycie `extern "C"`. Kompilatory `C++` domyślnie zmieniają nazwy funkcji (tzw. *Name Mangling*), dodając do nich informacje o argumentach czy przestrzeniach nazw. `extern "C"` wyłącza to zachowanie, dzięki czemu C# może znaleźć taką funkcję. Makro `EXPORT` sprawia że funkcja staje się widoczna na zewnątrz biblioteki.
+Najważniejsze jest użycie `extern "C"`. Kompilatory `C++` domyślnie zmieniają nazwy funkcji (tzw. *Name Mangling*), dodając do nich informacje o argumentach czy przestrzeniach nazw. `extern "C"` wyłącza to zachowanie, dzięki czemu C# może znaleźć taką funkcję. Makro `EXPORT` sprawia, że funkcja staje się widoczna na zewnątrz biblioteki.
 
 ```cpp
 #if defined(_WIN32) || defined(_WIN64)
@@ -67,7 +69,7 @@ Najważniejsze jest użycie `extern "C"`. Kompilatory `C++` domyślnie zmieniaj�
 extern "C" EXPORT void Hello();
 ```
 
-Następnie po stronie `C#` musimy zaimportować tę funkcję używając atrybutu `DllImport` lub `LibraryImport`.
+Następnie po stronie `C#` musimy zaimportować tę funkcję, używając atrybutu `DllImport` lub `LibraryImport`.
 
 ```csharp
 [LibraryImport("HelloCpp")]
@@ -80,14 +82,40 @@ private static partial void Hello();
 > 
 > **C#** {{< filetree dir="lectures/interoperability/HelloCSharp" >}}
 
+### Wyszukiwanie bibliotek i `NativeLibrary`
+
+Nazwę biblioteki podaje się bez przedrostka i rozszerzenia. Środowisko uruchomieniowe dodaje rozszerzenie właściwe dla platformy (`.dll`, `.so`, `.dylib`), a na systemach *Unix* próbuje też przedrostka `lib`, więc `"HelloCpp"` odnajduje `HelloCpp.dll` na Windowsie, `libHelloCpp.so` na Linuksie i `libHelloCpp.dylib` na macOS. Domyślnie biblioteka jest szukana w katalogu aplikacji (katalogu assembly) oraz w standardowych lokalizacjach systemowych.
+
+Bibliotekę można też załadować ręcznie za pomocą klasy `NativeLibrary` (.NET Core 3.0), która jest odpowiednikiem `dlopen`/`dlsym` (`LoadLibrary`/`GetProcAddress` na Windowsie). Adres wyeksportowanej funkcji można następnie wywołać przez niezarządzany wskaźnik na funkcję (zob. [Kontekst niebezpieczny]({{< ref "/lectures/11.interoperability/unsafe" >}})):
+
+```csharp
+unsafe
+{
+    nint library = NativeLibrary.Load("HelloCpp", typeof(Program).Assembly, null);
+    try
+    {
+        var hello = (delegate* unmanaged<void>)NativeLibrary.GetExport(library, "Hello");
+        hello(); // Hello from C++
+    }
+    finally
+    {
+        NativeLibrary.Free(library);
+    }
+}
+```
+
+Metoda `NativeLibrary.SetDllImportResolver` pozwala zastąpić sposób wyszukiwania bibliotek używanych przez deklaracje `DllImport`/`LibraryImport` danego assembly, np. aby wybrać plik biblioteki w zależności od platformy.
+
 ## Marshalling
 
 Marshalling to proces konwersji typów danych między kodem zarządzanym a niezarządzanym.
 
 ### Typy przekładalne (*blittable*) i nieprzekładalne (*non-blittable*)
 
-* **Typy przekładalne** (*blittable*): Typy, które mają taką samą reprezentację w pamięci w kodzie zarządzanym i niezarządzanym (np. `byte`, `int`, `float`, `nint`, tablice typów przekładalnych, typy bezpośrednie składające się z typów przekładalnych). Nie wymagają dodatkowej konwersji.
-* **Typy nieprzekładalne** (*non-blittable*): Typy wymagające konwersji (np. `bool`, `string`).
+* **Typy przekładalne** (*blittable*): Typy, które mają taką samą reprezentację w pamięci w kodzie zarządzanym i niezarządzanym (np. `byte`, `int`, `float`, `nint`, jednowymiarowe tablice typów przekładalnych, typy bezpośrednie składające się z typów przekładalnych). Nie wymagają dodatkowej konwersji.
+* **Typy nieprzekładalne** (*non-blittable*): Typy wymagające konwersji (np. `bool`, `char`, `string`).
+
+Przykładowo, `bool` nie ma jednej natywnej reprezentacji: w C++ zajmuje 1 bajt, a typ Win32 `BOOL` (domyślny dla `DllImport`) to 4-bajtowy `int`. Stąd atrybut `[MarshalAs(UnmanagedType.U1)]` poniżej:
 
 ```cpp
 extern "C" EXPORT int Foo(unsigned char c, float x, Bar* bar, bool b);
@@ -126,7 +154,7 @@ void PrintUnicodeString(const char16_t *str)
 }
 ```
 
-A w atrybucie `LibraryImport` wyspecyfikować jak napis ma zostać przetworzony przed przekazaniem do funkcji C++.
+A w atrybucie `LibraryImport` wyspecyfikować, jak napis ma zostać przetworzony przed przekazaniem do funkcji C++.
 
 ```csharp
 [LibraryImport("StringsCpp", StringMarshalling = StringMarshalling.Utf8)]
@@ -155,7 +183,7 @@ const char16_t *GetUnicodeString()
 }
 ```
 
-Wartość zwracaną najprościej przechwycić po stronie C# jako wskaźnik. Wszelkie uchwyty do pamięci reprezentujemy po stronie C# jako `IntPtr` lub od `C# 9` jako `nint` (alias do `System.IntPtr`). Jest to typ reprezentujący wskaźnik o rozmiarze zależnym od architektury procesora.
+Wartość zwracaną najprościej przechwycić po stronie C# jako wskaźnik. Wszelkie uchwyty do pamięci reprezentujemy po stronie C# jako `IntPtr` lub od `C# 9` jako `nint` (od `C# 11` po prostu alias do `System.IntPtr`). Jest to typ reprezentujący wskaźnik o rozmiarze zależnym od architektury procesora.
 
 ```csharp
 [LibraryImport("StringsCpp")]
@@ -165,7 +193,7 @@ public static partial nint GetAnsiString();
 public static partial nint GetUnicodeString();
 ```
 
-Następnie, żeby z takiego wskaźnika odzyskać napis możemy użyć metod pomocniczych `Marshal.PtrToStringAnsi` lub `Marshal.PtrToStringUni`.
+Następnie, żeby z takiego wskaźnika odzyskać napis, możemy użyć metod pomocniczych `Marshal.PtrToStringAnsi`, `Marshal.PtrToStringUTF8` lub `Marshal.PtrToStringUni`.
 
 ```csharp
 string? ansi = Marshal.PtrToStringAnsi(GetAnsiString());
@@ -174,9 +202,12 @@ Console.WriteLine($"Ansi string: {ansi}");
 Console.WriteLine($"Unicode string: {unicode}");
 ```
 
+> [!WARNING]
+> Typ zwracany można by też zadeklarować jako `string`, ale wtedy marshaller przejmuje na własność zwrócony bufor i po konwersji go zwalnia (funkcją `CoTaskMemFree` na Windowsie, `free` na *Uniksie*). Tutaj oznaczałoby to zwolnienie statycznego literału napisowego, co kończy się awarią procesu (`free(): invalid pointer`). Zwracając `nint`, zarządzanie pamięcią pozostawiamy sobie.
+
 #### Jako parametr wejściowo-wyjściowy
 
-Jeżeli funkcja C++ modyfikuje przekazany jako parametr napis, to nie możemy po stronie C# przekazać obiektu `string` - jest niezmienialny. 
+Jeżeli funkcja C++ modyfikuje przekazany jako parametr napis, to nie możemy po stronie C# przekazać obiektu `string` - jest niezmienny.
 
 ```cpp
 extern "C" EXPORT void Encode(char* text);
@@ -203,7 +234,7 @@ void Encode(char *text)
 }
 ```
 
-Najprościej jest wtedy przekazać tablicę znaków (`byte[]` lub `char[]` w zależności od kodowania). W poniższym przykładzie zakładamy kodowanie UTF-8 (kompatybilne z ASCII). 
+Najprościej jest wtedy przekazać tablicę znaków (`byte[]` lub `char[]` w zależności od kodowania). W poniższym przykładzie zakładamy kodowanie UTF-8 (kompatybilne z ASCII). Funkcja natywna oczekuje napisu zakończonego znakiem zerowym, więc tablica musi kończyć się `'\0'` - `ToArray()` na literale `u8` nie kopiuje terminatora.
 
 ```csharp
 [LibraryImport("StringsCpp")]
@@ -211,9 +242,9 @@ public static partial void Encode([In, Out] byte[] str);
 ```
 
 ```csharp
-byte[] arr = "Initial content"u8.ToArray();
+byte[] arr = "Initial content\0"u8.ToArray();
 Encode(arr);
-Console.WriteLine($"Encoded: {Encoding.UTF8.GetString(arr)}");
+Console.WriteLine($"Encoded: {Encoding.UTF8.GetString(arr, 0, arr.Length - 1)}"); // Encoded: Vavgvny pbagrag
 ```
 
 > [!INFO]
@@ -242,9 +273,11 @@ struct Color
 };
 ```
 
-Aby przekazać strukturę z/do kodu natywnego, należy zdefiniować jej odpowiednik w C# i jeżeli to konieczne użyć atrybutu `[StructLayout]`. Atrybut ten ma jeden parametr pozycyjny `LayoutKind`, który może przyjmować jedną z dwóch wartości:
+Aby przekazać strukturę z/do kodu natywnego, należy zdefiniować jej odpowiednik w C# i, jeżeli to konieczne, użyć atrybutu `[StructLayout]`. Atrybut ten ma jeden parametr pozycyjny `LayoutKind`, który może przyjmować jedną z trzech wartości:
 * **Sequential**: Pola są ułożone w pamięci w kolejności deklaracji (zachowanie domyślne dla `struct`).
 * **Explicit**: Pozwala ręcznie określić przesunięcie każdego pola za pomocą atrybutu `[FieldOffset]`. Używane do tworzenia odpowiedników unii.
+* **Auto**: Układ wybiera środowisko uruchomieniowe (zachowanie domyślne dla `class`). Takich typów nie można przekazywać do kodu natywnego.
+
 Opcjonalny parametr `Pack` pozwala również wyspecyfikować wyrównanie pól (*alignment*).
 
 ```csharp
@@ -296,7 +329,7 @@ Możemy przekazywać metody C# do kodu niezarządzanego jako wskaźniki na funkc
 ```cpp
 typedef void (*Callback)(int value);
 
-extern "C" void Count(int from, int to, Callback callback);
+extern "C" EXPORT void Count(int from, int to, Callback callback);
 
 void Count(int from, int to, Callback callback)
 {
@@ -310,14 +343,30 @@ void Count(int from, int to, Callback callback)
 public delegate void Callback(int value);
     
 [LibraryImport("CallbacksCpp")]
-private static partial void Count(int from , int to, Callback callback);
+private static partial void Count(int from, int to, Callback callback);
 
 [LibraryImport("CallbacksCpp")]
-private static unsafe partial void Count(int from, int to, delegate* <int, void> callback);
+private static unsafe partial void Count(int from, int to, delegate* unmanaged<int, void> callback);
+```
+
+Delegat (np. lambdę) marshaller zamienia na natywny wskaźnik na funkcję. Wskaźnik na funkcję przekazywany do kodu natywnego musi być zadeklarowany jako `unmanaged` - zwykły `delegate*` używa zarządzanej konwencji wywołania, z której kod natywny nie może skorzystać. Można do niego przypisać wyłącznie adres statycznej metody oznaczonej atrybutem `[UnmanagedCallersOnly]`. Takiej metody nie można wywołać bezpośrednio z C#, a wyjątki nie mogą się z niej wydostać.
+
+```csharp
+static unsafe void Main()
+{
+    Count(1, 101, i => Console.WriteLine(i));
+    Count(1, 101, &FizzBuzz);
+}
+
+[UnmanagedCallersOnly]
+static void FizzBuzz(int i)
+{
+    // ...
+}
 ```
 
 > [!WARNING]
-> Garbage Collector nie widzi referencji trzymanej przez kod niezarządzany. Jeśli przekażesz delegat do funkcji natywnej, która użyje go później (asynchronicznie), musisz zadbać o to, by delegat nie został usunięty przez *GC* (np. przypisując go do statycznego pola).
+> Garbage Collector nie widzi referencji trzymanej przez kod niezarządzany. Jeśli przekażesz delegat do funkcji natywnej, która użyje go później (asynchronicznie), musisz zadbać o to, by delegat nie został usunięty przez *GC* (np. przypisując go do statycznego pola). Wskaźnik na statyczną metodę `[UnmanagedCallersOnly]` nie ma tego problemu.
 
 > [!INFO]
 > Przykład:  
@@ -327,7 +376,7 @@ private static unsafe partial void Count(int from, int to, delegate* <int, void>
 
 ## SafeHandle
 
-Klasa `SafeHandle` służy do owijania uchwytów do zasobów systemu operacyjnego (pamięć, pliki, gniazda sieciowe, zewnętrzna baza danych) i gwarantuje zwolnienie zasobu nawet w przypadku wystąpienia wyjątku. `SafeHandle` implementuje `IDisposable`, ale jest też w stanie zwolnić sama zasoby w finalizerze.
+Klasa `SafeHandle` służy do owijania uchwytów do zasobów systemu operacyjnego (pamięć, pliki, gniazda sieciowe, zewnętrzna baza danych) i gwarantuje zwolnienie zasobu nawet w przypadku wystąpienia wyjątku. `SafeHandle` implementuje `IDisposable`, ale potrafi też sama zwolnić zasoby w finalizatorze.
 
 ```cpp
 extern "C" EXPORT const char* CreateString();
@@ -395,3 +444,24 @@ public static partial class NativeString
 > **C++** {{< filetree dir="lectures/interoperability/SafeHandleCpp" >}}
 > 
 > **C#** {{< filetree dir="lectures/interoperability/SafeHandleCSharp" >}}
+
+## Obsługa błędów (`SetLastError`)
+
+Funkcje natywne często zgłaszają błędy przez kod błędu przechowywany osobno dla każdego wątku: `errno` na *Uniksie* lub `GetLastError()` na Windowsie. Samo środowisko uruchomieniowe może między wywołaniem funkcji natywnej a naszym kodem wywołać funkcje systemowe i nadpisać tę wartość. Dlatego przy `SetLastError = true` kod marshallingu zapamiętuje kod błędu zaraz po wywołaniu, a my odczytujemy go metodą `Marshal.GetLastPInvokeError()` (.NET 6; starsza `Marshal.GetLastWin32Error()` mimo swojej nazwy robi to samo). `Marshal.GetPInvokeErrorMessage` (.NET 7) zwraca odpowiadający mu komunikat systemowy.
+
+```csharp
+using System.Runtime.InteropServices;
+
+if (Libc.chdir("/nonexistent") != 0)
+{
+    int error = Marshal.GetLastPInvokeError();
+    Console.WriteLine($"Error {error}: {Marshal.GetPInvokeErrorMessage(error)}");
+    // Error 2: No such file or directory
+}
+
+public static partial class Libc
+{
+    [LibraryImport("libc", StringMarshalling = StringMarshalling.Utf8, SetLastError = true)]
+    public static partial int chdir(string path);
+}
+```

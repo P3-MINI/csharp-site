@@ -23,7 +23,7 @@ class Program
 
     private static async IAsyncEnumerable<string> EnumerateLines(string path)
     {
-        var stream = new StreamReader(path);
+        using var stream = new StreamReader(path);
 
         while (await stream.ReadLineAsync() is { } line)
         {

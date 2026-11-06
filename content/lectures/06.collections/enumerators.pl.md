@@ -7,7 +7,7 @@ weight: 10
 
 Enumerator to podobny koncept do iteratorów z C++. Enumerator to kursor działający w trybie "tylko do odczytu", który pozwala na jednokierunkowe przeglądanie sekwencji wartości.
 
-Żeby obiekt można było nazwać enumeratorem to musi posiadać publiczną bezparametrową metodę `bool MoveNext()` i właściwość `Current`. Najczęściej implementuje się interfejs `System.Collections.Generics.IEnumerator<T>` (lub rzadziej `System.Collections.IEnumerator`), który dostarcza wspomnianą metodę i właściwość.
+Żeby obiekt można było nazwać enumeratorem, musi on posiadać publiczną bezparametrową metodę `bool MoveNext()` i właściwość `Current`. Najczęściej implementuje się interfejs `System.Collections.Generic.IEnumerator<T>` (lub rzadziej `System.Collections.IEnumerator`), który dostarcza wspomnianą metodę i właściwość.
 
 Definicja tych interfejsów wygląda następująco:
 
@@ -45,7 +45,7 @@ public interface IEnumerable<out T> : IEnumerable
 
 ## Pętla `foreach`
 
-Wszystkie systemowe kolekcje, tablice i stringi są enumerowalne. Wszystko co jest enumerowalne może być użyte wewnątrz pętli `foreach`:
+Wszystkie systemowe kolekcje, tablice i stringi są enumerowalne. Wszystko, co jest enumerowalne, może być użyte wewnątrz pętli `foreach`:
 
 ```csharp
 List<int> collection = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -56,10 +56,10 @@ foreach(int item in collection)
 }
 ```
 
-Pętla `foreach` jest cukierkiem składniowym, kompilator przekształca to wyrażenie następująco:
+Pętla `foreach` jest cukrem składniowym, kompilator przekształca tę instrukcję następująco:
 
 ```csharp
-IEnumerator<int> enumerator = collection.GetEnumerator();
+List<int>.Enumerator enumerator = collection.GetEnumerator();
 try
 {
     while (enumerator.MoveNext())
@@ -70,15 +70,17 @@ try
 }
 finally
 {
-    enumerator?.Dispose();
+    enumerator.Dispose();
 }
 ```
+
+`foreach` opiera się na wzorcu: kompilator używa metody `GetEnumerator` dostępnej dla statycznego typu kolekcji. `List<T>` zwraca własny publiczny enumerator, strukturę `List<T>.Enumerator`, dzięki czemu nie ma alokacji na stercie ani wywołań przez interfejs. Gdyby kolekcja była znana tylko jako `IEnumerable<int>`, enumerator miałby typ `IEnumerator<int>`.
 
 ## Metoda iterująca
 
 **Korutyna** to specjalny rodzaj funkcji, która **ma zdolność do wstrzymania swojego działania** w dowolnym momencie i **zwrócenia kontroli** do kodu, który ją wywołał, a następnie, po jakimś czasie, **wznowienia działania**.
 
-Metody iterujące to jeden z dwóch przykładów korutyn w C#. Taka metoda musi zwracać `IEnumerable<T>` lub `IEnumerator<T>` (lub `IEnumerable` lub `IEnumerator`) i używać instrukcji `yield`. Taka metoda jest przez kompilator traktowana w szczególny sposób. Kompilator w jej miejsce tworzy maszynę stanów, która zapamiętuje stan iteracji, czyli lokalne zmienne oraz informację o miejscu wstrzymania.
+Metody iterujące to jeden z dwóch przykładów korutyn w C#. Taka metoda musi zwracać `IEnumerable<T>` lub `IEnumerator<T>` (lub `IEnumerable` lub `IEnumerator`) i używać instrukcji `yield`. Taka metoda jest przez kompilator traktowana w szczególny sposób. Kompilator w jej miejsce tworzy maszynę stanów, która zapamiętuje stan iteracji, czyli zmienne lokalne oraz informację o miejscu wstrzymania.
 
 ```csharp
 public static IEnumerable<int> Fibonacci(int count)
@@ -94,7 +96,7 @@ public static IEnumerable<int> Fibonacci(int count)
 {{% details title="Taka maszyna stanów wygląda następująco dla tej metody:" open=false %}}
 ```csharp
 [CompilerGenerated]
-private sealed class <Fibs>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int>, IEnumerator, IDisposable
+private sealed class <Fibonacci>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int>, IEnumerator, IDisposable
 {
     private int <>1__state;
     private int <>2__current;
@@ -125,7 +127,7 @@ private sealed class <Fibs>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int
     }
 
     [DebuggerHidden]
-    public <Fibs>d__1(int <>1__state)
+    public <Fibonacci>d__1(int <>1__state)
     {
         this.<>1__state = <>1__state;
         <>l__initialThreadId = Environment.CurrentManagedThreadId;
@@ -182,18 +184,18 @@ private sealed class <Fibs>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int
     [DebuggerHidden]
     IEnumerator<int> IEnumerable<int>.GetEnumerator()
     {
-        <Fibs>d__1 <Fibs>d__;
+        <Fibonacci>d__1 <Fibonacci>d__;
         if (<>1__state == -2 && <>l__initialThreadId == Environment.CurrentManagedThreadId)
         {
             <>1__state = 0;
-            <Fibs>d__ = this;
+            <Fibonacci>d__ = this;
         }
         else
         {
-            <Fibs>d__ = new <Fibs>d__1(0);
+            <Fibonacci>d__ = new <Fibonacci>d__1(0);
         }
-        <Fibs>d__.count = <>3__count;
-        return <Fibs>d__;
+        <Fibonacci>d__.count = <>3__count;
+        return <Fibonacci>d__;
     }
 
     [DebuggerHidden]
@@ -205,9 +207,9 @@ private sealed class <Fibs>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int
 ```
 {{% /details %}}
 
-Samo wywołanie metody iterującej powoduje tylko stworzenie maszyny stanów. Sam kod metody iterującej jest wywoływany po wywołaniu `MoveNext` na enumeratorze od ostatniego stanu. Obliczana jest następna wartość, instrukcja `yield return` zwraca obliczoną wartość przez zapis jej do właściwości `Current` i kontrola wraca do wywołującego.
+Samo wywołanie metody iterującej powoduje tylko stworzenie maszyny stanów - żaden fragment kodu metody nie jest jeszcze wykonywany. Kod metody iterującej jest wykonywany dopiero po wywołaniu `MoveNext` na enumeratorze - za każdym razem od miejsca, w którym został ostatnio wstrzymany. Obliczana jest następna wartość, instrukcja `yield return` zwraca obliczoną wartość przez zapis jej do właściwości `Current` i kontrola wraca do wywołującego.
 
-Istnieje także instrukcja `yield break`, która również zwraca kontrolę do wywołującego, ale sprawia że `MoveNext` zwraca `false`, oznaczając brak dalszych elementów.
+Istnieje także instrukcja `yield break`, która również zwraca kontrolę do wywołującego, ale sprawia, że `MoveNext` zwraca `false`, oznaczając brak dalszych elementów.
 
 ```csharp
 public static IEnumerable<int> Fibonacci(int count)
@@ -316,7 +318,7 @@ sequenceDiagram
     deactivate Main
 ```
 
-Metoda `Odds` jest filtrem dla sekwencji `Fibonacci`, na tej zasadzie opieraja się większość metod z LINQ.
+Metoda `Odds` jest filtrem dla sekwencji `Fibonacci`, na tej zasadzie opiera się większość metod LINQ.
 
 > [!NOTE]
 > **Kod źródłowy - IteratorMethods**
@@ -324,7 +326,7 @@ Metoda `Odds` jest filtrem dla sekwencji `Fibonacci`, na tej zasadzie opieraja s
 
 ## Implementacja własnego typu enumerowalnego
 
-Żeby nasz typ własny typ był enumerowalny, najprościej jest zaimplementować interfejs `IEnumerable`. Najczęściej metodę `GetEnumerator` implementuje się jako iterującą z wykorzystaniem instrukcji `yield`.
+Żeby nasz własny typ był enumerowalny, najprościej jest zaimplementować interfejs `IEnumerable<T>`. Najczęściej metodę `GetEnumerator` implementuje się jako iterującą z wykorzystaniem instrukcji `yield`.
 
 ```csharp
 public class Stack<T> : IEnumerable<T>
@@ -366,7 +368,7 @@ public class Stack<T> : IEnumerable<T>
 }
 ```
 
-Taki enumerowalny stos z powodzeniem można użyć w instrukcji `foreach`:
+Takiego enumerowalnego stosu z powodzeniem można użyć w instrukcji `foreach`:
 
 ```csharp
 Stack<string> stack = new Stack<string>();

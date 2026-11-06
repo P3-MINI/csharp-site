@@ -7,7 +7,7 @@ title: "Patterns"
 Patterns are a mechanism that allows you to check if a given variable or expression has a specific "form".
 Patterns can be used in the following places:
 
-* The `is` statement, which checks if an expression matches a pattern, returning the result as a `bool`:
+* The `is` operator, which checks if an expression matches a pattern, returning the result as a `bool`:
   ```csharp
   expression is pattern
   ```
@@ -21,10 +21,10 @@ bool IsWorkingDay(object date)
     if (date is DateTime dateTime)
     {
         if (dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
-            return true;
-        return false;
+            return false;
+        return true;
     }
-    return date is DateOnly {DayOfWeek: not (DayOfWeek.Saturday or DayOfWeek.Sunday)}
+    return date is DateOnly {DayOfWeek: not (DayOfWeek.Saturday or DayOfWeek.Sunday)};
 }
 ```
 
@@ -131,9 +131,10 @@ static string TakeFive(object input) => input switch
     _ => throw new ArgumentException(),
 };
 ```
+
 ## Positional Pattern
 
-Used for types that have a `Deconstruct` method (e.g., tuples and records). It deconstructs the object and matches patterns against its components.
+Used for tuples and types that have a `Deconstruct` method (e.g., positional records). It deconstructs the object and matches patterns against its components.
 
 ```csharp
 public readonly struct Point
@@ -215,7 +216,7 @@ if (list is [var first, _, _])
 }
 ```
 
-Within a list pattern, you can use the `..` pattern (the *slice pattern*) once to match the rest of the sequence. It can be combined with the `var` pattern to introduce a new variable, or with a property pattern. This pattern requires the type to implement an indexer that accepts a `Range` or a corresponding `Slice` method.
+Within a list pattern, you can use the `..` pattern (the *slice pattern*) once to match the rest of the sequence. It can be combined with the `var` pattern to introduce a new variable, or with a property pattern. If the slice pattern contains a nested pattern (e.g., `.. var rest`), the type must also support slicing - an indexer that accepts a `Range` or a corresponding `Slice` method.
 
 ```csharp
 Console.WriteLine(new[]{ 1, 2, 3, 4 } is [>= 0, .., 2 or 4]);

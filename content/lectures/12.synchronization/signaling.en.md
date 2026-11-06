@@ -20,7 +20,7 @@ Classes derived from `EventWaitHandle` (`ManualResetEvent`, `AutoResetEvent`) ac
 
 ### Event Types
 
-1.  **`ManualResetEvent(Slim)`**: Once opened (`Set`), it remains open for any number of threads until it is manually closed (`Reset`). It acts like a classic gate.
+1.  **`ManualResetEvent(Slim)`**: Once opened (`Set`), it remains open for any number of threads until it is manually closed (`Reset`). It acts like a classic gate. (`ManualResetEventSlim` is a lighter, in-process version that does not derive from `EventWaitHandle` and uses `Wait()` instead of `WaitOne()`.)
 2.  **`AutoResetEvent`**: When opened, it lets **only one** waiting thread through and immediately closes automatically. It acts like a subway turnstile.
 3.  **`CountdownEvent`**: It becomes signaled only when its internal counter reaches zero. Each call to `Signal()` decrements this counter. It is useful when one thread needs to wait for a specific number of other threads to complete their work.
 
@@ -164,7 +164,7 @@ class Program
 
 This is a condition variable mechanism (associated with `lock`).
 
-*   `Monitor.Wait(obj)`: Releases the lock on the `obj` object and suspends the thread until it receives a notification.
+*   `Monitor.Wait(obj)`: Releases the lock on the `obj` object and suspends the thread until it receives a notification; before returning, it re-acquires the lock.
 *   `Monitor.Pulse(obj)`: Wakes up one thread waiting on the `obj` object.
 *   `Monitor.PulseAll(obj)`: Wakes up all waiting threads.
 

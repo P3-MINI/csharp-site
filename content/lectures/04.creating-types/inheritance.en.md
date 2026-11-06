@@ -38,7 +38,7 @@ References are polymorphic; they can be treated as if they were of the base type
 ```csharp
 Register(alice);
 
-public void Register(Person person)
+void Register(Person person)
 {
 // ...
 }
@@ -56,11 +56,11 @@ Student student = (Student)person; // Requires explicit cast
 The `as` operator works similarly to `dynamic_cast` from C++. We can use it to perform a downcast that returns `null` if it fails.
 
 ```csharp
-Teacher teacher = alice as Teacher;
+Teacher? teacher = person as Teacher;
 
 if (teacher != null)
 {
-    Console.WriteLine("SAP ID: {teacher.SapID}");
+    Console.WriteLine($"SAP ID: {teacher.SapID}");
 }
 
 public class Teacher : Person
@@ -76,25 +76,25 @@ However, there are better ways to check the type.
 In general, the `is` operator checks if a variable matches a *pattern* and returns a boolean result. One of the patterns that interests us is the type pattern.
 
 ```csharp
-if (alice is Teacher)
+if (person is Teacher)
 {
-    Teacher teacher = (Teacher)alice;
-    Console.WriteLine("SAP ID: {teacher.SapID}");
+    Teacher teacher = (Teacher)person;
+    Console.WriteLine($"SAP ID: {teacher.SapID}");
 }
 ```
 
 Additionally, in the type pattern, we can introduce a variable of that type.
 
 ```csharp
-if (alice is Teacher teacher)
+if (person is Teacher teacher)
 {
-    Console.WriteLine("SAP ID: {teacher.SapID}");
+    Console.WriteLine($"SAP ID: {teacher.SapID}");
 }
 ```
 
 ## Virtual Methods
 
-Virtual functions work on the same principle as in C++. Under the hood, they use a virtual function tables.
+Virtual functions work on the same principle as in C++. Under the hood, they use virtual function tables.
 
 In C#, not only methods can be virtual, but also properties, indexers, and events.
 
@@ -143,7 +143,7 @@ public class Bike : Vehicle
 > ### `base`
 > When it comes to the `base` keyword, it has two meanings here. We can use it to:
 >
-> - Call overridden methods
+> - Call the base class implementation of overridden methods
 > - Call the base class constructor
 >
 > It works analogously to the `this` keyword, but for the base class.
@@ -174,7 +174,7 @@ The whole thing works analogously to how it would work in C++. If `vehicle` is o
 
 ## Abstract Classes
 
-Abstract classes are classes with the `abstract` keyword. We cannot initialize objects of this class, we can define abstract members in such a class - that is, those that have a signature, but no implementation. These can be abstract methods, properties, indexers, and events. This is an analogy to classes from C++ that have declared pure virtual functions.
+Abstract classes are classes with the `abstract` keyword. We cannot create objects of this class, and we can define abstract members in such a class - that is, those that have a signature, but no implementation. These can be abstract methods, properties, indexers, and events. This is an analogy to classes from C++ that have declared pure virtual functions.
 
 Instead of providing an implementation of the `Vehicle.Run` method, we can make it abstract. Then, each non-abstract subclass must provide its own implementation.
 
@@ -253,7 +253,7 @@ public class Hider : Base
 
 ## `sealed`
 
-The `sealed` keyword applied to a method means that it cannot be overridden in a subclass. This does not mean, however, that such a method cannot be hidden. Applied to a class, it means that such a class cannot be inherited from.
+The `sealed` keyword applied to an overriding method (`sealed override`) means that it cannot be overridden any further in subclasses. This does not mean, however, that such a method cannot be hidden. Applied to a class, it means that such a class cannot be inherited from.
 
 ## Constructors
 
@@ -287,13 +287,13 @@ public class Base
 public class Derived : Base
 {
     public int Y;
-    public Derived() => Y = 1; // Can skip implicit base call
+    public Derived() => Y = 1; // base() is called implicitly
 }
 ```
 
 ### Initialization Order
 
-1. Fields and properties of the derived class
-2. Fields and properties of the base class
-3. Base class constructor
-4. Derived class constructor
+1. Field and property initializers of the derived class
+2. Field and property initializers of the base class
+3. Base class constructor body
+4. Derived class constructor body

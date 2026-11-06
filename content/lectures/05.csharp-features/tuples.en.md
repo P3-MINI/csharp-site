@@ -4,7 +4,7 @@ title: "Tuples"
 
 # Tuples
 
-A tuple is a type that stores several subtypes, similar to `std::tuple` in C++. In C#, the tuple type is the generic `System.ValueTuple<T1, T2, ...>` structure. Tuples in C# have significant language support, with special syntax for both declaration and creation. The types `t1` and `t2` below are the same type - `(double, int, string)` is a syntax alias for `ValueTuple<double, int, string>`.
+A tuple is a type that groups several values (elements), possibly of different types, similar to `std::tuple` in C++. In C#, the tuple type is the generic `System.ValueTuple<T1, T2, ...>` structure. Tuples in C# have significant language support, with special syntax for both declaration and creation. The variables `t1` and `t2` below have the same type - `(double, int, string)` is a syntax alias for `ValueTuple<double, int, string>`.
 
 ```csharp
 (double, int, string) t1 = (4.5, 3, "Bob");
@@ -43,7 +43,7 @@ Console.WriteLine($"DateTime: {t1.Now}, int: {t1.count}, string: {t1.name}");
 
 ## Comparing Tuples
 
-The `==` and `!=` operators are overloaded and perform a simple element-by-element comparison using the `==` and `!=` operators of the elements themselves:
+Tuples support the `==` and `!=` operators (C# 7.3). The compiler compares the tuples element by element, in order, using the `==` and `!=` operators of the elements themselves (element names are ignored):
 
 ```csharp
 (int a, byte b) left = (5, 10);
@@ -100,11 +100,11 @@ This is another way to return multiple values from a function, providing an alte
 
 ### Swapping values
 
-Tuples can be used to swap the values of two or more variables without needing a temporary variable. This might not be the most performant solution in all cases, but it is very readable:
+Tuples can be used to swap the values of two or more variables without declaring a temporary variable. It is very readable, and no tuple is actually created - the compiler only uses hidden temporaries, so it is as efficient as a hand-written swap:
 
 ```csharp
 public static void Swap<T>(ref T a, ref T b)
 {
-    (a, b) = (b, a); // create tuple and deconstruct it into a and b
+    (a, b) = (b, a); // conceptually: create a tuple and deconstruct it into a and b
 }
 ```

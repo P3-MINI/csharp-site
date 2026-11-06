@@ -17,6 +17,8 @@ class PluginLoadContext : AssemblyLoadContext
     {
         if (assemblyName.Name == "Plugin.Common")
         {
+            // Load the shared contract from the default context,
+            // so that ITextPlugin is the same type for the host and the plugin
             return null;
         }
 

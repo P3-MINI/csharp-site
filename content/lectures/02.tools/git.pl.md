@@ -40,7 +40,7 @@ Repozytorium składa się z obiektów, przechowywanych w katalogu `.git/objects`
 Git definiuje 4 rodzaje obiektów (blob, tree, commit, annotated tag), z czego najistotniejsze są pierwsze 3:
 
 * **blob**: utrwalona zawartość jakiegoś pliku z katalogu roboczego
-* **tree**: utrwalona zawartość katalogu (słownika)
+* **tree**: utrwalona zawartość katalogu (słownik)
 * **commit**: utrwalony stan katalogu roboczego z dodatkowymi informacjami nt. wersji
 
 Obiekty po utworzeniu są niemodyfikowalne, nie można zmieniać ich zawartości. Dzięki temu zawartość obiektów
@@ -57,7 +57,7 @@ git hash-object hi.txt # 663adb09143767984f7be83a91effa47e128c735
 Wyliczony skrót będzie taki sam na każdej maszynie, bo zawartość pliku jest taka sama.
 Zmieniając treść, zmienimy skrót.
 
-Plik dodany do repozytorium, np. jako element commit'a zostanie umieszczony w katalogu objects
+Plik dodany do repozytorium, np. jako element commita, zostanie umieszczony w katalogu `objects`
 jako obiekt typu blob i będzie identyfikowany jego skrótem.
 
 ```shell
@@ -65,7 +65,8 @@ cd repo
 echo Hi! > hi.txt
 git add hi.txt
 git commit -m "Initial commit"
-cat .git/objects/66/3adb09143767984f7be83a91effa47e128c735 | zlib-flate -uncompress | xxd
+# The following command might not work on all systems as zlib-flate is not standard
+# cat .git/objects/66/3adb09143767984f7be83a91effa47e128c735 | zlib-flate -uncompress | xxd
 git cat-file blob 663ad
 ```
 
@@ -93,14 +94,14 @@ Jeden z nich to właśnie tree. Jego zawartość to listing katalogu, którego s
 ```
 
 Nasz obiekt zawiera tylko jeden wpis, bo katalog roboczy miał tylko 1 plik w momencie wywołania polecenia `git commit`.
-Obiekt tree listuje elementy katalogu, każdy z nich jest innym obiektem git'a. Dla każdego obiektu zawiera:
+Obiekt tree listuje elementy katalogu, każdy z nich jest innym obiektem gita. Dla każdego obiektu zawiera:
 
 * uprawnienia (100644 = rw-r--r--)
 * typ (blob/tree)
 * identyfikator obiektu (SHA1)
 * nazwę obiektu w katalogu (hi.txt)
 
-Tree może zawierać inne obiekty tree. Pozwala opisywać dowolnie zagnieżdżone struktury katalogów.
+Tree może zawierać inne obiekty tree. Pozwala to opisywać dowolnie zagnieżdżone struktury katalogów.
 
 ```mermaid
 graph TD
@@ -117,7 +118,7 @@ Jeżeli katalog zawiera kilka plików o tej samej zawartości,
 to tree będzie wielokrotnie listował ten sam obiekt.
 
 ```shell
-cd repos
+cd repo
 cp hi.txt hey.txt
 git add hey.txt
 git commit -m "Copied hi.txt"
@@ -150,23 +151,23 @@ Copied hi.txt
 
 Można z niego odczytać:
 
-* identyfikator utrwalonego stan katalogu roboczego (`tree`)
+* identyfikator utrwalonego stanu katalogu roboczego (`tree`)
 * identyfikatory poprzednich commitów (`parent`)
 * autor (`author`)
 * czas autorstwa (utrwalenia stanu) (`1742665566 +0100`)
-* committer (`commiter`)
+* committer (`committer`)
 * czas commiterstwa (nałożenia commita) (`1742665566 +0100`)
 * wiadomość opisująca wersję (`Copied hi.txt`)
 
 > Commit zawiera stan całego projektu, a nie wprowadzone zmiany!
 
-Podobnie jak wcześniej, SHA1 commit'a to skrót liczony za powyższe pola.
+Podobnie jak wcześniej, SHA1 commita to skrót liczony z powyższych pól.
 Zmiana któregokolwiek wymusza powstanie nowego commita o innym SHA1.
 
 ### Branche
 
 Posługiwanie się sumami SHA1 nie należy do najprzyjemniejszych dla człowieka.
-Zamiast mówić: popatrz sobie na wersję `23d9585ca2a2fe493f79c75956ab4d815da14b73` łatwiej
+Zamiast mówić: popatrz sobie na wersję `23d9585ca2a2fe493f79c75956ab4d815da14b73`, łatwiej
 byłoby mieć mnemoniczną nazwę dla rewizji. Takie referencje to znane powszechnie **branche**.
 
 Branche można wylistować:
@@ -176,7 +177,8 @@ git branch -v
 # * master a7f3d48 Copied hi.txt
 ```
 
-Technicznie branche to pliki w folderze `.git/refs/heads/` przechowujące SHA1 commita, który nazywają:
+Technicznie branche to pliki w folderze `.git/refs/heads/` przechowujące SHA1 commita, który nazywają
+(git może też spakować je do jednego pliku `.git/packed-refs`):
 
 ```shell
 cat .git/refs/heads/master
@@ -191,7 +193,7 @@ git branch feature a7f3d48
 git branch -v
 #   feature a7f3d48 Copied hi.txt
 # * master  a7f3d48 Copied hi.txt
-ls -l .git/refs/heads
+ls .git/refs/heads
 # feature master
 ```
 
@@ -309,14 +311,14 @@ Przed wyprodukowaniem commita zwykle wydajemy polecenie `git add` - po co?
 Istnieją 3 niezależne stany katalogu roboczego, które biorą udział w procesie tworzenia commita:
 
 * Sam katalog roboczy z bieżącym stanem plików
-* `HEAD` - względem niego wypracowywujemy zmianę (będzie rodzicem)
+* `HEAD` - względem niego wypracowujemy zmianę (będzie rodzicem)
 * Indeks - stan pośredni, do którego selektywnie dodajemy zmiany przed utworzeniem commita
 
 Pozwala to na selektywne wypracowywanie treści następnego commita. Możemy, np. mieć
 jakieś prywatne, brudne zmiany w części plików, których nie chcemy uwzględniać w nowej rewizji.
 Nie chcemy ich też wycofywać, bo są przydatne.
 
-Indeks technicznie znajduje się wpliku `.git/index`. Można go wydrukować poleceniem `ls-files`:
+Indeks technicznie znajduje się w pliku `.git/index`. Można go wypisać poleceniem `ls-files`:
 
 ```shell
 git ls-files --stage
@@ -325,7 +327,7 @@ git ls-files --stage
 # 100644 663adb09143767984f7be83a91effa47e128c735 0       hi.txt
 ```
 
-Wygląda zaskakująco podobnie do obiektu `tree` bo właśnie nim (prawie) jest!
+Wygląda zaskakująco podobnie do obiektu `tree`, bo właśnie nim (prawie) jest!
 W momencie operacji `git commit` to właśnie stan indeksu utrwalany jest w postaci
 nowego obiektu `tree`, wokół którego powstaje nowy obiekt `commit`.
 
@@ -353,7 +355,6 @@ git status
 # 
 # brak zmian dodanych do zapisu (użyj „git add” i/lub „git commit -a”)
 git diff
-# git diff
 # diff --git a/empty.txt b/empty.txt
 # index e69de29..4d0c7d7 100644
 # --- a/empty.txt
@@ -384,15 +385,15 @@ git diff --cached
 # +not really
 ```
 
-`git diff --cached` pokazuje indeks ze stanem `HEAD`.
-W momencie dodania do indeksu powstają nowe obiekty `blob` i `tree`, które będą później
-utrwalane w nowym commicie.
+`git diff --cached` pokazuje różnicę między indeksem a stanem `HEAD`.
+W momencie dodania pliku do indeksu powstaje nowy obiekt `blob` z jego zawartością. Obiekty `tree`
+powstają dopiero przy `git commit`.
 
 Można teraz ponownie zmienić stan katalogu roboczego uzyskując `HEAD != index != workdir`:
 
 ```shell
 echo "hey!" > empty.txt
-# git status
+git status
 # Na gałęzi master
 # Zmiany do złożenia:
 #   (użyj „git restore --staged <plik>...”, aby wycofać)
@@ -452,7 +453,7 @@ Nie zmienia przy tym stanu katalogu roboczego ani indeksu.
 
 ```shell
 git reset --soft HEAD^
-# git status
+git status
 # Na gałęzi master
 # Zmiany do złożenia:
 #   (użyj „git restore --staged <plik>...”, aby wycofać)
@@ -465,13 +466,13 @@ git reset --soft HEAD^
 ```
 
 Wróciliśmy tym samym do stanu `HEAD != index != workdir`, niejako odwracając operację `git commit`.
-Commit, mimo że nienazwany ciągle istnieje, możemy do niego wrócić:
+Commit, mimo że nienazwany, ciągle istnieje; możemy do niego wrócić:
 
 ```shell
 git reset --soft 401c
 ```
 
-`git reset --mixed` robi to co `--soft` i dodatkowo przywraca stan indeksu na wskazany commit:
+`git reset --mixed` robi to, co `--soft`, i dodatkowo przywraca stan indeksu na wskazany commit:
 
 ```shell
 git reset --mixed HEAD^
@@ -484,7 +485,7 @@ git diff
 # +hey!
 ```
 
-Mamy teraz `HEAD = index != workdir`. Katalog roboczy został niedotknięty.
+Mamy teraz `HEAD = index != workdir`. Katalog roboczy pozostał nietknięty.
 
 `git reset --hard` zmienia wszystko: HEAD branch, stan indeksu i stan katalogu roboczego
 na stan ze wskazanej rewizji. **Nieodwracalnie porzuca zmiany w katalogu roboczym!**
@@ -498,9 +499,9 @@ git status
 
 ### Merge
 
-Repozytorium to zbiór commitów. Każdy commit zawiera listę odniesień do swoich przodków (0-n).
+Repozytorium to zbiór commitów. Każdy commit zawiera listę odniesień do swoich rodziców (0-n).
 Każde repozytorium jest zatem acyklicznym grafem skierowanym, w którym węzłami są commity,
-a krawędziami wskazania na przodków.
+a krawędziami wskazania na rodziców.
 
 Graf można zwizualizować poleceniem `git log`:
 
@@ -512,9 +513,9 @@ git log --oneline --graph --all
 # * 23d9585 Initial commit
 ```
 
-Na tą chwilę nasz graf jest listą. Projekt rozwijał się liniowo.
+Na tę chwilę nasz graf jest listą. Projekt rozwijał się liniowo.
 
-Jeden commit może być przodkiem kilku różnych rewizji. Dzieje się tak zwykle, gdy kilku autorów
+Jeden commit może być rodzicem kilku różnych rewizji. Dzieje się tak zwykle, gdy kilku autorów
 w podobnym czasie zaczyna rozwijać projekt, wychodząc z tej samej rewizji.
 
 ```shell
@@ -534,7 +535,7 @@ git log --oneline --graph --all
 Na commicie `a7f3d48` nastąpiło rozwidlenie historii projektu. Zwykle, w pewnym momencie
 niezależnie rozwijane gałęzie muszą ulec połączeniu celem wypracowania jednej, spójnej rewizji
 integrującej całą równoległą pracę. Służy do tego operacja `git merge` tworząca commity
-o wielu przodkach.
+o wielu rodzicach.
 
 ```shell
 git merge --no-edit master
@@ -557,12 +558,12 @@ git cat-file -p HEAD
 # Merge branch 'master' into feature
 ```
 
-Nowo utworzony merge-commit scala stan katalogu roboczego zapisany w jego dwóch przodkach.
-Jednym przodkiem zawsze jest `HEAD`, drugim to co wskazaliśmy w argumencie.
+Nowo utworzony merge-commit scala stan katalogu roboczego zapisany w jego dwóch rodzicach.
+Jednym rodzicem zawsze jest `HEAD`, drugim – to, co wskazaliśmy w argumencie.
 Integracja przebiegła automatycznie, bo zmiany nie były konfliktujące.
 
-Do scalania zmian git stosuje algorym znany jako _three way merge_. Bierze on pod uwagę
-trzy stany katalogu roboczego: dwa ze scalanych commitów (`HEAD -> development` -> `5e11eea` i `master` -> `401c27f`)
+Do scalania zmian git stosuje algorytm znany jako _three-way merge_. Bierze on pod uwagę
+trzy stany katalogu roboczego: dwa ze scalanych commitów (`HEAD -> feature` -> `5e11eea` i `master` -> `401c27f`)
 oraz ich najbliższego wspólnego przodka: punkt rozwidlenia `a7f3d48`.
 
 ```mermaid
@@ -570,8 +571,8 @@ graph LR
     classDef commit fill: #f9a825, stroke: #333, stroke-width: 2px, font-weight: bold, rx: 2px, ry: 2px
     classDef new fill: #90EE90, stroke: #333, stroke-width: 2px, font-weight: bold, rx: 2px, ry: 2px
     classDef ref fill: #add8e6, stroke: none, color: #000, font-family: monospace, font-size: 12px, padding: 2px, rx: 5px, ry: 5px;
-    development:::ref --> A
-%%  development:::ref -.-> M
+    feature:::ref --> A
+%%  feature:::ref -.-> M
     A["5e11eea<br>'Feature Hi!'"]:::commit
     B["401c27f<br>'Hi!'"]:::commit
     C["a7f3d48<br>'Hi!'"]:::commit
@@ -583,9 +584,9 @@ graph LR
     master:::ref --> B
 ```
 
-W powyższym przypadku zawartość blob'a jest taka sama w jednej ze scalanych wersji jak w ich wspólnym
+W powyższym przypadku zawartość bloba jest taka sama w jednej ze scalanych wersji jak w ich wspólnym
 przodku. To czyni operację merge trywialną: wybierana jest wersja, która się odróżnia.
-Algorytm zakłada, że jeżeli stan w jednej z gałęzi się nie zmienił a w drugiej tak, to
+Algorytm zakłada, że jeżeli stan w jednej z gałęzi się nie zmienił, a w drugiej tak, to
 ta druga jest pożądaną zmianą po scaleniu.
 
 Jeżeli wszystkie 3 wersje są takie same, sprawa jest jasna.
@@ -608,12 +609,12 @@ graph LR
     classDef commit fill: #f9a825, stroke: #333, stroke-width: 2px, font-weight: bold, rx: 2px, ry: 2px
     classDef new fill: #90EE90, stroke: #333, stroke-width: 2px, font-weight: bold, rx: 2px, ry: 2px
     classDef ref fill: #add8e6, stroke: none, color: #000, font-family: monospace, font-size: 12px, padding: 2px, rx: 5px, ry: 5px;
-    development:::ref --> A
-%%  development:::ref -.-> M
+    feature:::ref --> A
+%%  feature:::ref -.-> M
     A["5e11eea<br>'Feature Hi!'"]:::commit
-    B["401c27f<br>'Master Hi!'"]:::commit
+    B["Masterized hi.txt<br>'Master Hi!'"]:::commit
     C["a7f3d48<br>'Hi!'"]:::commit
-    M["1296142<br>???"]:::new
+    M["merge<br>???"]:::new
     A --> C
     B --> C
     M --> A
@@ -623,7 +624,7 @@ graph LR
 
 Operacja `git merge` jest wykonana częściowo i została zatrzymana przed
 wypracowaniem scalonego commita. Katalog roboczy i indeks zawierają teraz częściowo scalony stan.
-Pliki, których algorym nie mógł przetworzyć automatycznie,
+Pliki, których algorytm nie mógł przetworzyć automatycznie,
 zawierają znaczniki w miejscach, w których wykryto konflikty.
 
 ```shell
@@ -658,33 +659,35 @@ będą zgodne we wszystkich repozytoriach.
 
 Adresy zdalnych repozytoriów muszą być skonfigurowane w lokalnym repozytorium w pliku `.git/config`
 za pomocą polecenia `git remote`. Na potrzeby nauki można wskazać jako remote inny katalog
-na tej samej maszynie.
+na tej samej maszynie. W poniższych przykładach wychodzimy od stanu repozytorium
+z końca sekcji Reset (sprzed scalania).
 
 ```shell
 mkdir origin && cd origin
-git init -b null
+# Initial branch other than master: git refuses to push to the branch checked out in a non-bare repository
+git init --initial-branch=main
 ```
 
 ```shell
-cd repo
+cd ../repo
 git remote add origin ../origin
 ```
 
 Klonując repozytorium git automatycznie dodaje remote
-o nazwie `origin` wskazujący na miejscie z którego klonujemy.
+o nazwie `origin` wskazujący na miejsce, z którego klonujemy.
 
-Istnieją jedynie 4 polecenia komunikujące się ze zdalnym repozytorium:
+Podstawowe polecenia komunikujące się ze zdalnym repozytorium to:
 
 * `git clone`
 * `git fetch`
 * `git pull`
 * `git push`
 
-Wszystko inne nie dotyka w żaden sposób zdalnej kopii.
+Pozostałe omawiane tu polecenia w żaden sposób nie dotykają zdalnej kopii.
 
 `git push` aktualizuje zdalne referencje.
 Powoduje, że branch w zdalnym repozytorium odpowiadający lokalnemu branchowi
-pokazuje na ten sam commit co lokalnie. W konsekwencji przesyła obiekty: `commit`, `tree`, `blob`
+pokazuje na ten sam commit co lokalnie. W konsekwencji przesyła obiekty: `commit`, `tree`, `blob`,
 które mogą nie być obecne w repozytorium zdalnym.
 
 ```shell
@@ -700,7 +703,7 @@ git push --set-upstream origin master
 # branch 'master' set up to track 'origin/master'.
 ```
 
-Domyślnie git nie wie jaka zdalna gałąź odpowiada lokalnej gałęzi `master`.
+Domyślnie git nie wie, jaka zdalna gałąź odpowiada lokalnej gałęzi `master`.
 Konfigurujemy to jednorazowo za pomocą `--set-upstream`.
 
 Zdalne repozytorium było puste - nie zawierało żadnych obiektów.
@@ -715,15 +718,15 @@ git branch -va
 #   remotes/origin/master 401c27f Filled empty file
 ```
 
-Operacje na zdalnych repozytoriach nie tylko manipulują referencjami w zdalnym repozytorium
-ale i lokalnymi ich odpowiednikami. `git push` utworzył w lokalnym repozytorium referencję `origin/master`
+Operacje na zdalnych repozytoriach nie tylko manipulują referencjami w zdalnym repozytorium,
+ale i lokalnymi ich odpowiednikami. `git push` utworzył w lokalnym repozytorium referencję `origin/master`,
 która pokazuje na to samo co `master` w repozytorium `origin`. Takie referencje to nie branche,
 nie można ich przestawiać inaczej, niż komunikując się ze zdalnym repozytorium.
 
 W repozytorium mogą asynchronicznie pojawić się zmiany: nowe commity, nowe branche:
 
 ```shell
-cd origin
+cd ../origin
 git checkout -b development master 
 echo "int main() { return 0; }" > main.cpp
 git add main.cpp && git commit -m "Added main.cpp"
@@ -733,6 +736,7 @@ git add main.cpp && git commit -m "Added main.cpp"
 pobierając przy tym niezbędne obiekty.
 
 ```shell
+cd ../repo
 git fetch
 # remote: Wymienianie obiektów: 4, gotowe.
 # remote: Zliczanie obiektów: 100% (4/4), gotowe.
@@ -749,12 +753,12 @@ git branch -va
 ```
 
 W lokalnym repo pojawiła się nowa referencja `origin/development` wskazująca na ten sam, nowy commit co w repo zdalnym.
-Możemy teraz utworzyć tam gałąź i rozwijać dalej z teog miejsca:
+Możemy teraz utworzyć tam gałąź i rozwijać dalej z tego miejsca:
 
 ```shell
 git checkout development
 ```
 
 `git pull` to złożenie dwóch operacji: `git fetch` + `git merge [remote ref]`.
-Czyli robi dokładnie to co fetch i następnie łączy lokalną gałąź z jej zdalnym odpowiednikiem
+Czyli robi dokładnie to, co fetch, a następnie łączy lokalną gałąź z jej zdalnym odpowiednikiem
 potencjalnie tworząc merge commit.

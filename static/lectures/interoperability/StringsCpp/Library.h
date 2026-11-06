@@ -11,4 +11,3 @@ extern "C" EXPORT void PrintUnicodeString(const char16_t* str);
 extern "C" EXPORT const char* GetAnsiString();
 extern "C" EXPORT const char16_t* GetUnicodeString();
 extern "C" EXPORT void Encode(char* text);
-extern "C" EXPORT void Encode2(char* text);

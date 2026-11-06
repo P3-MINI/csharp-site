@@ -9,13 +9,13 @@ public static class Program
     const int Port = 5000;
     public static async Task Main()
     {
-        CancellationTokenSource cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
         var ipEndPoint = new IPEndPoint(IPAddress.Any, Port);
         using var listener = new TcpListener(ipEndPoint);
         
         var waitForAnyKey = Task.Run(() =>
         {
-            Console.WriteLine("Wait any key to exit");
+            Console.WriteLine("Press any key to exit");
             Console.ReadKey(true);
             cts.Cancel();
         });

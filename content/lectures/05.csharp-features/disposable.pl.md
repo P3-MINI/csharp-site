@@ -4,7 +4,7 @@ title: "Disposable"
 
 ## Interfejs IDisposable
 
-Interfejs `IDisposable` zapewnia mechanizm do zwalniania **niezarządzanych zasobów**. Niezarządzanych czyli takich, które *Runtime* sam nie zwalnia, np. pliki, gniazda sieciowe, zewnętrzna baza danych, bufor na karcie graficznej.
+Interfejs `IDisposable` zapewnia mechanizm do zwalniania **niezarządzanych zasobów**. Niezarządzanych, czyli takich, których *Runtime* sam nie zwalnia, np. pliki, gniazda sieciowe, połączenia z zewnętrzną bazą danych, bufor na karcie graficznej.
 
 Interfejs zawiera tylko jedną metodę:
 
@@ -19,7 +19,7 @@ Implementacja interfejsu polega na zwolnieniu zasobów w obrębie metody `Dispos
 
 ## Instrukcja `using`
 
-Instrukcja `using` gwarantuje, że metoda `Dispose` zawsze zostanie wywołana na obiekcie, gdy sterowanie opuści zakres działania instrukcji. Instrukcja `using` występuje w dwóch wariantach z blokiem `{}` i bez. Instrukcji `using` możemy użyć ze wszystkim co implementuje `IDisposable`:
+Instrukcja `using` gwarantuje, że metoda `Dispose` zawsze zostanie wywołana na obiekcie, gdy sterowanie opuści zakres działania instrukcji. Instrukcja `using` występuje w dwóch wariantach: z blokiem `{}` i bez niego (ten drugi wariant to tzw. deklaracja `using`, ang. *using declaration*, dostępna od C# 8). Instrukcji `using` możemy użyć ze wszystkim, co implementuje `IDisposable`:
 
 ```csharp
 using (Stream fs = new FileStream("file.txt", FileMode.Open))
@@ -48,7 +48,7 @@ finally
 }
 ```
 
-> Specjalna optymalizacja kompilatora zapobiega operacji pakowania, jeżeli obiektem `IDisposable` byłaby struktura.
+> Specjalna optymalizacja kompilatora zapobiega operacji pakowania (*boxing*), jeżeli obiekt `IDisposable` jest strukturą.
 
 ## Implementacja `IDisposable`
 
@@ -88,30 +88,37 @@ public class Logger : IDisposable
 ```
 
 Semantyka obiektów `IDisposable` powinna być następująca:
-- Po wywołaniu metody `Dispose`, wywoływanie metod lub innych właściwości powinno rzucać wyjątek `ObjectDisposedException`.
-- Wielokrotne wywołanie metody Dispose nie powoduje błędu.
-- Obiekt zwalnialny (implementujący IDisposable) powinien również zwalniać wszystkie zwalnialne obiekty, których jest właścicielem.
+- Po wywołaniu metody `Dispose` wywoływanie jego pozostałych metod lub właściwości powinno rzucać wyjątek `ObjectDisposedException`.
+- Wielokrotne wywołanie metody `Dispose` nie powinno powodować błędu.
+- Obiekt zwalnialny (implementujący `IDisposable`) powinien również zwalniać wszystkie zwalnialne obiekty, których jest właścicielem.
 
-## Wywołanie `Dispose` z finalizera
+## Wywołanie `Dispose` z finalizatora
 
-Czasami klasa zarządza bezpośrednio niezarządzanym zasobem (np. surowym uchwytem do pliku z biblioteki C++). W takim przypadku powinniśmy zaimplementować finalizer jako "ubezpieczenie". Uruchomi się on, jeśli użytkownik zapomni wywołać `Dispose()`, zapobiegając wyciekowi zasobu.
+Czasami klasa zarządza bezpośrednio niezarządzanym zasobem (np. surowym uchwytem do pliku z biblioteki C++). W takim przypadku powinniśmy zaimplementować finalizator jako "ubezpieczenie". Uruchomi się on, jeśli użytkownik zapomni wywołać `Dispose()`, zapobiegając wyciekowi zasobu. Klasa, która posiada jedynie obiekty zarządzane (takie jak powyższy `StreamWriter`), nie powinna mieć finalizatora – te obiekty same dbają o swoje zasoby.
 
-*Garbage collector* jest odpowiedzialny za wywoływanie finalizatora, ale nigdy nie wiemy kiedy i w jakiej kolejności obiekty będą zwalniane.
+*Garbage collector* jest odpowiedzialny za wywoływanie finalizatora, ale nigdy nie wiemy, kiedy i w jakiej kolejności obiekty będą zwalniane.
 
 ```csharp
+using System.Runtime.InteropServices;
+
 public class Logger : IDisposable
 {
     private StreamWriter sw;
+    private IntPtr buffer; // Unmanaged memory owned directly by this object
     private bool disposed = false;
 
     public Logger(string path)
     {
         sw = new StreamWriter(path, append: true);
+        buffer = Marshal.AllocHGlobal(1024);
     }
 
     public void Log(string message) 
     {
-        if (disposed) throw new ObjectDisposedException(nameof(Logger));
+        if (disposed)
+        {
+            throw new ObjectDisposedException(nameof(Logger), "Logger has been disposed.");
+        }
         sw.WriteLine(message);
     }
 
@@ -135,6 +142,8 @@ public class Logger : IDisposable
         }
 
         // Release unmanaged resources owned by just this object.
+        Marshal.FreeHGlobal(buffer);
+        buffer = IntPtr.Zero;
         disposed = true;
     }
 
@@ -142,4 +151,7 @@ public class Logger : IDisposable
 }
 ```
 
-> W bloku `Dispose(false)` (czyli w ścieżce wywołania z finalizera) powinniśmy zwalniać **TYLKO** niezarządzane zasoby, to jest takie których Garbage Collector nie zwalnia i tylko te, których jesteśmy bezpośrednim właścicielem. Niezarządzanymi zasobami są na przykład pamięć zaalokowana z biblioteki C++, połączenie z bazą danych, uchwyt do pliku.
+> W bloku `Dispose(false)` (czyli w ścieżce wywołania z finalizatora) powinniśmy zwalniać **TYLKO** niezarządzane zasoby, to jest takie, których Garbage Collector nie zwalnia, i tylko te, których jesteśmy bezpośrednim właścicielem. Niezarządzanymi zasobami są na przykład pamięć zaalokowana z biblioteki C++ lub surowe (`IntPtr`) uchwyty do plików, gniazd sieciowych czy połączeń z bazą danych. Nie wolno nam tam odwoływać się do innych obiektów zarządzanych (np. wywoływać `sw.Dispose()`) – mogły one zostać już sfinalizowane.
+
+> [!TIP]
+> We współczesnym .NET ręczne pisanie finalizatora rzadko jest potrzebne. Zamiast przechowywać surowy uchwyt w polu typu `IntPtr`, lepiej opakować go w klasę dziedziczącą po [`SafeHandle`]({{< ref "/lectures/11.interoperability/pinvoke#safehandle" >}}), która ma własny finalizator. Klasa posiadająca `SafeHandle` potrzebuje wtedy jedynie prostej implementacji `Dispose` pokazanej wcześniej.
