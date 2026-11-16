@@ -1,6 +1,5 @@
 ---
 title: "Projekt"
-bookCollapseSection: true
 weight: 25
 ---
 
@@ -18,59 +17,85 @@ W ramach zaliczenia można realizować dowolny projekt w C#. Liczba punktów zal
 > - Temat i zakres projektu uzgodnij z prowadzącym laboratorium, zanim zaczniesz. Podane niżej punkty są orientacyjne - ostateczna liczba zależy od jakości i włożonej pracy.
 > - Trzymaj projekt w repozytorium git od samego początku i regularnie twórz commity.
 > - Przygotuj się do obrony: trzeba umieć wyjaśnić dowolny fragment swojego kodu i stojące za nim decyzje projektowe.
-> - Niektóre projekty mają szczegółową specyfikację z kodem startowym i rozpisaniem punktów. Są one dostępne jako podstrony tej sekcji (zob. menu), np. [Projekt01]({{< ref "/projects/project01" >}}).
 
 Poniżej proponowane projekty:
 
 ## 1. Raytracer (Raytracing in One Weekend)
 
-**Opis:** Implementujemy pierwszą książkę "Raytracing in One Weekend" w C#.
+**Opis:** Implementujemy raytracer na CPU na podstawie pierwszej książki *"Ray Tracing in One Weekend"* Petera Shirleya (dostępnej bezpłatnie pod adresem <https://raytracing.github.io/books/RayTracingInOneWeekend.html>) w C#: promienie, sfery i obiekty trafialne (`Hittable`), konfigurowalna kamera (z głębią ostrości / rozmyciem ogniskowym), materiały rozpraszające (lambertowskie), metaliczne i dielektryczne (szkło) oraz wyrenderowanie końcowej sceny z wieloma kulami do pliku graficznego (np. PPM lub PNG).
 
-**Ważne:** Ograniczamy alokacje pamięci przy renderowaniu (wybór: klasa czy struktura).
+**Ważne:** Ograniczamy alokacje pamięci przy renderowaniu: świadomie decydujemy, które typy powinny być bezpośrednie (`struct` / `readonly struct`), a które referencyjne (`class`), unikamy zbędnych alokacji w wewnętrznej pętli przecięć promieni i weryfikujemy alokacje profilerem lub w BenchmarkDotNet.
 
-**Mile widziane:** Zrównoleglenie pętli, zapis do innego formatu, implementacja dalszych części książki.
+**Mile widziane:** Zrównoleglenie pętli renderującej (`Parallel.For` po liniach lub kafelkach z lokalnymi dla wątku generatorami liczb losowych), zapis do PNG/JPEG (np. z użyciem ImageSharp lub SkiaSharp), okno podglądu na żywo, hierarchia brył ograniczających (BVH) lub dalsze rozdziały z drugiej książki (*The Next Week*).
 
 **Punkty:** ok. 4
 
 ## 2. CityBike - Analiza danych LINQ
 
-**Opis:** Pobieramy dane (np. z https://citibikenyc.com/system-data), wczytujemy je i wykonujemy min. 5 zapytań LINQ.
+**Opis:** Pobieramy rzeczywiste zbiory danych (np. o przejazdach z <https://citibikenyc.com/system-data> lub dowolną inną publiczną bazę danych), parsujemy i wczytujemy dane do silnie typowanych rekordów w C#, a następnie wykonujemy co najmniej 5 nietrywialnych zapytań LINQ odpowiadających na ciekawe pytania analityczne (np. dla Citi Bike: najpopularniejsze stacje i trasy, godziny szczytu w dni robocze vs. weekendy, rozkład czasu przejazdów, zachowania użytkowników abonamentowych vs. okazjonalnych czy wykorzystanie typów rowerów). Wyniki prezentujemy czytelnie w konsoli (np. za pomocą tabel/wykresów Spectre.Console) lub eksportujemy do pliku.
 
-**Mile widziane:** Łączymy dane z wypożyczalni z danymi pogodowymi.
+**Ważne:** Efektywnie obsługujemy duże pliki CSV strumieniowo (`StreamReader` / `CsvHelper` lub `IAsyncEnumerable<T>`) zamiast wczytywania ogromnych plików naraz jako surowych napisów; poprawnie obsługujemy brakujące lub błędne pola; wykorzystujemy czyste zapytania LINQ (grupowanie, złączenia, agregacje) zamiast ręcznych pętli imperatywnych.
+
+**Mile widziane:** Połączenie danych z wypożyczalni z historycznymi danymi pogodowymi (np. temperatura, opady) w celu analizy wpływu pogody na liczbę przejazdów, porównanie wielu miesięcy/lat, interaktywne filtry w CLI albo porównanie wydajności zwykłego LINQ i PLINQ.
 
 **Punkty:** ok. 4 (zależnie od skomplikowania zapytań)
 
 ## 3. Program do kopii zapasowych
 
-**Opis:** Realizujemy wymagania projektu z SOP, ale zamiast procesów używamy wątków, zadań lub programowania asynchronicznego.
+**Opis:** Tworzymy narzędzie do ciągłego tworzenia kopii zapasowych i synchronizacji katalogów wzorowane na klasycznym projekcie z przedmiotu SOP (Systemy Operacyjne), ale zaimplementowane w C# z użyciem wątków, zadań (`Task`) lub programowania asynchronicznego (`async`/`await`) zamiast procesów systemowych (`fork`). Program zarządza jedną lub wieloma parami katalogów (katalog źródłowy -> katalog docelowy): wykonuje początkową kopię, monitoruje katalog źródłowy pod kątem zmian (tworzenie, modyfikacja, usuwanie, zmiana nazwy plików i podkatalogów) za pomocą `FileSystemWatcher` i odzwierciedla je w kopii. Obsługuje również przywracanie kopii do katalogu źródłowego, listowanie aktywnych zadań oraz czyste zamykanie po naciśnięciu Ctrl+C (`Console.CancelKeyPress` / `CancellationToken`).
+
+**Ważne:** Nie blokujemy wątków aktywnym czekaniem ani odpytywaniem w pętli z `Thread.Sleep`; poprawnie obsługujemy specyfikę `FileSystemWatcher` (przepełnienie bufora, zduplikowane lub szybkie serie zdarzeń z użyciem debouncingu, zablokowane pliki); bezpiecznie obsługujemy podkatalogi i dowiązania symboliczne bez nieskończonej rekurencji; chronimy współdzielony stan (aktywne kopie, operacje na plikach) przed wyścigami.
+
+**Mile widziane:** Synchronizacja przyrostowa oparta na sumach kontrolnych (kopiowanie tylko zmienionych plików), wersjonowane migawki lub kompresja (ZIP/TAR), ustrukturyzowane logowanie, czytelny interfejs konsolowy (np. Spectre.Console) pokazujący aktywne zadania i postęp albo testy jednostkowe/integracyjne dla przypadków brzegowych.
 
 **Punkty:** ok. 4
 
 ## 4. Program do segregowania zdjęć
 
-**Opis:** Monitorujemy folder (również rekursywnie i w archiwach ZIP/TAR). Nowe zdjęcia segregujemy względem daty i miejsca. Czytamy EXIF, pobieramy nazwę lokalizacji z koordynatów (np. Nominatim) i zapisujemy w strukturze "rok/miesiąc/dzień/" i "kraj/miejscowość".
+**Opis:** Program monitorujący wskazany folder (rekursywnie, również wewnątrz archiwów `.zip` i `.tar`) w poszukiwaniu nowych zdjęć i automatycznie porządkujący je według daty oraz lokalizacji geograficznej. Odczytuje metadane EXIF (datę wykonania i współrzędne GPS, np. za pomocą `MetadataExtractor`), wykonuje odwrotne geokodowanie przez zewnętrzne API (np. OpenStreetMap Nominatim), aby zamienić współrzędne na kraj i miejscowość, a następnie zapisuje/kopiuje zdjęcia w strukturze katalogów `"rok/miesiąc/dzień/"` oraz `"kraj/miejscowość/"`.
+
+**Ważne:** Respektujemy limity zapytań zewnętrznego API (Nominatim wymaga własnego nagłówka `User-Agent` i maksymalnie 1 żądania na sekundę) oraz lokalnie buforujemy wyniki geokodowania, aby pobliskie zdjęcia nie wysyłały zbędnych zapytań; używamy jednej współdzielonej instancji `HttpClient` z `async`/`await`; poprawnie obsługujemy zdjęcia bez daty EXIF lub współrzędnych GPS (np. fallback do daty modyfikacji pliku lub katalogu `"Nieznane"`) oraz unikamy wielokrotnego przetwarzania i kolizji nazw.
+
+**Mile widziane:** Deduplikacja plików po sumie kontrolnej (SHA-256), tryb `dry-run` pokazujący planowane operacje bez modyfikacji dysku, użycie dowiązań twardych/symbolicznych zamiast duplikowania plików między dwiema strukturami, obsługa formatów RAW lub plik konfiguracyjny.
 
 **Punkty:** ok. 4
 
 ## 5. Gra sieciowa
 
-**Opis:** Tworzymy grę sieciową dowolnego gatunku.
+**Opis:** Tworzymy wieloosobową grę sieciową dowolnego gatunku z serwerem i klientami komunikującymi się przez sieć (TCP, UDP lub WebSockets/SignalR). Przykłady to od turowej gry konsolowej (szachy, statki, gra karciana) po grę 2D czasu rzeczywistego (np. klon *agar.io* lub *Snake*). Projektujemy czytelny protokół komunikacyjny (ramkowanie wiadomości, serializacja, synchronizacja stanu gry, lobby/dobór graczy oraz obsługa rozłączeń).
 
-**Punkty:** 4-12 (np. 4 pkt za turową grę konsolową, 8 pkt za klona agar.io w 2D)
+**Ważne:** Asynchroniczna komunikacja sieciowa (`async`/`await`, bez blokowania osobnego wątku na każdego klienta); wyraźne rozdzielenie logiki/symulacji gry od sieci i renderowania; walidacja stanu po stronie serwera (server-authoritative), aby klienci nie mogli łatwo oszukiwać; bezpieczna obsługa częściowych odczytów TCP, nagłych rozłączeń klientów i limitów czasu bez wywracania serwera.
 
-**Mile widziane:** Użycie biblioteki do renderowania grafiki 2D/3D, silnika fizyki.
+**Mile widziane:** Użycie biblioteki do renderowania grafiki 2D/3D lub silnika fizyki (np. Raylib-cs, MonoGame, Silk.NET, Avalonia), predykcja po stronie klienta / interpolacja w grach czasu rzeczywistego, tryb obserwatora, czat w grze lub testy automatyczne protokołu i logiki gry.
+
+**Punkty:** 4-12 (np. 4 pkt za turową grę konsolową, 8 pkt za klona *agar.io* w 2D, do 12 pkt za bardziej zaawansowane gry 2D/3D czasu rzeczywistego)
 
 ## 6. Gra w Godot lub Unity
 
-**Opis:** Tworzymy grę w wybranym silniku, z C# jako językiem skryptowym.
+**Opis:** Tworzymy kompletną, grywalną grę w silniku Godot (4.x z .NET/C#) lub Unity z C# jako językiem skryptowym. Gra powinna mieć wyraźną pętlę rozgrywki, menu/interfejs (ekran startowy, pauza, ekran wygranej/przegranej), oprawę audiowizualną oraz co najmniej jedną nietrywialną mechanikę (np. proceduralne generowanie poziomów, AI/wyszukiwanie ścieżek przeciwników, zagadki fizyczne, system ekwipunku/craftingu lub zapis i odczyt stanu gry).
 
-**Punkty:** Zależnie od zaawansowania 4-8
+**Ważne:** Projekt jest oceniany przede wszystkim za **jakość i architekturę kodu w C#**, a nie same zasoby graficzne: oddzielamy logikę gry od węzłów silnika / `MonoBehaviour`, gdzie to możliwe; czysto używamy zdarzeń/sygnałów C#; unikamy alokacji w każdej klatce (`Update`/`_Process`) powodujących skoki GC oraz utrzymujemy porządek w skryptach bez gigantycznych klas typu „god class”.
+
+**Mile widziane:** Testy jednostkowe dla czystej logiki gry w C# (poza pętlą silnika), własne narzędzia/inspektory w edytorze, efekty shaderowe, generowanie proceduralne lub tryb wieloosobowy lokalny/sieciowy.
+
+**Punkty:** 4-8 (zależnie od zaawansowania i jakości kodu C#)
 
 ## 7. Raytracer + P/Invoke
 
-**Opis:** Do Raytracera w C++ (można użyć gotowej implementacji) dodajemy API C. W C# tworzymy odpowiedniki struktur i importujemy funkcje przez P/Invoke. Scenę definiujemy po stronie C# i wywołujemy renderowanie przekazując callback do postępu (postępem może być np. render dla X próbek).
+**Opis:** Implementujemy wysokowydajną warstwę komunikacji między natywnym silnikiem ray tracingu w C++ ("Ray Tracing in One Weekend", z progresywnym rendererem w `camera.h`) a zarządzaną aplikacją w C#, wykorzystując dostarczony kod startowy i gotową bibliotekę okienkową `Windowing` opartą na Avalonia UI:
 
-**Punkty:** ok. 8 (ale w ramach planowego projektu)
+1. **Warstwa eksportu natywnego (C++, `RayTracing/native/export.cpp`) [1 pkt]:** Tworzymy ABI zgodne z C z nieprzezroczystymi uchwytami (`CreateScene`, `CreateMaterial` itp.) i odpowiadającymi funkcjami `Destroy...`; implementujemy funkcję `RenderScene`, która przyjmuje strukturę `CameraConfig` przez wartość, tworzy lokalny obiekt `camera` wypełniony danymi konfiguracyjnymi i wywołuje jego metodę `render`, przekazując świat sceny, wskaźnik do bufora wyjściowego RGBA oraz wskaźnik na funkcję zwrotną (`typedef void (*RenderCallback)(int samples, uint8_t* buffer);`); udostępniamy funkcję `SavePng` korzystającą z `stb_image_write` do zapisu bufora RGBA do pliku.
+2. **Niskopoziomowe wiązania (C#, `RayTracing/NativeMethods.cs`) [1 pkt]:** Wiążemy wyeksportowane funkcje C przez P/Invoke (zalecane `[LibraryImport]`), implementujemy klasy `SceneSafeHandle` i `MaterialSafeHandle` (pochodne `SafeHandle` automatycznie wywołujące natywne funkcje `Destroy...`), definiujemy delegat `RenderCallback` zgodny z sygnaturą w C++ oraz obsługujemy marshaling ścieżki pliku w `SavePng`.
+3. **Wysokopoziomowe bezpieczne API (C#, `RayTracing/*.cs`) [1 pkt]:** Tworzymy idiomatyczny, obiektowy wrapper w C# implementujący wzorzec `IDisposable` do zarządzania czasem życia natywnych uchwytów, który nigdy nie ujawnia `IntPtr`/`nint` ani wskaźników w publicznym API.
+4. **Demo i integracja (`RayTracingDemo/Program.cs`) [1 pkt]:** Generujemy proceduralnie kultową scenę z okładki pierwszej książki, uruchamiamy okno podglądu przez `Windowing.Viewer.Show`, aktualizujemy w czasie rzeczywistym tekst statusu okna (liczba próbek/czas) oraz bufor obrazu na podstawie danych z callbacku, a po zakończeniu zapisujemy finalny obraz jako `output.png` za pomocą `SavePng`.
+
+**Ważne:** Nie ujawniamy układu klas C++, typów `IntPtr`/`nint` ani surowych wskaźników w publicznym API C#; dbamy o deterministyczne zwalnianie każdego zasobu natywnego przez `SafeHandle` i `IDisposable`; utrzymujemy referencję do delegatu `RenderCallback` przez cały czas trwania `RenderScene`, aby GC nie zebrał go w trakcie działania kodu natywnego. Projekt wykorzystuje CMake zintegrowany z MSBuild (`dotnet build -c Release` oraz `dotnet run -c Release --project RayTracingDemo/RayTracingDemo.csproj`).
+
+> [!NOTE]
+> **Kod początkowy:**
+> {{< filetree dir="projects/project01/student" >}}
+
+**Punkty:** 4 (po 1 punkcie za każdą z 4 części)
 
 ## 8. Interpreter prostego języka (Crafting Interpreters)
 

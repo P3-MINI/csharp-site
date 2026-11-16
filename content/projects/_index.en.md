@@ -1,6 +1,5 @@
 ---
 title: "Project"
-bookCollapseSection: true
 weight: 25
 ---
 
@@ -18,59 +17,85 @@ As part of the course credit, students can implement any project in C#. The numb
 > - Agree on the topic and scope of your project with your lab instructor before you start. The point values below are approximate - the final number depends on quality and effort.
 > - Keep the project in a git repository from the very beginning and commit regularly.
 > - Prepare for the defense: you should be able to explain any part of your code and the design decisions behind it.
-> - Some projects have detailed specifications with starter code and a point breakdown. They are available as sub-pages of this section (see the menu), e.g., [Project01]({{< ref "/projects/project01" >}}).
 
 Below are example projects:
 
 ## 1. Raytracer (Raytracing in One Weekend)
 
-**Description:** Implement the first book "Raytracing in One Weekend" in C#.
+**Description:** Implement a CPU raytracer based on the first book of *"Ray Tracing in One Weekend"* by Peter Shirley (available for free at <https://raytracing.github.io/books/RayTracingInOneWeekend.html>) in C#: rays, spheres and hittable objects, a configurable camera (with depth of field / defocus blur), diffuse (Lambertian), metal, and dielectric (glass) materials, and rendering the final scene with many spheres to an image file (e.g., PPM or PNG).
 
-**Important:** Minimize memory allocations during rendering (choice: class or struct).
+**Important:** Minimize memory allocations during rendering: make conscious decisions about which types should be value types (`struct` / `readonly struct`) and which should be reference types (`class`), avoid unnecessary allocations in the inner ray-intersection loop, and verify allocations with a profiler or BenchmarkDotNet.
 
-**Welcome additions:** Parallelizing loops, saving to different formats, implementing further parts of the book.
+**Welcome additions:** Parallelizing the rendering loop (`Parallel.For` over scanlines or tiles with thread-local random number generators), saving to PNG/JPEG (e.g., with ImageSharp or SkiaSharp), a live preview window, bounding volume hierarchy (BVH), or further chapters from the second book (*The Next Week*).
 
 **Points:** approx. 4
 
 ## 2. CityBike - LINQ Data Analysis
 
-**Description:** Download data (e.g., from https://citibikenyc.com/system-data), load it, and perform at least 5 LINQ queries.
+**Description:** Download real trip datasets (e.g., from <https://citibikenyc.com/system-data> or any other public dataset/database), parse and load the data into strongly-typed C# records, and perform at least 5 non-trivial LINQ queries answering interesting analytical questions (e.g., for Citi Bike: busiest stations and routes, peak hours on weekdays vs. weekends, trip duration distributions, member vs. casual rider behavior, or bike type usage). Present the results clearly in the console (e.g., with Spectre.Console tables/charts) or export them.
 
-**Welcome additions:** Combine rental data with weather data.
+**Important:** Handle large CSV files efficiently using streaming (`StreamReader` / `CsvHelper` or `IAsyncEnumerable<T>`) instead of loading huge files blindly into memory as raw strings; handle missing or malformed fields gracefully; use clean LINQ queries (grouping, joining, aggregations) rather than manual imperative loops.
+
+**Welcome additions:** Combining rental data with historical weather data (e.g., temperature, precipitation) to analyze weather impact on ridership, comparing multiple months/years, interactive CLI filters, or benchmarking LINQ vs. PLINQ.
 
 **Points:** approx. 4 (depending on query complexity)
 
 ## 3. Backup Program
 
-**Description:** Implement the requirements of the OPS project, but use threads, tasks, or asynchronous programming instead of processes.
+**Description:** Implement a continuous directory backup and synchronization tool inspired by the classic OPS (Operating Systems) backup project, using C# threads, tasks (`Task`), or asynchronous programming (`async`/`await`) instead of OS processes (`fork`). The program manages one or more backup pairs (source directory -> target directory): it performs an initial copy, monitors the source directory for changes (file/subdirectory creation, modification, deletion, and renaming) using `FileSystemWatcher`, and mirrors them to the target. It also supports restoring a backup back to the source, listing active backup jobs, and shutting down cleanly on Ctrl+C (`Console.CancelKeyPress` / `CancellationToken`).
+
+**Important:** Do not block threads with busy-waiting or `Thread.Sleep` polling; handle `FileSystemWatcher` quirks properly (buffer overflows, duplicate/rapid events with debouncing, locked files); handle subdirectories and symbolic links safely without infinite recursion; protect shared state (active backup jobs, file operations) against race conditions.
+
+**Welcome additions:** Incremental/hash-based synchronization (copying only changed files), versioned snapshots or compression (ZIP/TAR) of backups, structured logging, a rich console UI (e.g., Spectre.Console) showing active watchers and transfer progress, or unit/integration tests for edge cases.
 
 **Points:** approx. 4
 
 ## 4. Photo Organization Program
 
-**Description:** Monitor a folder (also recursively and in ZIP/TAR archives). Sort new photos by date and location. Read EXIF data, fetch location names from coordinates (e.g., Nominatim), and save in structure "year/month/day/" and "country/city".
+**Description:** A program that monitors a specified folder (recursively, including inside `.zip` and `.tar` archives) for new photos and automatically organizes them by date and geographic location. It reads EXIF metadata (capture timestamp and GPS coordinates, e.g., using `MetadataExtractor`), performs reverse geocoding via an external API (such as OpenStreetMap Nominatim) to resolve coordinates into country and city names, and sorts/copies the photos into `"year/month/day/"` and `"country/city/"` directory structures.
+
+**Important:** Respect external API rate limits (Nominatim requires a custom `User-Agent` header and at most 1 request per second) and cache coordinate-to-location lookups locally so nearby photos do not trigger redundant requests; use a single shared `HttpClient` with `async`/`await`; handle photos without EXIF dates or GPS coordinates gracefully (e.g., falling back to file modification time or an `"Unknown"` folder) and avoid duplicate processing or filename collisions.
+
+**Welcome additions:** Deduplication by file hash (SHA-256), a dry-run mode previewing planned moves without modifying disk, creating hard links/symlinks instead of duplicating files across both structures, support for RAW image formats, or a configuration file.
 
 **Points:** approx. 4
 
 ## 5. Network Game
 
-**Description:** Create a network game of any genre.
+**Description:** Create a multiplayer network game of any genre with a server and client(s) communicating over the network (TCP, UDP, or WebSockets/SignalR). Examples range from a turn-based console game (chess, battleship, card game) to a real-time 2D arena game (like an *agar.io* or *Snake* clone). Design a clear application protocol covering message framing, serialization, game state synchronization, lobby/matchmaking, and player disconnect handling.
 
-**Points:** 4-12 (e.g., 4 pts for a turn-based console game, 8 pts for an agar.io clone in 2D)
+**Important:** Asynchronous networking (`async`/`await`, no thread blocked per client); clean separation between game logic/simulation and networking/rendering; server-authoritative state validation so clients cannot trivially cheat; handle partial TCP reads, unexpected client disconnects, and timeouts gracefully without crashing the server.
 
-**Welcome additions:** Use of a library for 2D/3D graphics rendering, physics engine.
+**Welcome additions:** Use of a 2D/3D graphics or physics library (e.g., Raylib-cs, MonoGame, Silk.NET, Avalonia), client-side prediction/interpolation for real-time games, spectator mode, in-game chat, or automated tests for the protocol and game rules.
+
+**Points:** 4-12 (e.g., 4 pts for a turn-based console game, 8 pts for a real-time 2D *agar.io* clone, up to 12 pts for more advanced real-time 2D/3D games)
 
 ## 6. Game in Godot or Unity
 
-**Description:** Create a game in the chosen engine, with C# as the scripting language.
+**Description:** Create a complete, playable game in Godot (4.x with .NET/C#) or Unity using C# as the scripting language. The game should have a clear gameplay loop, menus/UI (start screen, pause, game over/win), audio/visual feedback, and at least one non-trivial mechanic (e.g., procedural level generation, enemy AI/pathfinding, physics-based puzzles, inventory/crafting system, or save/load persistence).
 
-**Points:** Depending on complexity 4-8
+**Important:** The project is graded primarily on **C# code quality and architecture**, not just visual assets: keep game logic decoupled from engine nodes/`MonoBehaviour` where possible, use C# events/signals cleanly, avoid per-frame allocations (`Update`/`_Process`) that trigger GC spikes, and organize scripts cleanly without giant "god classes".
+
+**Welcome additions:** Unit tests for pure C# game logic (outside the engine loop), custom editor tools/inspectors, shader effects, procedural generation, or local/online multiplayer.
+
+**Points:** 4-8 (depending on complexity and C# code quality)
 
 ## 7. Raytracer + P/Invoke
 
-**Description:** Add a C API to a C++ Raytracer (you can use an existing implementation). In C#, create structure equivalents and import functions through P/Invoke. Define the scene on the C# side and call rendering by passing a progress callback (progress could be, e.g., render for X samples).
+**Description:** Implement a high-performance interoperability layer between a native C++ ray tracing engine ("Ray Tracing in One Weekend", including a progressive renderer in `camera.h`) and a managed C# application using the provided starter code and pre-built Avalonia-based `Windowing` library:
 
-**Points:** approx. 8 (as part of a planned project)
+1. **Native Export Layer (C++, `RayTracing/native/export.cpp`) [1 pt]:** Create a C-compatible ABI with opaque handles (`CreateScene`, `CreateMaterial`, etc.) and matching `Destroy...` functions; implement `RenderScene` accepting a `CameraConfig` struct by value, instantiating a local `camera` object populated with the config data, and calling its `render` method with the scene world, the RGBA output buffer pointer, and a `RenderCallback` function pointer (`typedef void (*RenderCallback)(int samples, uint8_t* buffer);`); provide `SavePng` using `stb_image_write` to save the RGBA buffer to a file.
+2. **Low-Level Bindings (C#, `RayTracing/NativeMethods.cs`) [1 pt]:** Bind the exported C functions using P/Invoke (preferably `[LibraryImport]`), implement `SceneSafeHandle` and `MaterialSafeHandle` (`SafeHandle` subclasses automatically calling the C++ `Destroy...` functions), define the `RenderCallback` delegate matching the C++ signature, and handle filename string marshalling for `SavePng`.
+3. **High-Level Safe API (C#, `RayTracing/*.cs`) [1 pt]:** Build an idiomatic object-oriented C# wrapper implementing `IDisposable` to manage native handle lifetimes without ever exposing `IntPtr`/`nint` or raw pointers in the public API.
+4. **Demo & Integration (`RayTracingDemo/Program.cs`) [1 pt]:** Procedurally generate the iconic scene from the cover of the first book, spawn the preview window via `Windowing.Viewer.Show`, update the window's status text (samples/time) and image buffer in real time from the callback, and save the final image as `output.png` using `SavePng`.
+
+**Important:** Do not expose C++ class layouts, `IntPtr`/`nint`, or raw pointers in the public C# API; ensure every native resource is deterministically released via `SafeHandle` and `IDisposable`; keep the `RenderCallback` delegate alive for the duration of `RenderScene` so the GC does not collect it while native code holds the function pointer. The project uses CMake integrated with MSBuild (`dotnet build -c Release` and `dotnet run -c Release --project RayTracingDemo/RayTracingDemo.csproj`).
+
+> [!NOTE]
+> **Starting code:**
+> {{< filetree dir="projects/project01/student" >}}
+
+**Points:** 4 (1 point per part)
 
 ## 8. Interpreter for a Small Language (Crafting Interpreters)
 
