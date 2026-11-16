@@ -1,13 +1,7 @@
 ---
-<<<<<<< HEAD
 title: "Example Task"
 weight: 10
 bookHidden: "true"
-=======
-title: "Lab03"
-weight: 10
-bookCollapseSection: true
->>>>>>> 02c54df (correct files (I think))
 ---
 
 # Laboratory 3 - Example - Classes/Structures, Inheritance, Properties, Access Modifiers

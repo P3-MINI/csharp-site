@@ -185,11 +185,7 @@ dotnet run > image.ppm
 
 > [!NOTE]
 > #### Stage 1
-<<<<<<< HEAD
 > ![Stage 1 Render]({{< relurl "/labs/w03.basics/Raytracer.01/image.jpg" >}})
-=======
-> ![Stage 1 Render](/labs/w03.basics/Raytracer.01/image.jpg)
->>>>>>> 02c54df (correct files (I think))
 > {{< filetree dir="labs/w03.basics/Raytracer.01" >}}
 
 ### Stage 2: Camera and Rays
@@ -370,11 +366,7 @@ dotnet run > image.ppm
 
 > [!NOTE]
 > #### Stage 3
-<<<<<<< HEAD
 > ![Stage 3 Render]({{< relurl "/labs/w03.basics/Raytracer.03/image.jpg" >}})
-=======
-> ![Stage 3 Render](/labs/w03.basics/Raytracer.03/image.jpg)
->>>>>>> 02c54df (correct files (I think))
 > {{< filetree dir="labs/w03.basics/Raytracer.03" >}}
 
 ### Stage 4: Materials and Recursion
@@ -446,11 +438,7 @@ world.Add(new Plane(new Vector3(0, -0.5f, 0), new Vector3(0, 1, 0), new Emissive
 
 > [!NOTE]
 > #### Stage 4
-<<<<<<< HEAD
 > ![Stage 4 Render]({{< relurl "/labs/w03.basics/Raytracer.04/image.jpg" >}})
-=======
-> ![Stage 4 Render](/labs/w03.basics/Raytracer.04/image.jpg)
->>>>>>> 02c54df (correct files (I think))
 > {{< filetree dir="labs/w03.basics/Raytracer.04" >}}
 
 ### Stage 5: Matte Material and Antialiasing
@@ -506,11 +494,7 @@ Render the final image with `dotnet run > image.ppm`.
 
 > [!NOTE]
 > #### Stage 5
-<<<<<<< HEAD
 > ![Stage 5 Render]({{< relurl "/labs/w03.basics/Raytracer.05/image.jpg" >}})
-=======
-> ![Stage 5 Render](/labs/w03.basics/Raytracer.05/image.jpg)
->>>>>>> 02c54df (correct files (I think))
 > {{< filetree dir="labs/w03.basics/Raytracer.05" >}}
 
 > [!NOTE]
