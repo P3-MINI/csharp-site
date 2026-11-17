@@ -104,6 +104,48 @@ public class Countdown(int start)
 More details can be found in the [Delegates]({{< ref "/lectures/05.csharp-features/delegates" >}}) and [Events]({{< ref "/lectures/05.csharp-features/events" >}}) lectures.
 More about the Observer design pattern can be found at [Refactoring Guru](https://refactoring.guru/design-patterns/observer).
 
+### File System Events
+
+Class `FileSystemWatcher` allows observing for file system events. We can react to creation, deletion, change and rename events.
+
+```csharp
+FileSystemWatcher CreateWatcher(string path, string filter)
+{
+    FileSystemWatcher watcher - new FileSystemWatcher(path);
+    watcher.Created += OnCreated;
+    watcher.Deleted += OnDeleted;
+    watcher.Changed += OnChanged;
+    watcher.Renamed += OnRenamed;
+    watcher.Filter = filter;
+    watcher.EnableRaisingEvents = true;
+    return watcher;
+}
+
+private void OnCreated(object sender, FileSystemEventArgs e)
+{
+    ...
+}
+
+private void OnDeleted(object sender, FileSystemEventArgs e)
+{
+    ...
+}
+
+private void OnChanged(object sender, FileSystemEventArgs e)
+{
+    ...
+}
+
+private void OnRenamed(object sender, RenamedEventArgs e)
+{
+    ...
+}
+```
+
+File system events use`FileSystemEventArgs` and `RenamedEventArgs` (second one inherit from the first). They contain the info about the change (`ChangeType`: `Created`, `Deleted`, `Changed` and/or `Renamed`), file name and path (`Name` i `FullPath`). In case of `RenamedEventArgs` we also get the previous name and path (`OldName` i `OldFullPath`).
+
+More about reacting to file system events in lecture [Filesystem]({{< ref "lectures/07.filesystem/filesystem/#filesystem-events">}})
+
 ## Task 1 - Snapshot: an Incremental Backup Tool
 
 In this task, you will build **Snapshot** – a simple console tool for making incremental backups of a directory. It will consist of a single project – an executable application with several commands:

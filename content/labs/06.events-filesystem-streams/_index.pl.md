@@ -103,6 +103,48 @@ public class Countdown(int start)
 
 Więcej szczegółów znajdziesz w wykładach [Delegaty]({{< ref "/lectures/05.csharp-features/delegates" >}}) oraz [Zdarzenia]({{< ref "/lectures/05.csharp-features/events" >}}). Więcej o wzorcu projektowym obserwatora można znaleźć u [Refactoring Guru](https://refactoring.guru/design-patterns/observer)
 
+### Zdarzenia systemu plików
+
+Klasa `FileSystemWatcher` pozwala na nasłuchiwanie na zdarzenia z systemu plików. Możemy reagować na zdarzenia tworzenia, usuwania, zmiany nazwy i modyfikacji plików.
+
+```csharp
+FileSystemWatcher CreateWatcher(string path, string filter)
+{
+    FileSystemWatcher watcher - new FileSystemWatcher(path);
+    watcher.Created += OnCreated;
+    watcher.Deleted += OnDeleted;
+    watcher.Changed += OnChanged;
+    watcher.Renamed += OnRenamed;
+    watcher.Filter = filter;
+    watcher.EnableRaisingEvents = true;
+    return watcher;
+}
+
+private void OnCreated(object sender, FileSystemEventArgs e)
+{
+    ...
+}
+
+private void OnDeleted(object sender, FileSystemEventArgs e)
+{
+    ...
+}
+
+private void OnChanged(object sender, FileSystemEventArgs e)
+{
+    ...
+}
+
+private void OnRenamed(object sender, RenamedEventArgs e)
+{
+    ...
+}
+```
+
+Zdarzenia systemu plików wykorzystują `FileSystemEventArgs` i `RenamedEventArgs` (te drugie dziedziczą po pierwszych). Zawierają informację o typie zmiany (`ChangeType`: `Created`, `Deleted`, `Changed` i/lub `Renamed`), nazwie pliku i ścieżce do niego (`Name` i `FullPath`). W przypadku `RenamedEventArgs` mamy dodatkowo dostęp do poprzedniej nazwy i ścieżki (`OldName` i `OldFullPath`).
+
+Więcej o reagowaniu na zdarzenia systemu plików można przeczytać w wykładzie [System plików]({{< ref "lectures/07.filesystem/filesystem/#filesystem-events">}})
+
 ## Zadanie 1 - Snapshot: narzędzie do przyrostowych kopii zapasowych
 
 W ramach tego zadania stworzysz **Snapshot** – proste narzędzie konsolowe do wykonywania przyrostowych kopii zapasowych katalogu. Będzie się ono składało z pojedynczego projektu – aplikacji wykonywalnej obsługującej kilka poleceń:
