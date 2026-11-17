@@ -4,115 +4,104 @@ bookCollapseSection: true
 weight: 10
 ---
 
-## Wykład 01
+## Wstęp
 
 - [Wstęp]({{< ref "01.introduction" >}})
+
+## Narzędzia
+
+- [git]({{< ref "02.tools/git" >}})
 - [MSBuild]({{< ref "02.tools/msbuild" >}})
+
+## C# Podstawy
+
 - [System typów]({{< ref "03.basics/types" >}})
 - [Typy podstawowe]({{< ref "03.basics/basic-types" >}})
 - [String]({{< ref "03.basics/string" >}})
-
-## Wykład 02
-
 - [Tablice]({{< ref "03.basics/arrays" >}})
 - [Object]({{< ref "03.basics/object" >}})
 - [Instrukcje]({{< ref "03.basics/statements" >}})
 - [Zmienne]({{< ref "03.basics/variables" >}})
-- [Paramentry]({{< ref "03.basics/parameters" >}})
+- [Parametry]({{< ref "03.basics/parameters" >}})
 - [Przestrzenie nazw]({{< ref "03.basics/namespaces" >}})
+
+## Tworzenie typów
+
 - [Klasy]({{< ref "04.creating-types/classes" >}})
 - [Dziedziczenie]({{< ref "04.creating-types/inheritance" >}})
 - [Struktury]({{< ref "04.creating-types/structs" >}})
-- [Interfejsy]({{< ref "04.creating-types/interfaces" >}})
-
-## Wykład 03
-
 - [Modyfikatory dostępu]({{< ref "04.creating-types/access-modifiers" >}})
-- [Interfejsy]({{< ref "04.creating-types/interfaces#rozszerzanie-interfejsów" >}})
+- [Interfejsy]({{< ref "04.creating-types/interfaces" >}})
 - [Typ wyliczeniowy]({{< ref "04.creating-types/enums" >}})
 - [Typy zagnieżdżone]({{< ref "04.creating-types/nested-types" >}})
 - [Generyki]({{< ref "04.creating-types/generics" >}})
-- [Krotki]({{< ref "05.csharp-features/tuples" >}})
-- [Nullowalność]({{< ref "05.csharp-features/nullable" >}})
-- [Enumeratory]({{< ref "06.collections/enumerators" >}})
 
-## Wykład 04
+## Funkcjonalności C#
 
-- [Enumeratory]({{< ref "06.collections/enumerators#metoda-iterująca" >}})
 - [Delegaty]({{< ref "05.csharp-features/delegates" >}})
-- [Metody Rozszerzające]({{< ref "05.csharp-features/extension-methods" >}})
-- [Kolekcje]({{< ref "06.collections/collections" >}})
-
-## Wykład 05
-
-- [Kolekcje]({{< ref "06.collections/collections#klasa-dictionarytkey-tvalue" >}})
-- [LINQ]({{< ref "06.collections/linq" >}})
-- [Rekordy]({{< ref "05.csharp-features/records" >}})
-- [Wyjątki]({{< ref "05.csharp-features/exceptions" >}})
-
-## Wykład 06
-
+- [Disposable]({{< ref "05.csharp-features/disposable" >}})
 - [Zdarzenia]({{< ref "05.csharp-features/events" >}})
+- [Wyjątki]({{< ref "05.csharp-features/exceptions" >}})
+- [Metody rozszerzające]({{< ref "05.csharp-features/extension-methods" >}})
+- [Formatowanie]({{< ref "05.csharp-features/formatting" >}})
+- [Nullowalność]({{< ref "05.csharp-features/nullable" >}})
+- [Przeciążanie operatorów]({{< ref "05.csharp-features/operator-overloading" >}})
+- [Wzorce]({{< ref "05.csharp-features/patterns" >}})
+- [Dyrektywy preprocesora]({{< ref "05.csharp-features/preprocessor-directives" >}})
+- [Rekordy]({{< ref "05.csharp-features/records" >}})
+- [Krotki]({{< ref "05.csharp-features/tuples" >}})
+- [Dokumentacja XML]({{< ref "05.csharp-features/xml-documentation" >}})
+
+## Kolekcje
+
+- [Enumeratory]({{< ref "06.collections/enumerators" >}})
+- [Kolekcje]({{< ref "06.collections/collections" >}})
+- [LINQ]({{< ref "06.collections/linq" >}})
+
+## System plików
+
 - [Strumienie]({{< ref "07.filesystem/streams" >}})
 - [System plików]({{< ref "07.filesystem/filesystem" >}})
 - [Archiwa]({{< ref "07.filesystem/archives" >}})
 
-## Wykład 07
+## Refleksja
 
-- [Disposable]({{< ref "05.csharp-features/disposable" >}})
 - [Atrybuty]({{< ref "08.reflection/attributes" >}})
 - [Refleksja]({{< ref "08.reflection/reflection" >}})
 - [Assembly]({{< ref "08.reflection/assembly" >}})
 
-## Wykład 08
+## Współbieżność
 
-- [Przeciążanie operatorów]({{< ref "05.csharp-features/operator-overloading" >}})
-- [Dokumentacja XML]({{< ref "05.csharp-features/xml-documentation" >}})
-- [Dyrektywy preprocesora]({{< ref "05.csharp-features/preprocessor-directives" >}})
-- [Wzorce]({{< ref "05.csharp-features/patterns" >}})
 - [Wątki]({{< ref "09.concurrency/threads" >}})
-
-## Wykład 09
-
 - [Zadania]({{< ref "09.concurrency/tasks" >}})
 - [Kontekst synchronizacji]({{< ref "09.concurrency/synchronization-context" >}})
 - [Programowanie asynchroniczne]({{< ref "09.concurrency/asynchronous-programming" >}})
 - [Parallel]({{< ref "09.concurrency/parallel" >}})
-- [Formatowanie]({{< ref "05.csharp-features/formatting" >}})
-
-## Wykład 10
-
-- [Formatowanie]({{< ref "05.csharp-features/formatting" >}})
 - [Asynchroniczne sekwencje]({{< ref "09.concurrency/asynchronous-streams" >}})
+
+## Komunikacja międzyprocesowa
+
+- [Przegląd]({{< ref "10.ipc/overview" >}})
 - [Łącza]({{< ref "10.ipc/pipes" >}})
 - [Sieć]({{< ref "10.ipc/network" >}})
 - [TCP]({{< ref "10.ipc/tcp" >}})
 - [UDP]({{< ref "10.ipc/udp" >}})
+- [Mapowanie pamięci]({{< ref "10.ipc/memory-mapped-files" >}})
 - [Serializacja]({{< ref "10.ipc/serialization" >}})
 
-## Wykład 11
+## Współdziałanie
 
-- Ważne warsztaty
-
-## Wykład 12
-
-- [Mapowanie pamięci]({{< ref "10.ipc/memory-mapped-files" >}})
 - [Kontekst niebezpieczny]({{< ref "11.interoperability/unsafe" >}})
+- [Platform Invoke (P/Invoke)]({{< ref "11.interoperability/pinvoke" >}})
 
-## Wykład 13
+## Synchronizacja
 
-- [P/Invoke]({{< ref "11.interoperability/pinvoke" >}})
-- [Synchronizacja]({{< ref "12.synchronization/introduction" >}})
+- [Wstęp]({{< ref "12.synchronization/introduction" >}})
 - [Blokowanie wyłączne]({{< ref "12.synchronization/exclusive-locking" >}})
-
-## Wykład 14
-
 - [Blokowanie współdzielone]({{< ref "12.synchronization/non-exclusive-locking" >}})
 - [Sygnalizacja]({{< ref "12.synchronization/signaling" >}})
 - [Kolekcje współbieżne]({{< ref "12.synchronization/concurrent-collections" >}})
+
+## Inne
+
 - [Generatory źródeł]({{< ref "13.others/source-generators" >}})
-
-## Wykład 15
-
-- Konsultacje
-- Prezentacje studentów
