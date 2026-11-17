@@ -10,7 +10,7 @@ weight: 20
 2. [Warsztat: msbuild](02.msbuild)
 3. [Warsztat: podstawy C#](03.basics)
 4. **Lab: podstawy C#**
-5. [Warsztat: kolekcje, generyki](04.collections-generics)
+5. [Warsztat: Generyki, enumeracja, kolekcje](04.collections-generics)
 6. [Warsztat: wyrażenia lambda, IEnumerable, LINQ, metody rozszerzające](05.lambdas-enumerable-linq-extensions)
 7. **Lab: wyrażenia lambda, IEnumerable, LINQ, metody rozszerzające**
 8. [Warsztat: zdarzenia, system plików, strumienie](06.events-filesystem-streams)
