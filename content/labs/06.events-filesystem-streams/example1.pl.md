@@ -65,8 +65,8 @@ Na końcu konstruktora `NoteReader` zasubskrybuj `inputEventGenerator.Input` fun
 Umożliwia przeglądanie i wybieranie katalogów oraz plików w podanym katalogu. Implementuje interfejsy `IDataSource<string>` i `IDisposable`. Powinno być zawsze aktualne względem stanu systemu plików.
 
 - Właściwość `Name` to ścieżka do obserwowanego katalogu.
-- `Data` to `IEnumerable<string>` zbudowane ze znaku wskazującego, czy to plik czy katalog i czy jest wybrany, oraz nazwy tego obiektu. Użyj znaczników podanych w komentarzu nad klasą. Wszystkie katalogi powinny mieć również liczbę plików z końcówką `pl.md` zawartych w nim i jego podkatalogach dopisaną po nazwie.
-  - Przykład: wybrany katalog `Lab06`, zawierający `index.pl.md`, będzie reprezentowany jako `»Lab06 (1)`.
+- `Data` to `IEnumerable<string>` zbudowane ze znaku wskazującego, czy to plik czy katalog i czy jest wybrany, oraz nazwy tego obiektu. Użyj znaczników podanych w komentarzu nad klasą. Wszystkie katalogi powinny mieć również liczbę plików z końcówką `en.md` zawartych w nim i jego podkatalogach dopisaną po nazwie.
+  - Przykład: wybrany katalog `Lab06`, zawierający `index.en.md`, będzie reprezentowany jako `»Lab06 (1)`.
 - Właściwość `Count` zwraca łączną liczbę elementów.
 - `DataChanged` to zdarzenie wywoływane przy każdej zmianie danych — zarówno zmianie plików lub katalogów jak i zmianie wyboru.
 - `Dispose` zwalnia wszystkie zasoby wymagające zwolnienia.

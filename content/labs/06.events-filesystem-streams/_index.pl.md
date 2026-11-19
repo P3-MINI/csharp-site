@@ -27,7 +27,7 @@ Console.WriteLine(Path.GetRelativePath(root, Path.GetFullPath(path))); // 2026/m
 
 Ścieżki względne są rozwiązywane względem **bieżącego katalogu roboczego** procesu – katalogu, z którego uruchomiono program, a nie katalogu, w którym znajduje się plik wykonywalny.
 
-Do plików i katalogów można odwoływać się przez klasy statyczne ([`File`](https://learn.microsoft.com/en-us/dotnet/api/system.io.file?view=net-10.0), [`Directory`](https://learn.microsoft.com/en-us/dotnet/api/system.io.directory?view=net-11.0), obie klasy zawierają dużo metod, przy czym `File` skupia się na operacjach na plikach, a `Directory` na listowaniu i zbieraniu danych o plikach i folderach. ) albo przez obiekty opisujące konkretny plik lub katalog (`FileInfo`, `DirectoryInfo`). Zawartość katalogu można pobrać na dwa sposoby:
+Do plików i katalogów można odwoływać się przez klasy statyczne ([`File`](https://learn.microsoft.com/en-us/dotnet/api/system.io.file?view=net-10.0), [`Directory`](https://learn.microsoft.com/en-us/dotnet/api/system.io.directory?view=net-10.0)) albo przez obiekty opisujące konkretny plik lub katalog (`FileInfo`, `DirectoryInfo`). Obie klasy statyczne zawierają dużo metod, przy czym `File` skupia się na operacjach na plikach, a `Directory` na listowaniu i zbieraniu danych o plikach i folderach. Zawartość katalogu można pobrać na dwa sposoby:
 
 - `GetFiles`, `GetDirectories` – zwracają od razu tablicę ze wszystkimi elementami,
 - `EnumerateFiles`, `EnumerateDirectories` – zwracają leniwą sekwencję `IEnumerable<T>`; elementy są odczytywane z dysku w miarę iterowania, dzięki czemu można zacząć przetwarzać pierwszy plik, zanim całe drzewo zostanie przeszukane.
@@ -110,7 +110,7 @@ Klasa `FileSystemWatcher` pozwala na nasłuchiwanie na zdarzenia z systemu plik�
 ```csharp
 FileSystemWatcher CreateWatcher(string path, string filter)
 {
-    FileSystemWatcher watcher - new FileSystemWatcher(path);
+    FileSystemWatcher watcher = new FileSystemWatcher(path);
     watcher.Created += OnCreated;
     watcher.Deleted += OnDeleted;
     watcher.Changed += OnChanged;
@@ -143,7 +143,7 @@ private void OnRenamed(object sender, RenamedEventArgs e)
 
 Zdarzenia systemu plików wykorzystują `FileSystemEventArgs` i `RenamedEventArgs` (te drugie dziedziczą po pierwszych). Zawierają informację o typie zmiany (`ChangeType`: `Created`, `Deleted`, `Changed` i/lub `Renamed`), nazwie pliku i ścieżce do niego (`Name` i `FullPath`). W przypadku `RenamedEventArgs` mamy dodatkowo dostęp do poprzedniej nazwy i ścieżki (`OldName` i `OldFullPath`).
 
-Więcej o reagowaniu na zdarzenia systemu plików można przeczytać w wykładzie [System plików]({{< ref "lectures/07.filesystem/filesystem/#filesystem-events">}})
+Więcej o reagowaniu na zdarzenia systemu plików można przeczytać w wykładzie [System plików]({{< ref "/lectures/07.filesystem/filesystem#zdarzenia-systemu-pliku">}}).
 
 ## Zadanie 1 - Snapshot: narzędzie do przyrostowych kopii zapasowych
 
@@ -801,14 +801,14 @@ Podczas warsztatu [MSBuild]({{< ref "/labs/02.msbuild/_index.pl.md">}}) omówion
 
 Proponujemy dwa rozwiązania: 
 - [Testably](https://docs.testably.org/)
-- [TestableIO](github.com/TestableIO/System.IO.Abstractions)
+- [TestableIO](https://github.com/TestableIO/System.IO.Abstractions)
 
-*Testably* posiada lepsze wparcie dla testowania `FileSystemWatcher`, podczas gdy *TestableIO* ma łatwiejszą obsługę strumieni. Obie biblioteki działają w podobny sposób. Za ich pomocą można stworzyć abstrakcję na system plików. W przypadku obu tworzy się obiekt, który zastępuje standardowe klasy statyczne (przykład *Testably*):
+*Testably* posiada lepsze wsparcie dla testowania `FileSystemWatcher`, podczas gdy *TestableIO* ma łatwiejszą obsługę strumieni. Obie biblioteki działają w podobny sposób. Za ich pomocą można stworzyć abstrakcję na system plików. W przypadku obu tworzy się obiekt, który zastępuje standardowe klasy statyczne (przykład *Testably*):
 
 ```csharp
 MockFileSystem fileSystem = new MockFileSystem();
-string path = fileSystem.Path.Combine(fileSystem.Directory.GetCurrentDirectory(), "dir");
-foreach (string file in fileSystem.Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+string dirPath = fileSystem.Path.Combine(fileSystem.Directory.GetCurrentDirectory(), "dir");
+foreach (string file in fileSystem.Directory.GetFiles(dirPath, "*", SearchOption.AllDirectories))
 {
     Console.WriteLine(file);
     string path = fileSystem.Path.Combine("dir", "file.txt");

@@ -111,7 +111,7 @@ Class `FileSystemWatcher` allows observing for file system events. We can react 
 ```csharp
 FileSystemWatcher CreateWatcher(string path, string filter)
 {
-    FileSystemWatcher watcher - new FileSystemWatcher(path);
+    FileSystemWatcher watcher = new FileSystemWatcher(path);
     watcher.Created += OnCreated;
     watcher.Deleted += OnDeleted;
     watcher.Changed += OnChanged;
@@ -142,9 +142,9 @@ private void OnRenamed(object sender, RenamedEventArgs e)
 }
 ```
 
-File system events use`FileSystemEventArgs` and `RenamedEventArgs` (second one inherit from the first). They contain the info about the change (`ChangeType`: `Created`, `Deleted`, `Changed` and/or `Renamed`), file name and path (`Name` i `FullPath`). In case of `RenamedEventArgs` we also get the previous name and path (`OldName` i `OldFullPath`).
+File system events use`FileSystemEventArgs` and `RenamedEventArgs` (second one inherit from the first). They contain the info about the change (`ChangeType`: `Created`, `Deleted`, `Changed` and/or `Renamed`), file name and path (`Name` and `FullPath`). In case of `RenamedEventArgs` we also get the previous name and path (`OldName` and `OldFullPath`).
 
-More about reacting to file system events in lecture [Filesystem]({{< ref "lectures/07.filesystem/filesystem/#filesystem-events">}})
+More about reacting to file system events in lecture [Filesystem]({{< ref "/lectures/07.filesystem/filesystem#filesystem-events">}}).
 
 ## Task 1 - Snapshot: an Incremental Backup Tool
 
@@ -809,8 +809,8 @@ We propose two solutions:
 
 ```csharp
 MockFileSystem fileSystem = new MockFileSystem();
-string path = fileSystem.Path.Combine(fileSystem.Directory.GetCurrentDirectory(), "dir");
-foreach (string file in fileSystem.Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+string dirPath = fileSystem.Path.Combine(fileSystem.Directory.GetCurrentDirectory(), "dir");
+foreach (string file in fileSystem.Directory.GetFiles(dirPath, "*", SearchOption.AllDirectories))
 {
     Console.WriteLine(file);
     string path = fileSystem.Path.Combine("dir", "file.txt");
