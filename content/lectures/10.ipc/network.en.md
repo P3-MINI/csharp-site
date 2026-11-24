@@ -9,13 +9,15 @@ weight: 30
 
 The diagram below illustrates the network types in the system library along with the corresponding network layers.
 
-![Network Architecture](/lectures/NetworkArchitecture.svg)
+![Network Architecture]({{< relurl "/lectures/NetworkArchitecture.svg" >}})
 
 ### Transport Layer
 
 The transport layer includes two fundamental protocols for sending and receiving data: `TCP` (Transmission Control Protocol) and `UDP` (User Datagram Protocol). The `TCP` protocol is connection-oriented, used wherever there's a need for a guarantee that data will arrive in its entirety and in the correct order. The `UDP` protocol does not require establishing a connection and does not guarantee data delivery, but it supports broadcasting. It's used where speed is more important than reliability, such as in video streaming or voice calls.
 
 `UDP` and `TCP` allow for data transmission, but they do not define the messages that can be sent with them or any fixed order of their exchange. When using these protocols directly, we must take care of things like authentication or encryption ourselves.
+
+Using both protocols in .NET is described on separate pages: [TCP]({{< ref "/lectures/10.ipc/tcp" >}}) and [UDP]({{< ref "/lectures/10.ipc/udp" >}}).
 
 ### Application Layer
 

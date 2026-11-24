@@ -74,9 +74,9 @@ Uzupełnij funkcję `Main` w projekcie `PatternGenerationDemo` aby tworzyło si�
 
 ### Przykładowy rezultat
 `populate`
-![populate](data/Image1.png)
+![populate]({{< relurl "/labs/lab14/data/Image1.png" >}})
 `enstripen`
-![enstripen](data/Image2.png)
+![enstripen]({{< relurl "/labs/lab14/data/Image2.png" >}})
 
 ### Przykładowe rozwiązanie
 

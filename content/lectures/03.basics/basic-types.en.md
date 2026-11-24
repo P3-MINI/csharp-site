@@ -5,7 +5,7 @@ weight: 20
 
 # Basic Types
 
-Built-in type keywords (e.g., `int`, `double`, `bool`) are direct aliases for types defined in the `System` namespace (e.g., `System.Int32`, `System.Double`, `System.Boolean`). It's worth remembering that these types are regular classes in the standard library, and they define useful constants and methods, e.g., `int.MaxValue`, `int.Parse(string)`, `float.NegativeInfinity`.
+Built-in type keywords (e.g., `int`, `double`, `bool`) are direct aliases for types defined in the `System` namespace (e.g., `System.Int32`, `System.Double`, `System.Boolean`). It's worth remembering that these types are regular structs (value types) in the standard library, and they define useful constants and methods, e.g., `int.MaxValue`, `int.Parse(string)`, `float.NegativeInfinity`.
 
 ## Numeric Types
 
@@ -49,7 +49,7 @@ These require a conscious decision from the programmer and the use of the cast o
 
 Converting from `double` or `float` to an integral type causes the fractional part to be **truncated**.
 
-For integral types, if an operation causes an **overflow** (the value exceeds the range of the target type), the default behavior is to perform the operation as if it were on a larger type and then truncate the most significant bits.
+For integral types, if an operation causes an **overflow** (the value exceeds the range of the target type), the default behavior is to perform the operation as if it were on a larger type and then discard the most significant bits that do not fit.
 
 ```csharp
 double d = 99.9;
@@ -81,7 +81,7 @@ catch (OverflowException ex)
 The `decimal` type should be used for financial and monetary operations where rounding errors are unacceptable.
 
 - `decimal` is a **base-10 floating-point type**. Unlike `float` and `double` (base-2), `decimal` accurately represents decimal fractions (e.g., 0.1, 0.2).
-- In memory, it is stored as a 96-bit integer mantissa, a sign bit, and a 31-bit exponent (a power of 10 that specifies the position of the decimal point).
+- Of the 128 bits, 1 bit represents the sign of the value, 96 bits represent the value itself (mantissa), and 8 bits represent the power of 10 to divide the 96-bit value by (from 0 to 28). The remaining bits are unused.
 
 Conversions between `decimal` and `float`/`double` must always be explicit.
 
@@ -105,21 +105,18 @@ if (flag)
 }
 ```
 
-Unlike in C++, there are no conversions between `bool` and numeric types.
+Unlike in C++, there are no conversions (neither implicit nor explicit casts) between `bool` and numeric types.
 
 ### Comparison Operators
 
-For value types, the comparison operation **by default** checks if the objects are identical field by field.
+For value types, the comparison operation **typically** checks if the values are identical.
 
 ```csharp
-Point p1 = new Point {X = 5, Y = 3};
-Point p2 = p1; p2.X = 0;
-Point p3 = new Point {X = -1, Y = 1};
-Point p4 = new Point {X = -1, Y = 1};
-Console.WriteLine(p1 == p2); // false
-Console.WriteLine(p3 == p4); // true
-
-public struct Point { public float X, Y; }
+int a = 5;
+int b = 5;
+int c = 10;
+Console.WriteLine(a == b); // true
+Console.WriteLine(a == c); // false
 ```
 
 For reference types, the comparison operation **by default** checks if the references point to the same object.
@@ -154,7 +151,7 @@ In this example, this mechanism helps us avoid a `NullReferenceException`. If th
 
 ## The `char` Type
 
-The `char` type (alias for `System.Char`) in .NET has a fixed size of 2 bytes - it's a UTF-16 encoded character.
+The `char` type (alias for `System.Char`) in .NET has a fixed size of 2 bytes - it represents a single UTF-16 code unit. Characters outside the Basic Multilingual Plane (e.g., most emoji) do not fit in a single `char` and are represented by two `char` values (a so-called *surrogate pair*).
 
 The `char` type can be implicitly converted to other numeric types if that type can accommodate a `ushort`. Otherwise, an explicit conversion is required.
 
@@ -166,12 +163,13 @@ char copyright = '\u00A9';
 
 ## The `Convert` Class
 
-The `Convert` class contains many useful methods for converting between types. It allows for conversions between basic types and strings, or conversions between the `bool` type and numeric types. Conversions using this class round floating-point numbers when converting to integers.
+The `Convert` class contains many useful methods for converting between types. It allows for conversions between basic types and strings, or conversions between the `bool` type and numeric types. Conversions using this class round floating-point numbers to the nearest integer when converting to integral types (unlike a cast, which truncates); halfway values are rounded to the nearest even number (so-called *banker's rounding*).
 
 ```csharp
-int number = Convert.ToInt32("42");
-int rounded = Convert.ToInt32(3.5);
-bool isTrue = Convert.ToBoolean(1);
-int binaryInt = Convert.ToInt32("101010", 2);
-string hex = Convert.ToString(255, 16);
+int number = Convert.ToInt32("42");             // 42
+int rounded = Convert.ToInt32(3.5);             // 4
+int roundedToEven = Convert.ToInt32(2.5);       // 2
+bool isTrue = Convert.ToBoolean(1);             // true
+int binaryInt = Convert.ToInt32("101010", 2);   // 42
+string hex = Convert.ToString(255, 16);         // "ff"
 ```

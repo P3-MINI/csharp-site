@@ -15,8 +15,10 @@ The server listens for incoming connections using `TcpListener`. When a connecti
 
 After establishing a connection, both sides communicate using a stream (`NetworkStream`), which is "wrapped" in a `StreamReader` and `StreamWriter` to facilitate text operations.
 
+TCP transmits a continuous stream of bytes and does not preserve message boundaries: data written in a single operation may be received in several parts, and data from several writes may be received at once. Therefore, the application protocol must define where each message ends (so-called *framing*), e.g., with a delimiter (here: the newline character) or with a length prefix.
+
 > [!WARNING]
-> Please note that `StreamReader` and `StreamWriter` internally buffer data. They work best in protocols where messages are text-based and each message is terminated by a newline character. This can lead to issues if the protocol is more complex. In such cases, `BinaryReader` and `BinaryWriter` might be a better choice, as they provide precise control over reading and writing data to the stream, even for text data.
+> Please note that `StreamReader` and `StreamWriter` internally buffer data. `StreamReader` may read more bytes from the stream than the line it returns – the rest waits in its buffer, so once a `StreamReader` is created, all further reading must go through it (reading directly from the stream would skip the buffered data). `StreamWriter` sends data only when its buffer is flushed, hence `AutoFlush = true`. They work best in protocols where messages are text-based and each message is terminated by a newline character. If the protocol is more complex (e.g., it mixes text and binary data), `BinaryReader` and `BinaryWriter` might be a better choice, as they provide precise control over reading and writing data to the stream, even for text data.
 
 The defined "protocol" is very simple - the client sends text commands (`date`, `time`, `exit`), and the server sends back the appropriate message. In real-world applications, protocols are often more complex and may be based on formats like `JSON` or binary structures.
 
@@ -32,13 +34,13 @@ public static class Program
     const int Port = 5000;
     public static async Task Main()
     {
-        CancellationTokenSource cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
         var ipEndPoint = new IPEndPoint(IPAddress.Any, Port);
         using var listener = new TcpListener(ipEndPoint);
         
         var waitForAnyKey = Task.Run(() =>
         {
-            Console.WriteLine("Wait any key to exit");
+            Console.WriteLine("Press any key to exit");
             Console.ReadKey(true);
             cts.Cancel();
         });

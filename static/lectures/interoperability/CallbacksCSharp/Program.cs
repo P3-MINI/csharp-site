@@ -7,10 +7,10 @@ public partial class Program
     public delegate void Callback(int value);
     
     [LibraryImport("CallbacksCpp")]
-    private static partial void Count(int from , int to, Callback callback);
+    private static partial void Count(int from, int to, Callback callback);
     
     [LibraryImport("CallbacksCpp")]
-    private static unsafe partial void Count(int from, int to, delegate* <int, void> callback);
+    private static unsafe partial void Count(int from, int to, delegate* unmanaged<int, void> callback);
     
     static unsafe void Main()
     {
@@ -37,6 +37,7 @@ public partial class Program
         Count(1, 101, &FizzBuzz);
     }
 
+    [UnmanagedCallersOnly]
     static void FizzBuzz(int i)
     {
         if (i % 3 == 0 && i % 5 == 0)

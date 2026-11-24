@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <RollForward>LatestMajor</RollForward>
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.14.8" />
+      <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.14.28" />
     </ItemGroup>
 
 </Project>

@@ -7,7 +7,7 @@ weight: 80
 
 Generics in C# look similar and serve the same purpose as templates in C++. They also allow us to write type-independent code, but they are a simpler and safer mechanism.
 
-C++ templates operate at compile time; for each type used in a template, the C++ compiler creates a new, separate copy of the class or function. In C#, generics **operate at runtime**. The compiler always compiles generics once into intermediate language, where the types remain unspecified for the time being. Only during execution, when a generic is first used, does the JIT (*Just-In-Time*) compiler create a specialized version of it.
+C++ templates operate at compile time; for each type used in a template, the C++ compiler creates a new, separate copy of the class or function. In C#, generics **operate at runtime**. The compiler always compiles generics once into intermediate language, where the types remain unspecified for the time being. Only during execution, when a generic is first used, does the JIT (*Just-In-Time*) compiler create a specialized version of it (a separate one for each value type argument, while all reference type arguments share a single version).
 
 In C++ (at least before C++20), the compiler does not verify operations on template types until an attempt is made to use them. This often generates very obscure and hard-to-understand compilation errors. In C#, generic types are fully type-safe; to know how a type can be used, it must be constrained. A similar mechanism has existed in C++ since version C++20: [Constraints and concepts](https://en.cppreference.com/w/cpp/language/constraints.html).
 
@@ -20,7 +20,7 @@ template <class T> T Max(T a, T b)
 }
 ```
 
-In C#, to know that we can compare types, we would need to, for example, constrain `T` to a type that implements `IComparable<T>`. Thanks to this, we can only use this generic method on comparable types, which prevents surprises after substitution.
+In C#, to know that we can compare types, we would need to, for example, constrain `T` to a type that implements `IComparisonOperators<T, T, bool>` (an interface from the `System.Numerics` namespace that declares comparison operators). Thanks to this, we can only use this generic method on comparable types, which prevents surprises after substitution.
 
 ```csharp
 static T Max<T>(T a, T b) where T : IComparisonOperators<T, T, bool>
@@ -158,7 +158,7 @@ If the compiler can infer the generic parameters, you don't have to specify them
 int i = 3, j = 5;
 Swap<int>(ref i, ref j);
 Swap(ref i, ref j);
-Console.WriteLine($"i: {i}, j: {j}");
+Console.WriteLine($"i: {i}, j: {j}"); // i: 3, j: 5
 ```
 
 ## Generic Type Constraints
@@ -184,9 +184,9 @@ public static T Max<T>(T value, params T[] values) where T : IComparable<T>
 
 Possible constraints:
 
-* `where T : `<base class/interface>` - the most common and useful constraint, allows calling methods from the constrained classes and interfaces.
-* `where T : `<base class/interface>`?` - allows calling methods from the constrained classes and interfaces, and can also be nullable.
-* `where T : new()` - the type must have a parameterless constructor, useful if we need to create new instances.
+* `where T : `*<base class/interface>* - the most common and useful constraint, allows calling methods from the constrained classes and interfaces.
+* `where T : `*<base class/interface>?* - allows calling methods from the constrained classes and interfaces, and can also be nullable.
+* `where T : new()` - the type must have a public parameterless constructor, useful if we need to create new instances.
 * `where T : class` - the type must be a reference type.
 * `where T : class?` - the type must be a reference type, can be nullable.
 * `where T : struct` - the type must be a value type.
@@ -244,7 +244,7 @@ This is also correct: `class Foo<Bar> where Bar : Foo<Bar>`.
 
 ## Invariance
 
-By default, generic types are invariant. You cannot cast their generic parameters up or down the inheritance chain.
+Generic classes and structs are always invariant. You cannot cast their generic parameters up or down the inheritance chain.
 
 Downcasting is not allowed because we could suddenly retrieve a different type of vehicle from a stack of cars.
 
@@ -270,7 +270,7 @@ public class Bike : Vehicle;
 
 ## Variance
 
-In interfaces, we can declare variant generic parameters. They restrict how the generic parameter can be used, but in return, they allow casting the parameter to one side of the inheritance chain. Covariant parameters (out) can only be used for return values. Contravariant parameters (in) can only be used as input parameters for methods.
+In interfaces (and delegates), we can declare variant generic parameters. They restrict how the generic parameter can be used, but in return, they allow casting the parameter to one side of the inheritance chain. Covariant parameters (out) can only be used for return values. Contravariant parameters (in) can only be used as input parameters for methods.
 
 ```csharp
 // Covariant T type parameter (can be used only as a return value)
@@ -323,10 +323,10 @@ Covariant generic parameters (out) allow for upcasting. This will enable passing
 var carStack = new Stack<Car>();
 carStack.Push(new Car());
 carStack.Push(new Car());
-IPoppable<Car> vehiclePoppable = carStack;
-WashVehicles(vehiclePoppable);
+IPoppable<Car> carPoppable = carStack;
+WashVehicles(carPoppable);
 
-public void WashVehicles(IPoppable<Vehicle> vehicles)
+void WashVehicles(IPoppable<Vehicle> vehicles)
 {
     while (vehicles.Count > 0)
     {
@@ -348,10 +348,10 @@ Contravariant generic parameters (in) allow for downcasting. This will enable pa
 var vehiclesStack = new Stack<Vehicle>();
 vehiclesStack.Push(new Car());
 vehiclesStack.Push(new Bike());
-IPushable<Vehicle> carPushable = vehiclesStack;
-DeliverCars(carPushable, 2);
+IPushable<Vehicle> vehiclePushable = vehiclesStack;
+DeliverCars(vehiclePushable, 2);
 
-public void DeliverCars(IPushable<Car> cars, int count)
+void DeliverCars(IPushable<Car> cars, int count)
 {
     for (int i = 0; i < count; i++)
     {

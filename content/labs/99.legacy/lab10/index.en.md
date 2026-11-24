@@ -41,7 +41,7 @@ You must implement the following computation parallelization methods:
 A correctly generated fractal should look as follows:
 
 <div style="text-align: center;">
-  <img src="/labs/lab10/mandelbrotset.png" width="400px" alt="mandelbrotset.png" />
+  <img src="{{< relurl "/labs/lab10/mandelbrotset.png" >}}" width="400px" alt="mandelbrotset.png" />
 </div>
 
 {{% hint warning %}}

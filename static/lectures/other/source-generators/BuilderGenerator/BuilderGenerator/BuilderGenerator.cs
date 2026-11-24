@@ -46,7 +46,8 @@ namespace BuilderGenerator
 
             var properties = symbol.GetMembers()
                 .OfType<IPropertySymbol>()
-                .Where(p => !p.IsReadOnly && p.DeclaredAccessibility == Accessibility.Public && p.SetMethod != null)
+                .Where(p => !p.IsStatic && !p.IsIndexer && p.DeclaredAccessibility == Accessibility.Public &&
+                            p.SetMethod is { IsInitOnly: false })
                 .Select(p => new PropertyModel(
                     p.Name, 
                     p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) 
@@ -73,8 +74,8 @@ namespace BuilderGenerator
                 code.StartBlock();
             }
 
-            // Generate Class Partial
-            code.AppendLine($"public partial class {model.ClassName}");
+            // Generate partial class (accessibility is taken from the user's declaration)
+            code.AppendLine($"partial class {model.ClassName}");
             using (code.Block())
             {
                 code.AppendLine($"public static Builder CreateBuilder() => new Builder();");

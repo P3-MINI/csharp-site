@@ -3,7 +3,7 @@ title: "Typ wyliczeniowy"
 weight: 60
 ---
 
-# Typ Wyliczeniowy (*Enums*)
+# Typ wyliczeniowy (*Enums*)
 
 Typ wyliczeniowy w C# jest podobny do tego z C++. Jest reprezentowany w pamięci jako typ całkowitoliczbowy i grupuje kilka stałych. W C# jest to typ bezpośredni. Domyślnie typem bazowym jest `int`.
 
@@ -21,7 +21,7 @@ public enum BorderSide
 
 W tym przypadku do elementów wyliczenia zostaną przypisane stałe typu `int`: 0, 1, 2, 3.
 
-Możemy zmienić zarówno typ pod spodem wyliczenia, jak i przypisane stałe:
+Możemy zmienić zarówno typ bazowy wyliczenia, jak i przypisane stałe:
 
 ```csharp
 public enum BorderSide : byte
@@ -37,19 +37,19 @@ Typem bazowym może być dowolny typ całkowitoliczbowy, który 'pomieści' wszy
 
 ## Konwersja między typami liczbowymi
 
-Typ wyliczeniowy możemy jawnie zrzutować z i do odpowiadającego mu typu liczbowego. Wartość zero można niejawnie do typu wyliczeniowego przypisać:
+Typ wyliczeniowy możemy jawnie zrzutować z i do odpowiadającego mu typu liczbowego. Jedynie stałą `0` można niejawnie przekonwertować na typ wyliczeniowy:
 
 ```csharp
 int i = (int) BorderSide.Top; // requires explicit cast
 BorderSide side = (BorderSide) i; // requires explicit cast
-BorderSide side = 0; // might assign 0 implicitly
+side = 0;                         // 0 is converted implicitly
 ```
 
 ## Operacje na typie wyliczeniowym
 
-Typ wyliczeniowy wspiera operacje za pomocą operatorów bitowych (`~`, `^`, `&`, `|`), arytmetycznych (`+`, `-`, `++`, `--`, `+=`, `-=`) i porównania (`!=`, `==`, `<=`, `>=`, `<`, `>`).
+Typ wyliczeniowy wspiera operacje za pomocą operatorów bitowych (`~`, `^`, `&`, `|`), arytmetycznych (`+`, `-`, `++`, `--`, `+=`, `-=`; do wartości wyliczenia można dodać lub od niej odjąć liczbę całkowitą, a różnica dwóch wartości wyliczenia jest typu bazowego) i porównania (`!=`, `==`, `<=`, `>=`, `<`, `>`).
 
-Ze względu na konwersję i operacje operatorami, typ wyliczeniowy może wyjść poza swój dozwolony zakres. Dlatego gdy sprawdzamy możliwe wartości powinniśmy spodziewać się niepoprawnej wartości.
+Ze względu na konwersje i operatory wartość wyliczenia może wyjść poza zakres zdefiniowanych stałych. Dlatego, gdy sprawdzamy możliwe wartości, powinniśmy spodziewać się niepoprawnej wartości.
 
 ```csharp
 BorderSide side = BorderSide.Bottom;
@@ -61,7 +61,7 @@ else if (side == BorderSide.Top) {}
 else if (side == BorderSide.Bottom) {}
 else
 {
-    throw new ArgumentException($"Enum value out of bounds: {side}")
+    throw new ArgumentException($"Enum value out of bounds: {side}");
 }
 ```
 
@@ -90,10 +90,10 @@ Aby sprawdzić, czy wartość wyliczenia zawiera którąś z opcji, używamy ope
 
 ```csharp
 BorderSides allButTop = BorderSides.All ^ BorderSides.Top;
-Console.WriteLine((allButTop & BorderSides.Left) != 0);
-Console.WriteLine((allButTop & BorderSides.Right) != 0);
-Console.WriteLine((allButTop & BorderSides.Top) != 0);
-Console.WriteLine((allButTop & BorderSides.Bottom) != 0);
+Console.WriteLine((allButTop & BorderSides.Left) != 0);   // True
+Console.WriteLine((allButTop & BorderSides.Right) != 0);  // True
+Console.WriteLine((allButTop & BorderSides.Top) != 0);    // False
+Console.WriteLine((allButTop & BorderSides.Bottom) != 0); // True
 
-Console.WriteLine(allButTop);
+Console.WriteLine(allButTop); // LeftRight, Bottom
 ```

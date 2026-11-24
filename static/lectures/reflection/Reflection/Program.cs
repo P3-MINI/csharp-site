@@ -96,7 +96,7 @@ class Program
         {
             DateTime? birthday = property.GetValue(person) as DateTime?;
             property.SetValue(person, birthday?.AddYears(-2));
-            Console.WriteLine($"Age: {DateTime.Now.Year - birthday?.Year}");
+            Console.WriteLine($"Age: {DateTime.Now.Year - person.Birthday.Year}"); // 23
         }
     }
     

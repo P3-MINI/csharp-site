@@ -33,7 +33,7 @@ Console.WriteLine(default(float));
 
 ## Implicitly Typed Local Variables
 
-If the compiler can infer the variable's type from the right-hand side of the assignment, we can replace the type declaration with the `var` keyword. Variables must be initialized in the same line where they are declared.
+If the compiler can infer the variable's type from the right-hand side of the assignment, we can replace the type declaration with the `var` keyword. Such variables must be initialized in the same statement in which they are declared.
 
 ```csharp
 var greeting = "Hello class";

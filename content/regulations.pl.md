@@ -2,104 +2,60 @@
 title: "Regulamin"
 ---
 
-## 1. Rekomendacje lub ograniczenia udziału studentów w zajęciach wynikających z wymaganej kolejności realizacji przedmiotów w planie studiów oraz wymagania wstępne
+## [Pełny Regulamin](https://usosweb.usos.pw.edu.pl/kontroler.php?_action=katalog2/przedmioty/pokazPrzedmiot&kod=1120-IN000-ISP-0234)
+Dostępny w systemie USOS po zalogowaniu.
 
-Wymagana jest wiedza z przedmiotów Programowanie 1 - strukturalne, Programowanie 2 - obiektowe, Architektura Komputerów i Podstawy systemu UNIX.
+## Ocenianie i Zaliczenie
+- Zaliczenie: >50 Punktów Łącznie ORAZ >45 Punktów z Laboratorium (Warsztaty i Zadania Laboratoryjne).
+- Skala Ocen:
+  - \[0, 50\]: 2.0 (Niedostateczny)
+  - \(50, 60\]: 3.0
+  - \(60, 70\]: 3.5
+  - \(70, 80\]: 4.0
+  - \(80, 90\]: 4.5
+  - \(90, 100\]: 5.0
 
-## 2. Zasady wymaganej obecności studenta na zajęciach, na których obecność jest obowiązkowa, w tym dopuszczalnego limitu nieobecności oraz usprawiedliwiania nieobecności
+## Obecność
+- Dopuszczalne są maksymalnie 3 nieobecności na zajęciach laboratoryjnych.
+- Obecność na wykładach jest opcjonalna.
+- Usprawiedliwiona nieobecność jest rekompensowana na koniec semestru średnią z zajęć laboratoryjnych, na których student był obecny.
 
-Obecność na zadaniach laboratoryjnych jest obowiązkowa. W przypadku nieobecności student otrzymuje 0 punktów za zadanie, na którym był nieobecny.
+## Warsztaty
+- 10 warsztatów (90 min), do 5 pkt za każdy.
+- Rozpoczynają się od sesji Q&A oraz wprowadzenia.
+- Kończą 5-minutowym testem LUB 30-minutowym zadaniem programistycznym.
+- Na testach obowiązuje całkowity zakaz korzystania z pomocy. 
+- Zadania programistyczne podlegają zasadom zadań laboratoryjnych.
 
-Nieobecność uznawana jest za usprawiedliwioną po okazaniu prowadzącemu zajęcia zwolnienia lekarskiego. W szczególnych przypadkach koordynator przedmiotu może uznać nieobecność spowodowaną innymi przyczynami za usprawiedliwioną.
+## Zadania Laboratoryjne
+- 5 zadań (90 min), do 10 pkt za każde.
+- Zadania muszą być rozwiązywane wyłącznie na komputerach laboratoryjnych (zakaz korzystania z własnych komputerów).
+- Rozwiązania należy przesyłać przez system git.
+- Własne materiały, dokumentacja i Internet są dozwolone.
+- Wymagana jest samodzielna praca. 
+- Narzędzia AI (np. ChatGPT, Copilot) są zabronione. 
+- Rozwiązania są weryfikowane przez system antyplagiatowy; na żądanie prowadzącego wymagane jest włączenie oprogramowania monitorującego pracę.
+- Możliwe punkty ujemne za niewydajność, błędy kompilacji lub łamanie zasad programowania obiektowego.
 
-Dopuszczalne są maksymalnie 3 nieobecności na zadaniach laboratoryjnych, większa liczba nieobecności skutkuje niezaliczeniem przedmiotu.
+## Projekty
+- Opcjonalne, brak limitu punktów.
+- Wymagana samodzielna praca.
+- Obowiązkowa obrona projektu. Niezaliczenie obrony skutkuje karą -10 punktów nałożoną na wszystkie projekty.
 
-## 3. Szczegółowe sposoby etapowej/końcowej weryfikacji osiągnięcia efektów uczenia się (np. liczba kolokwiów) oraz rodzaje materiałów i urządzeń dopuszczonych do używania przez studentów podczas weryfikacji osiągnięcia efektów uczenia się
+## Punkty za Aktywność
+- Opcjonalne, brak limitu punktów.
+- Przyznawane za udział w wykładach i wkład w rozwój strony przedmiotu.
 
-Laboratorium składa się z:
-- 8 warsztatów
-- 1 projektu
-- 7 zadań laboratoryjnych
+## Powtarzanie Przedmiotu
+- Niezaliczenie przedmiotu oznacza konieczność powtórzenia całości.
+- Przepisanie punktów z poprzednich lat jest możliwe tylko w szczególnych sytuacjach i wymaga zgody koordynatora.
 
-Ocenie podlega również jakość kodu. Za rozwiązania niewydajne, niekompilujące się, naruszające zasady programowania obiektowego i dobrego stylu programowania prowadzący może przyznać mniejszą liczbę punktów.
+## FAQ
+**Co się stanie, jeśli opuszczę zajęcia?**
+Dopuszczalne są maksymalnie 3 nieobecności na laboratoriach. Przy nieobecności usprawiedliwionej nie musisz odrabiać zadania – na koniec semestru otrzymasz za nie punkty wyliczone z Twojej średniej. (Przykład: Jeśli Twoja średnia z obecnych zajęć wynosi 80%, otrzymasz 80% punktów za opuszczone zajęcia, np. 4 z 5 pkt za warsztat).
 
-Warunkiem uzyskania punktów jest przesłanie rozwiązania na serwer przy użyciu systemu kontroli wersji git.
+**Czy mogę używać AI lub kopiować kod?**
+Nie. Narzędzia AI są zabronione. Wtyczki AI do IDE autouzupełniające więcej niż jedną linię kodu są również zakazane (wtyczki uzupełniające pojedynczą linię są dozwolone). Dozwolone jest użycie małych, oznaczonych fragmentów publicznego kodu, pod warunkiem, że w pełni je rozumiesz, a zadanie wykonane jest samodzielnie.
 
-Rozwiązania zostaną porównane za pomocą systemu anty-plagiatowego. W trakcie laboratorium, na żądanie prowadzącego, studenci są zobowiązani uruchomić dostarczone z zadaniem oprogramowanie monitorujące ich pracę.
-
-W czasie rozwiązywania zadań projektowych i laboratoryjnych można korzystać z własnych materiałów, dokumentacji systemowej oraz Internetu jednak tak, by oceniana praca była dziełem samodzielnym - w szczególności niedozwolone jest używanie rozwiązań opartych o AI, jak ChatGPT, GitHub Copilot, Google Gemini i podobnych narzędzi.
-
-W rozwiązaniach używać można dowolnych fragmentów publicznie dostępnych kodów źródłowych, pod warunkiem że nie stanowią one rozwiązania znacznej części zadania i zostaną w jasny sposób oznaczone wraz z podaniem odniesienia do źródła, z którego pochodzą. Materiały pochodzące z Internetu muszą być zrozumiałe dla studenta, a student powinien być w stanie wyjaśnić działanie skopiowanego kodu.
-
-### Warsztaty
-
-- Za warsztat student może otrzymać 1 punkt.
-- Na wykonanie warsztatu jest 90 minut w trakcie zajęć.
-- Części rozwiązania mogą być tworzone wspólnie z prowadzącym w trakcie zajęć - te części nie podlegają kontroli systemem anty-plagiatowym, reszta rozwiązania musi być jednak stworzona samodzielnie.
-- Warsztaty rozwiązywane są z użyciem systemu Arch Linux lub Windows na komputerach w laboratorium.
-- Student nieobecny może rozwiązać warsztat w domu w terminie do 1 tygodnia na pełną ilość punktów.
-
-### Projekty
-
-- Za projekt student może otrzymać od 0 do 8 punktów.
-- Na wykonanie projektu jest 2 tygodnie od otrzymania zadania.
-- Na życzenie prowadzącego student może być poproszony o zaprezentowanie przesłanego zadania na zajęciach.
-- Całość rozwiązania musi zostać stworzona samodzielnie.
-
-### Zadania laboratoryjne
-
-- Za zadanie laboratoryjne student może otrzymać od 0 do 12 punktów.
-- Na wykonanie zadania laboratoryjnego jest 90 minut w trakcie zajęć.
-- Całość rozwiązania musi zostać stworzona samodzielnie.
-- Zadanie laboratoryjne jest podzielone na etapy. Punkty za każdy etap podane są w treści zadania. Etapy muszą być wykonywane w wyznaczonej kolejności.
-- Każdy etap jest sprawdzany i oceniany na zajęciach.
-- Usprawiedliwiona nieobecność upoważnia do rozwiązania zadania laboratoryjnego w domu w terminie 1 tygodnia. Za takie zadanie można otrzymać punkty przeliczeniowe na koniec semestru.
-  - Punkty przeliczeniowe są obliczane na podstawie trzech wartości:
-    - {{< katex >}}S_1{{< /katex >}} – średni wynik pozostałych studentów za to zadanie, którzy byli obecni,
-    - {{< katex >}}S_2{{< /katex >}} – średni wynik studenta z pozostałych zadań, na których był obecny,
-    - {{< katex >}}S_3{{< /katex >}} – wynik z zadania laboratoryjnego rozwiązanego w domu.
-  - Liczba punktów określona jest wzorem: {{< katex >}} \frac{(S_1 + S_2)}{2} \cdot \frac{S_3}{12} {{< /katex >}}.
-- Zadania laboratoryjne rozwiązywane są z użyciem systemu Arch Linux lub Windows na komputerach w laboratorium.
-
-## 4. Harmonogram etapowej/końcowej weryfikacji osiągnięcia efektów uczenia się, w szczególności terminy sprawdzianów pisemnych i ustnych oraz terminy złożenia sprawozdań z wykonania ćwiczeń laboratoryjnych i projektów z uwzględnieniem terminów poprawkowych, jeśli specyfika przedmiotu to umożliwia
-
-Zajęcia odbywają się zgodnie z harmonogramem dostępnym na stronie [https://csharp.mini.pw.edu.pl/pl/schedule/](https://csharp.mini.pw.edu.pl/pl/schedule/).
-
-## 5. Możliwości i zasady udziału studentów w dodatkowych terminach sprawdzianów i egzaminów
-
-Dodatkowe terminy laboratoriów nie będą organizowane.
-
-## 6. Zasady zaliczania przedmiotu i wystawiania oceny końcowej z przedmiotu
-
-W celu uzyskania zaliczenia wymagane jest uzyskanie ponad 50 punktów łącznie.
-
-Skala ocen:
-
-| Punkty      | Ocena                |
-|-------------|----------------------|
-| \[0, 50\]   | 2.0 (niedostateczny) |
-| \(50, 60\]  | 3.0 (dostateczny)    |
-| \(60, 70\]  | 3.5 (dość dobry)     |
-| \(70, 80\]  | 4.0 (dobry)          |
-| \(80, 90\]  | 4.5 (ponad dobry)    |
-| \(90, 100\] | 5.0 (bardzo dobry)   |
-
-## 7. Terminy i tryby ogłaszania wyników etapowej/końcowej weryfikacji osiągnięcia efektów uczenia się i ocen uzyskiwanych przez studentów
-
-Zadania laboratoryjne i warsztaty oceniane są na bieżąco podczas zajęć. Punkty z tychże są umieszczane w USOSie najpóźniej 7 dni po zajęciach.
-
-Projekty są oceniane przez prowadzącego w terminie 7 dni od otrzymania rozwiązania. W tych przypadkach punkty są umieszczane w USOSie najpóźniej 7 dni po ocenie.
-
-Ocena końcowa wystawiana będzie w USOSie w ciągu 7 dni od opublikowania wyników ostatniego laboratorium.
-
-## 8. Zasady poprawiania wyników etapowej/końcowej weryfikacji osiągnięcia efektów uczenia się i ocen uzyskiwanych przez studentów
-
-Nie jest możliwe poprawianie wyników laboratorium.
-
-## 9. Zasady powtarzania z powodu niezadowalających wyników w nauce poszczególnych typów zajęć realizowanych w ramach przedmiotu
-
-Osoba, która nie zaliczyła przedmiotu, musi powtórzyć całość przedmiotu i przystąpić do wszystkich zaliczeń. Nie ma możliwości przepisywania punktów cząstkowych z poprzednich semestrów.
-
-## 10. Inne informacje w zależności od specyfiki realizowanych zajęć
-
-Materiały do przedmiotu dostępne na stronie [https://csharp.mini.pw.edu.pl/pl/](https://csharp.mini.pw.edu.pl/pl/).
+**Z jakiego systemu operacyjnego korzysta się na komputerach w laboratorium?**
+Możesz korzystać z systemu Arch Linux lub Windows.

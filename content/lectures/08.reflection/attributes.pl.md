@@ -7,9 +7,9 @@ weight: 10
 
 Atrybuty to "etykiety", które można doczepiać do różnych elementów kodu: klas, metod, właściwości, pól, parametrów itd.
 
-Atrybuty przechowują dodatkowe informacje (czyli metadane) o elemencie do którego są przyczepione.
+Atrybuty przechowują dodatkowe informacje (czyli metadane) o elemencie, do którego są przyczepione.
 
-Atrybuty same w sobie nic nie robią. Jest to pasywna informacja. Narzędzia, kompilator, lub sam program mogą te atrybuty odczytywać i na ich podstawie podejmować jakieś działania.
+Atrybuty same w sobie nic nie robią. Jest to pasywna informacja. Narzędzia, kompilator lub sam program mogą te atrybuty odczytywać i na ich podstawie podejmować jakieś działania.
 
 Atrybuty przyczepiamy przez wylistowanie ich w `[]` przed wybranym elementem:
 
@@ -17,14 +17,14 @@ Atrybuty przyczepiamy przez wylistowanie ich w `[]` przed wybranym elementem:
 [Obsolete("Use iterator `GetFibonacciIter` method instead.")]
 public static int GetFibonacci(int n)
 {
-    if (n < 0) throw new ArgumentException(nameof(n), "Input must be a non-negative integer.");
+    if (n < 0) throw new ArgumentOutOfRangeException(nameof(n), "Input must be a non-negative integer.");
     if (n is 0 or 1) return 1;
     return GetFibonacci(n - 1) + GetFibonacci(n - 2);
 }
 ```
 
 > [!INFO]
-> Kompilator przy próbie użycia metody oznaczonej `Obsolete` wygeneruje ostrzeżenie `warning CS0618: 'FibUtils.GetFibonacci(int)' is obsolete: 'Use iterator method instead.'`
+> Kompilator przy próbie użycia metody oznaczonej `Obsolete` wygeneruje ostrzeżenie ``warning CS0618: 'FibUtils.GetFibonacci(int)' is obsolete: 'Use iterator `GetFibonacciIter` method instead.'``
 
 Atrybut sam w sobie jest klasą. Definicja systemowego atrybutu `Obsolete` wygląda następująco:
 
@@ -44,14 +44,14 @@ public sealed class ObsoleteAttribute : Attribute
 
 ```
 
-Atrybuty dziedziczą po `System.Attribute`, i zwyczajowo ich nazwa kończy się `...Attribute` (posługując się atrybutem możemy pomijać ten suffix).
+Atrybuty dziedziczą po `System.Attribute` i zwyczajowo ich nazwa kończy się `...Attribute` (posługując się atrybutem, możemy pomijać ten sufiks).
 
 ## Parametry atrybutów
 
 Wartości do atrybutów można przekazywać na dwa sposoby:
 
-* **Parametry Pozycyjne**: Odpowiadają parametrom konstruktora klasy atrybutu. Są one przekazywane w nawiasach `()` po nazwie atrybutu, w tej samej kolejności co w sygnaturze konstruktora.
-* **Parametry Nazwane**: Odpowiadają publicznym właściwościom lub polom klasy atrybutu. Są one opcjonalne i można je przypisać po parametrach pozycyjnych, używając składni `Nazwa = wartość`.
+* **Parametry pozycyjne**: Odpowiadają parametrom konstruktora klasy atrybutu. Są one przekazywane w nawiasach `()` po nazwie atrybutu, w tej samej kolejności co w sygnaturze konstruktora.
+* **Parametry nazwane**: Odpowiadają publicznym właściwościom lub polom klasy atrybutu. Są one opcjonalne i można je przypisać po parametrach pozycyjnych, używając składni `Nazwa = wartość`.
 
 Jeżeli atrybut nie posiada parametrów, możemy pominąć `()`.
 
@@ -69,7 +69,7 @@ public void AnotherVeryOldMethod() { }
 ```
 
 > [!WARNING]
-> **Argumenty atrybutów muszą być stałymi czasu kompilacji.**
+> **Argumenty atrybutów muszą być stałymi czasu kompilacji** (lub wyrażeniami `typeof` albo jednowymiarowymi tablicami takich wartości).
 
 ## Przyczepianie atrybutu
 
@@ -84,6 +84,7 @@ Atrybut można przyczepić do praktycznie dowolnego elementu kodu:
 - Delegata
 - Konstruktora
 - Metody
+- Parametru
 - Właściwości
 - Pola
 - Zdarzenia
@@ -92,7 +93,7 @@ Atrybut można przyczepić do praktycznie dowolnego elementu kodu:
 
 ### Przykłady przyczepiania atrybutów
 
-Czasami żeby przyczepić atrybut do tego czego chcemy, należy jawnie podać cel atrybutu.
+Czasami, żeby przyczepić atrybut do właściwego elementu, należy jawnie podać cel atrybutu.
 
 ```csharp
 [assembly: Description("Applied to an assembly")]
@@ -118,7 +119,7 @@ public class Stack<[Description("Applied to a generic parameter")] T>
     }
 
     [return: Description("Applied to a return value")]
-    [method: Description("Implicitly applied to a method")]
+    [method: Description("Explicitly applied to a method")]
     public T Pop()
     {
         if (Count == 0)
@@ -130,9 +131,9 @@ public class Stack<[Description("Applied to a generic parameter")] T>
 }
 ```
 
-### Przypinanie wielu atrybutów:
+### Przyczepianie wielu atrybutów
 
-Do jednego elementu możemy przypiąć wiele atrybutów. Można to zrobić na dwa sposoby, w jednym zestawie `[]`:
+Do jednego elementu możemy przyczepić wiele atrybutów. Można to zrobić na dwa sposoby, w jednym zestawie `[]`:
 
 ```csharp
 [Description("Multiple attributes applied to a method"), Conditional("DEBUG")]
@@ -154,7 +155,7 @@ private static void Log(string message)
 ```
 
 > [!INFO]
-> Atrybut `Conditional` warunkowo włącza lub wyłącza wywołania metody. Jeśli symbol kompilacji (np. `DEBUG`) nie jest zdefiniowany, to wszystkie wywołania metody oznaczonej tym atrybutem (wraz z jej argumentami) zostaną całkowicie usunięte ze skompilowanego kodu. Metoda nie może nic zwracać.
+> Atrybut `Conditional` warunkowo włącza lub wyłącza wywołania metody. Jeśli symbol kompilacji (np. `DEBUG`) nie jest zdefiniowany, to wszystkie wywołania metody oznaczonej tym atrybutem (wraz z jej argumentami) zostaną całkowicie usunięte ze skompilowanego kodu. Metoda musi zwracać `void`.
 
 ## Atrybuty 'Caller Info'
 
@@ -225,4 +226,4 @@ Assertion.Assert("Hello, World!" is { Length: < 5 });
 ```
 
 > [!INFO]
-> Operator `nameof` pozwala na uzyskanie nazwy zmiennej, typu, składowej lub parametru w postaci ciągu znaków. Działa w czasie kompilacji i chroni przed  błędami związanymi z refaktoryzacją nazw. Jeżeli taka nazwa nie jest do niczego przypisana kompilator zgłosi błąd.
+> Operator `nameof` pozwala na uzyskanie nazwy zmiennej, typu, składowej lub parametru w postaci stałego napisu. Działa w czasie kompilacji i chroni przed błędami związanymi z refaktoryzacją nazw. Jeżeli nazwa nie odnosi się do żadnego istniejącego elementu, kompilator zgłosi błąd.

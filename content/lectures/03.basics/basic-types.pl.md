@@ -5,7 +5,7 @@ weight: 20
 
 # Typy podstawowe
 
-Słowa kluczowe typów wbudowanych (np. `int`, `double`, `bool`) są bezpośrednimi aliasami dla typów zdefiniowanych w przestrzeni nazw `System` (np. `System.Int32`, `System.Double`, `System.Boolean`). Warto pamiętać, że te typy to zwykłe klasy w bibliotece standardowej, w nich są zdefiniowane przydatne stałe i metody, np. `int.MaxValue`, `int.Parse(string)`, `float.NegativeInfinity`.
+Słowa kluczowe typów wbudowanych (np. `int`, `double`, `bool`) są bezpośrednimi aliasami dla typów zdefiniowanych w przestrzeni nazw `System` (np. `System.Int32`, `System.Double`, `System.Boolean`). Warto pamiętać, że te typy to zwykłe struktury (typy bezpośrednie) w bibliotece standardowej, w których zdefiniowane są przydatne stałe i metody, np. `int.MaxValue`, `int.Parse(string)`, `float.NegativeInfinity`.
 
 ## Typy numeryczne
 
@@ -19,9 +19,9 @@ Słowa kluczowe typów wbudowanych (np. `int`, `double`, `bool`) są bezpośredn
 | **uint** | `System.UInt32` | 32 bity | `0` do `4,2×10⁹` | - | `U` lub `u` |
 | **long** | `System.Int64` | 64 bity | `-9×10¹⁸` do `9×10¹⁸` | - | `L` lub `l` |
 | **ulong** | `System.UInt64` | 64 bity | `0` do `18×10¹⁸` | - | `UL` lub `ul` |
-| **float** | `System.Single` | 32 bity | `±1.5×10⁻⁴⁵` do `±3.4×10³⁸` | ~6-9 cyfr | `F` lub `f` |
-| **double** | `System.Double` | 64 bity | `±5.0×10⁻³²⁴` do `±1.7×10³⁰⁸` | ~15-17 cyfr | `D` lub `d` |
-| **decimal** | `System.Decimal` | 128 bitów | `±1.0×10⁻²⁸` do `±7.9×10²⁸` | 28-29 cyfr | `M` lub `m` |
+| **float** | `System.Single` | 32 bity | `±1,5×10⁻⁴⁵` do `±3,4×10³⁸` | ~6-9 cyfr | `F` lub `f` |
+| **double** | `System.Double` | 64 bity | `±5,0×10⁻³²⁴` do `±1,7×10³⁰⁸` | ~15-17 cyfr | `D` lub `d` |
+| **decimal** | `System.Decimal` | 128 bitów | `±1,0×10⁻²⁸` do `±7,9×10²⁸` | 28-29 cyfr | `M` lub `m` |
 
 
 ## Konwersje numeryczne
@@ -49,7 +49,7 @@ Wymagają świadomej decyzji programisty i użycia operatora rzutowania `(typ)`.
 
 Konwersja z `double` lub `float` na typ całkowitoliczbowy powoduje **obcięcie** części ułamkowej.
 
-Dla typów całkowitoliczbowych jeżeli operacja powoduje **przepełnienie** (wartość przekracza zakres typu docelowego), to domyślnym zachowaniem jest wykonanie operacji tak jakby była ona wykonana na typie większym i obcięcie bitów znaczących.
+Dla typów całkowitoliczbowych, jeżeli operacja powoduje **przepełnienie** (wartość przekracza zakres typu docelowego), to domyślnym zachowaniem jest wykonanie operacji tak, jakby była ona wykonana na typie większym, i odrzucenie najbardziej znaczących bitów, które się nie mieszczą.
 
 ```csharp
 double d = 99.9;
@@ -81,7 +81,7 @@ catch (OverflowException ex)
 Typu `decimal` należy używać do operacji finansowych i monetarnych, gdzie błędy zaokrągleń są niedopuszczalne.
 
 - `decimal` to **typ zmiennoprzecinkowy o podstawie 10**. W przeciwieństwie do `float` i `double` (podstawa 2), `decimal` dokładnie reprezentuje ułamki dziesiętne (np. 0.1, 0.2).
-- W pamięci jest przechowywany jako 96-bitowa mantysa (liczby całkowitej), bit znaku i 31 bitów wykładnika (potęgi 10, określającej pozycję przecinka).
+- Ze 128 bitów, 1 bit reprezentuje znak, 96 bitów reprezentuje samą wartość (mantysę), a 8 bitów reprezentuje potęgę liczby 10, przez którą dzielona jest ta 96-bitowa wartość (od 0 do 28). Pozostałe bity są niewykorzystane.
 
 Konwersje między `decimal` a `float`/`double` zawsze muszą być jawne.
 
@@ -105,21 +105,18 @@ if (flag)
 }
 ```
 
-W odróżnieniu od C++ nie istnieją konwersje między `bool` a typami liczbowymi.
+W odróżnieniu od C++ nie istnieją konwersje (ani niejawne, ani jawne rzutowania) między `bool` a typami liczbowymi.
 
 ### Operatory porównania
 
-Dla typów bezpośrednich operacja porównania **domyślnie** sprawdza czy obiekty są identyczne pole po polu.
+Dla typów bezpośrednich operacja porównania **zazwyczaj** sprawdza czy wartości są identyczne.
 
 ```csharp
-Point p1 = new Point {X = 5, Y = 3};
-Point p2 = p1; p2.X = 0;
-Point p3 = new Point {X = -1, Y = 1};
-Point p4 = new Point {X = -1, Y = 1};
-Console.WriteLine(p1 == p2); // false
-Console.WriteLine(p3 == p4); // true
-
-public struct Point { public float X, Y; }
+int a = 5;
+int b = 5;
+int c = 10;
+Console.WriteLine(a == b); // true
+Console.WriteLine(a == c); // false
 ```
 
 Dla typów referencyjnych operacja porównania **domyślnie** sprawdza czy referencje wskazują na ten sam obiekt.
@@ -135,7 +132,7 @@ Console.WriteLine(p3 == p4); // true
 public class Person { public string Name; public int Age; }
 ```
 
-> Operatory porównania mogą być nadpisane, tak, żeby zwracały dowolny typ. W praktyce nie ma to zbyt wiele sensu.
+> Operatory porównania mogą być przeciążone tak, żeby zwracały dowolny typ. W praktyce nie ma to zbyt wiele sensu.
 
 ### Operacje skrócone (*Short-Circuiting*)
 
@@ -154,7 +151,7 @@ W tym przykładzie dzięki temu mechanizmowi unikamy `NullReferenceException`. J
 
 ## Typ `char`
 
-Typ `char` (alias typu `System.Char`) w .NET ma stały rozmiar 2 bajtów - to znak kodowany w UTF-16.
+Typ `char` (alias typu `System.Char`) w .NET ma stały rozmiar 2 bajtów - reprezentuje pojedynczą jednostkę kodową (*code unit*) UTF-16. Znaki spoza podstawowej płaszczyzny wielojęzycznej (BMP), np. większość emoji, nie mieszczą się w jednym `char` i są reprezentowane przez dwie wartości `char` (tzw. parę zastępczą, *surrogate pair*).
 
 Typ `char` można niejawnie konwertować na inne typy liczbowe jeżeli ten typ pomieści w sobie `ushort`. W przeciwnym wypadku wymagana jest jawna konwersja.
 
@@ -166,12 +163,13 @@ char copyright = '\u00A9';
 
 ## Klasa `Convert`
 
-Klasa Convert zawiera mnóstwo przydatnych metod do konwersji między typami. Daje możliwość konwersji między typami podstawowymi i stringami, czy konwersje między typem `bool` i liczbowymi. Konwersje z użyciem tej klasy zaokrąglają liczby zmiennoprzecinkowe przy konwersji do liczb całkowitoliczbowych.
+Klasa `Convert` zawiera mnóstwo przydatnych metod do konwersji między typami. Daje możliwość konwersji między typami podstawowymi i stringami czy konwersji między typem `bool` a typami liczbowymi. Konwersje z użyciem tej klasy zaokrąglają liczby zmiennoprzecinkowe do najbliższej liczby całkowitej (w odróżnieniu od rzutowania, które obcina część ułamkową); wartości leżące dokładnie pośrodku są zaokrąglane do najbliższej liczby parzystej (tzw. *zaokrąglanie bankierskie*).
 
 ```csharp
-int number = Convert.ToInt32("42");
-int rounded = Convert.ToInt32(3.5);
-bool isTrue = Convert.ToBoolean(1);
-int binaryInt = Convert.ToInt32("101010", 2);
-string hex = Convert.ToString(255, 16);
+int number = Convert.ToInt32("42");             // 42
+int rounded = Convert.ToInt32(3.5);             // 4
+int roundedToEven = Convert.ToInt32(2.5);       // 2
+bool isTrue = Convert.ToBoolean(1);             // true
+int binaryInt = Convert.ToInt32("101010", 2);   // 42
+string hex = Convert.ToString(255, 16);         // "ff"
 ```

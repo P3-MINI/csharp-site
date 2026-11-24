@@ -83,7 +83,7 @@ Thread.Sleep(millisecondsTimeout: 10);
 ```
 
 > [!NOTE]
-> `Sleep` and `Join` are **blocking** operations that cause a thread to be suspended by the operating system and not consume CPU time until the event the thread is waiting for occurs. Other typical blocking operations include waiting for synchronization primitives (e.g., `Mutex.Wait()`) or I/O operations (e.g., `File.ReadAllText()`).
+> `Sleep` and `Join` are **blocking** operations that cause a thread to be suspended by the operating system and not consume CPU time until the event the thread is waiting for occurs. Other typical blocking operations include waiting for synchronization primitives (e.g., `Mutex.WaitOne()`) or I/O operations (e.g., `File.ReadAllText()`).
 
 ## Foreground and Background Threads
 
@@ -171,6 +171,9 @@ static void Main()
 }
 ```
 
+> [!NOTE]
+> The example uses the dedicated `System.Threading.Lock` type introduced in .NET 9. Since C# 13, `lock` on an instance of this type is compiled to a call to its `EnterScope()` method instead of using the `Monitor` class, which gives the best performance. In earlier versions of .NET and C#, the lock is a dedicated instance of any reference type, typically `private static readonly object LockObj = new object();`. More on locking: [Exclusive Locking]({{< ref "/lectures/12.synchronization/exclusive-locking" >}}).
+
 ## Exception Handling in Threads
 
 An unhandled exception in any thread, by default, causes the **immediate termination of the entire application**.
@@ -217,7 +220,7 @@ public class Program
 }
 ```
 
-> The thread pool is managed by the Runtime; initially, it contains as many threads as there are physical cores available in the system. The Runtime adds or removes threads from the pool as needed.
+> The thread pool is managed by the Runtime, which creates threads on demand: immediately up to a minimum number, by default equal to the number of logical processors (`Environment.ProcessorCount`), and above that gradually, depending on the load. Threads that stay idle for a longer time are removed from the pool.
 
 > [!NOTE]
 > Although threads are the basis of concurrency, in modern C#, they are rarely used directly. Higher-level abstractions operating on the built-in thread pool, such as `Task`, `Parallel`, and `async/await`, are preferred.

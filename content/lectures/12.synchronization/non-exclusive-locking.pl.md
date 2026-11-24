@@ -9,7 +9,7 @@ Blokowanie współdzielone to mechanizm, który pozwala na dostęp do zasobu wi�
 
 ## Semaphore(Slim)
 
-Semafory pozwalają **ograniczyć** liczbę wątków, które mogą jednocześnie uzyskać dostęp do zasobu lub sekcji kodu. W .NET występują w dwóch wersjach: `Semaphore` to opakowanie na uchwyt do semafora oferowanego przez system operacyjny. `SemaphoreSlim` jest natomiast implementowany w całości przez środowisko uruchomieniowe, dzięki czemu jest szybszy (około 10x - nie wymaga przełączania kontekstu do jądra), ale nie może być za to użyty do synchronizacji międzyprocesowej. Wersja "Slim" wspiera także konstrukcje asynchroniczne.
+Semafory pozwalają **ograniczyć** liczbę wątków, które mogą jednocześnie uzyskać dostęp do zasobu lub sekcji kodu. W .NET występują w dwóch wersjach: `Semaphore` to opakowanie na uchwyt do semafora oferowanego przez system operacyjny (może być nazwany, co pozwala na synchronizację międzyprocesową; nazwane semafory są jednak obsługiwane tylko w systemie Windows). `SemaphoreSlim` jest natomiast implementowany w całości przez środowisko uruchomieniowe, dzięki czemu jest szybszy (około 10x - nie wymaga przejść do trybu jądra), ale nie może być za to użyty do synchronizacji międzyprocesowej. Wersja "Slim" wspiera także konstrukcje asynchroniczne.
 
 Semafory są inicjalizowane z określoną liczbą "pozwoleń" (*permits*). `Wait()`/`WaitAsync()` zmniejsza licznik, a `Release()` zwiększa. Zazwyczaj używa się ich do ograniczania przepustowości (np. max 5 jednoczesnych pobierań plików, max 10 połączeń do bazy danych).
 
@@ -64,7 +64,7 @@ public class Downloader(int concurrency)
 
 `ReaderWriterLock(Slim)` to prymityw zoptymalizowany pod scenariusze, w których operacje odczytu są znacznie częstsze niż operacje zapisu. Wspiera dwa tryby blokowania. Dowolna liczba wątków może być w trybie odczytu jednocześnie (`EnterReadLock` / `ExitReadLock`). Tylko jeden wątek może być w trybie zapisu (`EnterWriteLock` / `ExitWriteLock`). Gdy wątek jest w trybie zapisu, żaden inny wątek nie może czytać ani pisać.
 
-Najczęściej używa się przy współdzielonych strukturach danych, konfiguracji aplikacji, do implementacji pamięci podręcznej. Wszędzie tam gdzie odczyty są częste, a zapisy bardzo rzadkie. W prostych przypadkach zwykły `lock` jest zazwyczaj wystarczający.
+Najczęściej używa się go przy współdzielonych strukturach danych, konfiguracji aplikacji lub do implementacji pamięci podręcznej - wszędzie tam, gdzie odczyty są częste, a zapisy bardzo rzadkie. W prostych przypadkach zwykły `lock` jest zazwyczaj wystarczający.
 
 > [!WARNING]
-> Należy używać nowszej klasy `ReaderWriterLockSlim` zamiast starszej `ReaderWriterLock`. Wersja "Slim" jest implementowana w całości przez środowisko uruchomieniowe, co zapewnia znacznie lepszą wydajność niż starsza wersja oparta na zasobach systemu operacyjnego.
+> Należy używać nowszej klasy `ReaderWriterLockSlim` zamiast starszej `ReaderWriterLock`. Wersja "Slim" jest znacznie wydajniejsza, ma prostsze zasady rekurencji oraz podnoszenia/obniżania poziomu blokady i pozwala uniknąć wielu sytuacji grożących zakleszczeniem.

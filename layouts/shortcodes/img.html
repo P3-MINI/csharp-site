@@ -1,0 +1,7 @@
+{{- $rawSrc := .Get "src" | default (.Get 0) -}}
+{{- $src := ($rawSrc | strings.TrimPrefix "/") | relURL -}}
+{{- $alt := .Get "alt" | default (.Get 1) -}}
+{{- $title := .Get "title" -}}
+{{- $width := .Get "width" -}}
+{{- $class := .Get "class" -}}
+<img src="{{ $src }}"{{ with $alt }} alt="{{ . }}"{{ end }}{{ with $title }} title="{{ . }}"{{ end }}{{ with $width }} width="{{ . }}"{{ end }}{{ with $class }} class="{{ . }}"{{ end }} />

@@ -9,12 +9,13 @@ weight: 60
 
 ## Pakowanie (*boxing*)
 
-Rzutowanie typu bezpośredniego do/z `object`u wiąze się z tzw. operacją pakowania/rozpakowania (*boxing/unboxing*). Rzutowanie w dół wymaga jawnego rzutowania, jeżeli się nie powiedzie to Runtime rzuca wyjątkiem `InvalidCastException`. Operacja pakowania polega na zaalokowaniu typu bezpośredniego na stercie i skopiowaniu go tam. Jest to operacja kosztowna, należy jej unikać jeżeli się da. Rozpakowanie polega na skopiowaniu typu bezpośredniego z powrotem na stos.
+Rzutowanie typu bezpośredniego do/z `object`u wiąże się z tzw. operacją pakowania/rozpakowania (*boxing/unboxing*). Rzutowanie w dół wymaga jawnego rzutowania; jeżeli się nie powiedzie, to środowisko uruchomieniowe rzuca wyjątek `InvalidCastException`. Operacja pakowania polega na zaalokowaniu typu bezpośredniego na stercie i skopiowaniu go tam. Jest to operacja kosztowna, należy jej unikać, jeżeli się da. Rozpakowanie polega na skopiowaniu wartości z „pudełka” (np. z powrotem do zmiennej lokalnej na stosie). Rozpakowanie wymaga podania dokładnie tego typu, który został zapakowany - np. zapakowanego `int`a nie można rozpakować bezpośrednio do `long`.
 
 ```csharp
 int num = 42;
 object obj = num; // Boxing
 int unboxedNum = (int)obj; // Unboxing
+// long l = (long)obj; // InvalidCastException: the boxed value is an int
 ```
 
 ## Definicja typu `object`
@@ -38,7 +39,7 @@ public class Object
 
 ## Metody w typie `object`
 
-Jako, że wszystkie typy dziedziczą po `object`, metody (np. `ToString()`, `GetType()`, `GetHashCode()` i `Equals(object)`) zdefiniowane w `object` są dostępne także w innych typach. Wywołanie tych metod (za wyjątkiem `GetType`) na typie bezpośrednim nie powoduje operacji pakowania.
+Jako że wszystkie typy dziedziczą po `object`, metody (np. `ToString()`, `GetType()`, `GetHashCode()` i `Equals(object)`) zdefiniowane w `object` są dostępne także w innych typach. Wywołanie tych metod na typie bezpośrednim, który je nadpisuje (jak wszystkie typy wbudowane), nie powoduje operacji pakowania. Natomiast wywołanie metody, której struktura nie nadpisuje, lub wywołanie `GetType` (która nie jest wirtualna) pakuje wartość.
 
 ```csharp
 int i = 15;
@@ -50,7 +51,7 @@ Console.WriteLine(3.Equals(i));
 
 ## `ToString`
 
-Metoda `ToString` zwraca tekstową reprezentację obiektu. Wszystkie typy wbudowane ją przeciążają. Jeżeli typ by jej nie przeciążył, to wtedy `ToString` zwraca nazwę typu. Przeciążyć tą metodę można następująco:
+Metoda `ToString` zwraca tekstową reprezentację obiektu. Wszystkie typy wbudowane ją nadpisują. Jeżeli typ by jej nie nadpisał, to wtedy `ToString` zwraca nazwę typu. Nadpisać tę metodę można następująco:
 
 ```csharp
 Person alice = new Person {Name = "Alice", Age = 30};
@@ -66,13 +67,13 @@ class Person
 
 ## `GetType` i operator `typeof`
 
-Operator `typeof` pozwala pozyskać informację o typie w czasie kompilacji, metoda `GetType` w czasie wykonania programu. Poza tym obie te metody działają identycznie: zwracają obiekt będący reprezentacją typ typu.
+Operator `typeof` pozwala pozyskać informację o typie w czasie kompilacji, metoda `GetType` w czasie wykonania programu. Poza tym oba sposoby działają identycznie: zwracają obiekt `System.Type` będący reprezentacją typu.
 
 ```csharp
 DateTime now = DateTime.Now;
 
 Console.WriteLine(now.GetType()); // evaluated at runtime
-Console.WriteLine(typeof(now)); // evaluated at compile time
+Console.WriteLine(typeof(DateTime)); // evaluated at compile time
 
-Console.WriteLine(typeof(now) == now.GetType());
+Console.WriteLine(typeof(DateTime) == now.GetType());
 ```

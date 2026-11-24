@@ -5,7 +5,7 @@ weight: 70
 
 # Typy zagnieżdżone
 
-W C# możemy dowolnie zagnieżdżać typy. Jest to przydatne, gdy nie chcemy zaśmiecać przestrzeni nazw, a zagnieżdżane typy są ściśle powiązane z jakimś typem.
+W C# możemy definiować typy wewnątrz innych typów. Nazywamy je **typami zagnieżdżonymi**. Jest to przydatne, gdy nie chcemy zaśmiecać przestrzeni nazw, a zagnieżdżane typy są ściśle powiązane z jakimś typem.
 
 ```csharp
 public class Car
@@ -20,7 +20,7 @@ public class Car
 }
 ```
 
-Domyślnie typy zagnieżdżone mają prywatny modyfikator dostępu, tak jak reszta składowych klas i struktur. Poza tym mogą mieć dowolny modyfikator dostępu. Zagnieżdżony typ ma dostęp do prywatnych składowych otaczającego typu. W przykładzie klasa `Builder` wywołuje prywatny konstruktor klasy `Pizza`:
+Domyślnie typy zagnieżdżone mają prywatny modyfikator dostępu, tak jak reszta składowych klas i struktur. Poza tym mogą mieć dowolny modyfikator dostępu. Zagnieżdżony typ ma dostęp do wszystkich składowych otaczającego typu, również prywatnych. W przykładzie klasa `Builder` wywołuje prywatny konstruktor klasy `Pizza`:
 
 ```csharp
 public class Pizza
@@ -54,7 +54,7 @@ public class Pizza
 }
 ```
 
-Z zewnątrz klasy stworzenie i odniesienia do typów zagnieżdżonych wymagają podania pełnej klasyfikowanej nazwy:
+Z zewnątrz klasy stworzenie i odniesienia do typów zagnieżdżonych wymagają podania pełnej kwalifikowanej nazwy:
 
 ```csharp
 Pizza.Builder largePepperoniBuilder = new Pizza.Builder(40);
