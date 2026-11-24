@@ -1,10 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using WarehouseDelivery.ViewModels;
-using WarehouseDelivery.Views;
+using RayTracer.ViewModels;
+using RayTracer.Views;
 
-namespace WarehouseDelivery;
+namespace RayTracer;
 
 public partial class App : Application
 {

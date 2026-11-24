@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace WarehouseDelivery.ViewModels;
+namespace RayTracer.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {

@@ -3,7 +3,7 @@ title: "Współbieżność"
 weight: 80
 ---
 
-# Współbieżność
+## Współbieżność
 
 Do tej pory wszystkie pisane przez nas programy charakteryzowały się jednowątkowością. Kolejne instrukcje programu były wykonywane sekwencyjnie, jedna po drugiej. Taki sposób wykonywania kodu jest wystarczający w większości prostych przypadków, jednak w bardziej złożonych programach może prowadzić do nieefektywnego wykorzystania dostępnych zasobów.
 
@@ -11,9 +11,9 @@ Do tej pory wszystkie pisane przez nas programy charakteryzowały się jednowąt
 
 Współbieżność może być realizowana między innymi za pomocą **wielu wątków**. Jeżeli dostępnych jest kilka rdzeni procesora, poszczególne zadania mogą być dodatkowo wykonywane **równolegle**, czyli faktycznie w tym samym czasie.
 
-## Przydatne funcje, klasy i słowa kluczowe
+## Przydatne funkcje, klasy i słowa kluczowe
 
-### async, await
+### Programowanie Asynchroniczne (`async` and `await`)
 
 Para słów kluczowych wykorzystywanych do tworzenia metod asynchronicznych, które pozwalają wykonywać czasochłonne operacje bez blokowania wątku podczas oczekiwania na ich zakończenie.
 Asynchroniczność nie oznacza, że program może wykonywać tylko jedno zadanie naraz. Możemy na przykład rozpocząć kilka operacji asynchronicznych, a następnie oczekiwać na ich zakończenie za pomocą `Task.WhenAll`. Dzięki temu operacje mogą być realizowane współbieżnie.
@@ -22,7 +22,7 @@ Wyobraźmy sobie program, który musi pobrać dane z serwera HTTP. Taka operacja
 
 W takim przypadku możemy wykorzystać słowo kluczowe `await`.
 
-```
+```csharp
 await DownloadDataFromTheInternet();
 ```
 
@@ -30,29 +30,30 @@ await DownloadDataFromTheInternet();
 
 Jeżeli oczekiwane zadanie zwraca wynik, `await` pozwala również pobrać ten wynik.
 
-```
+```csharp
 string data = await DownloadDataFromTheInternet();
 ```
 
 Słowo kluczowe `async` umieszcza się przed deklaracją metody, która wykorzystuje `await`. Metoda oznaczona async zwraca zazwyczaj Task lub Task<T>. Task oznacza operację asynchroniczną, która nie zwraca wartości, natomiast Task<T> oznacza operację, której wynikiem będzie wartość typu T.
 
-```
+```csharp
 async Task Download()
 {
     string data = await DownloadDataFromTheInternet();
+    Console.WriteLine($"Downloaded {data.Length} characters.")
 }
 ```
 Metoda nie zwraca bezpośrednio wyniku, ale Task reprezentujący wykonywaną operację.
 
 Jeżeli metoda zwraca wynik to definiujemy ją tak:
-```
+```csharp
 async Task<string> DownloadData()
 {
     return await DownloadDataFromTheInternet();
 }
 ```
 Sama metoda zwraca obiekt typu Task\<string\>. Dopiero użycie await pozwala otrzymać właściwy wynik typu string.
-```
+```csharp
 string data = await DownloadData();
 ```
 `async` samo w sobie nie powoduje uruchomienia nowego wątku. Określa, że metoda może wykonywać operacje asynchroniczne i może zostać zawieszona w miejscach oznaczonych słowem `await`.
@@ -61,13 +62,13 @@ string data = await DownloadData();
 Jest to biblioteka zapewniająca mechanizmy tworzenia programów współbieżnych i równoległych. Jednym z najważniejszych jej elementów jest klasa Task, która reprezentuje *operację wykonywaną asynchronicznie*. Obiekt Task pozwala nam śledzić stan operacji, oczekiwać na jej zakończenie oraz w przypadku Task<T> uzyskać zwrócony przez nią wynik.
 
 Istnieje wiele sposobów tworzenia i uruchamiania zadań. Jednym z nich jest metoda ```Task.Run()```. Służy ona przede wszystkim do zlecania wykonania synchronicznej, ale kosztownej obliczeniowo operacji.
-```
+```csharp
 Task<int> task = Task.Run(CalculateResults);
 ```
 Wywołanie Task.Run() zwraca obiekt Task<int> reprezentujący rozpoczętą operację. Wykonanie operacji odbywa się na wątku z puli wątków, dzięki czemu wątek wywołujący może w tym czasie wykonywać inne zadania.
 
 Na zakończenie operacji możemy zaczekać za pomocą await.
-```
+```csharp
 int result = await task;
 ```
 Jeżeli zadanie nie zostało jeszcze wykonane, to await wstrzyma wykonanie metody bez blokowania wątku. Po zakończeniu zadania wykonywanie metody zostanie wznowione.
@@ -76,16 +77,16 @@ Task.Run() nie jest jednak jedynym sposobem tworzenia obiektów Task. W szczegó
 
 Przykład użycia:
 
-```
+```csharp
 static int CalculateResults()
 {
-    // czasochłonne obliczenia
+    int result = 42; // czasochłonne obliczenia
     return result;
 }
 ```
 Jeżeli `CalculateResults()` jest kosztownym obliczeniem:
 
-```
+```csharp
 static async Task Main(string[] args)
 {
     Task<int> task = Task.Run(CalculateResults);
@@ -100,14 +101,14 @@ static async Task Main(string[] args)
 `Task.Run` uruchamia obliczenie na wątku z puli wątków, a `await task` pozwala później zaczekać na jego zakończenie i pobrać wynik.
 
 Częstą praktyką przy uruchamianiu Tasków jest używanie **funkcji lambda** jako argumentu Task.Run(), pozwala to na przekazanie lokalnych zmiennych jako argumentów.
-```
+```csharp
 Task task = Task.Run(() => CalculateResults(localVariable1, localVariable2));
 ```
 
-### Parallel
-Klasa zawierająca zbiór funkcji pozwalających na zrównoleglanie operacji. Używane się ich głównie w celu poprawienia wydajności, pozwalają na pełniejsze wykożystanie potencjału procesora poprzez jednoczelne wykonywanie wielu mniejszych części zadania.\
+### Klasa `Parallel`
+Klasa zawierająca zbiór funkcji pozwalających na zrównoleglanie operacji. Używa się ich głównie w celu poprawienia wydajności, pozwalają na pełniejsze wykorzystanie potencjału procesora poprzez jednoczesne wykonywanie wielu mniejszych części zadania.
 **Parallel.For**     - służy do zrównoleglania tradycyjnych pętli for opartych na indeksach. 
-```
+```csharp
 int[] dane = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 int[] wyniki = new int[dane.Length];
 
@@ -119,7 +120,7 @@ Parallel.For(0, dane.Length, i =>
 });
 ```
 **Parallel.ForEach** - przetwarza elementy kolekcji (```IEnumerable``` np. listy) w wielu wątkach jednocześnie.
-```
+```csharp
 var numbers = Enumerable.Range(1, 10000);
 
 Parallel.ForEach(numbers, number =>
@@ -129,22 +130,27 @@ Parallel.ForEach(numbers, number =>
 
 ```
 
-### Lock
-Korzystanie przez różne wątki ze wspólnych zasobów może doprowadzić do poważnych błędów w funkcjonowaniu programu, rodzi to potrzebę stosowanie synchronizacji. 
+### Synchronizacja Wątków (`lock`)
+Korzystanie przez różne wątki ze wspólnych zasobów może doprowadzić do poważnych błędów w funkcjonowaniu programu, rodzi to potrzebę stosowania synchronizacji. 
 Zilustrujmy to na przykładzie programu symulującego magazyn wydający towar kurierom. Wątek kuriera wracającego do magazynu najpierw sprawdza, czy jest tam towar gotowy do 
 odebrania, następnie zwiększa swój własny licznik niesionego towaru i zmniejsza licznik magazynowy. Jeżeli nie zastosowaliśmy żadnych narzędzi do synchronizacji, 
-to może dość do sytuacji, gdy jeden kurier sprawdzi stan magazynu, znajdując tam jedną paczkę. Następnie, zanim zmniejszy on licznik towaru w magazynie, pojawić się może drugi kurier, 
+to może dojść do sytuacji, gdy jeden kurier sprawdzi stan magazynu, znajdując tam jedną paczkę. Następnie, zanim zmniejszy on licznik towaru w magazynie, pojawić się może drugi kurier, 
 który również sprawdzi stan towaru. W takim przypadku obaj z nich mogą wykonać instrukcję odebrania paczek i doprowadzić w ten sposób stan towaru w magazynie do wartości -1.
-Najprostszą odpowiedzią na ten problem w języku C# jest instrukcja **Lock**. Zapewnia ona wzajemne wykluczenie, dwa wątki nie mogą wejść do ograniczonego przez **Lock** bloku 
-kodu jednocześnie. Żeby używać blokady musimy najpierw zdefiniować obiekt ```private readonly System.Threading.Lock _lockObj = new();``` każdy zdefiniowany tak obiekt symbolizuje 
-jedną blokadę. Jej użycie wygląda tak:
-```
-lock(_lockObj)
+W języku C# wzajemne wykluczanie (mutual exclusion) jest realizowane za pomocą instrukcji `lock`. Standardowym podejściem jest blokowanie dedykowanego, prywatnego obiektu referencyjnego:
+```csharp
+private readonly object _lockObj = new();
+public void Increment()
 {
-	// operacja wymagająca synchronizacji
+   lock (_lockObj)
+	{
+	// sekcja krytyczna: w danym momencie wykonuje ją tylko jeden wątek
+	_counter++;
+	}
 }
 ```
-Jeżeli jeden wątek wejdzie do tak oznaczonego bloku, to każdy inny próbujący to zrobić przejdzie w stan uśpienia.
+> [!NOTE]
+> W .NET 9 / C# 13 można alternatywnie zadeklarować `private readonly System.Threading.Lock _lockObj = new();`, aby korzystać z szybszego, dedykowanego typu blokady.
+Jeżeli jeden wątek wejdzie do tak oznaczonego bloku, to każdy inny wątek próbujący uzyskać tę blokadę zostanie zablokowany do momentu jej zwolnienia.
 
 ## Kod początkowy
 
@@ -152,7 +158,7 @@ Jeżeli jeden wątek wejdzie do tak oznaczonego bloku, to każdy inny próbując
 > **Student**
 > {{< filetree dir="labs/lab10/student" >}}
 
-## Generowanie fraktali
+## Zadanie 1: Generowanie Fraktali (Zbiór Mandelbrota)
 
 {{% hint info %}}
 **Czym jest programowanie równoległe?**
@@ -211,16 +217,17 @@ Poprawnie wygenerowany fraktal powinien wyglądać następująco:
 > **Rozwiązanie**
 > {{< filetree dir="labs/lab10/solution/FractalsGenerator" >}}
 
-## RayTracer
+## Zadanie 2: Responsywne GUI w Raytracerze (Avalonia)
 
-{{% hint info %}}
-**Czym jest programowanie równoległe?**
-
-Programowanie równoległe to paradygmat programowania, wykorzystujący architekturę nowoczesnych, wielordzeniowych procesorów (CPU) w celu wykonywania wielu obliczeń równocześnie.
-
-Zamiast przetwarzać dane sekwencyjnie w jednym wątku, rozdzielamy pracę na wiele wątków, które wykonują swoją pracę w tym samym momencie.
-
-{{% /hint %}}
+> [!NOTE]
+> **Responsywność interfejsu użytkownika podczas wykonywania operacji asynchronicznych**
+>
+> Frameworki desktopowe, takie jak Avalonia, działają w oparciu o pojedynczy **wątek interfejsu użytkownika (UI thread)**, który obsługuje wejście użytkownika, układ elementów oraz renderowanie. Jeśli wykonujesz zadania wymagające dużej mocy obliczeniowej (takie jak raytracing) synchronicznie w wątku UI, cały interfejs zostaje zawieszony.
+>
+> Aby zachować responsywność GUI:
+> 1. Przenieś kosztowne obliczenia do zadania wykonywanego w tle przez pulę wątków, używając `Task.Run()`.
+> 2. Asynchronicznie oczekuj na zakończenie obliczeń w wątku UI za pomocą `await`, pozwalając mu w tym czasie nadal obsługiwać zdarzenia odświeżania interfejsu.
+> 3. Użyj `IProgress<T>`, aby bezpiecznie przekazywać informacje o postępie pośrednim z wątku działającego w tle z powrotem do wątku UI.
 
 ### Opis zadania
 
@@ -233,7 +240,7 @@ Należy przenieść renderowanie do zadania działającego w tle, wykorzystując
 
 3. Zastosuj modyfikatory async i await, aby umożliwić asynchroniczne oczekiwanie na zakończenie renderowania bez blokowania wątku interfejsu graficznego.
 
-4. Dodaj raportowanie postępu za pomocą IProgress
+4. Dodaj raportowanie postępu za pomocą `IProgress<T>`.
 
 ### Przykładowe rozwiązanie
 

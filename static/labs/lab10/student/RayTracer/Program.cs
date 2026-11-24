@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using System;
 
-namespace WarehouseDelivery;
+namespace RayTracer;
 
 sealed class Program
 {

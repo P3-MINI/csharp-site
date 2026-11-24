@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightScanner.Common", "Fli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FractalsGenerator", "FractalsGenerator\FractalsGenerator.csproj", "{1B97D7BB-9D6F-6E68-BC85-1CFC966B6DBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliverySimulation", "DeliverySimulation\DeliverySimulation.csproj", "{22FE80F1-C98E-4716-AA21-2F097379A6D5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracer", "RayTracer\RayTracer.csproj", "{9BBC7CC6-1E06-5CDC-54DA-FCA1D110D98F}"
 EndProject
 Global

@@ -2,9 +2,9 @@
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using WarehouseDelivery.ViewModels;
+using RayTracer.ViewModels;
 
-namespace WarehouseDelivery;
+namespace RayTracer;
 
 /// <summary>
 /// Given a view model, returns the corresponding view if possible.

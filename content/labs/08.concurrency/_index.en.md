@@ -3,7 +3,7 @@ title: "Concurrency"
 weight: 80
 ---
 
-**# Concurrency**
+## Concurrency
 
 So far, all the programs we have written have been single-threaded. Successive program instructions were executed sequentially, one after another. This way of executing code is sufficient in most simple cases, but in more complex programs it can lead to inefficient use of available resources.
 
@@ -11,9 +11,9 @@ So far, all the programs we have written have been single-threaded. Successive p
 
 Concurrency can be implemented, among other methods, using **multiple threads**. If several processor cores are available, individual tasks can additionally be executed **in parallel**, meaning that they actually run at the same time.
 
-**## Useful Functions, Classes, and Keywords**
+## Key Concepts & Language Constructs
 
-**### async, await**
+### Asynchronous Programming (`async` and `await`)
 
 A pair of keywords used to create asynchronous methods, which allow time-consuming operations to be performed without blocking a thread while waiting for them to complete.
 
@@ -23,7 +23,7 @@ Imagine a program that needs to download data from an HTTP server. This operatio
 
 In this case, we can use the `await` keyword.
 
-```
+```csharp
 await DownloadDataFromTheInternet();
 ```
 
@@ -31,16 +31,17 @@ await DownloadDataFromTheInternet();
 
 If the awaited task returns a result, `await` also allows us to retrieve that result.
 
-```
+```csharp
 string data = await DownloadDataFromTheInternet();
 ```
 
 The `async` keyword is placed before the declaration of a method that uses `await`. A method marked with `async` typically returns `Task` or `Task<T>`. `Task` represents an asynchronous operation that does not return a value, whereas `Task<T>` represents an operation whose result will be a value of type `T`.
 
-```
+```csharp
 async Task Download()
 {
     string data = await DownloadDataFromTheInternet();
+    Console.WriteLine($"Downloaded {data.Length} characters.")
 }
 ```
 
@@ -48,7 +49,7 @@ The method does not return the result directly; instead, it returns a `Task` rep
 
 If the method returns a result, we define it as follows:
 
-```
+```csharp
 async Task<string> DownloadData()
 {
     return await DownloadDataFromTheInternet();
@@ -57,19 +58,19 @@ async Task<string> DownloadData()
 
 The method itself returns an object of type `Task<string>`. Only by using `await` can we obtain the actual result of type `string`.
 
-```
+```csharp
 string data = await DownloadData();
 ```
 
 `async` does not, by itself, start a new thread. It indicates that the method can perform asynchronous operations and can be suspended at points marked with the `await` keyword.
 
-**### Task Parallel Library (TPL)**
+### Task Parallel Library (TPL)
 
 This is a library that provides mechanisms for creating concurrent and parallel programs. One of its most important components is the `Task` class, which represents an *\*asynchronous operation\**. A `Task` object allows us to track the state of an operation, wait for it to complete, and, in the case of `Task<T>`, obtain its result.
 
 There are many ways to create and start tasks. One of them is the `Task.Run()` method. It is primarily used to schedule a synchronous but computationally expensive operation for execution.
 
-```
+```csharp
 Task<int> task = Task.Run(CalculateResults);
 ```
 
@@ -77,7 +78,7 @@ Calling `Task.Run()` returns a `Task<int>` object representing the operation tha
 
 We can wait for the operation to finish using `await`.
 
-```
+```csharp
 int result = await task;
 ```
 
@@ -87,17 +88,17 @@ However, `Task.Run()` is not the only way to create `Task` objects. In particula
 
 Example:
 
-```
+```csharp
 static int CalculateResults()
 {
-    // time-consuming calculations
+    int result = 42; // time-consuming calculations
     return result;
 }
 ```
 
 If `CalculateResults()` performs an expensive computation:
 
-```
+```csharp
 static async Task Main(string[] args)
 {
     Task<int> task = Task.Run(CalculateResults);
@@ -113,17 +114,17 @@ static async Task Main(string[] args)
 
 A common practice when starting tasks is to use **lambda expressions** as arguments to `Task.Run()`. This allows local variables to be passed as arguments.
 
-```
+```csharp
 Task task = Task.Run(() => CalculateResults(localVariable1, localVariable2));
 ```
 
-**### Parallel**
+### The `Parallel` Class
 
 A class containing a set of methods that allow operations to be parallelized. They are primarily used to improve performance by making fuller use of the processor's capabilities through the simultaneous execution of multiple smaller parts of a task.
 
 **Parallel.For** - used to parallelize traditional index-based `for` loops.
 
-```
+```csharp
 int[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 int[] results = new int[data.Length];
 
@@ -137,7 +138,7 @@ Parallel.For(0, data.Length, i =>
 
 **Parallel.ForEach** - processes the elements of a collection (an `IEnumerable`, e.g. a list) concurrently across multiple threads.
 
-```
+```csharp
 var numbers = Enumerable.Range(1, 10000);
 
 Parallel.ForEach(numbers, number =>
@@ -147,36 +148,36 @@ Parallel.ForEach(numbers, number =>
 
 ```
 
-**### Lock**
+### Thread Synchronization (`lock`)
 
 When different threads access shared resources, serious errors can occur in the program's behavior, creating a need for synchronization.
 
 Let's illustrate this with an example of a program simulating a warehouse that supplies goods to couriers. A courier thread returning to the warehouse first checks whether there are any goods available for collection, then increments its own counter of carried goods and decrements the warehouse inventory counter. If we do not use any synchronization mechanisms, a situation may arise in which one courier checks the warehouse inventory and finds one package. Then, before that courier decrements the inventory counter, a second courier may arrive and check the inventory as well. In this case, both couriers may execute the package collection operation, causing the warehouse inventory to drop to -1.
 
-The simplest solution to this problem in C# is the **lock** statement. It provides mutual exclusion: two threads cannot enter a code block protected by **lock** at the same time. To use a lock, we first need to define an object:
-
-```
-private readonly System.Threading.Lock _lockObj = new();
-```
-
-Each object defined in this way represents a separate lock. It is used as follows:
-
-```
-lock(_lockObj)
+In C#, mutual exclusion is achieved using the `lock` statement. The standard approach locks on a dedicated private reference object:
+```csharp
+private readonly object _lockObj = new();
+public void Increment()
 {
-    // operation requiring synchronization
+    lock (_lockObj)
+    {
+        // critical section: only one thread executes this at a time
+        _counter++;
+    }
 }
 ```
+> [!NOTE]
+> In .NET 9 / C# 13, you can alternatively declare private readonly System.Threading.Lock _lockObj = new(); for a faster, dedicated lock type.
 
 If one thread enters the protected block, any other thread attempting to enter it must wait until the lock becomes available.
 
-**## Starter Code**
+## Starter Code
 
 > [!NOTE]
 > **Student**
 > {{< filetree dir="labs/lab10/student" >}}
 
-**## Fractal Generation**
+## Task 1: Fractal Generation (Mandelbrot)
 
 {{% hint info %}}
 **What Is Parallel Programming?**
@@ -187,7 +188,7 @@ Instead of processing data sequentially on a single thread, we divide the work a
 
 {{% /hint %}}
 
-**### Task Description**
+### Task Description
 
 The goal of this task is to implement and compare the execution times of different methods for parallelizing the computations performed when generating the [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set).
 
@@ -229,24 +230,25 @@ The correctly generated fractal should look as follows:
 
 {{% /hint %}}
 
-**### Example Solution**
+### Example Solution
 
 > [!TIP]
 > **Solution**
 > {{< filetree dir="labs/lab10/solution/FractalsGenerator" >}}
 
-**## RayTracer**
+## Task 2: Responsive GUI with RayTracer (Avalonia)
 
-{{% hint info %}}
-**What Is Parallel Programming?**
+> [!NOTE]
+> **Asynchronous UI Responsiveness**
+>
+> Desktop frameworks like Avalonia run a single **UI thread** that processes user input, layout, and rendering. If you perform computationally heavy tasks (like raytracing) synchronously on the UI thread, the entire interface freezes.
+>
+> To keep the GUI responsive:
+> 1. Offload heavy computation to a background thread pool worker using `Task.Run()`.
+> 2. Asynchronously wait for completion on the UI thread using `await`, allowing the UI thread to continue processing paint events.
+> 3. Use `IProgress<T>` to safely report intermediate progress from the background thread back onto the UI thread.
 
-Parallel programming is a programming paradigm that takes advantage of the architecture of modern multi-core CPUs to perform multiple computations simultaneously.
-
-Instead of processing data sequentially on a single thread, we divide the work among multiple threads that execute their parts of the task at the same time.
-
-{{% /hint %}}
-
-**### Task Description**
+### Task Description
 
 The task is to transform a synchronous ray tracing program into an asynchronous application that does not block the graphical user interface during rendering.
 
@@ -260,7 +262,7 @@ Move the rendering operation to a background task using `Task.Run()`, then use `
 
 4. Add progress reporting using `IProgress`.
 
-**### Example Solution**
+### Example Solution
 
 > [!TIP]
 > **Solution**

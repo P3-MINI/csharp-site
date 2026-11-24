@@ -1,4 +1,4 @@
-﻿namespace WarehouseDelivery.Views;
+﻿namespace RayTracer.Views;
 
 using Avalonia;
 using Avalonia.Controls;
