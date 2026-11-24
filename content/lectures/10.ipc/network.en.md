@@ -17,6 +17,8 @@ The transport layer includes two fundamental protocols for sending and receiving
 
 `UDP` and `TCP` allow for data transmission, but they do not define the messages that can be sent with them or any fixed order of their exchange. When using these protocols directly, we must take care of things like authentication or encryption ourselves.
 
+Using both protocols in .NET is described on separate pages: [TCP]({{< ref "/lectures/10.ipc/tcp" >}}) and [UDP]({{< ref "/lectures/10.ipc/udp" >}}).
+
 ### Application Layer
 
 The application layer defines higher-level protocols—how applications communicate with each other and exchange data. Application layer protocols, such as *HTTP*, *FTP*, *SMTP*, or *DNS*, specify the message format and the rules of interaction between a client and a server. Unlike transport protocols (TCP/UDP), which deal with byte transmission, application protocols focus on the semantics of the data and operations specific to a given service.

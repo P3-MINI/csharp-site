@@ -25,7 +25,7 @@ Console.WriteLine(txt2.ToUpper()); // "HELLO, WORLD!"
 
 ## Constructors and Properties
 
-A string can be created either with a literal, e.g., `"Hello"`, or using the class constructor. As in any civilized language, strings can be concatenated and indexed. However, the indexing property is read-only. Additionally, it has a `Length` property that returns its length.
+A string can be created either with a literal, e.g., `"Hello"`, or using the class constructor. As in any civilized language, strings can be concatenated and indexed. However, the indexer is read-only. Additionally, it has a `Length` property that returns its length.
 
 ```csharp
 char[] chars = new[] {'w', 'o', 'r', 'l', 'd'};
@@ -49,6 +49,8 @@ The `StringBuilder` class from the `System.Text` namespace is a mutable version 
 After finishing work with a `StringBuilder`, we can get a regular `string` from it by calling `ToString()`.
 
 ```csharp
+using System.Text;
+
 StringBuilder stringBuilder = new StringBuilder("Hello, ");
 stringBuilder.Append("this is ");
 stringBuilder.Append("a simple ");
@@ -84,7 +86,7 @@ Console.WriteLine($"Join: {joined}");
 
 ## Verbatim String Literals
 
-Verbatim string literals allow you to write a string without needing to escape special sequences: newlines, slashes, etc. The only exception is `"`, which is then escaped with a double `""` character. This is particularly useful for writing paths with the `\` character.
+Verbatim string literals allow you to write a string without needing to escape special characters: newlines, backslashes, etc. The only exception is `"`, which is then escaped with a double `""` character. This is particularly useful for writing paths with the `\` character.
 
 ```csharp
 string filePath = @"C:\Users\scoleridge\Documents\";
@@ -103,7 +105,7 @@ string quote = @"Her name was ""Sara.""";
 
 ## Raw String Literals (C# 11)
 
-Raw string literals begin and end with three or more `"` characters. They come in single-line and multi-line versions. In them, you don't need to escape special sequences even more. Subsequent `"` characters are allowed, as long as there are fewer of them than in the opening and closing quotes. In the multi-line version, whitespace after the opening of the string is ignored up to the new line, while whitespace preceding the closing is removed from every line of the string. This is particularly useful when you want to maintain nicely formatted code inside a string.
+Raw string literals begin and end with three or more `"` characters. They come in single-line and multi-line versions. Escape sequences are not processed in them at all, so nothing needs to be escaped. Sequences of `"` characters are allowed inside, as long as they are shorter than the opening and closing quotes. In the multi-line version, whitespace after the opening of the string is ignored up to the new line, while whitespace preceding the closing is removed from every line of the string. This is particularly useful when you want to maintain nicely formatted code inside a string.
 
 ```csharp
 var str1 = """This is a "raw string literal".""";
@@ -115,7 +117,7 @@ var xml = """
           </element>
           """;
 var str3 = """"
-           \'''Raw string literals\''' can start
+           """Raw string literals""" can start
            and end with more than three
            double-quotes when needed.
            """";

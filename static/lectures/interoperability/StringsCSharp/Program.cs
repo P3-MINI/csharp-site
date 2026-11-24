@@ -30,8 +30,8 @@ public partial class Program
         Console.WriteLine($"Ansi string: {ansi}");
         Console.WriteLine($"Unicode string: {unicode}");
         
-        byte[] arr = "Initial content"u8.ToArray();
+        byte[] arr = "Initial content\0"u8.ToArray(); // the native function expects a null-terminated string
         Encode(arr);
-        Console.WriteLine($"Encoded: {Encoding.UTF8.GetString(arr)}");
+        Console.WriteLine($"Encoded: {Encoding.UTF8.GetString(arr, 0, arr.Length - 1)}");
     }
 }

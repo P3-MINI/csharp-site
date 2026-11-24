@@ -18,7 +18,7 @@ However, the language provides a tool that allows them to accept the value `null
 int? i = null; // OK
 ```
 
-The type `int?` expands to the type `Nullable<int>`. This is a generic structure that wraps another value type along with a flag indicating whether the type has a value. The definition of this structure looks something like this:
+The type `int?` expands to the type `Nullable<int>`. This is a generic structure that wraps another value type along with a flag indicating whether it holds a value. The definition of this structure looks something like this:
 
 ```csharp
 public struct Nullable<T> where T : struct
@@ -67,12 +67,14 @@ int? z = x + y;
 bool b = x < y;
 ```
 
-The compiler "lifts" the operator in the following way - depending on whether it is a comparison operator or another operator:
+The compiler "lifts" the operator in the following way - depending on whether it is a relational operator (`<`, `>`, `<=`, `>=`) or another operator:
 
 ```csharp
 int? z = (x.HasValue && y.HasValue) ? (x.Value + y.Value) : null;
 bool b = (x.HasValue && y.HasValue) ? (x.Value < y.Value) : false;
 ```
+
+The equality operators `==` and `!=` are lifted differently: two `null` values are equal, and `null` is not equal to any non-null value.
 
 #### Three-valued logic
 
@@ -83,11 +85,11 @@ bool? n = null;
 bool? f = false;
 bool? t = true;
 
-Console.WriteLine(n | n); // null
+Console.WriteLine(n | n); // null (printed as an empty line)
 Console.WriteLine(n | f); // null
-Console.WriteLine(n | t); // true
+Console.WriteLine(n | t); // True
 Console.WriteLine(n & n); // null
-Console.WriteLine(n & f); // false
+Console.WriteLine(n & f); // False
 Console.WriteLine(n & t); // null
 ```
 
@@ -96,7 +98,7 @@ Console.WriteLine(n & t); // null
 Reference types naturally support the value `null`. Nullable reference types mean something else. This is a language feature (from C# 8.0) that helps avoid `NullReferenceException` exceptions through static code analysis. In this case, reference types not marked with the `?` symbol have a special meaning. The compiler will check such variables or fields to ensure they always have a value assigned. If the compiler detects that such a variable might store a `null` value, it will issue a warning during compilation.
 
 ```csharp
-string str = null; // Warning: Converting null literal or possible null value into non-nullable type
+string str = null; // Warning: Converting null literal or possible null value to non-nullable type
 ```
 
 If our intention is to store a null value, we should mark the type as nullable:
@@ -123,7 +125,7 @@ We can also skip the `null` check if a method's parameter assumes it is a non-nu
 
 ```csharp
 string? str = null;
-PrintMessageLength(str); // Warning: Possible null reference argument for parameter 'message' in 'Program.PrintMessageLength'
+PrintMessageLength(str); // Warning: Possible null reference argument for parameter 'message' in 'void Program.PrintMessageLength(string message)'
 
 public static void PrintMessageLength(string message)
 {
@@ -135,7 +137,7 @@ public static void PrintMessageLength(string message)
 
 ### Nullable context
 
-We can disable static analysis for nullability at the project level by setting the `Nullable` property accordingly in the project file:
+We can enable or disable static analysis for nullability at the project level by setting the `Nullable` property (`enable` or `disable`) in the project file. Project templates enable it; if the property is missing, the analysis is disabled.
 
 ```xml
 <PropertyGroup>
@@ -151,7 +153,7 @@ You can also disable/enable analysis for a code fragment using preprocessor dire
 #nullable restore // resets nullable reference checks to project setting
 ```
 
-### Null forgiving operator
+### Null-forgiving operator
 
 You can also silence compiler warnings with the `!` operator:
 
@@ -160,6 +162,8 @@ string s1 = null!;         // `!` Silences the warning
 string? s2 = null;
 int s2Length = s2!.Length; // `!` Silences the warning
 ```
+
+The `!` operator only affects static analysis and has no effect at runtime - `s2!.Length` above still throws a `NullReferenceException`.
 
 ## Operators related to nullability
 
@@ -170,7 +174,7 @@ C# provides several operators for working with nullable types.
 The null-coalescing operator checks if the left side is `null`. If it is, it returns the value from the right side; otherwise, it returns the value from the left side.
 
 ```csharp
-string s1 = null;
+string? s1 = null;
 string s2 = s1 ?? "non-null";
 Console.WriteLine($"Value of s2: {s2}");
 ```
@@ -200,7 +204,7 @@ Console.WriteLine($"Value of s: {s}");
 Equivalently:
 
 ```csharp
-s = (s == null) ? "non-null" : s;
+if (s == null) s = "non-null";
 ```
 
 ### Null-conditional operator
@@ -216,4 +220,25 @@ Equivalently:
 
 ```csharp
 string? s = (sb == null ? null : sb.ToString());
+```
+
+#### Null-conditional assignment (C# 14)
+
+Since C# 14, the `?.` and `?[]` operators can also be used on the left-hand side of an assignment, including compound assignment (`+=`, `-=`, ...). The assignment is performed only if the object is not `null` - and only then is the right-hand side evaluated:
+
+```csharp
+Customer? customer = FindCustomer(id);
+customer?.Name = GetName();    // GetName() is called only if customer is not null
+customer?.Orders?[0] = order;
+customer?.Points += 10;        // compound assignment is also allowed
+// customer?.Points++;         // error: ++ and -- are not allowed
+```
+
+Equivalently (for the second line):
+
+```csharp
+if (customer != null)
+{
+    customer.Name = GetName();
+}
 ```

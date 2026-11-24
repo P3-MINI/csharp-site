@@ -7,7 +7,11 @@ namespace XmlDocumentation;
 public class SparseMatrix : Matrix
 {
     private readonly Dictionary<(int row, int column), double> _data;
+
+    /// <inheritdoc />
     public override int Rows { get; }
+
+    /// <inheritdoc />
     public override int Columns { get; }
 
     /// <summary>
@@ -27,12 +31,16 @@ public class SparseMatrix : Matrix
     {
         get
         {
+            if (row < 0 || row >= Rows || column < 0 || column >= Columns)
+                throw new ArgumentOutOfRangeException(nameof(row), "Row or column is out of bounds.");
             if (_data.TryGetValue((row, column), out var value))
                 return value;
             return 0.0;
         }
         set
         {
+            if (row < 0 || row >= Rows || column < 0 || column >= Columns)
+                throw new ArgumentOutOfRangeException(nameof(row), "Row or column is out of bounds.");
             if (value == 0.0)
                 _data.Remove((row, column));
             else

@@ -8,4 +8,4 @@
 
 typedef void (*Callback)(int value);
 
-extern "C" void Count(int from, int to, Callback callback);
+extern "C" EXPORT void Count(int from, int to, Callback callback);

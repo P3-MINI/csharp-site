@@ -7,6 +7,8 @@ weight: 30
 
 An assembly is a compiled unit of code in the form of a `.dll` or `.exe` file.
 
+> In .NET (Core) the compiled code of an application is also stored in a `.dll` file. The accompanying `.exe` file (on Linux and macOS: a file without an extension) is only a small native launcher (*apphost*) that starts the runtime and loads that `.dll`.
+
 ## What does an assembly contain?
 
 An assembly consists of:
@@ -54,7 +56,7 @@ while (reader.ReadLine() is {} line)
 
 ## Localized Resources
 
-C# supports a special type of embedded file, `.resx` files, which store a key-value dictionary for different languages, containing string versions in various languages. The `ResourceManager` class is used to retrieve localized strings. From such dictionaries, we can retrieve a value by its key, for which the string will be automatically selected for the culture set in the `Thread.CurrentThread.CurrentUICulture` property.
+.NET supports a special type of embedded file, `.resx` files, which store a key-value dictionary (e.g., strings). A separate file is created for each language: `Resources.resx` contains the default values, and `Resources.pl.resx`, `Resources.es.resx`, etc. contain their translations (they are compiled into separate *satellite assemblies*). The `ResourceManager` class is used to retrieve localized strings. From such dictionaries, we can retrieve a value by its key, for which the string will be automatically selected for the culture set in the `Thread.CurrentThread.CurrentUICulture` property.
 
 ```csharp
 ResourceManager rm = new ResourceManager("EmbeddingResources.Resources", typeof(Program).Assembly);
@@ -86,7 +88,8 @@ For a given assembly, we can get the context in which it resides:
 
 ```csharp
 Assembly assembly = Assembly.GetExecutingAssembly();
-AssemblyLoadContext context = AssemblyLoadContext.GetLoadContext(assembly);
+AssemblyLoadContext? context = AssemblyLoadContext.GetLoadContext(assembly);
+if (context is null) return;
 
 Console.WriteLine(context.Name);
 foreach (Assembly a in context.Assemblies)
@@ -95,7 +98,7 @@ foreach (Assembly a in context.Assemblies)
 }
 ```
 
-You can also create your own isolated contexts. The `isCollectible` argument makes such a context unloadable, allowing memory to be reclaimed later.
+You can also create your own isolated contexts. The `isCollectible` argument makes it possible to unload such a context later (with the `Unload` method), allowing memory to be reclaimed.
 
 ```csharp
 AssemblyLoadContext context = new AssemblyLoadContext("Plugins", isCollectible: true);
@@ -142,6 +145,8 @@ class PluginLoadContext : AssemblyLoadContext
     {
         if (assemblyName.Name == "Plugin.Common")
         {
+            // Load the shared contract from the default context,
+            // so that ITextPlugin is the same type for the host and the plugin
             return null;
         }
 
@@ -156,7 +161,9 @@ class PluginLoadContext : AssemblyLoadContext
 }
 ```
 
-> `AssemblyDependencyResolver` reads file `[application_name].deps.json` when searching for dependencies.
+> `AssemblyDependencyResolver` reads the plugin's `[plugin_name].deps.json` file when searching for its dependencies.
+
+### Plugin System
 
 Using dynamic assembly loading with an ALC, you can implement a plugin system.
 

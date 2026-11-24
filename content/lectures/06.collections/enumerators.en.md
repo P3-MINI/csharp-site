@@ -7,7 +7,7 @@ weight: 10
 
 An enumerator is a concept similar to iterators in C++. An enumerator is a read-only, forward-only cursor that allows for one-directional traversal of a sequence of values.
 
-For an object to be called an enumerator, it must have a public parameterless `bool MoveNext()` method and a `Current` property. Most often, the `System.Collections.Generics.IEnumerator<T>` interface (or less commonly `System.Collections.IEnumerator`) is implemented, which provides the aforementioned method and property.
+For an object to be called an enumerator, it must have a public parameterless `bool MoveNext()` method and a `Current` property. Most often, the `System.Collections.Generic.IEnumerator<T>` interface (or less commonly `System.Collections.IEnumerator`) is implemented, which provides the aforementioned method and property.
 
 The definitions of these interfaces are as follows:
 
@@ -56,10 +56,10 @@ foreach(int item in collection)
 }
 ```
 
-The `foreach` loop is syntactic sugar; the compiler transforms this expression as follows:
+The `foreach` loop is syntactic sugar; the compiler transforms this statement as follows:
 
 ```csharp
-IEnumerator<int> enumerator = collection.GetEnumerator();
+List<int>.Enumerator enumerator = collection.GetEnumerator();
 try
 {
     while (enumerator.MoveNext())
@@ -70,9 +70,11 @@ try
 }
 finally
 {
-    enumerator?.Dispose();
+    enumerator.Dispose();
 }
 ```
+
+`foreach` is pattern-based: the compiler uses the `GetEnumerator` method available for the static type of the collection. `List<T>` returns its own public enumerator, the `List<T>.Enumerator` struct, so no heap allocation or interface calls take place. If the collection were known only as `IEnumerable<int>`, the enumerator would be of type `IEnumerator<int>`.
 
 ## Iterator Method
 
@@ -94,7 +96,7 @@ public static IEnumerable<int> Fibonacci(int count)
 {{% details title="The state machine for this method looks like this:" open=false %}}
 ```csharp
 [CompilerGenerated]
-private sealed class <Fibs>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int>, IEnumerator, IDisposable
+private sealed class <Fibonacci>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int>, IEnumerator, IDisposable
 {
     private int <>1__state;
     private int <>2__current;
@@ -125,7 +127,7 @@ private sealed class <Fibs>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int
     }
 
     [DebuggerHidden]
-    public <Fibs>d__1(int <>1__state)
+    public <Fibonacci>d__1(int <>1__state)
     {
         this.<>1__state = <>1__state;
         <>l__initialThreadId = Environment.CurrentManagedThreadId;
@@ -182,18 +184,18 @@ private sealed class <Fibs>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int
     [DebuggerHidden]
     IEnumerator<int> IEnumerable<int>.GetEnumerator()
     {
-        <Fibs>d__1 <Fibs>d__;
+        <Fibonacci>d__1 <Fibonacci>d__;
         if (<>1__state == -2 && <>l__initialThreadId == Environment.CurrentManagedThreadId)
         {
             <>1__state = 0;
-            <Fibs>d__ = this;
+            <Fibonacci>d__ = this;
         }
         else
         {
-            <Fibs>d__ = new <Fibs>d__1(0);
+            <Fibonacci>d__ = new <Fibonacci>d__1(0);
         }
-        <Fibs>d__.count = <>3__count;
-        return <Fibs>d__;
+        <Fibonacci>d__.count = <>3__count;
+        return <Fibonacci>d__;
     }
 
     [DebuggerHidden]
@@ -205,7 +207,7 @@ private sealed class <Fibs>d__1 : IEnumerable<int>, IEnumerable, IEnumerator<int
 ```
 {{% /details %}}
 
-Just calling the iterator method only creates a state machine. The code of the iterator method itself is called after `MoveNext` is called on the enumerator from its last state. The next value is calculated, the `yield return` statement returns the calculated value by writing it to the `Current` property, and control returns to the caller.
+Just calling the iterator method only creates a state machine - none of the method's code is executed yet. The body of the iterator method runs only when `MoveNext` is called on the enumerator, and it resumes from the point where it was last suspended. The next value is calculated, the `yield return` statement returns the calculated value by writing it to the `Current` property, and control returns to the caller.
 
 There is also a `yield break` statement, which also returns control to the caller, but it causes `MoveNext` to return `false`, indicating no further elements.
 
@@ -264,8 +266,14 @@ sequenceDiagram
     participant Odds
     participant Fibonacci
     activate Main
-    Main->>+Odds: MoveNext()
+    Main->>Odds: MoveNext()
     deactivate Main
+    activate Odds
+    Odds->>Fibonacci: MoveNext()
+    deactivate Odds
+    activate Fibonacci
+    Fibonacci->>Odds: 0
+    deactivate Fibonacci
     activate Odds
     Odds->>Fibonacci: MoveNext()
     deactivate Odds
@@ -318,7 +326,7 @@ The `Odds` method acts as a filter for the `Fibonacci` sequence; most LINQ metho
 
 ## Implementing a Custom Enumerable Type
 
-For our own custom type to be enumerable, the easiest way is to implement the `IEnumerable` interface. Most often, the `GetEnumerator` method is implemented as an iterator using the `yield` statement.
+For our own custom type to be enumerable, the easiest way is to implement the `IEnumerable<T>` interface. Most often, the `GetEnumerator` method is implemented as an iterator using the `yield` statement.
 
 ```csharp
 public class Stack<T> : IEnumerable<T>

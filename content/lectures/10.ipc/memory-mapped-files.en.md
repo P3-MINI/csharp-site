@@ -3,7 +3,7 @@ title: "Memory Mapping"
 weight: 50
 ---
 
-## Memory-Mapped Files and Shared Memory
+# Memory-Mapped Files and Shared Memory
 
 Memory-mapped files are an operating system mechanism that allows mapping a file's content directly into a process's address space. This allows you to read and modify the file's content as if it were an array in memory.
 
@@ -17,7 +17,7 @@ In .NET, the `MemoryMappedFile` class from the `System.IO.MemoryMappedFiles` nam
 
 ### Writing to and Reading from a File
 
-To write to or read from a file, you need to get a "view" object, `ViewAccessor`, from the file. It allows reading and writing primitive types, arrays, and structures in a specific portion of the file.
+To write to or read from a file, you need to get a "view" object, `MemoryMappedViewAccessor`, from the file (`CreateViewAccessor`). It allows reading and writing primitive types, arrays, and structures in a specific portion of the file.
 The following example shows how to create a memory-mapped file, write data to it, and then read it back.
 
 ```csharp
@@ -44,7 +44,7 @@ using (var accessor = mmf.CreateViewAccessor(0, message.Length * 2, MemoryMapped
 }
 ```
 
-For random reads/writes, this way of working with a file is about ~10 times faster than using streams. The situation is reversed for sequential reads/writes.
+For random reads/writes, this way of working with a file is roughly 10 times faster than using streams. The situation is reversed for sequential reads/writes.
 
 ## Shared Memory
 
@@ -54,7 +54,7 @@ This is a very efficient form of IPC, as data is not copied between processes—
 
 ### IPC Communication Example
 
-This is not a cross-platform mechanism. Windows supports named mappings that create shared memory, which other processes can later reference using a common name. On Linux, to create shared memory, you can create it as a file in `/dev/shm`. This is a temporary file system mounted in RAM.
+Named mappings are not a cross-platform mechanism. Windows supports named mappings that create shared memory, which other processes can later reference using a common name. On Linux, .NET does not support named mappings (`CreateOrOpen` and `OpenExisting` throw `PlatformNotSupportedException`), so to create shared memory, you can create it as a file in `/dev/shm`. This is a temporary file system (`tmpfs`) mounted in RAM.
 
 {{< tabs >}}
 {{% tab "Linux" %}}
@@ -66,7 +66,7 @@ namespace SharedMemory;
 public class Program
 {
     private const string ShmFile = "/dev/shm/shared_memory.shm";
-    private const string MutexName = "Global\shared_memory_mutex";
+    private const string MutexName = "Global\\shared_memory_mutex";
     
     public static void Main(string[] args)
     {
@@ -105,7 +105,7 @@ public class Program
     
     public static void Reader()
     {
-        Mutex mutex = Mutex.OpenExisting(MutexName);
+        using Mutex mutex = Mutex.OpenExisting(MutexName);
         mutex.WaitOne();
         using var mmf = MemoryMappedFile.CreateFromFile(ShmFile, FileMode.Open);
         using var accessor = mmf.CreateViewAccessor();
@@ -128,7 +128,7 @@ namespace SharedMemory;
 public class Program
 {
     private const string MapName = "SharedMemory";
-    private const string MutexName = "Global\shared_memory_mutex";
+    private const string MutexName = "Global\\shared_memory_mutex";
     
     public static void Main(string[] args)
     {
@@ -167,7 +167,7 @@ public class Program
 
     public static void Reader()
     {
-        Mutex mutex = Mutex.OpenExisting(MutexName);
+        using Mutex mutex = Mutex.OpenExisting(MutexName);
         mutex.WaitOne();
         using var mmf = MemoryMappedFile.OpenExisting(MapName);
         using var accessor = mmf.CreateViewAccessor();
@@ -186,7 +186,7 @@ public class Program
 > [!WARNING] 
 > ## Synchronization
 > When multiple processes (or threads) have access to the same memory area, **synchronization** may be necessary. Without it, a race condition can occur, where one process tries to read data that is being modified by another.
-> In the example above, the `Mutex` class is used to ensure that only one process can access the shared area at a time.
+> In the example above, a named (system-wide) `Mutex` is used to ensure that only one process can access the shared area at a time.
 
 > [!INFO] 
 > ## Source Code

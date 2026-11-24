@@ -27,22 +27,22 @@ The reflection mechanism is available through classes in the following namespace
 The `System.Reflection` namespace contains classes that represent various code elements and allow you to inspect and interact with them:
 
 ```text
-│└── Assembly
-│    └── Module
-│        └── Type (System.Type)
-│            └── MemberInfo
-│                ├── MethodBase
-│                │   ├── ConstructorInfo
-│                │   │   └── ParameterInfo
-│                │   └── MethodInfo
-│                │       └── ParameterInfo
-│                ├── PropertyInfo
-│                ├── FieldInfo
-│                └── EventInfo
+├── Assembly
+│   └── Module
+│       └── Type (System.Type)
+│           └── MemberInfo
+│               ├── MethodBase
+│               │   ├── ConstructorInfo
+│               │   │   └── ParameterInfo
+│               │   └── MethodInfo
+│               │       └── ParameterInfo
+│               ├── PropertyInfo
+│               ├── FieldInfo
+│               └── EventInfo
 └── CustomAttributeData
 ```
 
-> The existence of modules can usually be ignored. In 99.99% of cases, an assembly consists of exactly one module (a file with intermediate code, i.e., a `.dll` or `.exe`). Visual Studio does not support creating multi-module assemblies, and it is also rarely useful. One example is when part of a single library's code is written in another language that also compiles to intermediate code. In that case, multiple separately compiled modules are collected into a single assembly. Typically, modules and assemblies are treated as equivalent (both being files with intermediate code).
+> The existence of modules can usually be ignored. In .NET (Core), an assembly always consists of exactly one module (a file with intermediate code, i.e., a `.dll` or `.exe`). Multi-module assemblies are supported only by .NET Framework (and Visual Studio does not support creating them anyway); they are also rarely useful. One example is when part of a single library's code is written in another language that also compiles to intermediate code. In that case, multiple separately compiled modules are collected into a single assembly. Typically, modules and assemblies are treated as equivalent (both being files with intermediate code).
 
 The `System.Reflection.Emit` namespace is used for dynamically generating new code at runtime. You can create your own classes, methods, and their code and use them as if they were part of the original compiled program. This process involves emitting Common Intermediate Language (CIL) instructions. We will skip this part of reflection. Dynamic code generation is used, for example, to create mocks for unit tests or to create compiled regular expressions.
 
@@ -104,9 +104,9 @@ We can get a `Type` object in three ways:
    Type? personType = Type.GetType("Reflection.Person");
    ```
 
-   We can do this without knowing the desired type at compile time, for instance, by loading the class name from a configuration file.
+   We can do this without knowing the desired type at compile time, for instance, by loading the class name from a configuration file. The name must include the namespace; for types from assemblies other than the calling one and `System.Private.CoreLib`, the assembly-qualified name is required (e.g., `"System.Text.Json.JsonSerializer, System.Text.Json"`). If the type is not found, the method returns `null`.
 
-### Getting Information About Members:
+### Getting Information About Members
 
 Regardless of how we obtain the `Type` object, we can then inspect the type's members. We can get all members using `GetMembers`, or specific kinds of members: `GetFields`, `GetProperties`, `GetEvents`, `GetMethods`, `GetConstructors`, `GetNestedTypes`.
 
@@ -120,10 +120,10 @@ foreach (MemberInfo member in members)
 
 > Reflection allows you to break encapsulation; you can use it to access private members. For reflection to return private members, you must pass the `BindingFlags.NonPublic | BindingFlags.Instance` flags to the overloaded method:
 > ```csharp
-> typeof(Person).GetMembers(BindingFlags.NonPublic);
+> typeof(Person).GetMembers(BindingFlags.NonPublic | BindingFlags.Instance);
 > ```
 
-Alternatively, you can use the `GetTypeInfo()` API, which returns an `IEnumerable` sequence:
+Alternatively, you can use the `TypeInfo` API (`GetTypeInfo()`), whose `Declared*` properties return `IEnumerable` sequences:
 
 ```csharp
 IEnumerable<MemberInfo> members = typeof(Person)
@@ -137,9 +137,9 @@ foreach (MemberInfo member in members)
 ```
 
 > [!INFO]
-> `DeclaredMembers` does not list inherited members.
+> `DeclaredMembers` does not list inherited members, but it does list non-public and static members.
 
-If we know the name of a member, we can find it using one of the following methods: `GetMember`, `GetField`, `GetProperty`, `GetEvent`, `GetMethod`, `GetNestedType`. Based on a provided list of arguments, we can also find the appropriate constructor using `GetConstructor`.
+If we know the name of a member, we can find it using one of the following methods: `GetMember`, `GetField`, `GetProperty`, `GetEvent`, `GetMethod`, `GetNestedType`. Based on a provided list of parameter types, we can also find the appropriate constructor using `GetConstructor`.
 
 ### Invoking Members
 
@@ -191,7 +191,7 @@ Methods, constructors, and property getters and setters can be invoked after bei
    {
        DateTime? birthday = property.GetValue(person) as DateTime?;
        property.SetValue(person, birthday?.AddYears(-2));
-       Console.WriteLine($"Age: {DateTime.Now.Year - birthday?.Year}");
+       Console.WriteLine($"Age: {DateTime.Now.Year - person.Birthday.Year}"); // 23
    }
    ```
 4. Setting fields:
@@ -219,7 +219,7 @@ A found `MethodInfo` can be assigned to a delegate, which helps avoid some of th
 
 ```csharp
 Person person = new Person("Alice", "Smith", DateTime.Now.AddYears(-21));
-MethodInfo? method = typeof(Person).GetMethod(nameof(Person.IsAdult));
+MethodInfo method = typeof(Person).GetMethod(nameof(Person.IsAdult))!;
 // Binding to a delegate:
 Func<bool> isAdult = (Func<bool>)Delegate
     .CreateDelegate(typeof(Func<bool>), person, method);
@@ -228,6 +228,25 @@ for (int i = 0; i < 1_000_000; i++)
     isAdult();
 }
 ```
+
+### `UnsafeAccessor` (.NET 8)
+
+Reflection is often used only to access a private member of a type that we cannot modify (e.g., in tests or serializers). Since .NET 8, this can be done without reflection, using the `[UnsafeAccessor]` attribute. We declare a `static extern` method, and the runtime provides its body, which accesses the given member directly, so such a call is as fast as a regular one:
+
+```csharp
+Person person = new Person("Alice", "Smith", DateTime.Now.AddYears(-21));
+ref string id = ref PersonAccessors.Id(person); // a reference to the private field
+id = id.Substring(0, 8);
+Console.WriteLine(PersonAccessors.Id(person));
+
+static class PersonAccessors
+{
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_id")]
+    public static extern ref string Id(Person person);
+}
+```
+
+The first parameter specifies the type whose member is accessed (for instance members, it is the object used as `this`). Other kinds of members (`UnsafeAccessorKind`) are `StaticField`, `Method`, `StaticMethod`, and `Constructor`. Members of generic types and generic methods are supported since .NET 9. Unlike reflection, the accessed member must be known at compile time, so the trimming and Native AOT analysis ([see below]({{< ref "#reflection-trimming-and-native-aot" >}})) does not report warnings for such code.
 
 ## Reflection on an Assembly
 
@@ -258,11 +277,30 @@ foreach (var type in assembly.GetTypes())
 > Source code:
 > {{< filetree dir="lectures/reflection/Reflection" >}}
 
+## Generic Types
+
+`typeof` can also be applied to an unbound (open) generic type, e.g., `typeof(List<>)`. Unlike C++ templates, which are instantiated only at compile time, such a generic type definition can be closed with concrete type arguments at runtime using `MakeGenericType` (and similarly, a generic method using `MethodInfo.MakeGenericMethod`). The number after the backtick in the type's name is the number of its type parameters.
+
+```csharp
+Type open = typeof(Dictionary<,>);
+Console.WriteLine(open.IsGenericTypeDefinition); // True
+Console.WriteLine(open.Name);                    // Dictionary`2
+
+Type closed = open.MakeGenericType(typeof(string), typeof(int));
+Console.WriteLine(closed == typeof(Dictionary<string, int>)); // True
+Console.WriteLine(string.Join(", ", closed.GetGenericArguments().Select(t => t.Name))); // String, Int32
+var dict = (IDictionary<string, int>)Activator.CreateInstance(closed)!;
+
+Console.WriteLine(nameof(Dictionary<,>));        // Dictionary (C# 14)
+```
+
+Since C# 14, `nameof` also accepts unbound generic types, e.g., `nameof(List<>)` returns `"List"`.
+
 ## Custom Attributes
 
 We can define our own attributes—these are classes that inherit from `System.Attribute`. By convention, their names should end with `...Attribute`; the compiler allows you to omit this suffix when using the attribute. The `AttributeUsage` attribute is used to specify what we can do with our attribute. It has three properties:
 
-* **`AttributeTargets`** - specifies which code elements we can attach the attribute to.
+* **`ValidOn`** (constructor parameter of type `AttributeTargets`) - specifies which code elements we can attach the attribute to.
 * **`AllowMultiple`** (optional) - a flag indicating whether the attribute can be applied multiple times. Defaults to `false`.
 * **`Inherited`** - a flag indicating whether the attribute will be inherited by derived classes and overridden members. Defaults to `true`.
 
@@ -270,16 +308,16 @@ We can define our own attributes—these are classes that inherit from `System.A
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
 public class BenchmarkAttribute : Attribute
 {
-    public int Repetitions { get; }
+    public uint Repetitions { get; }
 
-    public BenchmarkAttribute(int repetitions = 10)
+    public BenchmarkAttribute(uint repetitions = 100)
     {
         Repetitions = repetitions;
     }
 }
 ```
 
-Attributes attached to code elements can later be retrieved using reflection. The `GetCustomAttributes<TAttribute>` method is defined on every type representing a code element and returns a sequence of attributes. Based on the attribute and its data, you can then take further steps.
+Attributes attached to code elements can later be retrieved using reflection. The `GetCustomAttributes<TAttribute>` (extension) method is available for every type representing a code element and returns a sequence of attributes. Based on the attribute and its data, you can then take further steps.
 
 ```csharp
 public static class Program
@@ -349,3 +387,54 @@ public static class Program
 > [!INFO]
 > Source code:
 > {{< filetree dir="lectures/reflection/Benchmark" >}}
+
+### Generic Attributes (C# 11)
+
+Since C# 11, attribute classes can be generic. Instead of passing a type as an argument (`[Validator(typeof(EmailValidator))]`), it can be passed as a type argument, so the compiler can check its constraints:
+
+```csharp
+[AttributeUsage(AttributeTargets.Property)]
+public class ValidatorAttribute<T> : Attribute where T : IValidator, new()
+{
+    public IValidator CreateValidator() => new T();
+}
+
+public class User
+{
+    [Validator<EmailValidator>]
+    public string Email { get; set; } = "";
+}
+
+public interface IValidator { bool IsValid(object? value); }
+public class EmailValidator : IValidator
+{
+    public bool IsValid(object? value) => value is string s && s.Contains('@');
+}
+```
+
+The type argument must be fully known at compile time — e.g., `[Validator<T>]` using a type parameter `T` of the enclosing generic type is an error (`CS8968`).
+
+## Reflection, Trimming, and Native AOT
+
+When an application is published with trimming (`<PublishTrimmed>`) or compiled ahead of time to native code (Native AOT, `<PublishAot>`, .NET 7+), the compiler statically analyzes the code and removes types and members that appear to be unused. Members used only through reflection (e.g., found by a name read from a configuration file) may then be missing at runtime. That's why the trim analyzer reports warnings (`IL2026`, `IL2057`, `IL2075`, …) for reflection code that it cannot analyze. File-based apps (`dotnet run app.cs`, .NET 10) have Native AOT enabled by default, so these warnings show up there as well.
+
+Such code can be annotated with attributes from the `System.Diagnostics.CodeAnalysis` namespace:
+
+* `[DynamicallyAccessedMembers]` - tells the trimmer which members of a type passed as a `Type` (parameter, field, return value) will be accessed through reflection, so that they are preserved;
+* `[RequiresUnreferencedCode]`, `[RequiresDynamicCode]` - mark a method as incompatible with trimming / Native AOT; the warning is then reported at its call sites.
+
+```csharp
+static void PrintMethods(
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type)
+{
+    foreach (MethodInfo method in type.GetMethods()) // OK: public methods are preserved
+    {
+        Console.WriteLine(method.Name);
+    }
+}
+
+PrintMethods(typeof(Person));                     // OK: the trimmer keeps public methods of Person
+PrintMethods(Type.GetType(Console.ReadLine()!)!); // warning IL2057: the type is unknown at compile time
+```
+
+That's why many libraries replace reflection with [source generators]({{< ref "/lectures/13.others/source-generators" >}}), which generate the needed code at compile time (e.g., `System.Text.Json`, `[GeneratedRegex]`).

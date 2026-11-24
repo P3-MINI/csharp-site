@@ -4,7 +4,7 @@ title: "Krotki"
 
 # Krotki
 
-Krotka (*Tuples*) to typ przechowujący kilka podtypów, podobny do `std::tuple` z C++. W C# typ krotki to generyczna struktura `System.ValueTuple<T1, T2, ...>`. Krotki w C# mają duże wsparcie ze strony języka. Zarówno deklaracja jak i tworzenie krotek ma swoje odzwierciedlenie w składni. Typy `t1` i `t2` są tego samego typu - `(double, int, string)` to alias na `ValueTuple<double, int, string>`.
+Krotka (*tuple*) to typ grupujący kilka wartości (elementów), potencjalnie różnych typów, podobny do `std::tuple` z C++. W C# typ krotki to generyczna struktura `System.ValueTuple<T1, T2, ...>`. Krotki w C# mają duże wsparcie ze strony języka. Zarówno deklaracja, jak i tworzenie krotek ma swoje odzwierciedlenie w składni. Zmienne `t1` i `t2` poniżej są tego samego typu - `(double, int, string)` to alias na `ValueTuple<double, int, string>`.
 
 ```csharp
 (double, int, string) t1 = (4.5, 3, "Bob");
@@ -18,7 +18,7 @@ Domyślnie pola krotki mają nazwy `Item1`, `Item2`, itd.
 Console.WriteLine($"double: {t1.Item1}, int: {t1.Item2}, string: {t1.Item3}");
 ```
 
-> Istnieje również typ referencyjny System.Tuple<T1, T2, ...>, jest to nieudany eksperyment związany z wprowadzaniem krotek do języka, pozostawiony w bibliotece standardowej dla kompatybilności. Typy bezpośrednie są dużo bardziej wydajne do zastosowań, w których używa się krotek.
+> Istnieje również typ referencyjny `System.Tuple<T1, T2, ...>`. Jest to wcześniejszy, mniej udany eksperyment związany z wprowadzaniem krotek do języka, pozostawiony w bibliotece standardowej dla kompatybilności. Typy bezpośrednie są dużo bardziej wydajne do zastosowań, w których używa się krotek.
 
 ## Nazywanie elementów
 
@@ -39,11 +39,11 @@ var t1 = (DateTime.Now, count, name);
 Console.WriteLine($"DateTime: {t1.Now}, int: {t1.count}, string: {t1.name}");
 ```
 
-> Przyjazne nazwy elementów nie wpływają na typ krotki. Jeżeli typy elementów krotki się zgadzają to jest to ten sam typ.
+> Przyjazne nazwy elementów nie wpływają na typ krotki. Jeżeli typy elementów krotki się zgadzają, to jest to ten sam typ, niezależnie od nazw.
 
 ## Porównywanie krotek
 
-Operatory `==` i `!=` są przeciążone i sprawdzają po prostu element po elemencie czy są one równe/różne używając operatorów `==` i `!=`:
+Krotki wspierają operatory `==` i `!=` (C# 7.3). Kompilator porównuje krotki element po elemencie, po kolei, używając operatorów `==` i `!=` samych elementów (nazwy elementów są ignorowane):
 
 ```csharp
 (int a, byte b) left = (5, 10);
@@ -100,11 +100,11 @@ Kolejny sposób na zwrócenie kilku wartości z funkcji, alternatywa dla paramet
 
 ### Zamiana wartości
 
-Krotki mogą byś użyte do zamiany wartości dwóch lub więcej zmiennych, bez wprowadzania wartości tymczasowych. Nie jest to optymalne rozwiązanie, ale za to bardzo czytelne:
+Krotki mogą być użyte do zamiany wartości dwóch lub więcej zmiennych bez deklarowania zmiennej tymczasowej. Jest to bardzo czytelne, a żadna krotka nie jest faktycznie tworzona - kompilator używa jedynie ukrytych zmiennych tymczasowych, więc jest to tak samo wydajne jak ręczna zamiana:
 
 ```csharp
 public static void Swap<T>(ref T a, ref T b)
 {
-    (a, b) = (b, a); // create tuple and deconstruct it into a and b
+    (a, b) = (b, a); // conceptually: create a tuple and deconstruct it into a and b
 }
 ```
