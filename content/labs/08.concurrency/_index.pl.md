@@ -156,7 +156,7 @@ Jeżeli jeden wątek wejdzie do tak oznaczonego bloku, to każdy inny wątek pr�
 
 > [!NOTE]
 > **Student**
-> {{< filetree dir="labs/lab10/student" >}}
+> {{< filetree dir="labs/w08.concurrency/student" >}}
 
 ## Zadanie 1: Generowanie Fraktali (Zbiór Mandelbrota)
 
@@ -215,7 +215,7 @@ Poprawnie wygenerowany fraktal powinien wyglądać następująco:
 
 > [!TIP]
 > **Rozwiązanie**
-> {{< filetree dir="labs/lab10/solution/FractalsGenerator" >}}
+> {{< filetree dir="labs/w08.concurrency/solution/FractalsGenerator" >}}
 
 ## Zadanie 2: Responsywne GUI w Raytracerze (Avalonia)
 
@@ -246,4 +246,4 @@ Należy przenieść renderowanie do zadania działającego w tle, wykorzystując
 
 > [!TIP]
 > **Rozwiązanie**
-> {{< filetree dir="labs/lab10/solution/RayTracer" >}}
+> {{< filetree dir="labs/w08.concurrency/solution/RayTracer" >}}

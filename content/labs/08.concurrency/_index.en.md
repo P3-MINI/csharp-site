@@ -175,7 +175,7 @@ If one thread enters the protected block, any other thread attempting to enter i
 
 > [!NOTE]
 > **Student**
-> {{< filetree dir="labs/lab10/student" >}}
+> {{< filetree dir="labs/w08.concurrency/student" >}}
 
 ## Task 1: Fractal Generation (Mandelbrot)
 
@@ -234,7 +234,7 @@ The correctly generated fractal should look as follows:
 
 > [!TIP]
 > **Solution**
-> {{< filetree dir="labs/lab10/solution/FractalsGenerator" >}}
+> {{< filetree dir="labs/w08.concurrency/solution/FractalsGenerator" >}}
 
 ## Task 2: Responsive GUI with RayTracer (Avalonia)
 
@@ -266,4 +266,4 @@ Move the rendering operation to a background task using `Task.Run()`, then use `
 
 > [!TIP]
 > **Solution**
-> {{< filetree dir="labs/lab10/solution/RayTracer" >}}
+> {{< filetree dir="labs/w08.concurrency/solution/RayTracer" >}}
