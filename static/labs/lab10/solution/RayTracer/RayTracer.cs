@@ -15,22 +15,20 @@ public class RayTracer
     }
 
 
-    public ColorRGB[,] Render(
-        int width,
-        int height,
-        int samplesPerPixel = 8,
-        Action<int>? reportProgress = null)
+    public void RenderProgressive(
+    int width,
+    int height,
+    int maxSamplesPerPixel,
+    IProgress<RenderFrame> progress)
     {
-        ColorRGB[,] image = new ColorRGB[width, height];
+        ColorRGB[,] accumulated = new ColorRGB[width, height];
         Random random = new Random();
 
-        for (int y = 0; y < height; y++)
+        for (int sample = 1; sample <= maxSamplesPerPixel; sample++)
         {
-            for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
             {
-                ColorRGB sum = new ColorRGB(0, 0, 0);
-
-                for (int s = 0; s < samplesPerPixel; s++)
+                for (int x = 0; x < width; x++)
                 {
                     float sampleX = x + (float)random.NextDouble();
                     float sampleY = y + (float)random.NextDouble();
@@ -38,23 +36,24 @@ public class RayTracer
                     Ray ray = _camera.GetRay(
                         sampleX, sampleY, width, height);
 
-                    sum += Trace(ray);
+                    accumulated[x, y] += Trace(ray);
                 }
-
-                image[x, y] = sum * (1.0f / samplesPerPixel);
             }
 
-            // Report progress after completing each row.
-            // Report every 4 rows to reduce UI notifications.
-            if (y % 4 == 0 || y == height - 1)
+            // Tworzymy osobną kopię obrazu dla danego etapu.
+            ColorRGB[,] framePixels = new ColorRGB[width, height];
+
+            for (int y = 0; y < height; y++)
             {
-                reportProgress?.Invoke(
-                    (int)((y + 1) * 100.0 / height)
-                );
+                for (int x = 0; x < width; x++)
+                {
+                    framePixels[x, y] =
+                        accumulated[x, y] * (1.0f / sample);
+                }
             }
-        }
 
-        return image;
+            progress.Report(new RenderFrame(framePixels, sample));
+        }
     }
 
 

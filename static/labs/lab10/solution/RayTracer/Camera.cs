@@ -24,10 +24,10 @@ public class Camera
     }
 
     public Ray GetRay(
-    float sampleX,
-    float sampleY,
-    int width,
-    int height)
+        float sampleX,
+        float sampleY,
+        int width,
+        int height)
     {
         float aspectRatio = (float)width / height;
         float fov = MathF.PI / 3.0f;

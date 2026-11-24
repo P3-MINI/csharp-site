@@ -18,13 +18,57 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
+    private WriteableBitmap CreateBitmap(ColorRGB[,] pixels)
+    {
+        int width = pixels.GetLength(0);
+        int height = pixels.GetLength(1);
+
+        WriteableBitmap bitmap = new WriteableBitmap(
+            new PixelSize(width, height),
+            new Avalonia.Vector(96, 96),
+            PixelFormat.Bgra8888,
+            AlphaFormat.Opaque
+        );
+
+        using (var framebuffer = bitmap.Lock())
+        {
+            byte[] row = new byte[width * 4];
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    ColorRGB color = pixels[x, y];
+                    int i = x * 4;
+
+                    row[i] = color.B8;
+                    row[i + 1] = color.G8;
+                    row[i + 2] = color.R8;
+                    row[i + 3] = 255;
+                }
+
+                Marshal.Copy(
+                    row,
+                    0,
+                    IntPtr.Add(
+                        framebuffer.Address,
+                        y * framebuffer.RowBytes
+                    ),
+                    row.Length
+                );
+            }
+        }
+
+        return bitmap;
+    }
+
     private async void RenderButton_Click(
-        object? sender,
-        RoutedEventArgs e)
+    object? sender,
+    RoutedEventArgs e)
     {
         const int width = 800;
         const int height = 600;
-        const int samplesPerPixel = 16;
+        const int samplesPerPixel = 4;
 
         RenderButton.IsEnabled = false;
         RenderProgress.Value = 0;
@@ -44,61 +88,28 @@ public partial class MainWindow : Window
             RayTracer rayTracer = new RayTracer(scene, camera);
 
             // Progress<T> captures the current UI synchronization context.
-            IProgress<int> progress = new Progress<int>(percentage =>
-            {
-                RenderProgress.Value = percentage;
-                ProgressText.Text = $"Rendering: {percentage}%";
-            });
+            IProgress<RenderFrame> progress =
+                new Progress<RenderFrame>(frame =>
+                {
+                    // Display the newly generated frame.
+                    RenderImage.Source = CreateBitmap(frame.Pixels);
+
+                    RenderProgress.Value =
+                        frame.SamplesPerPixel * 100.0 / samplesPerPixel;
+
+                    ProgressText.Text =
+                        $"Rendering: {frame.SamplesPerPixel} samples per pixel";
+                });
 
             // Perform the expensive CPU-bound work on a worker thread.
-            ColorRGB[,] pixels = await Task.Run(() =>
-                rayTracer.Render(
+            await Task.Run(() =>
+                rayTracer.RenderProgressive(
                     width,
                     height,
                     samplesPerPixel,
-                    percentage => progress.Report(percentage)
+                    progress
                 )
             );
-
-            // Create and populate the bitmap after rendering completes.
-            WriteableBitmap bitmap = new WriteableBitmap(
-                new PixelSize(width, height),
-                new Avalonia.Vector(96, 96),
-                PixelFormat.Bgra8888,
-                AlphaFormat.Opaque
-            );
-
-            using (var framebuffer = bitmap.Lock())
-            {
-                byte[] row = new byte[width * 4];
-
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        ColorRGB color = pixels[x, y];
-                        int i = x * 4;
-
-                        row[i] = color.B8;
-                        row[i + 1] = color.G8;
-                        row[i + 2] = color.R8;
-                        row[i + 3] = 255;
-                    }
-
-                    Marshal.Copy(
-                        row,
-                        0,
-                        IntPtr.Add(
-                            framebuffer.Address,
-                            y * framebuffer.RowBytes
-                        ),
-                        row.Length
-                    );
-                }
-            }
-
-            // After await, execution resumes on the UI thread.
-            RenderImage.Source = bitmap;
 
             RenderProgress.Value = 100;
             ProgressText.Text = "Rendering complete.";
