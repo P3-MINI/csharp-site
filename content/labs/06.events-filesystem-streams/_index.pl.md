@@ -237,10 +237,10 @@ string.Create(CultureInfo.InvariantCulture, $"{size:0.0} {Units[unit]}")
 
 #### Polecenie `scan`
 
-Do rozpoznawania poleceń w `Program.cs` użyjemy **wzorców listy** (list patterns). W metodzie `Main`:
+Do rozpoznawania poleceń w `Program.cs` użyjemy **wzorców listy** (list patterns). W klasie Program wykonaj następujące kroki:
 
-1. Zdefiniuj wzorce ignorowania: `private static readonly string[] IgnorePatterns = ["*.tmp", "*.bak", "bin", "obj", "cache"];`.
-2. Dopasuj argumenty instrukcją `switch` i wywołaj metodę realizującą polecenie. Dla nieznanych argumentów wypisz instrukcję użycia i zwróć `1`:
+1. Poza metodą Main zdefiniuj wzorce ignorowania: `private static readonly string[] IgnorePatterns = ["*.tmp", "*.bak", "bin", "obj", "cache"];`.
+2. W metodzie Main dopasuj argumenty instrukcją `switch` i wywołaj metodę realizującą polecenie. Dla nieznanych argumentów wypisz instrukcję użycia i zwróć `1`:
    ```csharp
    switch (args)
    {
@@ -251,7 +251,7 @@ Do rozpoznawania poleceń w `Program.cs` użyjemy **wzorców listy** (list patte
            return 1;
    }
    ```
-3. Umieść instrukcję `switch` w bloku `try`/`catch`, który wypisuje komunikat wyjątku `IOException` lub `UnauthorizedAccessException` (`catch (Exception e) when (e is IOException or UnauthorizedAccessException)`) i zwraca `1`.
+3. W metodzie Main umieść instrukcję `switch` w bloku `try`/`catch`, który wypisuje komunikat wyjątku `IOException` lub `UnauthorizedAccessException` (`catch (Exception e) when (e is IOException or UnauthorizedAccessException)`) i zwraca `1`.
 
 Zaimplementuj metodę `Scan(string source)`:
 
